@@ -1,10 +1,15 @@
-// PlayfieldStage — visual-spec.md §5.1 + §4.
+// PlayfieldStage — visual-spec.md §5.1 + visual-spec-layout-correction.md §D.
 // Root composition for the 430px portrait-phone frame. Establishes the
 // `perspective: 1200px` outer + gentle `rotateX(8deg)` inner tilt on the
-// playmat surface, then stacks the six vertical bands per §4.2:
+// playmat surface, then stacks the six vertical bands per the layout
+// correction addendum §D.1:
 //
-//   12% opponent chrome / 22% opponent field / 6% phase ribbon /
-//   22% your field    /  10% your chrome   / 28% hand
+//   6% opp chrome / 30% opp field / 6% phase ribbon /
+//   30% your field / 4% your chrome / 24% hand
+//
+// Life is promoted out of the chrome strip and into the field band as a
+// 5-card vertical stack to the left of each leader (§D.3). The DON staging
+// strip (COST AREA) sits between the character row and the leader row (§D.2).
 //
 // No commissioned playmat asset yet — the surface is a code-drawn cream felt
 // with marine-fog zone outlines. Swap in `/assets/playmat-light.webp` when art lands.
@@ -17,6 +22,8 @@ import { ZoneSlot } from './ZoneSlot';
 import { PhaseRibbon } from './PhaseRibbon';
 import { HandFan } from './HandFan';
 import { AttackResolutionOverlay } from './AttackResolutionOverlay';
+import { LifeStack } from './zones/LifeStack';
+import { CostAreaStrip } from './zones/CostAreaStrip';
 import type { CardInstance, PlayerId, PlayerZones } from '@shared/engine/GameState';
 import type { Card } from '@shared/engine/cards/Card';
 
@@ -27,7 +34,9 @@ interface ChromeRowProps {
   leaderCard: Card;
 }
 
-/** Chrome strip — opponent label, life pill, DON readout, deck/trash mini stacks. */
+/** Chrome strip — opponent label + deck/trash mini stacks + hand-count (opponent only).
+ *  Life pill and DON readout were promoted out of chrome into the field band per
+ *  visual-spec-layout-correction.md §F steps 1 + 3. */
 function ChromeRow({ zones, isYou, playerId, leaderCard }: ChromeRowProps) {
   const label = isYou ? 'You' : 'Opponent';
   return (
@@ -38,31 +47,6 @@ function ChromeRow({ zones, isYou, playerId, leaderCard }: ChromeRowProps) {
         >
           {label}
         </span>
-        <div
-          className="flex items-center gap-1 rounded-full bg-paper-cream/70 px-2 py-0.5 ring-1 ring-seal-red"
-          aria-label={`${label} life ${zones.life.length}`}
-        >
-          <svg viewBox="0 0 16 16" className="h-3 w-3 text-seal-red" fill="currentColor" aria-hidden="true">
-            <path d="M8 14s-5-3.2-5-7a3 3 0 0 1 5-2.2A3 3 0 0 1 13 7c0 3.8-5 7-5 7Z" />
-          </svg>
-          <span className="font-display tabular text-[1.05rem] leading-none text-ink-black">
-            {zones.life.length}
-          </span>
-        </div>
-        <div
-          className="flex items-center gap-1 rounded-full bg-brass-canary/80 px-2 py-0.5"
-          aria-label={`${label} DON ${zones.donActive} active, ${zones.donRested} rested`}
-        >
-          <span className="font-body text-[0.6875rem] font-extrabold uppercase tracking-wider text-ink-black">
-            DON
-          </span>
-          <span className="font-display tabular text-[0.95rem] leading-none text-ink-black">
-            {zones.donActive}
-          </span>
-          <span className="font-body tabular text-[0.6875rem] text-ink-iron">
-            / {zones.donRested}r
-          </span>
-        </div>
       </div>
 
       <div className="flex items-center gap-2">
@@ -146,41 +130,40 @@ function FieldRow(props: FieldRowProps) {
     return arr;
   }, [zones.field]);
 
+  // Leader row — horizontal flex: [life-stack] [don-deck] [leader] [spacer].
+  // visual-spec-layout-correction.md §D.2.
   const leaderRow = (
-    <div className="flex items-center justify-center gap-2">
-      <ZoneSlot
-        kind="life"
-        playerId={playerId}
-        compact
-        ariaLabel={`${isYou ? 'Your' : 'Opponent'} life, ${zones.life.length} cards`}
-      >
-        <div className="flex h-full w-full flex-col items-center justify-center">
-          <span className="font-body text-[0.6rem] font-extrabold uppercase tracking-wider text-seal-red">
-            Life
-          </span>
-          <span className="font-display tabular text-[0.85rem] leading-none text-ink-black">
-            {zones.life.length}
-          </span>
-        </div>
-      </ZoneSlot>
-      <ZoneSlot kind="leader" playerId={playerId} ariaLabel={`${leaderCard.name} (leader)`}>
-        <div style={{ transform: 'scale(1.15)' }}>
-          <CardArt inst={zones.leader} card={leaderCard} size="leader" />
-        </div>
-      </ZoneSlot>
+    <div className="flex items-center justify-center gap-2 px-3">
+      <LifeStack playerId={playerId} />
       <ZoneSlot
         kind="don"
         playerId={playerId}
         compact
         ariaLabel={`${isYou ? 'Your' : 'Opponent'} DON deck, ${zones.donDeck} left`}
       >
-        <div className="flex h-full w-full flex-col items-center justify-center">
-          <span className="font-body text-[0.6rem] font-extrabold uppercase tracking-wider text-ink-iron">
+        <div
+          className="flex h-full w-full flex-col items-center justify-center"
+          style={{ minWidth: 'var(--zone-don-deck-w, 36px)' }}
+        >
+          <span className="font-body text-[0.55rem] font-extrabold uppercase tracking-wider text-ink-iron">
             DON
           </span>
           <span className="font-display tabular text-[0.85rem] leading-none text-ink-black">
             {zones.donDeck}
           </span>
+        </div>
+      </ZoneSlot>
+      <ZoneSlot kind="leader" playerId={playerId} ariaLabel={`${leaderCard.name} (leader)`}>
+        <div style={{ transform: `scale(var(--zone-leader-scale, 1.15))` }}>
+          <CardArt
+            inst={zones.leader}
+            card={leaderCard}
+            size="leader"
+            // Source of truth = engine state (visual-spec-layout-correction.md §E.1).
+            // Printed `card.life` is the *initial* value and stays at 5 forever once
+            // any life is taken; only `zones.life.length` reflects what's left.
+            liveLifeCount={zones.life.length}
+          />
         </div>
       </ZoneSlot>
     </div>
@@ -196,16 +179,23 @@ function FieldRow(props: FieldRowProps) {
     </div>
   );
 
+  const costAreaRow = <CostAreaStrip playerId={playerId} isYou={isYou} />;
+
+  // Mirror rule (§D.2): opponent stacks character → cost → leader top-to-bottom;
+  // player stacks leader → cost → character bottom-to-top so the leader sits
+  // closest to the player's hand (matches physical posture).
   return (
-    <div className="flex h-full w-full flex-col justify-center gap-1.5 py-1">
+    <div className="flex h-full w-full flex-col justify-center gap-1 py-1">
       {isYou ? (
         <>
           {characterRow}
+          {costAreaRow}
           {leaderRow}
         </>
       ) : (
         <>
           {leaderRow}
+          {costAreaRow}
           {characterRow}
         </>
       )}
@@ -237,8 +227,10 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
           <div
             className="grid h-full w-full"
             style={{
-              // Owner-locked dvh budget — visual-spec §4.2
-              gridTemplateRows: '12% 22% 6% 22% 10% 28%',
+              // dvh budget — visual-spec-layout-correction.md §D.1
+              // 6% opp chrome / 30% opp field / 6% phase ribbon /
+              // 30% your field / 4% your chrome / 24% hand
+              gridTemplateRows: '6% 30% 6% 30% 4% 24%',
             }}
           >
             {/* Row 1: Opponent chrome */}

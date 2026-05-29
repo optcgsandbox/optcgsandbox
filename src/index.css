@@ -21,6 +21,18 @@
 
   --shadow-card: 0 4px 12px rgba(15, 20, 15, 0.18);
   --shadow-frame: 0 0 40px rgba(15, 69, 73, 0.18);
+
+  /* Zone geometry — visual-spec-layout-correction.md §D.4.
+     Life is rendered as a 5-card vertical stack to the left of the leader,
+     mirroring the official Bandai playsheet. Cost-area is the active-DON
+     staging strip between character row and leader row. */
+  --zone-life-w: 32px;
+  --zone-life-card-w: 24px;
+  --zone-life-card-h: 34px;
+  --zone-life-stack-offset: 4px;
+  --zone-don-deck-w: 36px;
+  --zone-cost-strip-h: 28px;
+  --zone-leader-scale: 1.15;
 }
 
 /* Light theme (default). Surface + text aliases follow spec §2.5. */

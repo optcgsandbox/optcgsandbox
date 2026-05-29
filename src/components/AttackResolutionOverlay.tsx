@@ -33,6 +33,7 @@ export const AttackResolutionOverlay = memo(function AttackResolutionOverlay({
   const phase = useGameStore((s) => s.state.phase);
   const instances = useGameStore((s) => s.state.instances);
   const library = useGameStore((s) => s.state.cardLibrary);
+  const players = useGameStore((s) => s.state.players);
   const dispatch = useGameStore((s) => s.dispatch);
   const reduced = useReducedMotion() ?? false;
   const spring = springs(reduced);
@@ -44,6 +45,10 @@ export const AttackResolutionOverlay = memo(function AttackResolutionOverlay({
   const defenderInst = findInstance(instances, pending?.targetInstanceId);
   const attackerCard = attackerInst ? library[attackerInst.cardId] : undefined;
   const defenderCard = defenderInst ? library[defenderInst.cardId] : undefined;
+  // Live life counts for the leader pills shown at 1.4× — visual-spec-layout-correction.md §E.2.
+  // Pull from each side's PlayerZones rather than the printed card.life.
+  const attackerLife = attackerInst ? players[attackerInst.controller].life.length : undefined;
+  const defenderLife = defenderInst ? players[defenderInst.controller].life.length : undefined;
 
   const counterBoost = pending?.counterBoost ?? 0;
 
@@ -74,7 +79,14 @@ export const AttackResolutionOverlay = memo(function AttackResolutionOverlay({
               className="flex flex-col items-center gap-2"
               style={{ transform: 'scale(1.4)', transformOrigin: 'center' }}
             >
-              {attackerCard && <CardArt inst={attackerInst} card={attackerCard} size="leader" />}
+              {attackerCard && (
+                <CardArt
+                  inst={attackerInst}
+                  card={attackerCard}
+                  size="leader"
+                  liveLifeCount={attackerLife}
+                />
+              )}
               <span className="text-[0.6875rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">
                 Attacker
               </span>
@@ -107,7 +119,14 @@ export const AttackResolutionOverlay = memo(function AttackResolutionOverlay({
               className="flex flex-col items-center gap-2"
               style={{ transform: 'scale(1.4)', transformOrigin: 'center' }}
             >
-              {defenderCard && <CardArt inst={defenderInst} card={defenderCard} size="leader" />}
+              {defenderCard && (
+                <CardArt
+                  inst={defenderInst}
+                  card={defenderCard}
+                  size="leader"
+                  liveLifeCount={defenderLife}
+                />
+              )}
               <span className="text-[0.6875rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">
                 Defender
               </span>

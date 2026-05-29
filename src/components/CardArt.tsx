@@ -9,18 +9,34 @@ import type { Card } from '@shared/engine/cards/Card';
 import type { CardInstance } from '@shared/engine/GameState';
 import { springs } from '../lib/animationTokens';
 
-export type CardArtSize = 'hand' | 'field' | 'leader' | 'mini';
+export type CardArtSize = 'hand' | 'field' | 'leader' | 'mini' | 'lifeStack';
 
 // OPTCG cards are 600:838 ~ 0.716 aspect. Heights chosen so:
 //  - hand cards comfortably hit ≥ 44pt tap targets (HIG)
 //  - 5 character slots fit horizontally within 430px frame
 //  - leader is 1.15× the character slot focal
+//  - lifeStack matches visual-spec-layout-correction.md §D.3 (24×34 face-down)
 export const CARD_DIMS: Record<CardArtSize, { w: number; h: number }> = {
   hand: { w: 92, h: 128 },
   field: { w: 60, h: 84 },
   leader: { w: 72, h: 100 },
   mini: { w: 28, h: 40 },
+  lifeStack: { w: 24, h: 34 },
 };
+
+/**
+ * Pure derivation for the leader's life pill count.
+ * Source of truth = `zones.life.length` passed in via `liveLifeCount`.
+ * The printed `card.life` is the initial value, NOT the current life remaining,
+ * so reading from it produces a stale display once any life has been taken.
+ * Visual-spec-layout-correction.md §E.1.
+ */
+export function deriveLifeCount(args: {
+  isLeader: boolean;
+  liveLifeCount: number | undefined;
+}): number | undefined {
+  return args.isLeader ? args.liveLifeCount : undefined;
+}
 
 interface CardArtProps {
   /** Engine instance — provides instanceId for layoutId and per-instance state (rest, attached DON). */
@@ -32,6 +48,14 @@ interface CardArtProps {
   highlighted?: boolean;
   /** When true, render with a glowing valid-drop ring. */
   validDrop?: boolean;
+  /**
+   * Live life count from `state.players[X].life.length`. The leader pill MUST
+   * read this — never the printed `card.life`, which is the initial value and
+   * stays at 5 forever after any life is taken. Only meaningful when the
+   * underlying `card.kind === 'leader'`; ignored for non-leaders.
+   * Visual-spec-layout-correction.md §E.1.
+   */
+  liveLifeCount?: number;
 }
 
 // Deterministic color tint per color, used as the fallback when no image URL exists.
@@ -150,18 +174,20 @@ export const CardArt = memo(function CardArt({
   onTap,
   highlighted,
   validDrop,
+  liveLifeCount,
 }: CardArtProps) {
   const dims = CARD_DIMS[size];
   const reduced = useReducedMotion() ?? false;
   const spring = springs(reduced);
   const isLeader = card?.kind === 'leader';
-  const lifeCount = isLeader && card && 'life' in card ? card.life : undefined;
-  // Engine-level life lives in PlayerZones, but the leader card's printed life
-  // is the *initial* count; the playing pill source-of-truth is set by the
-  // composer that places the leader. Render only when explicitly provided.
+  // Source of truth = live engine state, not printed card.life.
+  // Visual-spec-layout-correction.md §E.1.
+  const lifeCount = deriveLifeCount({ isLeader, liveLifeCount });
 
   const a11y = describeForA11y(card, inst);
-  const interactive = !!onTap && size !== 'mini';
+  // `mini` (opponent hand minis) and `lifeStack` (face-down life cards) are
+  // both non-interactive — they exist purely as readout affordances.
+  const interactive = !!onTap && size !== 'mini' && size !== 'lifeStack';
 
   const base = (
     <motion.button
