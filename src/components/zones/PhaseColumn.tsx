@@ -79,6 +79,7 @@ export const PhaseColumn = memo(function PhaseColumn({ playerId, isYou }: PhaseC
   return (
     <div
       role="list"
+      data-flip-back
       aria-label={`${ownerLabel} phase progress`}
       className="flex h-full flex-col items-center justify-center"
       style={{
@@ -94,7 +95,6 @@ export const PhaseColumn = memo(function PhaseColumn({ playerId, isYou }: PhaseC
           <div key={key} className="flex flex-col items-center" style={{ width: '100%' }}>
             <div
               role="listitem"
-              data-flip-back
               aria-current={isActive ? 'step' : undefined}
               className={[
                 'flex w-full items-center justify-center rounded-[5px] font-display tracking-wider',
