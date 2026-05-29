@@ -233,6 +233,13 @@ function FarRow({ playerId, isYou }: { playerId: PlayerId; isYou: boolean }) {
   );
 }
 
+/**
+ * OpponentHalf uses the SAME row order as YourHalf so that when the entire
+ * opp section is rotated 180° (per owner direction 2026-05-29 reference image
+ * showing two-player playmat with opp's side flipped), the opp's character
+ * row visually lands closest to the contact zone — matching the physical
+ * Bandai table convention.
+ */
 function OpponentHalf(props: HalfProps) {
   return (
     <div
@@ -241,9 +248,9 @@ function OpponentHalf(props: HalfProps) {
       role="region"
       aria-label="Opponent half"
     >
-      <FarRow playerId={props.playerId} isYou={false} />
-      <LeaderRow {...props} />
       <CharacterRow zones={props.zones} playerId={props.playerId} isFriendly={false} />
+      <LeaderRow {...props} />
+      <FarRow playerId={props.playerId} isYou={false} />
     </div>
   );
 }
@@ -325,11 +332,13 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
             transformOrigin: '50% 60%',
           }}
         >
-          {/* Top-level: LIFE column (far left) + field. */}
+          {/* Top-level container — single column. Each half (opp + you)
+              hosts its own LIFE column internally. The opp half is rotated
+              180° so the playmat reads like two players sitting opposite. */}
           <div
             className="grid h-full w-full"
             style={{
-              gridTemplateColumns: 'var(--playmat-life-col-w, 32px) 1fr',
+              gridTemplateColumns: '1fr',
               // design-reference §10 edge padding + safe area.
               paddingTop: 'calc(env(safe-area-inset-top, 0px) + 6dvh)',
               paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 24dvh)',
@@ -337,40 +346,53 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
               paddingRight: 16,
             }}
           >
-            {/* ────────── LIFE column ────────── */}
-            <div
-              className="grid h-full w-full"
-              style={{ gridTemplateRows: '1fr 6px 1fr' }}
-              role="region"
-              aria-label="Life columns"
-            >
-              <div className="flex h-full items-start justify-center pt-1">
-                <LifeStack playerId={opponentSeat} hideLabel />
-              </div>
-              <div aria-hidden="true" />
-              <div className="flex h-full items-end justify-center pb-1">
-                <LifeStack playerId={seat} hideLabel />
-              </div>
-            </div>
-
-            {/* ────────── Field column ────────── */}
+            {/* Single-column playmat layout — physical-table convention per
+                owner direction 2026-05-29: opp's entire half is rotated 180°
+                so their cards face me, their text reads upside-down, and
+                their LIFE column ends up on my top-right (was their far-left).
+                Each half hosts its own LIFE column + field side-by-side. */}
             <div
               className="grid h-full w-full"
               style={{ gridTemplateRows: '1fr auto 1fr' }}
             >
-              <OpponentHalf
-                zones={opp}
-                playerId={opponentSeat}
-                isYou={false}
-                leaderCard={oppLeader}
-              />
+              {/* TOP HALF — opponent. Rotated 180° as one unit. */}
+              <div
+                className="grid h-full w-full"
+                style={{
+                  gridTemplateColumns: 'var(--playmat-life-col-w, 32px) 1fr',
+                  transform: 'rotate(180deg)',
+                }}
+                aria-label="Opponent playmat"
+              >
+                <div className="flex h-full items-end justify-center pb-1">
+                  <LifeStack playerId={opponentSeat} hideLabel />
+                </div>
+                <OpponentHalf
+                  zones={opp}
+                  playerId={opponentSeat}
+                  isYou={false}
+                  leaderCard={oppLeader}
+                />
+              </div>
+
               <ContactZone />
-              <YourHalf
-                zones={you}
-                playerId={seat}
-                isYou={true}
-                leaderCard={youLeader}
-              />
+
+              {/* BOTTOM HALF — you. Normal orientation. */}
+              <div
+                className="grid h-full w-full"
+                style={{ gridTemplateColumns: 'var(--playmat-life-col-w, 32px) 1fr' }}
+                aria-label="Your playmat"
+              >
+                <div className="flex h-full items-end justify-center pb-1">
+                  <LifeStack playerId={seat} hideLabel />
+                </div>
+                <YourHalf
+                  zones={you}
+                  playerId={seat}
+                  isYou={true}
+                  leaderCard={youLeader}
+                />
+              </div>
             </div>
           </div>
         </div>
