@@ -213,5 +213,8 @@ html, body {
 .is-opp-content-flip span,
 .is-opp-content-flip svg,
 .is-opp-content-flip [data-flip-back] {
+  /* `transform` is a no-op on inline elements — span defaults to inline.
+     Force inline-block so the counter-rotation actually applies. */
+  display: inline-block;
   transform: rotate(180deg);
 }
