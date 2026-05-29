@@ -28,7 +28,6 @@ interface LifeStackProps {
 
 const CARD_W = 28;
 const CARD_H = 38;
-const OFFSET = 6;
 
 export const LifeStack = memo(function LifeStack({
   playerId,
@@ -51,33 +50,22 @@ export const LifeStack = memo(function LifeStack({
         padding: '6px 0 22px 0',
       }}
     >
-      {/* Card stack — 5 face-down cards peeking 6px down. Centered inside
-          the column with a small top inset. */}
+      {/* Card stack — N face-down cards (N = current life count, NOT hardcoded
+          to 5) distributed evenly across the band's full available height.
+          Each card's top is computed as a % of (band height - cardH) so as
+          life is taken / leaders with non-5 life are rendered, the cards
+          spread to fill the available space. Owner direction 2026-05-29:
+          "fit the life cards in this area height" + cards = number of life
+          remaining. CR §3-10-2: secret, face-down (no reveal). */}
       <div
-        className="relative"
-        style={{ width: CARD_W, height: CARD_H + 4 * OFFSET }}
+        className="relative w-full grow"
+        style={{ minWidth: CARD_W }}
       >
-        {Array.from({ length: 5 }).map((_, slotIdx) => {
-          const instanceId = lifeInstanceIds[slotIdx];
-          const top = slotIdx * OFFSET;
-          if (!instanceId) {
-            return (
-              <div
-                key={`empty-${slotIdx}`}
-                className="playmat-slot-empty absolute"
-                style={{
-                  top,
-                  left: 0,
-                  width: CARD_W,
-                  height: CARD_H,
-                  borderRadius: 4,
-                  zIndex: slotIdx,
-                }}
-                aria-hidden="true"
-              />
-            );
-          }
+        {lifeInstanceIds.map((instanceId, slotIdx) => {
           const isTop = slotIdx === 0;
+          const denom = Math.max(count - 1, 1);
+          // Distributed top: 0% for first, (100% - cardH) for last.
+          const topCalc = `calc((100% - ${CARD_H}px) * ${slotIdx} / ${denom})`;
           const Wrapper = isTop ? motion.div : 'div';
           return (
             <Wrapper
@@ -85,13 +73,14 @@ export const LifeStack = memo(function LifeStack({
               {...(isTop ? { layoutId: instanceId, transition: spring.lifeFlip } : {})}
               style={{
                 position: 'absolute',
-                top,
-                left: 0,
+                top: topCalc,
+                left: '50%',
+                transform: 'translateX(-50%)',
                 width: CARD_W,
                 height: CARD_H,
-                // Top of the pile renders on top so the layoutId card animates
+                // Top of pile renders on top so the layoutId card animates
                 // correctly when it flies to the hand.
-                zIndex: 10 + (5 - slotIdx),
+                zIndex: 10 + (count - slotIdx),
               }}
               aria-hidden="true"
             >
@@ -101,8 +90,10 @@ export const LifeStack = memo(function LifeStack({
             </Wrapper>
           );
         })}
-        {/* Count chip — small brass pill bottom-right of the top card so the
-            player can read remaining life without revealing cards. */}
+        {/* Count chip — small brass pill at the top-right of the topmost
+            card so the player can read remaining life without revealing
+            cards. Positioned relative to the band; sits above the topmost
+            card's right edge. */}
         {count > 0 && (
           <span
             data-flip-back
@@ -110,7 +101,7 @@ export const LifeStack = memo(function LifeStack({
                        shadow-[0_1px_2px_rgba(0,0,0,0.55)] ring-[1px] ring-ink-black/55"
             style={{
               top: -6,
-              right: -8,
+              left: `calc(50% + ${CARD_W / 2 - 8}px)`,
               padding: '1px 5px',
               fontSize: '0.7rem',
               lineHeight: 1.1,
