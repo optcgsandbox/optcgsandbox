@@ -105,6 +105,7 @@ export const LifeStack = memo(function LifeStack({
             player can read remaining life without revealing cards. */}
         {count > 0 && (
           <span
+            data-flip-back
             className="absolute z-50 rounded-full bg-brass-canary font-display tabular text-ink-black
                        shadow-[0_1px_2px_rgba(0,0,0,0.55)] ring-[1px] ring-ink-black/55"
             style={{

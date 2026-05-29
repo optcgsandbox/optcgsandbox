@@ -24,6 +24,7 @@ interface DonDeckSlotProps {
 function DonBack() {
   return (
     <div
+      data-flip-back
       className="absolute inset-0 overflow-hidden rounded-[5px] bg-paper-cream paper-grain"
       style={{
         border: '0.75px solid var(--color-ink-black)',
@@ -119,6 +120,7 @@ export const DonDeckSlot = memo(function DonDeckSlot({ playerId, isYou }: DonDec
         >
           <DonBack />
           <span
+            data-flip-back
             className="absolute bottom-0.5 right-0.5 z-10 rounded-[3px] bg-brass-canary
                        font-display tabular text-ink-black ring-[0.5px] ring-ink-black/50"
             style={{

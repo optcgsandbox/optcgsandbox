@@ -39,6 +39,7 @@ export const DeckSlot = memo(function DeckSlot({ playerId, isYou }: DeckSlotProp
           <NavyCardBack radius={4} />
           {/* Count chip — cream pill bottom-right corner of card. */}
           <span
+            data-flip-back
             className="absolute z-10 rounded-[3px] bg-paper-cream/95
                        font-display tabular text-ink-black ring-[0.5px] ring-ink-black/40
                        shadow-[0_1px_2px_rgba(0,0,0,0.55)]"

@@ -652,6 +652,7 @@ export const CardArt = memo(function CardArt({
   return (
     <motion.button
       type="button"
+      data-flip-back
       layoutId={inst?.instanceId}
       layout
       onClick={onTap}

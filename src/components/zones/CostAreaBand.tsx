@@ -138,6 +138,7 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
   return (
     <motion.button
       type="button"
+      data-flip-back
       initial={reduced ? false : { scale: 0, opacity: 0 }}
       animate={
         armed && !reduced

@@ -27,6 +27,7 @@ export const NavyCardBack = memo(function NavyCardBack({
 }: NavyCardBackProps) {
   return (
     <div
+      data-flip-back
       className="absolute inset-0 overflow-hidden"
       style={{
         borderRadius: radius,

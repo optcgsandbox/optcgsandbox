@@ -210,11 +210,13 @@ html, body {
    The opponent half wrapper is rotate(180deg). Every leaf element that
    renders text or an icon gets counter-rotated 180° so the player can
    read it. Layout positions (which zone sits where) are UNCHANGED. */
-.is-opp-content-flip span,
-.is-opp-content-flip svg,
+.is-opp-content-flip .playmat-zone__label,
 .is-opp-content-flip [data-flip-back] {
-  /* `transform` is a no-op on inline elements — span defaults to inline.
-     Force inline-block so the counter-rotation actually applies. */
+  /* `transform` is a no-op on inline elements — force inline-block so the
+     counter-rotation actually applies on plain spans.
+     The selector is INTENTIONALLY narrow (not span/svg broadly) because the
+     card-body itself counter-rotates as a unit via data-flip-back — broad
+     selectors would double-flip the text inside the card body. */
   display: inline-block;
   transform: rotate(180deg);
 }
