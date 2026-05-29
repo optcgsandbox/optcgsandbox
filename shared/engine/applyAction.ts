@@ -117,7 +117,6 @@ function resolveAttack(
   targetId: string,
 ): { state: GameState; events: GameEvent[] } {
   const next: GameState = structuredClone(state);
-  const attackerSide = next.players[player];
   const defenderSide = next.players[OTHER[player]];
 
   const attacker = findInstance(next, attackerId);

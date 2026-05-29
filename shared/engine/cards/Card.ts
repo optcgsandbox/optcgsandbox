@@ -99,10 +99,6 @@ export interface DonCard extends CardBase {
   kind: 'don';
   cost: null;
   power: null;
-  colors: [];
-  traits: [];
-  keywords: [];
-  effectTags: [];
 }
 
 export type Card = LeaderCard | CharacterCard | EventCard | StageCard | DonCard;

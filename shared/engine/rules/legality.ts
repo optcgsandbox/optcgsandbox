@@ -4,7 +4,7 @@
 // Source: docs/optcg-sim/rules-reference.md §1.4–§1.6.
 
 import type { Action } from '../../protocol/actions';
-import type { Card, CharacterCard } from '../cards/Card';
+import type { Card } from '../cards/Card';
 import type { CardInstance, GameState, PlayerId, PlayerZones } from '../GameState';
 import { RULES } from '../GameState';
 
