@@ -83,42 +83,29 @@ export const LifeStack = memo(function LifeStack({ playerId, offsetPx = 4, hideL
       style={{ width: cardW, minWidth: cardW }}
     >
       <div className="relative" style={{ width: cardW, height: containerH }}>
-        {/* Edge slices for life cards #2..#N — render BEHIND the top card so
-            their bottom edges peek out below. Each slice is positioned so its
-            visible 6px sits exactly below the previous slice. */}
-        {lifeInstanceIds.slice(1).map((instanceId, idx) => {
-          const i = idx + 1; // 1-based behind the top
-          const top = cardH + (i - 1) * EDGE_SLICE_H - (cardH - EDGE_SLICE_H);
-          // Equivalently: the slice's TOP starts EDGE_SLICE_H * i above the
-          // visible edge line — so the bottom of each slice peeks out.
-          // We position each slice as a FULL card but clipped to show only the
-          // bottom EDGE_SLICE_H px.
+        {/* Deck-thickness slivers — flat navy bars below the top card.
+            Width matches the card; each sliver = EDGE_SLICE_H tall.
+            Brass-canary hairline on top of each sliver = page-divider effect.
+            No compass design peeks through — that prior render read as bumps. */}
+        {Array.from({ length: Math.max(0, count - 1) }).map((_, idx) => {
+          const i = idx + 1;
+          const isLast = i === count - 1;
           return (
-            <motion.div
-              key={instanceId}
-              layoutId={instanceId}
-              transition={spring.lifeFlip}
+            <div
+              key={`thickness-${i}`}
+              className="absolute left-0 right-0 bg-hull-deep"
               style={{
-                position: 'absolute',
-                top: i * EDGE_SLICE_H, // bottom of this card sits at cardH + i*EDGE_SLICE_H
-                left: 0,
+                top: cardH + (i - 1) * EDGE_SLICE_H,
+                height: EDGE_SLICE_H,
                 width: cardW,
-                height: cardH,
                 zIndex: count - i,
-                // Clip so only the bottom EDGE_SLICE_H px is visible — the rest
-                // is hidden behind the top card or the slice above it.
-                clipPath: `inset(${cardH - EDGE_SLICE_H}px 0 0 0)`,
+                borderTop: '1px solid rgba(212,160,23,0.45)',
+                borderBottom: isLast ? '1px solid rgba(0,0,0,0.55)' : 'none',
+                borderBottomLeftRadius: isLast ? 6 : 0,
+                borderBottomRightRadius: isLast ? 6 : 0,
               }}
               aria-hidden="true"
-            >
-              <NavyCardBack />
-              <div
-                className="absolute left-0 right-0 bg-brass-canary/50"
-                style={{ top: cardH - EDGE_SLICE_H, height: 1 }}
-                aria-hidden="true"
-              />
-              {void top}
-            </motion.div>
+            />
           );
         })}
         {/* Top life card — fully visible, layoutId-flippable to hand. */}

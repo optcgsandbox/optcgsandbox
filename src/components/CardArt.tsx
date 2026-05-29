@@ -30,7 +30,7 @@ export const CARD_DIMS: Record<CardArtSize, { w: number; h: number }> = {
   leader: { w: 60, h: 84 },
   modal: { w: 220, h: 308 },
   mini: { w: 28, h: 40 },
-  lifeStack: { w: 24, h: 34 },
+  lifeStack: { w: 44, h: 62 },
 };
 
 /** Per-size typography + chip dimensions used by the placeholder frame. */
