@@ -8,6 +8,9 @@ export default function App() {
   const dispatch = useGameStore((s) => s.dispatch);
   const endTurnAndAdvance = useGameStore((s) => s.endTurnAndAdvance);
   const reset = useGameStore((s) => s.reset);
+  const mode = useGameStore((s) => s.mode);
+  const setMode = useGameStore((s) => s.setMode);
+  const aiThinking = useGameStore((s) => s.aiThinking);
 
   const [attachDonMode, setAttachDonMode] = useState(false);
   const active = state.activePlayer;
@@ -48,16 +51,32 @@ export default function App() {
       <header className="flex items-center justify-between border-b border-ink-black/20 pb-2">
         <div>
           <h1 className="text-lg font-bold tracking-tight">OPTCGSandbox</h1>
-          <p className="text-[10px] uppercase tracking-widest text-ink-iron">
-            T{state.turn} · {state.phase} · Active: {active}
+          <p className="text-[10px] uppercase tracking-widest text-ink-iron" role="status" aria-live="polite">
+            T{state.turn} · {state.phase} · Active: {active}{aiThinking ? ' · AI thinking…' : ''}
           </p>
         </div>
-        <button
-          className="text-[10px] uppercase tracking-widest border border-ink-black/40 px-2 py-1 rounded"
-          onClick={() => reset()}
-        >
-          Reset
-        </button>
+        <div className="flex gap-1">
+          <button
+            className={`text-[10px] uppercase tracking-widest border px-2 py-1 rounded ${mode === 'vs-easy' ? 'bg-brass-canary border-brass-canary' : 'border-ink-black/60'}`}
+            onClick={() => { setMode('vs-easy'); reset(); }}
+            aria-pressed={mode === 'vs-easy'}
+          >
+            vs AI
+          </button>
+          <button
+            className={`text-[10px] uppercase tracking-widest border px-2 py-1 rounded ${mode === 'hot-seat' ? 'bg-brass-canary border-brass-canary' : 'border-ink-black/60'}`}
+            onClick={() => { setMode('hot-seat'); reset(); }}
+            aria-pressed={mode === 'hot-seat'}
+          >
+            Hot-seat
+          </button>
+          <button
+            className="text-[10px] uppercase tracking-widest border border-ink-black/60 px-2 py-1 rounded"
+            onClick={() => reset()}
+          >
+            Reset
+          </button>
+        </div>
       </header>
 
       {/* Opponent (top) */}

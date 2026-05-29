@@ -3,6 +3,7 @@
 
 import { create } from 'zustand';
 import { applyAction } from '@shared/engine/applyAction';
+import { EasyAi } from '@shared/engine/ai/EasyAi';
 import { initialState } from '@shared/engine/GameState';
 import { setupGame } from '@shared/engine/phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '@shared/engine/phases/turn';
@@ -10,6 +11,8 @@ import { getLegalActions } from '@shared/engine/rules/legality';
 import type { Action } from '@shared/protocol/actions';
 import type { Card, CharacterCard, LeaderCard } from '@shared/engine/cards/Card';
 import type { GameState, PlayerId } from '@shared/engine/GameState';
+
+export type GameMode = 'hot-seat' | 'vs-easy';
 
 function makeLeader(id: string, color: 'red' | 'blue' = 'red'): LeaderCard {
   return {
@@ -57,21 +60,61 @@ function bootGame(seed: number): GameState {
 
 interface GameStore {
   state: GameState;
-  /** Hot-seat: who is the human player "controlling" this device. In hot-seat both. */
+  mode: GameMode;
+  /** Whose seat we render. In hot-seat = activePlayer; in vs-AI = always 'A'. */
   viewAs: PlayerId;
   legalActions: Action[];
+  aiThinking: boolean;
   dispatch: (action: Action) => void;
   reset: (seed?: number) => void;
-  setViewAs: (p: PlayerId) => void;
-  endTurnAndAdvance: () => void;
+  setMode: (m: GameMode) => void;
+  endTurnAndAdvance: () => Promise<void>;
+}
+
+const AI_HUMAN: PlayerId = 'A';
+const AI_OPPONENT: PlayerId = 'B';
+
+async function runAiTurn(
+  get: () => GameStore,
+  set: (partial: Partial<GameStore>) => void,
+): Promise<void> {
+  const ai = new EasyAi((Date.now() & 0xffff) ^ get().state.turn);
+  set({ aiThinking: true });
+  // Loop until AI hits END_TURN or game ends.
+  // Cap iterations to avoid runaway in case of a bug.
+  let safety = 0;
+  while (safety++ < 200) {
+    const s = get().state;
+    if (s.result || s.activePlayer !== AI_OPPONENT) break;
+    const action = await ai.chooseAction(s, AI_OPPONENT, 100);
+    const { state: next } = applyAction(s, AI_OPPONENT, action);
+    set({ state: next, legalActions: getLegalActions(next, next.activePlayer) });
+    if (action.type === 'END_TURN' || action.type === 'RESIGN') break;
+    // Yield to the event loop so the UI can render mid-turn.
+    await new Promise((r) => setTimeout(r, 250));
+  }
+  // After AI ends turn, advance phases back to human's main.
+  if (!get().state.result && get().state.activePlayer === AI_OPPONENT) {
+    // AI hit safety cap — force end turn.
+    let s = endTurn(get().state);
+    s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });
+  } else if (!get().state.result) {
+    // AI ended turn; we already called endTurn implicitly inside dispatch. Run human's R/D/D.
+    let s = runDonPhase(runDrawPhase(runRefreshPhase(get().state)));
+    set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });
+  }
+  set({ aiThinking: false });
 }
 
 export const useGameStore = create<GameStore>((set, get) => {
   const initial = bootGame(Date.now() & 0xffffffff);
   return {
     state: initial,
+    mode: 'vs-easy',
     viewAs: 'A',
     legalActions: getLegalActions(initial, 'A'),
+    aiThinking: false,
 
     dispatch(action) {
       const { state } = get();
@@ -83,22 +126,32 @@ export const useGameStore = create<GameStore>((set, get) => {
       });
     },
 
-    endTurnAndAdvance() {
+    async endTurnAndAdvance() {
       let s = get().state;
       s = endTurn(s);
       s = runRefreshPhase(s);
       s = runDrawPhase(s);
       s = runDonPhase(s);
-      set({ state: s, legalActions: getLegalActions(s, s.activePlayer), viewAs: s.activePlayer });
+      const newViewAs = get().mode === 'hot-seat' ? s.activePlayer : AI_HUMAN;
+      set({ state: s, legalActions: getLegalActions(s, s.activePlayer), viewAs: newViewAs });
+
+      if (get().mode === 'vs-easy' && s.activePlayer === AI_OPPONENT && !s.result) {
+        await runAiTurn(get, set);
+      }
     },
 
     reset(seed) {
       const fresh = bootGame(seed ?? (Date.now() & 0xffffffff));
-      set({ state: fresh, legalActions: getLegalActions(fresh, fresh.activePlayer), viewAs: 'A' });
+      set({
+        state: fresh,
+        legalActions: getLegalActions(fresh, fresh.activePlayer),
+        viewAs: 'A',
+        aiThinking: false,
+      });
     },
 
-    setViewAs(p) {
-      set({ viewAs: p, legalActions: getLegalActions(get().state, p) });
+    setMode(m) {
+      set({ mode: m });
     },
   };
 });
