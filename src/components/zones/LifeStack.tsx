@@ -38,12 +38,19 @@ export const LifeStack = memo(function LifeStack({ playerId, offsetPx = 4, hideL
   const reduced = useReducedMotion() ?? false;
   const spring = springs(reduced);
 
+  // offsetPx kept in the public API for back-compat; the new design uses a
+  // fixed edge-slice height for the "deck offset" look (see render below).
+  void offsetPx;
+
   const cardW = CARD_DIMS.lifeStack.w;
   const cardH = CARD_DIMS.lifeStack.h;
   const count = lifeInstanceIds.length;
 
-  // Container holds up to 5 stacked cards. Total stack height = cardH + 4*offset.
-  const containerH = cardH + 4 * offsetPx;
+  // Per owner reference 2026-05-29: top card renders fully, and each card
+  // behind it shows only its 6px bottom edge. This reads as a deck-offset
+  // stack rather than a single elongated "pill".
+  const EDGE_SLICE_H = 6;
+  const containerH = cardH + Math.max(0, count - 1) * EDGE_SLICE_H;
 
   if (count === 0) {
     return (
@@ -76,13 +83,16 @@ export const LifeStack = memo(function LifeStack({ playerId, offsetPx = 4, hideL
       style={{ width: cardW, minWidth: cardW }}
     >
       <div className="relative" style={{ width: cardW, height: containerH }}>
-        {lifeInstanceIds.map((instanceId, i) => {
-          const inst = instances[instanceId];
-          if (!inst) return null;
-          // Top card = index 0 in the life array, gets the highest z. Each
-          // subsequent card slides 4px down.
-          const top = i * offsetPx;
-          const z = count - i;
+        {/* Edge slices for life cards #2..#N — render BEHIND the top card so
+            their bottom edges peek out below. Each slice is positioned so its
+            visible 6px sits exactly below the previous slice. */}
+        {lifeInstanceIds.slice(1).map((instanceId, idx) => {
+          const i = idx + 1; // 1-based behind the top
+          const top = cardH + (i - 1) * EDGE_SLICE_H - (cardH - EDGE_SLICE_H);
+          // Equivalently: the slice's TOP starts EDGE_SLICE_H * i above the
+          // visible edge line — so the bottom of each slice peeks out.
+          // We position each slice as a FULL card but clipped to show only the
+          // bottom EDGE_SLICE_H px.
           return (
             <motion.div
               key={instanceId}
@@ -90,22 +100,47 @@ export const LifeStack = memo(function LifeStack({ playerId, offsetPx = 4, hideL
               transition={spring.lifeFlip}
               style={{
                 position: 'absolute',
-                top,
+                top: i * EDGE_SLICE_H, // bottom of this card sits at cardH + i*EDGE_SLICE_H
                 left: 0,
                 width: cardW,
                 height: cardH,
-                zIndex: z,
+                zIndex: count - i,
+                // Clip so only the bottom EDGE_SLICE_H px is visible — the rest
+                // is hidden behind the top card or the slice above it.
+                clipPath: `inset(${cardH - EDGE_SLICE_H}px 0 0 0)`,
               }}
+              aria-hidden="true"
             >
-              {/* Owner direction 2026-05-29: life cards use the same navy
-                  OP-compass back as the deck — because they ARE deck cards
-                  drawn from the top of the deck at setup (CR §5-2-1-7). */}
               <NavyCardBack />
+              <div
+                className="absolute left-0 right-0 bg-brass-canary/50"
+                style={{ top: cardH - EDGE_SLICE_H, height: 1 }}
+                aria-hidden="true"
+              />
+              {void top}
             </motion.div>
           );
         })}
+        {/* Top life card — fully visible, layoutId-flippable to hand. */}
+        {lifeInstanceIds[0] && (
+          <motion.div
+            key={lifeInstanceIds[0]}
+            layoutId={lifeInstanceIds[0]}
+            transition={spring.lifeFlip}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: cardW,
+              height: cardH,
+              zIndex: count + 1,
+            }}
+          >
+            {instances[lifeInstanceIds[0]] && <NavyCardBack />}
+          </motion.div>
+        )}
         {/* Count badge — brass numeral overlay on the top card so the player
-            can read remaining life at a glance. Per owner direction 2026-05-29. */}
+            can read remaining life at a glance. */}
         <span
           className="absolute -top-1 -right-1 z-50 rounded-full bg-brass-canary px-1.5 py-px
                      font-display tabular text-[0.7rem] leading-none text-ink-black
