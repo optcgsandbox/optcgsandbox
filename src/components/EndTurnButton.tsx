@@ -91,12 +91,22 @@ export const EndTurnButton = memo(function EndTurnButton() {
       disabled={!affordance.enabled || aiThinking}
       aria-label={affordance.label}
       aria-busy={aiThinking}
-      className="rounded-2xl bg-seal-red px-3 py-1.5 font-body text-[0.7rem]
+      className="rounded-[10px] bg-seal-red px-1.5 py-1 font-body text-[0.65rem]
                  font-extrabold uppercase tracking-wider text-paper-cream
                  shadow-[0_3px_8px_rgba(168,38,31,0.30)]
                  disabled:opacity-40 disabled:cursor-not-allowed
-                 focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
-      style={{ minHeight: 32, whiteSpace: 'nowrap' }}
+                 focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none
+                 leading-tight text-center"
+      style={{
+        // Width matches the trash slot (--zone-trash-w 52px) so the End-Turn
+        // button + trash pile form a vertical pair on the right edge.
+        width: 'var(--zone-trash-w, 52px)',
+        minHeight: 36,
+        // Force "END TURN" / "DECLINE BLOCK" etc. onto two lines via
+        // word-wrap; tracking-wider gives the lines breathing room.
+        whiteSpace: 'normal',
+        wordBreak: 'break-word',
+      }}
     >
       {affordance.label}
     </button>
