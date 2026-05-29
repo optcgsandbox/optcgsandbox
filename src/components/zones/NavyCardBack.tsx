@@ -10,7 +10,7 @@ import { memo } from 'react';
 export const NavyCardBack = memo(function NavyCardBack() {
   return (
     <div
-      className="absolute inset-0 rounded-md overflow-hidden bg-hull-deep flex items-center justify-center"
+      className="absolute inset-0 rounded-md overflow-hidden bg-hull-deep flex flex-col items-center justify-center"
       aria-hidden="true"
     >
       <div className="absolute inset-1 rounded-sm ring-1 ring-brass-canary/60" />
@@ -28,6 +28,14 @@ export const NavyCardBack = memo(function NavyCardBack() {
         <path d="M12 5.5 L13.5 12 L12 18.5 L10.5 12 Z" />
         <path d="M5.5 12 L12 10.5 L18.5 12 L12 13.5 Z" />
       </svg>
+      {/* Wordmark — reads as a real card-back, not just a compass icon.
+          Uses "CREW SIM" to match DonDeckSlot pattern + IP isolation. */}
+      <span
+        className="mt-1 font-display tabular text-brass-canary"
+        style={{ fontSize: '0.5rem', letterSpacing: '0.08em', lineHeight: 1 }}
+      >
+        CREW SIM
+      </span>
     </div>
   );
 });

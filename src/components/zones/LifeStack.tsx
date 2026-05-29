@@ -38,20 +38,14 @@ export const LifeStack = memo(function LifeStack({ playerId, offsetPx = 4, hideL
   const reduced = useReducedMotion() ?? false;
   const spring = springs(reduced);
 
-  // offsetPx kept in the public API for back-compat; the new design uses a
-  // fixed edge-slice height for the "deck offset" look (see render below).
-  void offsetPx;
-
   const cardW = CARD_DIMS.lifeStack.w;
   const cardH = CARD_DIMS.lifeStack.h;
   const count = lifeInstanceIds.length;
 
-  // Per owner reference 2026-05-29: top card renders at normal size; cards
-  // behind it spread vertically as deck-thickness slivers. EDGE_SLICE_H sets
-  // how far apart each sliver sits — bigger value = stack uses more of the
-  // available vertical column space.
-  const EDGE_SLICE_H = 12;
-  const containerH = cardH + Math.max(0, count - 1) * EDGE_SLICE_H;
+  // Per owner reference 2026-05-29: real cards stacked physically with a
+  // small downward offset per card so each card's top edge peeks above the
+  // one in front. Same dimensions as before — no layout-bumping.
+  const containerH = cardH + Math.max(0, count - 1) * offsetPx;
 
   if (count === 0) {
     return (
@@ -84,49 +78,34 @@ export const LifeStack = memo(function LifeStack({ playerId, offsetPx = 4, hideL
       style={{ width: cardW, minWidth: cardW }}
     >
       <div className="relative" style={{ width: cardW, height: containerH }}>
-        {/* Deck-thickness slivers — flat navy bars below the top card.
-            Width matches the card; each sliver = EDGE_SLICE_H tall.
-            Brass-canary hairline on top of each sliver = page-divider effect.
-            No compass design peeks through — that prior render read as bumps. */}
-        {Array.from({ length: Math.max(0, count - 1) }).map((_, idx) => {
-          const i = idx + 1;
-          const isLast = i === count - 1;
+        {/* Real cards stacked physically — each life card is a full navy
+            card-back; subsequent cards sit ${offsetPx}px lower than the one
+            above so the back edges peek out below. The TOP card (index 0)
+            sits on top with the highest z. Per CR §3-10-2 the life area is
+            SECRET — no tap handler, no reveal until LIFE_TAKEN.
+            (Top card uses layoutId so LifeRevealOverlay can do its
+            shared-element fly-to-hand transition.) */}
+        {lifeInstanceIds.map((instanceId, i) => {
+          const isTop = i === 0;
+          const Wrapper = isTop ? motion.div : 'div';
           return (
-            <div
-              key={`thickness-${i}`}
-              className="absolute left-0 right-0 bg-hull-deep"
+            <Wrapper
+              key={instanceId}
+              {...(isTop ? { layoutId: instanceId, transition: spring.lifeFlip } : {})}
               style={{
-                top: cardH + (i - 1) * EDGE_SLICE_H,
-                height: EDGE_SLICE_H,
+                position: 'absolute',
+                top: i * offsetPx,
+                left: 0,
                 width: cardW,
+                height: cardH,
                 zIndex: count - i,
-                borderTop: '1px solid rgba(212,160,23,0.45)',
-                borderBottom: isLast ? '1px solid rgba(0,0,0,0.55)' : 'none',
-                borderBottomLeftRadius: isLast ? 6 : 0,
-                borderBottomRightRadius: isLast ? 6 : 0,
               }}
               aria-hidden="true"
-            />
+            >
+              {instances[instanceId] && <NavyCardBack />}
+            </Wrapper>
           );
         })}
-        {/* Top life card — fully visible, layoutId-flippable to hand. */}
-        {lifeInstanceIds[0] && (
-          <motion.div
-            key={lifeInstanceIds[0]}
-            layoutId={lifeInstanceIds[0]}
-            transition={spring.lifeFlip}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: cardW,
-              height: cardH,
-              zIndex: count + 1,
-            }}
-          >
-            {instances[lifeInstanceIds[0]] && <NavyCardBack />}
-          </motion.div>
-        )}
         {/* Count badge — brass numeral overlay on the top card so the player
             can read remaining life at a glance. */}
         <span
