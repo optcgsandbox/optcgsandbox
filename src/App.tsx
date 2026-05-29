@@ -127,7 +127,12 @@ export default function App() {
         ) : (
           <>
             <PlayfieldStage />
-            {/* Floating end-turn button bottom-right of the frame, above the hand fan. */}
+            {/* Floating end-turn button — design-reference §3.4 L9 fix.
+                Previously sat at `calc(24dvh + 16px)` from the bottom, which put
+                it right on top of the leader row and collided with the leader's
+                power readout. Moved down into the bottom-right corner of the
+                hand-fan area; the fan is anchored center-bottom so the corner
+                is free. Small bottom inset keeps it above the safe-area. */}
             <button
               type="button"
               onClick={endTurnAndAdvance}
@@ -138,7 +143,7 @@ export default function App() {
                          disabled:opacity-40
                          focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
               style={{
-                bottom: `calc(24dvh + 16px + env(safe-area-inset-bottom, 0px))`,
+                bottom: `calc(12px + env(safe-area-inset-bottom, 0px))`,
               }}
             >
               End turn

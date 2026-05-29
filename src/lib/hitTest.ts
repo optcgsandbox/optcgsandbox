@@ -43,9 +43,21 @@ export function hitTestZone(
   return null;
 }
 
-/** Build the canonical zone key — keep in sync with ZoneSlot's data-zone attribute. */
+/** Build the canonical zone key — keep in sync with ZoneSlot's data-zone attribute.
+ *  `stage`, `donDeck`, `costArea` and `phase` were added 2026-05-29 for the
+ *  official Bandai playmat rebuild (design-reference.md §3.4). */
 export function zoneKey(
-  kind: 'leader' | 'character' | 'life' | 'don' | 'deck' | 'trash',
+  kind:
+    | 'leader'
+    | 'character'
+    | 'life'
+    | 'don'
+    | 'donDeck'
+    | 'deck'
+    | 'trash'
+    | 'stage'
+    | 'costArea'
+    | 'phase',
   playerId: 'A' | 'B',
   index?: number,
 ): string {

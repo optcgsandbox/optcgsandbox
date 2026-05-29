@@ -9,7 +9,20 @@ import type { ReactNode } from 'react';
 import { springs } from '../lib/animationTokens';
 import { zoneKey } from '../lib/hitTest';
 
-export type ZoneKind = 'leader' | 'character' | 'life' | 'don' | 'deck' | 'trash';
+// `stage`, `donDeck`, `costArea` and `phase` added 2026-05-29 for the official
+// Bandai playmat rebuild (design-reference.md §3.4). `don` is retained for
+// legacy DON Deck call sites until they migrate to `donDeck`.
+export type ZoneKind =
+  | 'leader'
+  | 'character'
+  | 'life'
+  | 'don'
+  | 'donDeck'
+  | 'deck'
+  | 'trash'
+  | 'stage'
+  | 'costArea'
+  | 'phase';
 
 interface ZoneSlotProps {
   kind: ZoneKind;
