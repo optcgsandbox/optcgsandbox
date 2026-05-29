@@ -79,13 +79,66 @@ describe('resolveAttack returns events from history slice (applyAction.ts)', () 
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
     s.players.B.leader.attachedDon = 1; // 6000 > 5000
 
-    const { events } = applyAction(s, 'B', {
-      type: 'DECLARE_ATTACK',
-      attackerInstanceId: s.players.B.leader.instanceId,
-      targetInstanceId: s.players.A.leader.instanceId,
-    });
-    expect(events.length).toBeGreaterThan(0);
-    expect(events.some((e) => e.type === 'ATTACK_DECLARED')).toBe(true);
-    expect(events.some((e) => e.type === 'LIFE_TAKEN')).toBe(true);
+    // declare → SKIP_BLOCKER → SKIP_COUNTER → resolve
+    const r1 = applyAction(s, 'B', { type: 'DECLARE_ATTACK', attackerInstanceId: s.players.B.leader.instanceId, targetInstanceId: s.players.A.leader.instanceId });
+    expect(r1.events.some((e) => e.type === 'ATTACK_DECLARED')).toBe(true);
+
+    const r2 = applyAction(r1.state, 'A', { type: 'SKIP_BLOCKER' });
+    const r3 = applyAction(r2.state, 'A', { type: 'SKIP_COUNTER' });
+    expect(r3.events.some((e) => e.type === 'LIFE_TAKEN')).toBe(true);
+  });
+
+  it('blocker redirects attack and rests blocker', () => {
+    const cards: Card[] = Array.from({ length: 50 }, (_, i) => makeChar(`C${i}`, 2, 3000));
+    let s = initialState({ seed: 5, decks: { A: { leader: makeLeader('LA'), cards }, B: { leader: makeLeader('LB'), cards } } });
+    s = setupGame(s);
+    s = endTurn(s);
+    s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    s.players.B.donActive = 2;
+    s.players.B.leader.attachedDon = 1;
+
+    // Inject a Blocker character on A's field that A controls.
+    const blockerCard = makeChar('Blocker1', 2, 4000, 'red', ['blocker']);
+    s.cardLibrary['Blocker1'] = blockerCard;
+    const blockerInst = { instanceId: 'B-INST', cardId: 'Blocker1', controller: 'A' as const, rested: false, attachedDon: 0, perTurn: { hasAttacked: false, onceEffectUsed: false }, summoningSick: false };
+    s.instances['B-INST'] = blockerInst;
+    s.players.A.field.push(blockerInst);
+
+    const lifeBefore = s.players.A.life.length;
+    let st = applyAction(s, 'B', { type: 'DECLARE_ATTACK', attackerInstanceId: s.players.B.leader.instanceId, targetInstanceId: s.players.A.leader.instanceId }).state;
+    expect(st.phase).toBe('block_window');
+    st = applyAction(st, 'A', { type: 'DECLARE_BLOCKER', blockerInstanceId: 'B-INST' }).state;
+    expect(st.pendingAttack?.targetInstanceId).toBe('B-INST');
+    st = applyAction(st, 'A', { type: 'SKIP_COUNTER' }).state;
+    // 6000 attacker >= 4000 blocker → blocker KO'd, leader life untouched.
+    expect(st.players.A.life.length).toBe(lifeBefore);
+    expect(st.players.A.field.find((i) => i.instanceId === 'B-INST')).toBeUndefined();
+    expect(st.players.A.trash).toContain('B-INST');
+  });
+
+  it('counter boost saves the leader from lethal', () => {
+    const cards: Card[] = Array.from({ length: 50 }, (_, i) => makeChar(`C${i}`, 2, 3000));
+    let s = initialState({ seed: 6, decks: { A: { leader: makeLeader('LA'), cards }, B: { leader: makeLeader('LB'), cards } } });
+    s = setupGame(s);
+    s = endTurn(s);
+    s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    s.players.B.leader.attachedDon = 1; // 6000 attacker
+    // A has a counter card in hand
+    const counterCard = makeChar('Counter2k', 2, 1000, 'red');
+    counterCard.counterValue = 2000;
+    s.cardLibrary['Counter2k'] = counterCard;
+    const cInst = { instanceId: 'C-INST', cardId: 'Counter2k', controller: 'A' as const, rested: false, attachedDon: 0, perTurn: { hasAttacked: false, onceEffectUsed: false }, summoningSick: false };
+    s.instances['C-INST'] = cInst;
+    s.players.A.hand.push('C-INST');
+
+    const lifeBefore = s.players.A.life.length;
+    let st = applyAction(s, 'B', { type: 'DECLARE_ATTACK', attackerInstanceId: s.players.B.leader.instanceId, targetInstanceId: s.players.A.leader.instanceId }).state;
+    st = applyAction(st, 'A', { type: 'SKIP_BLOCKER' }).state;
+    st = applyAction(st, 'A', { type: 'PLAY_COUNTER', instanceId: 'C-INST' }).state;
+    expect(st.pendingAttack?.counterBoost).toBe(2000);
+    st = applyAction(st, 'A', { type: 'SKIP_COUNTER' }).state;
+    // 6000 attacker vs 5000+2000=7000 defender → fizzle, life untouched.
+    expect(st.players.A.life.length).toBe(lifeBefore);
+    expect(st.players.A.trash).toContain('C-INST');
   });
 });

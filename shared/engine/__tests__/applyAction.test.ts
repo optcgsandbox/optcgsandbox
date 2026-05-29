@@ -73,25 +73,30 @@ describe('applyAction: ATTACH_DON', () => {
 });
 
 describe('applyAction: DECLARE_ATTACK', () => {
+  /** Helper: drive the 3-stage attack flow through declare → skip blocker → skip counter. */
+  function runAttack(s: ReturnType<typeof build>, attackerInstanceId: string, targetInstanceId: string) {
+    let next = applyAction(s, 'B', { type: 'DECLARE_ATTACK', attackerInstanceId, targetInstanceId }).state;
+    next = applyAction(next, 'A', { type: 'SKIP_BLOCKER' }).state;
+    next = applyAction(next, 'A', { type: 'SKIP_COUNTER' }).state;
+    return next;
+  }
+
   it('attack on leader takes 1 life card to hand', () => {
-    // Advance to B's turn so B can attack A's leader.
     let s = advanceToMainPhase(build());
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
     s.players.B.donActive = 2;
-    s.players.B.leader.attachedDon = 1; // 5000 + 1000 = 6000 > A.leader 5000
+    s.players.B.leader.attachedDon = 1;
 
     const lifeBefore = s.players.A.life.length;
     const handBefore = s.players.A.hand.length;
-    const { state: s2 } = applyAction(s, 'B', {
-      type: 'DECLARE_ATTACK',
-      attackerInstanceId: s.players.B.leader.instanceId,
-      targetInstanceId: s.players.A.leader.instanceId,
-    });
+    const s2 = runAttack(s, s.players.B.leader.instanceId, s.players.A.leader.instanceId);
 
     expect(s2.players.A.life.length).toBe(lifeBefore - 1);
     expect(s2.players.A.hand.length).toBe(handBefore + 1);
     expect(s2.players.B.leader.rested).toBe(true);
+    expect(s2.pendingAttack).toBeNull();
+    expect(s2.phase).toBe('main');
   });
 
   it('whiff attack (power < target) leaves life untouched', () => {
@@ -99,16 +104,10 @@ describe('applyAction: DECLARE_ATTACK', () => {
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
     s.players.B.donActive = 0;
-    // B.leader = 5000, A.leader = 5000 — equal, attacker wins per ">=" rule.
-    // To force a whiff, lower B leader effective power. Drop its base.
     (s.cardLibrary['LB'] as LeaderCard).power = 4000;
 
     const lifeBefore = s.players.A.life.length;
-    const { state: s2 } = applyAction(s, 'B', {
-      type: 'DECLARE_ATTACK',
-      attackerInstanceId: s.players.B.leader.instanceId,
-      targetInstanceId: s.players.A.leader.instanceId,
-    });
+    const s2 = runAttack(s, s.players.B.leader.instanceId, s.players.A.leader.instanceId);
     expect(s2.players.A.life.length).toBe(lifeBefore);
   });
 
@@ -116,14 +115,10 @@ describe('applyAction: DECLARE_ATTACK', () => {
     let s = advanceToMainPhase(build());
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
-    s.players.A.life = []; // zero life
-    s.players.B.leader.attachedDon = 1; // 6000 > 5000
+    s.players.A.life = [];
+    s.players.B.leader.attachedDon = 1;
 
-    const { state: s2 } = applyAction(s, 'B', {
-      type: 'DECLARE_ATTACK',
-      attackerInstanceId: s.players.B.leader.instanceId,
-      targetInstanceId: s.players.A.leader.instanceId,
-    });
+    const s2 = runAttack(s, s.players.B.leader.instanceId, s.players.A.leader.instanceId);
     expect(s2.result?.winner).toBe('B');
     expect(s2.result?.reason).toBe('lethal');
   });

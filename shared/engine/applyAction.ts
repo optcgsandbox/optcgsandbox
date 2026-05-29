@@ -1,15 +1,16 @@
-// Action handlers. Pure functions: (state, action) → next state.
-// Routes by action.type to per-handler logic. Source: rules-reference.md §1.4–§1.6.
+// Action handlers. Pure functions: (state, player, action) → next state.
+// Source: rules-reference.md §1.4–§1.6.
 //
-// V0 simplifications:
-// - Blocker / counter / trigger windows are NOT modeled yet; attacks resolve immediately
-//   on declaration. This keeps the v0 engine playable end-to-end while we layer in
-//   reactive windows in v0.1.
-// - Card-specific effects (on_play, when_attacking, etc.) are not yet wired.
+// Attack flow (rules-reference.md §1.6) is now a 3-step state machine:
+//   1. DECLARE_ATTACK  → phase = 'block_window'  (defender may declare Blocker or skip)
+//   2. DECLARE_BLOCKER / SKIP_BLOCKER → phase = 'counter_window'  (defender may play counters or skip)
+//   3. SKIP_COUNTER (or PLAY_COUNTER then SKIP_COUNTER) → resolve damage, phase = 'main'
+//
+// pendingAttack on GameState carries the in-flight attack across phases.
 
 import type { Action } from '../protocol/actions';
 import type { Card, CharacterCard, LeaderCard } from './cards/Card';
-import type { CardInstance, GameEvent, GameState, PlayerId } from './GameState';
+import type { CardInstance, GameEvent, GameState, PlayerId, PendingAttack } from './GameState';
 import { endTurn as runEndTurn } from './phases/turn';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
@@ -27,23 +28,28 @@ export function applyAction(
     case 'ATTACH_DON':
       return attachDon(state, player, action.targetInstanceId);
     case 'DECLARE_ATTACK':
-      return resolveAttack(state, player, action.attackerInstanceId, action.targetInstanceId);
+      return declareAttack(state, player, action.attackerInstanceId, action.targetInstanceId);
+    case 'DECLARE_BLOCKER':
+      return declareBlocker(state, player, action.blockerInstanceId);
+    case 'SKIP_BLOCKER':
+      return skipBlocker(state);
+    case 'PLAY_COUNTER':
+      return playCounter(state, player, action.instanceId);
+    case 'SKIP_COUNTER':
+      return resolvePending(state);
     case 'END_TURN':
       return runEndTurnReshim(state);
     case 'RESIGN':
       return resign(state, player);
     case 'MULLIGAN_CONFIRM':
     case 'ACTIVATE_MAIN':
-    case 'DECLARE_BLOCKER':
-    case 'PLAY_COUNTER':
-    case 'SKIP_COUNTER':
-    case 'SKIP_BLOCKER':
     case 'RESOLVE_TRIGGER':
       // v0.1 hooks — return state untouched for now.
       return { state, events: [] };
   }
 }
 
+// === PLAY_CARD ===
 function playCard(
   state: GameState,
   player: PlayerId,
@@ -51,6 +57,7 @@ function playCard(
   replaceTargetId: string | null,
 ): { state: GameState; events: GameEvent[] } {
   const next: GameState = structuredClone(state);
+  const start = next.history.length;
   const p = next.players[player];
   const inst = next.instances[instanceId];
   if (!inst || inst.controller !== player) return { state, events: [] };
@@ -61,17 +68,15 @@ function playCard(
   const card = next.cardLibrary[inst.cardId];
   if (card.cost === null || card.cost > p.donActive) return { state, events: [] };
 
-  // Pay cost: rest N DON.
   p.donActive -= card.cost;
   p.donRested += card.cost;
-
   p.hand.splice(handIdx, 1);
 
   if (card.kind === 'character') {
     if (replaceTargetId) {
-      const replaceIdx = p.field.findIndex((c) => c.instanceId === replaceTargetId);
-      if (replaceIdx !== -1) {
-        const removed = p.field.splice(replaceIdx, 1)[0];
+      const idx = p.field.findIndex((c) => c.instanceId === replaceTargetId);
+      if (idx !== -1) {
+        const removed = p.field.splice(idx, 1)[0];
         p.trash.push(removed.instanceId);
         next.history.push({ type: 'CARD_KOED', instanceId: removed.instanceId });
       }
@@ -79,23 +84,23 @@ function playCard(
     inst.summoningSick = true;
     p.field.push(inst);
   } else if (card.kind === 'stage') {
-    // Stages replace the previous stage (if any). v0: no stage slot — push to field.
     p.field.push(inst);
   } else if (card.kind === 'event') {
-    // Events resolve immediately and go to trash. v0: no effect, just trash.
     p.trash.push(instanceId);
   }
 
   next.history.push({ type: 'CARD_PLAYED', player, instanceId, cost: card.cost });
-  return { state: next, events: [next.history[next.history.length - 1]] };
+  return { state: next, events: next.history.slice(start) };
 }
 
+// === ATTACH_DON ===
 function attachDon(
   state: GameState,
   player: PlayerId,
   targetInstanceId: string,
 ): { state: GameState; events: GameEvent[] } {
   const next: GameState = structuredClone(state);
+  const start = next.history.length;
   const p = next.players[player];
   if (p.donActive <= 0) return { state, events: [] };
 
@@ -108,64 +113,151 @@ function attachDon(
   target.attachedDon += 1;
   p.donActive -= 1;
   next.history.push({ type: 'DON_ATTACHED', targetInstanceId, count: 1 });
-  return { state: next, events: [next.history[next.history.length - 1]] };
+  return { state: next, events: next.history.slice(start) };
 }
 
-function resolveAttack(
+// === ATTACK FLOW ===
+
+/** Stage 1: attacker declares. Move to block_window. */
+function declareAttack(
   state: GameState,
   player: PlayerId,
   attackerId: string,
   targetId: string,
 ): { state: GameState; events: GameEvent[] } {
+  if (state.activePlayer !== player) return { state, events: [] };
   const next: GameState = structuredClone(state);
-  const historyStart = next.history.length;
-  const defenderSide = next.players[OTHER[player]];
-
-  const attacker = findInstance(next, attackerId);
-  const target = findInstance(next, targetId);
+  const start = next.history.length;
+  const attacker = next.instances[attackerId];
+  const target = next.instances[targetId];
   if (!attacker || !target) return { state, events: [] };
 
-  // Mark attacker rested + attacked.
   attacker.rested = true;
   attacker.perTurn.hasAttacked = true;
 
+  next.pendingAttack = { attackerInstanceId: attackerId, targetInstanceId: targetId, counterBoost: 0 };
+  next.phase = 'block_window';
   next.history.push({ type: 'ATTACK_DECLARED', attacker: attackerId, target: targetId });
+  next.history.push({ type: 'PHASE_CHANGED', phase: 'block_window' });
+  return { state: next, events: next.history.slice(start) };
+}
+
+/** Stage 2a: defender activates a Blocker. The blocker becomes the new attack target. */
+function declareBlocker(
+  state: GameState,
+  player: PlayerId,
+  blockerInstanceId: string,
+): { state: GameState; events: GameEvent[] } {
+  if (state.phase !== 'block_window' || !state.pendingAttack) return { state, events: [] };
+  if (state.activePlayer === player) return { state, events: [] }; // only inactive player blocks
+
+  const next: GameState = structuredClone(state);
+  const start = next.history.length;
+  const blocker = next.instances[blockerInstanceId];
+  if (!blocker || blocker.controller !== player) return { state, events: [] };
+  const blockerCard = next.cardLibrary[blocker.cardId];
+  if (!blockerCard.keywords.includes('blocker')) return { state, events: [] };
+  if (blocker.rested) return { state, events: [] };
+
+  // Redirect the attack to the blocker; rest it as per Blocker rules.
+  blocker.rested = true;
+  next.pendingAttack!.targetInstanceId = blockerInstanceId;
+  next.phase = 'counter_window';
+  next.history.push({ type: 'BLOCKER_ACTIVATED', blocker: blockerInstanceId });
+  next.history.push({ type: 'PHASE_CHANGED', phase: 'counter_window' });
+  return { state: next, events: next.history.slice(start) };
+}
+
+/** Stage 2b: defender skips Blocker → move directly to counter window. */
+function skipBlocker(state: GameState): { state: GameState; events: GameEvent[] } {
+  if (state.phase !== 'block_window' || !state.pendingAttack) return { state, events: [] };
+  const next: GameState = structuredClone(state);
+  const start = next.history.length;
+  next.phase = 'counter_window';
+  next.history.push({ type: 'PHASE_CHANGED', phase: 'counter_window' });
+  return { state: next, events: next.history.slice(start) };
+}
+
+/** Stage 3a: defender plays a Counter card (or character with counter value). */
+function playCounter(
+  state: GameState,
+  player: PlayerId,
+  instanceId: string,
+): { state: GameState; events: GameEvent[] } {
+  if (state.phase !== 'counter_window' || !state.pendingAttack) return { state, events: [] };
+  if (state.activePlayer === player) return { state, events: [] }; // only inactive plays counters
+
+  const next: GameState = structuredClone(state);
+  const start = next.history.length;
+  const p = next.players[player];
+  const handIdx = p.hand.indexOf(instanceId);
+  if (handIdx === -1) return { state, events: [] };
+  const inst = next.instances[instanceId];
+  const card = next.cardLibrary[inst.cardId];
+  if (!card.counterValue || card.counterValue <= 0) return { state, events: [] };
+
+  // Move from hand to trash, add counter boost to pendingAttack.
+  p.hand.splice(handIdx, 1);
+  p.trash.push(instanceId);
+  next.pendingAttack!.counterBoost += card.counterValue;
+  next.history.push({ type: 'COUNTER_PLAYED', instanceId, boost: card.counterValue });
+  return { state: next, events: next.history.slice(start) };
+}
+
+/** Stage 3b: defender ends counter window → resolve damage. */
+function resolvePending(state: GameState): { state: GameState; events: GameEvent[] } {
+  if (state.phase !== 'counter_window' || !state.pendingAttack) return { state, events: [] };
+  return resolveDamage(state);
+}
+
+/** Compute power, apply life loss / KO, return phase to main. */
+function resolveDamage(state: GameState): { state: GameState; events: GameEvent[] } {
+  const pa: PendingAttack = state.pendingAttack!;
+  const next: GameState = structuredClone(state);
+  const start = next.history.length;
+  const attacker = next.instances[pa.attackerInstanceId];
+  const target = next.instances[pa.targetInstanceId];
+  if (!attacker || !target) {
+    next.pendingAttack = null;
+    next.phase = 'main';
+    return { state: next, events: [] };
+  }
 
   const attackerCard = next.cardLibrary[attacker.cardId];
   const targetCard = next.cardLibrary[target.cardId];
   const attackerPower = effectivePower(attackerCard, attacker);
-  const targetPower = effectivePower(targetCard, target);
+  const targetPower = effectivePower(targetCard, target) + pa.counterBoost;
+  const player = next.activePlayer;
+  const defenderSide = next.players[OTHER[player]];
 
   if (targetCard.kind === 'leader') {
-    // Attack on leader → take a life card (top to hand) UNLESS attacker power < target.
     if (attackerPower >= targetPower) {
       const lifeId = defenderSide.life.shift();
       if (lifeId) {
         defenderSide.hand.push(lifeId);
         next.history.push({ type: 'LIFE_TAKEN', player: OTHER[player], instanceId: lifeId });
       } else {
-        // No life cards left → final attack = lethal.
         next.result = { winner: player, reason: 'lethal' };
         next.history.push({ type: 'GAME_ENDED', result: next.result });
       }
     }
-    // attackerPower < targetPower → leader attack fizzles.
   } else if (targetCard.kind === 'character') {
     if (attackerPower >= targetPower) {
-      const idx = defenderSide.field.findIndex((i) => i.instanceId === targetId);
+      const idx = defenderSide.field.findIndex((i) => i.instanceId === pa.targetInstanceId);
       if (idx !== -1) {
         const removed = defenderSide.field.splice(idx, 1)[0];
-        // Detached DON returns to opponent's rested pool.
         defenderSide.donRested += removed.attachedDon;
         removed.attachedDon = 0;
         defenderSide.trash.push(removed.instanceId);
-        next.history.push({ type: 'CARD_KOED', instanceId: targetId });
+        next.history.push({ type: 'CARD_KOED', instanceId: pa.targetInstanceId });
       }
     }
-    // attackerPower < targetPower → attack fizzles.
   }
 
-  return { state: next, events: next.history.slice(historyStart) };
+  next.pendingAttack = null;
+  next.phase = 'main';
+  next.history.push({ type: 'PHASE_CHANGED', phase: 'main' });
+  return { state: next, events: next.history.slice(start) };
 }
 
 function effectivePower(card: Card, inst: CardInstance): number {
@@ -173,10 +265,6 @@ function effectivePower(card: Card, inst: CardInstance): number {
   if (card.kind === 'leader') base = (card as LeaderCard).power;
   if (card.kind === 'character') base = (card as CharacterCard).power;
   return base + inst.attachedDon * 1000;
-}
-
-function findInstance(state: GameState, id: string): CardInstance | null {
-  return state.instances[id] ?? null;
 }
 
 function runEndTurnReshim(state: GameState): { state: GameState; events: GameEvent[] } {

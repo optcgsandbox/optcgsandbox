@@ -118,8 +118,26 @@ export const useGameStore = create<GameStore>((set, get) => {
 
     dispatch(action) {
       const { state } = get();
-      const result = applyAction(state, state.activePlayer, action);
-      const next = result.state;
+      // Reactive-window actions come from the *inactive* player. Route accordingly.
+      const player = (state.phase === 'block_window' || state.phase === 'counter_window')
+        ? (state.activePlayer === 'A' ? 'B' : 'A')
+        : state.activePlayer;
+      const result = applyAction(state, player, action);
+      let next = result.state;
+
+      // Auto-skip windows for the human if no meaningful response.
+      // (v0: humans can opt in to block/counter via dedicated buttons in v0.1 UI; for now,
+      // we auto-resolve when the inactive player has no blocker / counter cards.)
+      while (next.phase === 'block_window' || next.phase === 'counter_window') {
+        const reactivePlayer = next.activePlayer === 'A' ? 'B' : 'A';
+        const opts = getLegalActions(next, reactivePlayer).filter(
+          (a) => a.type !== 'RESIGN' && a.type !== 'SKIP_BLOCKER' && a.type !== 'SKIP_COUNTER'
+        );
+        if (opts.length > 0) break;
+        const skip: Action = next.phase === 'block_window' ? { type: 'SKIP_BLOCKER' } : { type: 'SKIP_COUNTER' };
+        next = applyAction(next, reactivePlayer, skip).state;
+      }
+
       set({
         state: next,
         legalActions: getLegalActions(next, next.activePlayer),

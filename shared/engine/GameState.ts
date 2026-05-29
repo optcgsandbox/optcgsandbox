@@ -74,6 +74,16 @@ export interface GameState {
   history: GameEvent[];
   /** When non-null, the game is over. */
   result: GameResult | null;
+  /** Active attack being resolved through block + counter windows. Null when no attack in flight. */
+  pendingAttack: PendingAttack | null;
+}
+
+export interface PendingAttack {
+  attackerInstanceId: string;
+  /** Original target chosen by attacker. May be redirected to a blocker. */
+  targetInstanceId: string;
+  /** Sum of counter boosts played by defender so far (in points; e.g. 1000, 2000). */
+  counterBoost: number;
 }
 
 export interface GameResult {
@@ -166,5 +176,6 @@ export function initialState(args: {
     instances,
     history: [],
     result: null,
+    pendingAttack: null,
   };
 }
