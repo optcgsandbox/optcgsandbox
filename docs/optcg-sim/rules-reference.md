@@ -451,18 +451,24 @@ type Action =
 
 ## 15. Divergences from current implementation
 
-Audited 2026-05-29 against `shared/engine/` at commit `f34d225`.
+Audited 2026-05-29 against engine commit `a84f87d` + UI commit `0ea7edb`.
 
-### 15.1 Blocking (MUST FIX before any V1 claim)
+### 15.1 Engine — Closed (fixed by `a84f87d`)
+
+- ✅ **D1 Stage Area** — `PlayerZones.stage: CardInstance | null` added; `PLAY_STAGE` action wired
+- ✅ **D2 First-turn-no-attack for both players** — `legality.ts` now blocks both P1 turn 1 AND P2 turn 2
+- ✅ **D3 Event counter cards** — `EventCard.counterEventBoost` field + `playCounter` handles Char + Event sources
+- ✅ **D4 Once Per Turn per-card** — `CardInstance.perTurn.effectsUsed: string[]` replaces single boolean
+- ✅ **D8 Unblockable** — `Keyword` union includes `'unblockable'`; `blockerActions` short-circuits
+
+Engine test count: 62/62 passing.
+
+### 15.2 Engine — OPEN
 
 | # | Divergence | Spec | Engine | Severity |
 |---|---|---|---|---|
-| D1 | **No Stage Area** | CR §3-8: Stage is its own single-slot zone; max 1 | `PlayerZones.field` is a flat list mixing Characters + Stage; no `stage` slot exists; `legality.ts:53` only counts Character kind | BLOCKER |
-| D2 | **Second player can attack on turn 2** | CR §6-5-6-1: neither player can battle on their first turn (= turns 1 and 2) | `legality.ts:101`: `cannotAttackTurn = state.turn === 1 && player === 'A'` — only blocks P1 turn 1, lets P2 attack on their own first turn | BLOCKER |
-| D3 | **Event counter cards unsupported** | CR §7-1-3-2-2: defender may play an Event with `[Counter]` from hand (pay cost, trash event) for its Counter effect | `applyAction.ts:200-218` `playCounter` only handles Characters by `counterValue`; Event counter cards are unplayable in Counter Step | BLOCKER |
-| D4 | **Once Per Turn is global, not per-card** | CR §10-2-13-2: each card with `[Once Per Turn]` is independent | `CardInstance.perTurn.onceEffectUsed: boolean` — one flag per instance, can't track multiple distinct effects | BLOCKER (when V1 ships any [Once Per Turn] card) |
-| D5 | **DON detaches at end of YOUR turn instead of next Refresh** | CR §6-2-3: attached DON returns to cost area rested at the START of YOUR NEXT REFRESH. DON stays attached overnight. | `phases/turn.ts:80-88`: `endTurn` already detaches all DON to `donRested` at end of current turn. Final state matches; visual differs | MEDIUM |
-| D6 | **Trashing for 6th-character slot emits `CARD_KOED`** | CR §3-7-6-1-1: trashing-for-slot is rule processing, NOT K.O.; `[On K.O.]` etc. must not fire | `applyAction.ts:93` emits `CARD_KOED` event when replaceTargetId is used | MEDIUM (cosmetic until cards with [On K.O.] ship) |
+| D5 | **DON detaches at end of YOUR turn instead of next Refresh** | CR §6-2-3 | `phases/turn.ts:80-88` detaches at end-of-own-turn. Net state same; semantic differs | LOW (cosmetic) |
+| D6 | **Trashing for 6th-character slot emits `CARD_KOED`** | CR §3-7-6-1-1: rule processing, not K.O. | `applyAction.ts:93` emits `CARD_KOED` | MEDIUM (cosmetic until [On K.O.] cards ship) |
 
 ### 15.2 Keyword gaps
 
@@ -491,6 +497,17 @@ Audited 2026-05-29 against `shared/engine/` at commit `f34d225`.
 |---|---|---|
 | D20 | `Card.attribute` includes `?` (CR §2-5-2) | `Card.ts:11` union omits `?` |
 | D21 | Cost Area is one zone with active + rested DON visible together (CR §3-9) | Split into `donCostArea` (active) + `donRested` (rested) on `PlayerZones`; UI must render them together |
-| D22 | Stage Area is a `CardInstance \| null` slot | Missing — mixed into `field` |
+| D22 | ~~Stage Area is a `CardInstance \| null` slot~~ — CLOSED by `a84f87d` | |
 | D23 | `summoningSick` only set by `PLAY_CARD` action | If effects ever place chars on field, they'll be playable immediately — bug for V1.x effects |
+
+### 15.5 UI layer (split into `design-reference.md §12`)
+
+Engine emits correct legal actions per `legality.ts`. The UI does NOT dispatch them. Owner-blocking issues:
+
+- **UI-D1.** `PlayfieldStage.tsx` doesn't wire `onTap` on Leader/Character cards → can't attach DON, can't attack (engine-diagnosis agent 2026-05-29)
+- **UI-D2.** `src/store/game.ts` has no `selectedAttackerId` state → no way to do 2-tap attack
+- **UI-D3.** `src/store/game.ts` has no `inspectedCardId` state → no Pokemon-style tap-to-lift
+- **UI-D4.** No `CardDetailModal` component exists → owner can't read card before deciding
+
+Full UI divergence list: see `design-reference.md §12.2` (L10–L23).
 
