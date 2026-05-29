@@ -64,7 +64,9 @@ export const DonRested = memo(function DonRested({ playerId, isYou }: DonRestedP
       className="flex w-full items-center gap-1 px-3"
       style={{ height: 'var(--zone-cost-strip-h, 28px)' }}
     >
-      <span className="font-body text-[0.55rem] font-extrabold uppercase tracking-wider text-ink-iron/60">
+      {/* WCAG 1.4.3 — micro-label was text-ink-iron/60 on paper-cream (~2.5:1).
+          Solid ink-iron on cream is ~10.5:1. */}
+      <span className="font-body text-[0.55rem] font-extrabold uppercase tracking-wider text-ink-iron">
         Rested
       </span>
       <div className="flex h-full grow items-center gap-1 overflow-x-auto">

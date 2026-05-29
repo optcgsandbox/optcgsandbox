@@ -143,7 +143,7 @@ function FieldRow(props: FieldRowProps) {
         kind="don"
         playerId={playerId}
         compact
-        ariaLabel={`${isYou ? 'Your' : 'Opponent'} DON deck, ${zones.donDeck} left`}
+        ariaLabel={`${isYou ? 'Your' : 'Opponent'} DON deck, ${zones.donDeck.length} left`}
       >
         <div
           className="flex h-full w-full flex-col items-center justify-center"
@@ -153,7 +153,7 @@ function FieldRow(props: FieldRowProps) {
             DON
           </span>
           <span className="font-display tabular text-[0.85rem] leading-none text-ink-black">
-            {zones.donDeck}
+            {zones.donDeck.length}
           </span>
         </div>
       </ZoneSlot>

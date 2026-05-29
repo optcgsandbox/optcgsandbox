@@ -30,44 +30,79 @@ export const TriggerPrompt = memo(function TriggerPrompt() {
 
   const activateRef = useRef<HTMLButtonElement>(null);
   const declineRef = useRef<HTMLButtonElement>(null);
+  // WCAG 2.4.3 — save the element that was focused when the dialog opened so
+  // we can restore focus to it on close. Without this, keyboard users land at
+  // <body> after Decline/Activate, breaking their navigation context.
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
   // Only show to the controller (the player whose life was taken). The
   // opponent sees nothing — keeps the choice private to the rights-holder.
   const isMine = pendingTrigger != null && pendingTrigger.controller === viewAs;
   const open = isMine;
 
+  // Engine note: RESOLVE_TRIGGER with activate=true is a v0 stub — the life
+  // card is trashed but no effect resolves yet. Until the trigger DSL ships in
+  // v0.2 we disable Activate so we don't lie to the player. Decline is the
+  // safe path: it puts the life card into hand per the rules and moves on.
+  const activateDisabled = true;
+
   const lifeInst = pendingTrigger ? instances[pendingTrigger.lifeCardInstanceId] : undefined;
   const lifeCard = lifeInst ? library[lifeInst.cardId] : undefined;
 
   // Auto-focus the primary action when the modal opens — WCAG 2.1 §2.4.3.
+  // Also save the previously focused element so we can restore it on close.
   useEffect(() => {
     if (open) {
-      // Defer a tick so the motion enter doesn't fight the focus.
-      const t = window.setTimeout(() => activateRef.current?.focus(), reduced ? 0 : 40);
-      return () => window.clearTimeout(t);
+      previouslyFocusedRef.current = (document.activeElement as HTMLElement) ?? null;
+      // Defer a tick so the motion enter doesn't fight the focus. Focus the
+      // first ENABLED CTA — when Activate is disabled, Decline is primary.
+      const t = window.setTimeout(() => {
+        const target = activateDisabled ? declineRef.current : activateRef.current;
+        target?.focus();
+      }, reduced ? 0 : 40);
+      return () => {
+        window.clearTimeout(t);
+        // Restore focus when the dialog closes (WCAG 2.4.3). Guard against
+        // the previously focused element having been removed from the DOM.
+        const prev = previouslyFocusedRef.current;
+        if (prev && document.contains(prev)) {
+          prev.focus();
+        }
+        previouslyFocusedRef.current = null;
+      };
     }
     return undefined;
-  }, [open, reduced]);
+  }, [open, reduced, activateDisabled]);
 
-  // Minimal focus trap — Tab/Shift+Tab cycles between the two buttons.
-  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key !== 'Tab') return;
-    const a = activateRef.current;
-    const d = declineRef.current;
-    if (!a || !d) return;
-    const focused = document.activeElement;
-    if (e.shiftKey) {
-      if (focused === a) {
+  // Minimal focus trap — Tab/Shift+Tab cycles between the focusable CTAs.
+  // When Activate is disabled, focus stays on Decline (single focusable target).
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key !== 'Tab') return;
+      const a = activateRef.current;
+      const d = declineRef.current;
+      if (!d) return;
+      // Single focusable target — trap Tab on Decline.
+      if (activateDisabled || !a) {
         e.preventDefault();
         d.focus();
+        return;
       }
-    } else {
-      if (focused === d) {
-        e.preventDefault();
-        a.focus();
+      const focused = document.activeElement;
+      if (e.shiftKey) {
+        if (focused === a) {
+          e.preventDefault();
+          d.focus();
+        }
+      } else {
+        if (focused === d) {
+          e.preventDefault();
+          a.focus();
+        }
       }
-    }
-  }, []);
+    },
+    [activateDisabled],
+  );
 
   const handleActivate = useCallback(() => {
     dispatch({ type: 'RESOLVE_TRIGGER', activate: true, targetInstanceId: null });
@@ -131,29 +166,48 @@ export const TriggerPrompt = memo(function TriggerPrompt() {
             </motion.p>
           )}
 
-          <div className="flex items-center gap-3">
-            <button
-              ref={activateRef}
-              type="button"
-              onClick={handleActivate}
-              className="min-h-[44px] min-w-[110px] rounded-2xl
-                         bg-seal-red px-5 py-2 font-body font-extrabold uppercase
-                         tracking-wider text-paper-cream shadow-[0_4px_12px_rgba(168,38,31,0.30)]
-                         focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
-            >
-              Activate
-            </button>
-            <button
-              ref={declineRef}
-              type="button"
-              onClick={handleDecline}
-              className="min-h-[44px] min-w-[110px] rounded-2xl
-                         bg-paper-fog px-5 py-2 font-body font-extrabold uppercase
-                         tracking-wider text-ink-black ring-1 ring-marine-fog/60
-                         focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
-            >
-              Decline
-            </button>
+          <div className="flex flex-col items-center gap-2">
+            <div className="flex items-center gap-3">
+              <button
+                ref={activateRef}
+                type="button"
+                onClick={handleActivate}
+                disabled={activateDisabled}
+                aria-disabled={activateDisabled}
+                aria-describedby={activateDisabled ? 'trigger-activate-hint' : undefined}
+                title={activateDisabled ? 'Trigger effects coming in v0.2' : undefined}
+                className={[
+                  'min-h-[44px] min-w-[110px] rounded-2xl px-5 py-2',
+                  'font-body font-extrabold uppercase tracking-wider',
+                  'focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none',
+                  activateDisabled
+                    ? // Disabled treatment — desaturated fog with iron text for AA contrast.
+                      'bg-paper-fog text-ink-iron ring-1 ring-marine-fog/60 opacity-60 cursor-not-allowed'
+                    : 'bg-seal-red text-paper-cream shadow-[0_4px_12px_rgba(168,38,31,0.30)]',
+                ].join(' ')}
+              >
+                Activate
+              </button>
+              <button
+                ref={declineRef}
+                type="button"
+                onClick={handleDecline}
+                className="min-h-[44px] min-w-[110px] rounded-2xl
+                           bg-paper-fog px-5 py-2 font-body font-extrabold uppercase
+                           tracking-wider text-ink-black ring-1 ring-marine-fog/60
+                           focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
+              >
+                Decline
+              </button>
+            </div>
+            {activateDisabled && (
+              <p
+                id="trigger-activate-hint"
+                className="text-[0.6875rem] font-body text-ink-iron text-center"
+              >
+                Trigger effects coming in v0.2 — Decline to put the life card into your hand.
+              </p>
+            )}
           </div>
         </motion.div>
       )}

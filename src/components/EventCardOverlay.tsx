@@ -71,7 +71,13 @@ export const EventCardOverlay = memo(function EventCardOverlay() {
     <AnimatePresence>
       {active && card && inst && (
         <motion.div
+          // aria-atomic ensures SR announces the full label on mount instead
+          // of waiting for content within the region to "change" (it doesn't
+          // — AnimatePresence inserts the populated region whole). Without
+          // this, the polite live region can mount silently.
           aria-live="polite"
+          aria-atomic="true"
+          role="status"
           aria-label={`Event played: ${card.name}`}
           className="pointer-events-none fixed inset-0 z-30 flex flex-col items-center justify-center px-4"
           initial={{ opacity: 0 }}

@@ -52,7 +52,8 @@ export const LifeStack = memo(function LifeStack({ playerId, offsetPx = 4 }: Lif
           style={{ width: cardW, height: cardH }}
           aria-hidden="true"
         />
-        <span className="mt-1 text-[0.55rem] font-body font-extrabold uppercase tracking-wider text-ink-iron/70">
+        {/* WCAG 1.4.3 — was text-ink-iron/70 on paper-cream (~3.1:1). Solid ink-iron is ~10.5:1. */}
+        <span className="mt-1 text-[0.55rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">
           Life
         </span>
       </div>
@@ -91,7 +92,8 @@ export const LifeStack = memo(function LifeStack({ playerId, offsetPx = 4 }: Lif
           );
         })}
       </div>
-      <span className="mt-1 text-[0.55rem] font-body font-extrabold uppercase tracking-wider text-ink-iron/80">
+      {/* WCAG 1.4.3 — was text-ink-iron/80 on paper-cream (~4.0:1). Solid ink-iron is ~10.5:1. */}
+      <span className="mt-1 text-[0.55rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">
         Life
       </span>
     </div>

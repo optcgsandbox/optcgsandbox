@@ -67,9 +67,13 @@ export const PhaseRibbon = memo(function PhaseRibbon({ viewAs }: PhaseRibbonProp
         <span
           className={[
             'rounded-full px-2 py-0.5 text-[0.6875rem] font-body font-extrabold uppercase tracking-wider',
+            // WCAG 1.4.3 — previously bg-marine-fog/30 text-paper-cream was
+            // ~1.2:1 cream-on-translucent-fog over hull-teal. Solid marine-fog
+            // (#B8C7C9) with ink-black text is ~12:1 and clearly differentiates
+            // the Opp chip from the brass "You" chip.
             isYourTurn
               ? 'bg-sun-brass text-ink-black'
-              : 'bg-marine-fog/30 text-paper-cream',
+              : 'bg-marine-fog text-ink-black',
           ].join(' ')}
         >
           {isYourTurn ? 'You' : 'Opp'}
