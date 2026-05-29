@@ -61,7 +61,14 @@ export default function App() {
             onClick={() => { setMode('vs-easy'); reset(); }}
             aria-pressed={mode === 'vs-easy'}
           >
-            vs AI
+            vs Easy
+          </button>
+          <button
+            className={`text-[10px] uppercase tracking-widest border px-2 py-1 rounded ${mode === 'vs-medium' ? 'bg-brass-canary border-brass-canary' : 'border-ink-black/60'}`}
+            onClick={() => { setMode('vs-medium'); reset(); }}
+            aria-pressed={mode === 'vs-medium'}
+          >
+            vs Medium
           </button>
           <button
             className={`text-[10px] uppercase tracking-widest border px-2 py-1 rounded ${mode === 'hot-seat' ? 'bg-brass-canary border-brass-canary' : 'border-ink-black/60'}`}

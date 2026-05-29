@@ -4,6 +4,8 @@
 import { create } from 'zustand';
 import { applyAction } from '@shared/engine/applyAction';
 import { EasyAi } from '@shared/engine/ai/EasyAi';
+import { MediumAi } from '@shared/engine/ai/MediumAi';
+import type { AiDriver } from '@shared/engine/ai/AiDriver';
 import { initialState } from '@shared/engine/GameState';
 import { setupGame } from '@shared/engine/phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '@shared/engine/phases/turn';
@@ -12,7 +14,7 @@ import type { Action } from '@shared/protocol/actions';
 import type { Card, CharacterCard, LeaderCard } from '@shared/engine/cards/Card';
 import type { GameState, PlayerId } from '@shared/engine/GameState';
 
-export type GameMode = 'hot-seat' | 'vs-easy';
+export type GameMode = 'hot-seat' | 'vs-easy' | 'vs-medium';
 
 function makeLeader(id: string, color: 'red' | 'blue' = 'red'): LeaderCard {
   return {
@@ -78,7 +80,10 @@ async function runAiTurn(
   get: () => GameStore,
   set: (partial: Partial<GameStore>) => void,
 ): Promise<void> {
-  const ai = new EasyAi((Date.now() & 0xffff) ^ get().state.turn);
+  const mode = get().mode;
+  const ai: AiDriver = mode === 'vs-medium'
+    ? new MediumAi()
+    : new EasyAi((Date.now() & 0xffff) ^ get().state.turn);
   set({ aiThinking: true });
   // Loop until AI hits END_TURN or game ends.
   // Cap iterations to avoid runaway in case of a bug.
@@ -153,7 +158,8 @@ export const useGameStore = create<GameStore>((set, get) => {
       const newViewAs = get().mode === 'hot-seat' ? s.activePlayer : AI_HUMAN;
       set({ state: s, legalActions: getLegalActions(s, s.activePlayer), viewAs: newViewAs });
 
-      if (get().mode === 'vs-easy' && s.activePlayer === AI_OPPONENT && !s.result) {
+      const m = get().mode;
+      if ((m === 'vs-easy' || m === 'vs-medium') && s.activePlayer === AI_OPPONENT && !s.result) {
         await runAiTurn(get, set);
       }
     },

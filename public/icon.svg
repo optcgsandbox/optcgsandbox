@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#15140F"/>
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#D4A017" stroke-width="8"/>
+  <g fill="#F2E8D2" font-family="Georgia, serif" font-weight="900" font-style="italic" text-anchor="middle">
+    <text x="256" y="240" font-size="160" letter-spacing="-8">OP</text>
+    <text x="256" y="340" font-size="48" letter-spacing="4">SANDBOX</text>
+  </g>
+</svg>
