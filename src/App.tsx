@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { LayoutGroup } from 'framer-motion';
 import { useGameStore } from './store/game';
 import { PlayerSide } from './components/PlayerSide';
 
@@ -47,6 +48,7 @@ export default function App() {
   }
 
   return (
+    <LayoutGroup>
     <main className="min-h-dvh bg-paper-cream text-ink-black p-3 flex flex-col gap-3">
       <header className="flex items-center justify-between border-b border-ink-black/20 pb-2">
         <div>
@@ -140,5 +142,6 @@ export default function App() {
         </pre>
       </details>
     </main>
+    </LayoutGroup>
   );
 }

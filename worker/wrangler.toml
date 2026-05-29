@@ -1,0 +1,26 @@
+name = "optcgsandbox-worker"
+main = "index.ts"
+compatibility_date = "2026-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Durable Objects bindings — backend-architecture.md §4.
+[[durable_objects.bindings]]
+name = "GAME_ROOM"
+class_name = "GameRoom"
+
+[[durable_objects.bindings]]
+name = "MATCHMAKER"
+class_name = "Matchmaker"
+
+# DO migrations — required when adding new DO classes.
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["GameRoom", "Matchmaker"]
+
+# Pages routes — bound by Cloudflare Pages when deployed.
+[vars]
+ENV = "production"
+
+# Observability per security-architecture.md §8.
+[observability]
+enabled = true
