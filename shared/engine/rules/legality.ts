@@ -70,8 +70,12 @@ function playCardActions(state: GameState, player: PlayerId): Action[] {
           }
         }
       }
-    } else if (card.kind === 'event' || card.kind === 'stage') {
+    } else if (card.kind === 'event') {
       out.push({ type: 'PLAY_CARD', instanceId, replaceTargetId: null });
+    } else if (card.kind === 'stage') {
+      // D1 (CR §3-8): Stage uses its own action so callers/UI never confuse
+      //               the single-slot Stage zone with the 5-slot character field.
+      out.push({ type: 'PLAY_STAGE', instanceId });
     }
   }
   return out;
@@ -97,8 +101,13 @@ function attackActions(state: GameState, player: PlayerId): Action[] {
   const opp = state.players[player === 'A' ? 'B' : 'A'];
   const out: Action[] = [];
 
-  // First-turn first-player cannot attack on turn 1.
-  const cannotAttackTurn = state.turn === 1 && player === 'A';
+  // D2 (CR §6-5-6-1): NEITHER player can battle on their first turn.
+  //   - Turn 1 = first player's (A) first turn → no attacks.
+  //   - Turn 2 = second player's (B) first turn → no attacks.
+  // Prior implementation only blocked turn 1, letting P2 attack on turn 2.
+  const cannotAttackTurn =
+    (state.turn === 1 && player === 'A') ||
+    (state.turn === 2 && player === 'B');
   if (cannotAttackTurn) return out;
 
   const attackers: CardInstance[] = [];
@@ -132,6 +141,18 @@ function attackActions(state: GameState, player: PlayerId): Action[] {
 function blockerActions(state: GameState, player: PlayerId): Action[] {
   const p = state.players[player];
   const out: Action[] = [];
+
+  // D8 (CR §10-1-7): defender CANNOT activate Blocker against an attacker
+  //                  with `[Unblockable]`. Skip blocker enumeration entirely.
+  const attackerId = state.pendingAttack?.attackerInstanceId;
+  if (attackerId) {
+    const attacker = state.instances[attackerId];
+    if (attacker) {
+      const attackerCard = state.cardLibrary[attacker.cardId];
+      if (attackerCard.keywords.includes('unblockable')) return out;
+    }
+  }
+
   for (const inst of p.field) {
     const card = state.cardLibrary[inst.cardId];
     if (card.keywords.includes('blocker') && !inst.rested) {
@@ -146,7 +167,19 @@ function counterActions(state: GameState, player: PlayerId): Action[] {
   const out: Action[] = [];
   for (const instanceId of p.hand) {
     const card = state.cardLibrary[state.instances[instanceId].cardId];
-    if (card.counterValue && card.counterValue > 0) {
+    if (card.kind === 'event') {
+      // D3 (CR §7-1-3-2-2): Event counter — must have a boost AND defender
+      //                    must be able to pay the event's cost.
+      if (
+        card.counterEventBoost &&
+        card.counterEventBoost > 0 &&
+        card.cost !== null &&
+        card.cost <= p.donCostArea.length
+      ) {
+        out.push({ type: 'PLAY_COUNTER', instanceId });
+      }
+    } else if (card.counterValue && card.counterValue > 0) {
+      // Character counter (CR §7-1-3-2-1): trash from hand for printed chip.
       out.push({ type: 'PLAY_COUNTER', instanceId });
     }
   }

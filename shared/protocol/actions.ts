@@ -15,6 +15,13 @@ export const ActionSchema = z.discriminatedUnion('type', [
     replaceTargetId: z.string().nullable(),
   }),
   z.object({
+    /** D1 (CR §3-8-5): Stage Area is a single-slot zone. Playing a new Stage
+     *  when one exists trashes the existing Stage (CR §3-8-5-1). Split out of
+     *  PLAY_CARD so the action namespace mirrors zone separation. */
+    type: z.literal('PLAY_STAGE'),
+    instanceId: z.string(),
+  }),
+  z.object({
     type: z.literal('ATTACH_DON'),
     targetInstanceId: z.string(),
   }),

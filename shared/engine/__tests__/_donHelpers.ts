@@ -13,6 +13,30 @@
 // should NEVER be imported from src/ or the engine itself.
 
 import type { GameState, PlayerId } from '../GameState';
+import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
+
+/** Advance the game past the first-turn-no-attack window for both players
+ *  (D2 / CR §6-5-6-1). Given a state where the next `runRefresh→Draw→DON` will
+ *  start `nextPlayer`'s turn N, this runs one extra full turn cycle so that
+ *  same `nextPlayer` becomes active again on a turn ≥ 3, when attacks are
+ *  legal.
+ *
+ *  Typical use after the existing `endTurn → runRefresh/Draw/Don` boilerplate:
+ *
+ *      s = endTurn(s);                                         // → B, turn 2
+ *      s = runDonPhase(runDrawPhase(runRefreshPhase(s)));      // B turn 2 main
+ *      s = advanceOneFullCycle(s);                             // → B, turn 4 main
+ *
+ *  The caller is responsible for being on a main phase when calling.
+ */
+export function advanceOneFullCycle(state: GameState): GameState {
+  // End current player's turn → other player's refresh/draw/don main → end that → back to caller's main.
+  let s = endTurn(state);
+  s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+  s = endTurn(s);
+  s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+  return s;
+}
 
 /** Force the cost area to contain exactly `count` active DON. Surplus is
  *  dropped to donRested so the total DON stays conserved across (deck +

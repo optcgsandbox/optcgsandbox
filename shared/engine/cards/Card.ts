@@ -16,6 +16,7 @@ export type Keyword =
   | 'rush'
   | 'double_attack'
   | 'banish'
+  | 'unblockable'
   | 'on_play'
   | 'on_ko'
   | 'when_attacking'
@@ -88,6 +89,12 @@ export interface EventCard extends CardBase {
   kind: 'event';
   cost: number;
   power: null;
+  /** D3 (CR §7-1-3-2-2): Event cards with a `[Counter]` effect block grant a
+   *  power boost to the defender during the Counter Step. Unlike Characters
+   *  (whose Counter is the printed chip on the card and lives in
+   *  `counterValue`), Events have no printed chip — the boost is encoded by
+   *  the effect text. `null` when the Event has no `[Counter]` block. */
+  counterEventBoost: number | null;
 }
 
 export interface StageCard extends CardBase {

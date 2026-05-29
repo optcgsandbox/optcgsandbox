@@ -16,7 +16,7 @@ import { getLegalActions } from '../rules/legality';
 import { setupGame } from '../phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 import type { Card, CharacterCard, LeaderCard, Keyword, EffectTag } from '../cards/Card';
-import { attachDonCount } from './_donHelpers';
+import { attachDonCount, advanceOneFullCycle } from './_donHelpers';
 
 function makeLeader(id: string, color: 'red' | 'blue' = 'red', overrides: Partial<LeaderCard> = {}): LeaderCard {
   return {
@@ -58,6 +58,10 @@ function setupAttackScenario(seed: number, leaderOverrides: { B?: Partial<Leader
   s = setupGame(s);
   s = endTurn(s); // hand turn to B
   s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+  // D2 (CR §6-5-6-1): B can't battle on its first turn (turn 2). Advance one
+  //                   full cycle so B is back on its main phase on turn 4
+  //                   with attacks legal.
+  s = advanceOneFullCycle(s);
   attachDonCount(s, 'B', s.players.B.leader.instanceId, 1); // 6000 attacker
   return s;
 }

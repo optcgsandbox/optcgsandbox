@@ -6,7 +6,7 @@ import { setupGame } from '../phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 import { getLegalActions } from '../rules/legality';
 import type { Card, CharacterCard, LeaderCard } from '../cards/Card';
-import { setDonActive, attachDonCount } from './_donHelpers';
+import { setDonActive, attachDonCount, advanceOneFullCycle } from './_donHelpers';
 
 function makeLeader(id: string, color: 'red' | 'blue' = 'red'): LeaderCard {
   return {
@@ -78,6 +78,7 @@ describe('resolveAttack returns events from history slice (applyAction.ts)', () 
     s = setupGame(s);
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    s = advanceOneFullCycle(s); // D2: skip first-turn-no-attack window.
     attachDonCount(s, 'B', s.players.B.leader.instanceId, 1); // 6000 > 5000
 
     // declare → SKIP_BLOCKER → SKIP_COUNTER → resolve
@@ -95,13 +96,14 @@ describe('resolveAttack returns events from history slice (applyAction.ts)', () 
     s = setupGame(s);
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    s = advanceOneFullCycle(s); // D2: skip first-turn-no-attack window.
     setDonActive(s, 'B', 2);
     attachDonCount(s, 'B', s.players.B.leader.instanceId, 1);
 
     // Inject a Blocker character on A's field that A controls.
     const blockerCard = makeChar('Blocker1', 2, 4000, 'red', ['blocker']);
     s.cardLibrary['Blocker1'] = blockerCard;
-    const blockerInst = { instanceId: 'B-INST', cardId: 'Blocker1', controller: 'A' as const, rested: false, attachedDon: [], perTurn: { hasAttacked: false, onceEffectUsed: false }, summoningSick: false };
+    const blockerInst = { instanceId: 'B-INST', cardId: 'Blocker1', controller: 'A' as const, rested: false, attachedDon: [], perTurn: { hasAttacked: false, effectsUsed: [] }, summoningSick: false };
     s.instances['B-INST'] = blockerInst;
     s.players.A.field.push(blockerInst);
 
@@ -123,12 +125,13 @@ describe('resolveAttack returns events from history slice (applyAction.ts)', () 
     s = setupGame(s);
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    s = advanceOneFullCycle(s); // D2: skip first-turn-no-attack window.
     attachDonCount(s, 'B', s.players.B.leader.instanceId, 1); // 6000 attacker
     // A has a counter card in hand
     const counterCard = makeChar('Counter2k', 2, 1000, 'red');
     counterCard.counterValue = 2000;
     s.cardLibrary['Counter2k'] = counterCard;
-    const cInst = { instanceId: 'C-INST', cardId: 'Counter2k', controller: 'A' as const, rested: false, attachedDon: [], perTurn: { hasAttacked: false, onceEffectUsed: false }, summoningSick: false };
+    const cInst = { instanceId: 'C-INST', cardId: 'Counter2k', controller: 'A' as const, rested: false, attachedDon: [], perTurn: { hasAttacked: false, effectsUsed: [] }, summoningSick: false };
     s.instances['C-INST'] = cInst;
     s.players.A.hand.push('C-INST');
 

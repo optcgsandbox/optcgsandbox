@@ -4,7 +4,7 @@ import { initialState } from '../GameState';
 import { setupGame } from '../phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 import type { Card, CharacterCard, LeaderCard } from '../cards/Card';
-import { setDonActive, attachDonCount } from './_donHelpers';
+import { setDonActive, attachDonCount, advanceOneFullCycle } from './_donHelpers';
 
 function makeLeader(id: string): LeaderCard {
   return {
@@ -34,7 +34,9 @@ function bootMainPhase() {
 
 describe('MediumAi', () => {
   it('picks LETHAL when opp has 0 life and we can clear leader', async () => {
-    const s = bootMainPhase();
+    // D2 (CR §6-5-6-1): B can't battle on its first turn (turn 2). Advance one
+    //                   full cycle so B is on turn 4 with attacks legal.
+    const s = advanceOneFullCycle(bootMainPhase());
     s.players.A.life = [];                       // opp at 0
     attachDonCount(s, 'B', s.players.B.leader.instanceId, 1); // 6000 > 5000
     const ai = new MediumAi();
@@ -63,7 +65,7 @@ describe('MediumAi', () => {
     s.cardLibrary['BIG'] = bigCard;
     const bigInst = {
       instanceId: 'BIG-INST', cardId: 'BIG', controller: 'B' as const, rested: false, attachedDon: [],
-      perTurn: { hasAttacked: false, onceEffectUsed: false }, summoningSick: false,
+      perTurn: { hasAttacked: false, effectsUsed: [] }, summoningSick: false,
     };
     s.instances['BIG-INST'] = bigInst;
     s.players.B.hand.push('BIG-INST');

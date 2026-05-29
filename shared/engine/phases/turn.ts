@@ -17,6 +17,11 @@ export function runRefreshPhase(state: GameState): GameState {
     inst.rested = false;
     inst.summoningSick = false; // Can attack starting this turn.
   }
+  // D1 (CR §3-8): Stage also lives in Leader/Char/Stage area for refresh purposes
+  //               (CR §6-2-4 sets all rested cards in those areas to active).
+  if (p.stage) {
+    p.stage.rested = false;
+  }
   // All rested DON returns to active pool (donCostArea).
   while (p.donRested.length > 0) {
     p.donCostArea.push(p.donRested.shift()!);
@@ -81,12 +86,21 @@ export function endTurn(state: GameState): GameState {
     while (inst.attachedDon.length > 0) {
       p.donRested.push(inst.attachedDon.shift()!);
     }
-    inst.perTurn = { hasAttacked: false, onceEffectUsed: false };
+    inst.perTurn = { hasAttacked: false, effectsUsed: [] };
   }
   while (p.leader.attachedDon.length > 0) {
     p.donRested.push(p.leader.attachedDon.shift()!);
   }
-  p.leader.perTurn = { hasAttacked: false, onceEffectUsed: false };
+  p.leader.perTurn = { hasAttacked: false, effectsUsed: [] };
+  // D1 + D4: Stage participates in end-of-turn per-card flag reset; DON can
+  //          be attached to it (it lives on the Field per CR §3-1-2 with
+  //          Leader/Char/Cost).
+  if (p.stage) {
+    while (p.stage.attachedDon.length > 0) {
+      p.donRested.push(p.stage.attachedDon.shift()!);
+    }
+    p.stage.perTurn = { hasAttacked: false, effectsUsed: [] };
+  }
 
   next.history.push({ type: 'TURN_ENDED', player: next.activePlayer });
   next.activePlayer = OTHER[next.activePlayer];

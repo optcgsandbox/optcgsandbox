@@ -19,7 +19,7 @@ import { setupGame } from '../phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 import { deriveLifeCount } from '../../../src/components/CardArt';
 import type { Card, CharacterCard, LeaderCard } from '../cards/Card';
-import { attachDonCount } from './_donHelpers';
+import { attachDonCount, advanceOneFullCycle } from './_donHelpers';
 
 function makeLeader(id: string, life = 5): LeaderCard {
   return {
@@ -77,6 +77,8 @@ describe('LifePill display — visual-spec-layout-correction.md §E.1', () => {
     // Hand B's leader a hit on A's leader: A 5 → 4.
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    // D2 (CR §6-5-6-1): B can't battle on turn 2 (B's first turn). Skip ahead.
+    s = advanceOneFullCycle(s);
     s = attackLeader(s, 'B', 'A');
     expect(s.players.A.life.length).toBe(4);
 

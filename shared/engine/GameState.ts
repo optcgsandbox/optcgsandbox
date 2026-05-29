@@ -35,7 +35,13 @@ export interface CardInstance {
   /** Per-turn flags — reset at end of turn. */
   perTurn: {
     hasAttacked: boolean;
-    onceEffectUsed: boolean;
+    /** D4 (rules-reference.md §15.1 / CR §10-2-13): `[Once Per Turn]` is
+     *  per-card, per-effect. Each entry is an effect identifier that has
+     *  already fired on THIS card this turn (e.g. `'activate_main'`,
+     *  `'on_play_searcher'`). Stored as a string[] because Set is not
+     *  preserved through structuredClone in all runtimes; uniqueness is
+     *  enforced by consumers via `includes`/`push` guards. */
+    effectsUsed: string[];
   };
   /** True if the instance was played this turn — blocks attack unless Rush. Cleared in Refresh. */
   summoningSick: boolean;
@@ -49,8 +55,14 @@ export interface PlayerZones {
   deck: string[];
   /** Trash (discard) — face-up, public. */
   trash: string[];
-  /** Character + Stage cards on the board. Capped at 5 characters per §3.4 of rules-reference.md. */
+  /** Character cards on the board. Capped at 5 per CR §3-7-6.
+   *  Stage cards live in their own single-slot zone (`stage`); they are NEVER
+   *  placed here. Pre-2026-05-29 this list mixed Characters + Stage; D1 split
+   *  them out per CR §3-8. */
   field: CardInstance[];
+  /** Stage Area — single slot, CR §3-8-5. Null when empty. Replacing a Stage
+   *  trashes the existing one (CR §3-8-5-1) — handled in applyAction.PLAY_STAGE. */
+  stage: CardInstance | null;
   /** Life cards — top to bottom. Face-down to both players. */
   life: string[];
   /** DON deck — remaining DON instance IDs (popped to costArea each DON phase). 10 at setup. */
@@ -164,7 +176,7 @@ export function initialState(args: {
       controller,
       rested: false,
       attachedDon: [],
-      perTurn: { hasAttacked: false, onceEffectUsed: false },
+      perTurn: { hasAttacked: false, effectsUsed: [] },
       summoningSick: false,
     };
     instances[instanceId] = inst;
@@ -192,6 +204,7 @@ export function initialState(args: {
       deck: deckInsts, // Caller must shuffle in a separate setup step using Random.
       trash: [],
       field: [],
+      stage: null,
       life: [],
       donDeck,
       donCostArea: [],

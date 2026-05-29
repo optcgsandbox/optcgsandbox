@@ -30,6 +30,8 @@ export function applyAction(
   switch (action.type) {
     case 'PLAY_CARD':
       return playCard(state, player, action.instanceId, action.replaceTargetId);
+    case 'PLAY_STAGE':
+      return playStage(state, player, action.instanceId);
     case 'ATTACH_DON':
       return attachDon(state, player, action.targetInstanceId);
     case 'DECLARE_ATTACK':
@@ -96,10 +98,54 @@ function playCard(
     inst.summoningSick = true;
     p.field.push(inst);
   } else if (card.kind === 'stage') {
-    p.field.push(inst);
+    // D1: Stage cards must use PLAY_STAGE (CR §3-8). Reject PLAY_CARD for Stage
+    //     to keep the action surface aligned with zone separation.
+    return { state, events: [] };
   } else if (card.kind === 'event') {
     p.trash.push(instanceId);
   }
+
+  next.history.push({ type: 'CARD_PLAYED', player, instanceId, cost: card.cost });
+  return { state: next, events: next.history.slice(start) };
+}
+
+// === PLAY_STAGE === D1, CR §3-8-5
+// Stage Area is a single-slot zone. Playing a new Stage when one already
+// exists trashes the existing Stage (CR §3-8-5-1). The trashed Stage's
+// attached DON return to the cost area rested (CR §6-5-5-4).
+function playStage(
+  state: GameState,
+  player: PlayerId,
+  instanceId: string,
+): { state: GameState; events: GameEvent[] } {
+  const next: GameState = structuredClone(state);
+  const start = next.history.length;
+  const p = next.players[player];
+  const inst = next.instances[instanceId];
+  if (!inst || inst.controller !== player) return { state, events: [] };
+
+  const handIdx = p.hand.indexOf(instanceId);
+  if (handIdx === -1) return { state, events: [] };
+
+  const card = next.cardLibrary[inst.cardId];
+  if (card.kind !== 'stage') return { state, events: [] };
+  if (card.cost === null || card.cost > p.donCostArea.length) return { state, events: [] };
+
+  // Pay cost: rest `card.cost` DON from the cost area.
+  for (let i = 0; i < card.cost; i++) {
+    p.donRested.push(p.donCostArea.shift()!);
+  }
+  p.hand.splice(handIdx, 1);
+
+  // Trash existing Stage if any (CR §3-8-5-1). DON returns rested.
+  if (p.stage) {
+    const existing = p.stage;
+    while (existing.attachedDon.length > 0) {
+      p.donRested.push(existing.attachedDon.shift()!);
+    }
+    p.trash.push(existing.instanceId);
+  }
+  p.stage = inst;
 
   next.history.push({ type: 'CARD_PLAYED', player, instanceId, cost: card.cost });
   return { state: next, events: next.history.slice(start) };
@@ -139,6 +185,11 @@ function declareAttack(
   targetId: string,
 ): { state: GameState; events: GameEvent[] } {
   if (state.activePlayer !== player) return { state, events: [] };
+  // D2 (CR §6-5-6-1): neither player may attack on their first turn.
+  //   Turn 1 = A's first turn; turn 2 = B's first turn. Block both.
+  if ((state.turn === 1 && player === 'A') || (state.turn === 2 && player === 'B')) {
+    return { state, events: [] };
+  }
   const next: GameState = structuredClone(state);
   const start = next.history.length;
   const attacker = next.instances[attackerId];
@@ -191,7 +242,17 @@ function skipBlocker(state: GameState): { state: GameState; events: GameEvent[] 
   return { state: next, events: next.history.slice(start) };
 }
 
-/** Stage 3a: defender plays a Counter card (or character with counter value). */
+/** Stage 3a: defender plays a Counter from hand.
+ *
+ *  Two paths per CR §7-1-3-2:
+ *   - **Character counter** (CR §7-1-3-2-1): trash a Character from hand for
+ *     its printed Counter value (yellow chip). No DON cost.
+ *   - **Event counter** (CR §7-1-3-2-2, D3): pay the Event's printed cost AND
+ *     trash the Event from hand. The boost is the Event's `counterEventBoost`.
+ *
+ *  Both paths add to `pendingAttack.counterBoost`. The cost-payment step is
+ *  Event-specific.
+ */
 function playCounter(
   state: GameState,
   player: PlayerId,
@@ -207,13 +268,32 @@ function playCounter(
   if (handIdx === -1) return { state, events: [] };
   const inst = next.instances[instanceId];
   const card = next.cardLibrary[inst.cardId];
-  if (!card.counterValue || card.counterValue <= 0) return { state, events: [] };
+
+  let boost: number;
+  if (card.kind === 'event') {
+    // D3 (CR §7-1-3-2-2): Event counter — must pay cost + trash event.
+    if (card.counterEventBoost === null || card.counterEventBoost <= 0) {
+      return { state, events: [] };
+    }
+    if (card.cost === null || card.cost > p.donCostArea.length) {
+      return { state, events: [] };
+    }
+    // Pay cost: rest `card.cost` DON.
+    for (let i = 0; i < card.cost; i++) {
+      p.donRested.push(p.donCostArea.shift()!);
+    }
+    boost = card.counterEventBoost;
+  } else {
+    // Character counter (CR §7-1-3-2-1): use printed Counter chip; no cost.
+    if (!card.counterValue || card.counterValue <= 0) return { state, events: [] };
+    boost = card.counterValue;
+  }
 
   // Move from hand to trash, add counter boost to pendingAttack.
   p.hand.splice(handIdx, 1);
   p.trash.push(instanceId);
-  next.pendingAttack!.counterBoost += card.counterValue;
-  next.history.push({ type: 'COUNTER_PLAYED', instanceId, boost: card.counterValue });
+  next.pendingAttack!.counterBoost += boost;
+  next.history.push({ type: 'COUNTER_PLAYED', instanceId, boost });
   return { state: next, events: next.history.slice(start) };
 }
 

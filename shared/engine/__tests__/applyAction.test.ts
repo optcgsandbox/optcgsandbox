@@ -4,7 +4,7 @@ import { initialState } from '../GameState';
 import { setupGame } from '../phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 import type { Card, CharacterCard, LeaderCard } from '../cards/Card';
-import { setDonActive, attachDonCount } from './_donHelpers';
+import { setDonActive, attachDonCount, advanceOneFullCycle } from './_donHelpers';
 
 function makeLeader(id: string): LeaderCard {
   return {
@@ -86,6 +86,9 @@ describe('applyAction: DECLARE_ATTACK', () => {
     let s = advanceToMainPhase(build());
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    // D2 (CR §6-5-6-1): B's first turn is turn 2 → cannot battle. Advance one
+    //                   full cycle so B is on turn 4 with attacks unlocked.
+    s = advanceOneFullCycle(s);
     setDonActive(s, 'B', 2);
     attachDonCount(s, 'B', s.players.B.leader.instanceId, 1);
 
@@ -104,6 +107,7 @@ describe('applyAction: DECLARE_ATTACK', () => {
     let s = advanceToMainPhase(build());
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    s = advanceOneFullCycle(s); // D2: skip first-turn-no-attack window.
     setDonActive(s, 'B', 0);
     (s.cardLibrary['LB'] as LeaderCard).power = 4000;
 
@@ -116,6 +120,7 @@ describe('applyAction: DECLARE_ATTACK', () => {
     let s = advanceToMainPhase(build());
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    s = advanceOneFullCycle(s); // D2: skip first-turn-no-attack window.
     s.players.A.life = [];
     attachDonCount(s, 'B', s.players.B.leader.instanceId, 1);
 
