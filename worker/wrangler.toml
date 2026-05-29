@@ -2,6 +2,7 @@ name = "optcgsandbox-worker"
 main = "index.ts"
 compatibility_date = "2026-05-01"
 compatibility_flags = ["nodejs_compat"]
+account_id = "f9299f49498539b1e69f0bf3f21c3749"
 
 # Durable Objects bindings — backend-architecture.md §4.
 [[durable_objects.bindings]]

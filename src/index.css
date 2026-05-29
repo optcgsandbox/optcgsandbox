@@ -1,17 +1,52 @@
 @import "tailwindcss";
 
+/* Visual-spec §2.5 — 12-token Ship's Manifest palette + sim-only sky/sun accents.
+   Tokens are exposed as Tailwind v4 utilities (bg-paper-cream, text-ink-black, etc.). */
 @theme {
   --color-paper-cream: #F2E8D2;
+  --color-paper-fog: #E2DCC9;
   --color-ink-black: #15140F;
   --color-ink-iron: #3A372E;
-  --color-brass-canary: #D4A017;
+  --color-hull-teal: #0F4549;
+  --color-hull-deep: #082A2D;
   --color-seal-red: #A8261F;
+  --color-brass-canary: #D4A017;
+  --color-marine-fog: #B8C7C9;
+  --color-sky-horizon: #C9DCE6;
+  --color-sky-day: #E8F0F4;
+  --color-sun-brass: #E8B43D;
+
+  --font-display: "Lilita One", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --shadow-card: 0 4px 12px rgba(15, 20, 15, 0.18);
+  --shadow-frame: 0 0 40px rgba(15, 69, 73, 0.18);
 }
 
-:root {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+/* Light theme (default). Surface + text aliases follow spec §2.5. */
+:root,
+[data-theme="light"] {
+  --color-surface-1: var(--color-paper-cream);
+  --color-surface-2: var(--color-paper-fog);
+  --color-text-1: var(--color-ink-black);
+  --color-text-2: var(--color-ink-iron);
+  /* Desktop letterbox backdrop — sunny day above sea. */
+  --backdrop-gradient: linear-gradient(
+    180deg,
+    var(--color-sky-day) 0%,
+    var(--color-sky-horizon) 70%,
+    var(--color-marine-fog) 100%
+  );
   color-scheme: light;
-  background: var(--color-paper-cream);
+}
+
+[data-theme="dark"] {
+  --color-surface-1: var(--color-hull-deep);
+  --color-surface-2: var(--color-hull-teal);
+  --color-text-1: var(--color-paper-cream);
+  --color-text-2: var(--color-marine-fog);
+  --backdrop-gradient: linear-gradient(180deg, #082A2D 0%, #051A1C 100%);
+  color-scheme: dark;
 }
 
 html, body {
@@ -22,8 +57,35 @@ html, body {
   overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  font-family: var(--font-body);
+  color: var(--color-text-1);
+  background: var(--backdrop-gradient);
 }
 
 #root {
   min-height: 100dvh;
+}
+
+/* Tabular numbers everywhere life/DON/power render — keeps digits column-aligned. */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.01em;
+}
+.font-body {
+  font-family: var(--font-body);
+}
+.tabular {
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Paper grain placeholder hook — swap public/textures/paper-grain.png when commissioned. */
+.paper-grain {
+  background-image: radial-gradient(
+    circle at 10% 20%, rgba(15, 20, 15, 0.025) 0 1px, transparent 1px
+  ),
+  radial-gradient(
+    circle at 70% 65%, rgba(15, 20, 15, 0.03) 0 1px, transparent 1px
+  );
+  background-size: 5px 5px, 7px 7px;
 }
