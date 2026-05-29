@@ -11,7 +11,7 @@ import { setupGame } from '@shared/engine/phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '@shared/engine/phases/turn';
 import { getLegalActions } from '@shared/engine/rules/legality';
 import type { Action } from '@shared/protocol/actions';
-import type { Card, CharacterCard, LeaderCard } from '@shared/engine/cards/Card';
+import type { Card, CharacterCard, EventCard, LeaderCard, StageCard } from '@shared/engine/cards/Card';
 import type { GameState, PlayerId } from '@shared/engine/GameState';
 
 export type GameMode = 'hot-seat' | 'vs-easy' | 'vs-medium';
@@ -28,19 +28,44 @@ function makeChar(id: string, cost: number, power: number, color: 'red' | 'blue'
     counterValue: 1000, traits: [], keywords: [], effectTags: ['vanilla'],
   };
 }
+function makeEvent(id: string, cost: number, color: 'red' | 'blue' = 'red'): EventCard {
+  return {
+    id, name: id, kind: 'event', colors: [color], cost, power: null,
+    counterValue: null, counterEventBoost: null,
+    traits: [], keywords: [], effectTags: ['vanilla'],
+    effectText: 'No effect yet — placeholder event.',
+  };
+}
+function makeStage(id: string, cost: number, color: 'red' | 'blue' = 'red'): StageCard {
+  return {
+    id, name: id, kind: 'stage', colors: [color], cost, power: null,
+    counterValue: null, traits: [], keywords: [], effectTags: ['vanilla'],
+    effectText: 'No effect yet — placeholder stage.',
+  };
+}
 
-/** Quick test deck: 50 vanilla characters at varying costs. */
+/** Quick test deck: 50 cards mixing all kinds so the modal + zones can be
+ *  visually exercised. ~35 characters + ~10 events + ~5 stages. */
 function quickDeck(color: 'red' | 'blue'): Card[] {
   const deck: Card[] = [];
-  // 4× each at cost 1-9 + 2× cost 10 = ~50 cards
-  for (let cost = 1; cost <= 9; cost++) {
+  // Characters — 4× each at cost 1-8 + filler to ~35 total.
+  for (let cost = 1; cost <= 8; cost++) {
     for (let copy = 0; copy < 4; copy++) {
-      deck.push(makeChar(`${color}-${cost}-${copy}`, cost, cost * 1000 + 1000, color));
+      deck.push(makeChar(`${color}-c-${cost}-${copy}`, cost, cost * 1000 + 1000, color));
     }
   }
-  // Filler
-  while (deck.length < 50) {
-    deck.push(makeChar(`${color}-x-${deck.length}`, 4, 5000, color));
+  while (deck.length < 35) {
+    deck.push(makeChar(`${color}-c-x-${deck.length}`, 4, 5000, color));
+  }
+  // Events — 2× each at cost 1-5 = 10.
+  for (let cost = 1; cost <= 5; cost++) {
+    for (let copy = 0; copy < 2; copy++) {
+      deck.push(makeEvent(`${color}-e-${cost}-${copy}`, cost, color));
+    }
+  }
+  // Stages — 1× each at cost 1-5 = 5.
+  for (let cost = 1; cost <= 5; cost++) {
+    deck.push(makeStage(`${color}-s-${cost}`, cost, color));
   }
   return deck.slice(0, 50);
 }
