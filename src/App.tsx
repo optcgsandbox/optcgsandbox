@@ -138,7 +138,7 @@ export default function App() {
                          disabled:opacity-40
                          focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
               style={{
-                bottom: `calc(28dvh + 16px + env(safe-area-inset-bottom, 0px))`,
+                bottom: `calc(24dvh + 16px + env(safe-area-inset-bottom, 0px))`,
               }}
             >
               End turn
