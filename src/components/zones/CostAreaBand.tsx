@@ -136,9 +136,12 @@ interface DonCardProps {
 function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap }: DonCardProps) {
   const targetRotate = rested ? 90 : 0;
   return (
+    // Static wrapper carries data-flip-back so Framer transforms inside the
+    // motion.button (animate/whileHover/whileTap) don't override the CSS
+    // counter-rotation on the opp side.
+    <div data-flip-back style={{ display: 'inline-block', width: DON_CARD_W, height: DON_CARD_H }}>
     <motion.button
       type="button"
-      data-flip-back
       initial={reduced ? false : { scale: 0, opacity: 0 }}
       animate={
         armed && !reduced
@@ -199,6 +202,7 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
     >
       <DonCardArt active={!rested} />
     </motion.button>
+    </div>
   );
 }
 

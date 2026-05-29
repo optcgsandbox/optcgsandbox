@@ -630,9 +630,14 @@ export const CardArt = memo(function CardArt({
   const attackerHover = selectedAttacker ? { y: -8, scale: 1.05 } : {};
 
   return (
+    // Outer static wrapper carries data-flip-back so the CSS counter-rotation
+    // for the opp half is not overridden by Framer Motion's inline transforms
+    // (whileHover/whileTap/animate write transform=...; that would clobber
+    // the rotate(180deg) from the CSS rule and cause the card to flip back
+    // upside-down on hover).
+    <div data-flip-back style={{ display: 'inline-block', width: dims.w, height: dims.h }}>
     <motion.button
       type="button"
-      data-flip-back
       layoutId={inst?.instanceId}
       layout
       onClick={onTap}
@@ -682,6 +687,7 @@ export const CardArt = memo(function CardArt({
       {isLeader && typeof lifeCount === 'number' && <LifePill count={lifeCount} />}
       {inst && inst.attachedDon.length > 0 && <DonBadge count={inst.attachedDon.length} />}
     </motion.button>
+    </div>
   );
 });
 

@@ -59,7 +59,11 @@ export const CardDetailModal = memo(function CardDetailModal() {
 
   const close = useCallback(() => {
     setCardDetailOpen(false);
-  }, [setCardDetailOpen]);
+    // CLOSE must also clear inspectedCardId so hand cards return to their
+    // resting state in the fan (otherwise the inspected card stays lifted
+    // + siblings stay dimmed).
+    setInspectedCardId(null);
+  }, [setCardDetailOpen, setInspectedCardId]);
 
   // Decide action buttons per kind + phase.
   const buttons: ActionButton[] = useMemo(() => {
@@ -387,33 +391,20 @@ export const CardDetailModal = memo(function CardDetailModal() {
                 'calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 48px)',
               // Owner direction 2026-05-29: transparent — let the card itself
               // self-frame. No panel chrome, no border, no shadow, no padding.
+              // NOTE: no stopPropagation here — clicks on empty panel area
+              // (above/sides of the card) MUST close the modal. Only the card
+              // art itself and the action buttons absorb clicks.
               background: 'transparent',
               padding: 0,
             }}
-            onClick={(e) => e.stopPropagation()}
           >
-            {/* Close (top-right on backdrop). */}
-            <div className="absolute right-0 top-0 z-10" style={{ height: 32 }}>
-              <button
-                ref={closeButtonRef}
-                type="button"
-                onClick={close}
-                aria-label="Close card details"
-                className="flex h-9 w-9 items-center justify-center rounded-full
-                           bg-ink-black/55 text-paper-cream
-                           hover:bg-ink-black/75
-                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sun-brass"
-              >
-                <svg viewBox="0 0 16 16" className="h-4 w-4" fill="currentColor" aria-hidden="true">
-                  <path d="M3.7 3.7a1 1 0 0 1 1.4 0L8 6.6l2.9-2.9a1 1 0 1 1 1.4 1.4L9.4 8l2.9 2.9a1 1 0 0 1-1.4 1.4L8 9.4l-2.9 2.9a1 1 0 0 1-1.4-1.4L6.6 8 3.7 5.1a1 1 0 0 1 0-1.4Z" />
-                </svg>
-              </button>
-            </div>
-
             {/* Card art — scaled up so printed text is readable.
-                CardArt at 'modal' size is 220×308; scale 1.5x → ~330×462. */}
+                CardArt at 'modal' size is 220×308; scale 1.5x → ~330×462.
+                stopPropagation here so taps on the card itself don't close
+                the modal (owner can read it). */}
             <div
               className="flex justify-center"
+              onClick={(e) => e.stopPropagation()}
               style={{
                 transform: 'scale(1.5)',
                 transformOrigin: 'center top',
@@ -448,7 +439,9 @@ export const CardDetailModal = memo(function CardDetailModal() {
                         ? btn.variant === 'primary-red'
                           ? 'bg-seal-red text-paper-cream'
                           : 'bg-hull-teal text-paper-cream'
-                        : 'bg-transparent text-ink-black border-[1.5px] border-ink-black',
+                        // Filled dark secondary (not cream) — reads clearly
+                        // on the dim backdrop without introducing cream chrome.
+                        : 'bg-ink-iron text-paper-cream',
                       btn.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
                     ].join(' ')}
                     style={{
