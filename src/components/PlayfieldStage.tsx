@@ -44,6 +44,7 @@ import { TrashSlot } from './zones/TrashSlot';
 import { DonDeckSlot } from './zones/DonDeckSlot';
 import { CostAreaBand } from './zones/CostAreaBand';
 import { PhaseColumn } from './zones/PhaseColumn';
+import { EndTurnButton } from './EndTurnButton';
 import type { CardInstance, PlayerId, PlayerZones } from '@shared/engine/GameState';
 import type { Card } from '@shared/engine/cards/Card';
 
@@ -228,8 +229,8 @@ function LeaderRow({
     >
       <PhaseColumn playerId={playerId} isYou={isYou} />
       <div
-        className="flex grow items-center justify-around"
-        style={{ gap: 4 }}
+        className="flex grow items-center justify-start"
+        style={{ gap: 6 }}
       >
         <ZoneSlot
           kind="leader"
@@ -254,6 +255,14 @@ function LeaderRow({
         </ZoneSlot>
         <StageSlot playerId={playerId} isYou={isYou} />
         <DeckSlot playerId={playerId} isYou={isYou} />
+        {/* End Turn button fills the empty space to the right of the deck.
+            Only renders on YOUR side — opp side stays empty. Owner direction
+            2026-05-29: pack leader/stage/deck left + End Turn next to them. */}
+        {isYou && (
+          <div className="ml-auto flex h-full items-center">
+            <EndTurnButton />
+          </div>
+        )}
       </div>
     </div>
   );
