@@ -1,11 +1,23 @@
-// Curved hand layout math — visual-spec.md §5.4.
-// For n cards at index i:
-//   theta = (i - (n-1)/2) * step,  step = min(7°, 56°/n)
-//   arcY  = |i - (n-1)/2|^1.5 * 3px  (gentle parabola, max ~14px lift)
-//   x     = (i - (n-1)/2) * spacing  (negative overlap so 8-card hand fits in 430px)
+// Hand-fan math — visual-design-spec.md §3.2 (replaces the prior
+// visual-spec.md §5.4 implementation, which used a ±20° aggressive arc that
+// owner rejected on mobile).
 //
-// Returns transform values intended for a `<motion.div style={{ originY: 1 }}>`.
-// originY: 1 means the card pivots from its bottom edge so the fan looks anchored.
+// Mobile-tuned, anchor-at-bottom-center arc that fits 1–10 cards inside the
+// 398px inner playmat width (430 − 32 padding) without clipping.
+//
+// Per-card geometry:
+//   spread       = lerp(140, 240, clamp((n-4)/6, 0, 1))   px
+//   spacing      = spread / max(n-1, 1)                   px
+//   x            = (i - center) * spacing                 px
+//   y            = -14 * (1 - normalized^2)               px  (apex lift -14)
+//   maxRotateDeg = lerp(4, 8, clamp((n-4)/6, 0, 1))       °
+//   rotate       = maxRotateDeg * normalized              °
+//
+//   center      = (n - 1) / 2
+//   normalized  = (i - center) / max(center, 1)           ∈ [-1, +1]
+//
+// Returns a `{ x, y, rotate }` triple consumed by HandFan.tsx. Card pivot must
+// be bottom-center (`transform-origin: 50% 100%`).
 
 export interface FanPosition {
   x: number;
@@ -13,36 +25,53 @@ export interface FanPosition {
   rotate: number;
 }
 
-const MAX_STEP_DEG = 7;
-const TOTAL_ARC_DEG = 56;
-const ARC_HEIGHT_PX = 3;
-const CARD_WIDTH_PX = 92; // matches CARD_DIMS.hand.w
-// Overlap so an 8-card hand stays inside the 430px portrait frame.
-// Spacing of card_width * 0.6 leaves a 40% reveal per card (spec §5.4).
-const SPACING_RATIO = 0.6;
+// Hand card dimensions — visual-design-spec.md §3.1.
+export const HAND_CARD_W = 64;
+export const HAND_CARD_H = 90;
+
+const CENTER_LIFT_PX = 14;
+
+function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * t;
+}
+
+function clamp(v: number, lo: number, hi: number): number {
+  return Math.max(lo, Math.min(hi, v));
+}
+
+/** Linear interpolation factor for n ∈ [4, 10] used for both spread + rotation. */
+function sizeFactor(n: number): number {
+  return clamp((n - 4) / 6, 0, 1);
+}
 
 export function fanPosition(i: number, n: number): FanPosition {
   if (n <= 0) return { x: 0, y: 0, rotate: 0 };
-  if (n === 1) return { x: 0, y: 0, rotate: 0 };
+  // Single-card case sits at the apex (lifted -14, no spread).
+  if (n === 1) return { x: 0, y: -CENTER_LIFT_PX, rotate: 0 };
 
   const center = (n - 1) / 2;
   const offset = i - center;
-  const stepDeg = Math.min(MAX_STEP_DEG, TOTAL_ARC_DEG / n);
-  const rotate = offset * stepDeg;
+  const normalized = offset / Math.max(center, 1);
 
-  // Parabolic lift — outermost cards sit ~14px below the center card.
-  // ** 1.5 keeps the curve gentle in the middle and steeper at the edges.
-  const arcY = Math.pow(Math.abs(offset), 1.5) * ARC_HEIGHT_PX;
-  const y = arcY;
+  const t = sizeFactor(n);
+  const spread = lerp(140, 240, t);
+  const spacing = spread / Math.max(n - 1, 1);
+  const maxRotateDeg = lerp(4, 8, t);
 
-  const spacing = CARD_WIDTH_PX * SPACING_RATIO;
   const x = offset * spacing;
+  // Parabolic lift: edges at 0, apex at -14 (negative = up-screen).
+  const y = -CENTER_LIFT_PX * (1 - normalized * normalized);
+  const rotate = maxRotateDeg * normalized;
 
   return { x, y, rotate };
 }
 
-/** Maximum width the fan occupies, used by HandFan for centering / overflow checks. */
+/** Total footprint width (outermost-left card edge → outermost-right edge). */
 export function fanFootprint(n: number): number {
-  if (n <= 1) return CARD_WIDTH_PX;
-  return CARD_WIDTH_PX + (n - 1) * CARD_WIDTH_PX * SPACING_RATIO;
+  if (n <= 1) return HAND_CARD_W;
+  const t = sizeFactor(n);
+  const spread = lerp(140, 240, t);
+  // Outermost card centers sit at ±spread/2, so adding card width gives the
+  // edge-to-edge envelope.
+  return spread + HAND_CARD_W;
 }

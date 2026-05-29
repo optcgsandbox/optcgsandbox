@@ -1,7 +1,7 @@
-// PlayfieldStage — design-reference.md §3.4.
+// PlayfieldStage — design-reference.md §2 + §7 + §10.
 //
 // Official Bandai-aligned playmat for the 430px portrait phone frame. Layout
-// follows the playsheet's two-player mirror (design-reference §2 + §3.4):
+// follows the playsheet's two-player mirror (design-reference §2):
 //
 //   ┌──┬─────────────────────────────────────────────┐
 //   │L │ DonDeck │ CostArea │ Trash                  │  ← opp far row
@@ -14,21 +14,18 @@
 //   └──┴─────────────────────────────────────────────┘
 //                                              [HAND]
 //
-// The LIFE column is a fixed-width strip on the far LEFT of the playmat,
-// full height. Opp's LifeStack sits in the top half of that strip, your
-// LifeStack in the bottom half. Per §3.4 L1, your column's cards stack
-// vertically with ~4px overlap — handled inside LifeStack.
-//
-// The playmat surface itself is tournament felt-green (§3.4 L8) via the
-// `.felt-playmat` class in `src/index.css`. The masthead/app chrome stays
-// cream paper (handled by App.tsx).
+// The playmat surface is CREAM PAPER (cream `.paper-playmat`) — not felt.
+// Tap-outside-card on the surface clears inspectedCardId AND deselects any
+// pending attacker.
 
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import { LayoutGroup } from 'framer-motion';
 import { useGameStore } from '../store/game';
+import { useDonArm } from '../store/donArm';
 import { CardArt } from './CardArt';
 import { ZoneSlot } from './ZoneSlot';
 import { HandFan } from './HandFan';
+import { CardDetailModal } from './CardDetailModal';
 import { AttackResolutionOverlay } from './AttackResolutionOverlay';
 import { TriggerPrompt } from './TriggerPrompt';
 import { LifeRevealOverlay } from './LifeRevealOverlay';
@@ -44,6 +41,117 @@ import type { CardInstance, PlayerId, PlayerZones } from '@shared/engine/GameSta
 import type { Card } from '@shared/engine/cards/Card';
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Hooks: legal-action lookups for tap-routing affordances.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Returns the set of instance IDs that are legal DECLARE_ATTACK targets for
+ *  the currently-selected attacker (or empty set if no attacker selected). */
+function useLegalAttackTargets(): Set<string> {
+  const selectedAttackerId = useGameStore((s) => s.selectedAttackerId);
+  const legalActions = useGameStore((s) => s.legalActions);
+  if (!selectedAttackerId) return new Set();
+  const out = new Set<string>();
+  for (const a of legalActions) {
+    if (a.type === 'DECLARE_ATTACK' && a.attackerInstanceId === selectedAttackerId) {
+      out.add(a.targetInstanceId);
+    }
+  }
+  return out;
+}
+
+/** Returns the set of friendly instance IDs that can be selected as attackers
+ *  this turn (engine's DECLARE_ATTACK actions enumerate them). */
+function useAttackerCandidates(): Set<string> {
+  const legalActions = useGameStore((s) => s.legalActions);
+  const out = new Set<string>();
+  for (const a of legalActions) {
+    if (a.type === 'DECLARE_ATTACK') out.add(a.attackerInstanceId);
+  }
+  return out;
+}
+
+/** Returns the set of friendly instance IDs that are legal ATTACH_DON targets. */
+function useDonAttachCandidates(): Set<string> {
+  const legalActions = useGameStore((s) => s.legalActions);
+  const out = new Set<string>();
+  for (const a of legalActions) {
+    if (a.type === 'ATTACH_DON') out.add(a.targetInstanceId);
+  }
+  return out;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Tap routing for field cards (Leader + Character + Stage).
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * design-reference §7 tap order:
+ *   1. If DON armed AND target is friendly + legal      → dispatch ATTACH_DON
+ *   2. Else if attacker selected AND target legal opp   → dispatch DECLARE_ATTACK
+ *   3. Else if friendly + can attack this turn          → setSelectedAttackerId
+ *   4. Else                                             → setInspectedCardId
+ */
+function useFieldTapRouter() {
+  const armedDonId = useDonArm((s) => s.armedDonId);
+  const disarmDon = useDonArm((s) => s.disarm);
+  const selectedAttackerId = useGameStore((s) => s.selectedAttackerId);
+  const setSelectedAttackerId = useGameStore((s) => s.setSelectedAttackerId);
+  const setInspectedCardId = useGameStore((s) => s.setInspectedCardId);
+  const dispatch = useGameStore((s) => s.dispatch);
+  const legalAttackTargets = useLegalAttackTargets();
+  const attackerCandidates = useAttackerCandidates();
+  const donAttachCandidates = useDonAttachCandidates();
+
+  return useCallback(
+    (instanceId: string, isFriendly: boolean) => {
+      // 1. DON-attach mode.
+      if (armedDonId && isFriendly && donAttachCandidates.has(instanceId)) {
+        dispatch({ type: 'ATTACH_DON', targetInstanceId: instanceId });
+        disarmDon();
+        return;
+      }
+      // 2. Declare attack on legal opponent target.
+      if (
+        selectedAttackerId &&
+        !isFriendly &&
+        legalAttackTargets.has(instanceId)
+      ) {
+        dispatch({
+          type: 'DECLARE_ATTACK',
+          attackerInstanceId: selectedAttackerId,
+          targetInstanceId: instanceId,
+        });
+        setSelectedAttackerId(null);
+        return;
+      }
+      // 3. Friendly card can attack → select as attacker. Toggle off when
+      //    re-tapping the same one.
+      if (isFriendly && attackerCandidates.has(instanceId)) {
+        if (selectedAttackerId === instanceId) {
+          setSelectedAttackerId(null);
+        } else {
+          setSelectedAttackerId(instanceId);
+        }
+        return;
+      }
+      // 4. Otherwise — inspect.
+      setInspectedCardId(instanceId);
+    },
+    [
+      armedDonId,
+      disarmDon,
+      selectedAttackerId,
+      setSelectedAttackerId,
+      setInspectedCardId,
+      dispatch,
+      legalAttackTargets,
+      attackerCandidates,
+      donAttachCandidates,
+    ],
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Sub-row components.
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -54,16 +162,53 @@ interface HalfProps {
   leaderCard: Card;
 }
 
-/** Wrap CardArt with the card lookup so field characters render with their library data. */
-function FieldCharacter({ inst, card }: { inst: CardInstance; card: Card }) {
-  return <CardArt inst={inst} card={card} size="field" />;
+function FieldCharacter({
+  inst,
+  card,
+  isFriendly,
+  onTap,
+}: {
+  inst: CardInstance;
+  card: Card;
+  isFriendly: boolean;
+  onTap?: () => void;
+}) {
+  const selectedAttackerId = useGameStore((s) => s.selectedAttackerId);
+  const armedDonId = useDonArm((s) => s.armedDonId);
+  const legalAttackTargets = useLegalAttackTargets();
+  const donAttachCandidates = useDonAttachCandidates();
+
+  const isSelectedAttacker = selectedAttackerId === inst.instanceId;
+  const isPendingTarget =
+    !isFriendly && !!selectedAttackerId && legalAttackTargets.has(inst.instanceId);
+  const isDonDropTarget =
+    isFriendly && !!armedDonId && donAttachCandidates.has(inst.instanceId);
+
+  return (
+    <CardArt
+      inst={inst}
+      card={card}
+      size="field"
+      onTap={onTap}
+      selectedAttacker={isSelectedAttacker}
+      pendingTarget={isPendingTarget}
+      donDropTarget={isDonDropTarget}
+    />
+  );
 }
 
-/** Row of 5 character slots — design-reference §3.4 L2. Sits closest to the
- *  contact zone so attacks visually "cross" between rows. */
-function CharacterRow({ zones, playerId }: { zones: PlayerZones; playerId: PlayerId }) {
+/** Row of 5 character slots — design-reference §2. */
+function CharacterRow({
+  zones,
+  playerId,
+  isFriendly,
+}: {
+  zones: PlayerZones;
+  playerId: PlayerId;
+  isFriendly: boolean;
+}) {
   const library = useGameStore((s) => s.state.cardLibrary);
-  // Always render exactly 5 slots so empty positions still hit-test.
+  const tapRouter = useFieldTapRouter();
   const slots: (CardInstance | null)[] = [];
   for (let i = 0; i < 5; i++) slots[i] = zones.field[i] ?? null;
   return (
@@ -74,16 +219,35 @@ function CharacterRow({ zones, playerId }: { zones: PlayerZones; playerId: Playe
     >
       {slots.map((inst, i) => (
         <ZoneSlot key={`${playerId}-char-${i}`} kind="character" playerId={playerId} index={i}>
-          {inst && <FieldCharacter inst={inst} card={library[inst.cardId]} />}
+          {inst && (
+            <FieldCharacter
+              inst={inst}
+              card={library[inst.cardId]}
+              isFriendly={isFriendly}
+              onTap={() => tapRouter(inst.instanceId, isFriendly)}
+            />
+          )}
         </ZoneSlot>
       ))}
     </div>
   );
 }
 
-/** Leader row — design-reference §3.4 L3. Phase column (left) → Leader (center)
- *  → Stage (right of leader) → Deck (far right). */
+/** Leader row — Phase column / Leader / Stage / Deck. */
 function LeaderRow({ zones, playerId, isYou, leaderCard }: HalfProps) {
+  const tapRouter = useFieldTapRouter();
+  const selectedAttackerId = useGameStore((s) => s.selectedAttackerId);
+  const armedDonId = useDonArm((s) => s.armedDonId);
+  const legalAttackTargets = useLegalAttackTargets();
+  const donAttachCandidates = useDonAttachCandidates();
+
+  const leaderId = zones.leader.instanceId;
+  const isSelectedAttacker = selectedAttackerId === leaderId;
+  const isPendingTarget =
+    !isYou && !!selectedAttackerId && legalAttackTargets.has(leaderId);
+  const isDonDropTarget =
+    isYou && !!armedDonId && donAttachCandidates.has(leaderId);
+
   return (
     <div className="flex h-full w-full items-center justify-between gap-1 px-1">
       <PhaseColumn playerId={playerId} isYou={isYou} />
@@ -94,10 +258,11 @@ function LeaderRow({ zones, playerId, isYou, leaderCard }: HalfProps) {
               inst={zones.leader}
               card={leaderCard}
               size="leader"
-              // Source of truth = engine state; printed `card.life` is the *initial*
-              // value and stays at 5 forever once any life is taken. See
-              // visual-spec-layout-correction.md §E.1.
               liveLifeCount={zones.life.length}
+              onTap={() => tapRouter(leaderId, isYou)}
+              selectedAttacker={isSelectedAttacker}
+              pendingTarget={isPendingTarget}
+              donDropTarget={isDonDropTarget}
             />
           </div>
         </ZoneSlot>
@@ -108,8 +273,7 @@ function LeaderRow({ zones, playerId, isYou, leaderCard }: HalfProps) {
   );
 }
 
-/** Far row — design-reference §3.4 L4/L5/L6. DonDeck (left corner) →
- *  CostArea (wide center) → Trash (right corner). */
+/** Far row — DonDeck / CostArea / Trash. */
 function FarRow({ playerId, isYou }: { playerId: PlayerId; isYou: boolean }) {
   return (
     <div className="flex h-full w-full items-center justify-between gap-1.5 px-1">
@@ -122,7 +286,6 @@ function FarRow({ playerId, isYou }: { playerId: PlayerId; isYou: boolean }) {
   );
 }
 
-/** Opponent half — top-to-bottom: FarRow, LeaderRow, CharacterRow (closest to contact). */
 function OpponentHalf(props: HalfProps) {
   return (
     <div
@@ -133,12 +296,11 @@ function OpponentHalf(props: HalfProps) {
     >
       <FarRow playerId={props.playerId} isYou={false} />
       <LeaderRow {...props} />
-      <CharacterRow zones={props.zones} playerId={props.playerId} />
+      <CharacterRow zones={props.zones} playerId={props.playerId} isFriendly={false} />
     </div>
   );
 }
 
-/** Your half — top-to-bottom (mirror of opp): CharacterRow (closest to contact), LeaderRow, FarRow. */
 function YourHalf(props: HalfProps) {
   return (
     <div
@@ -147,14 +309,14 @@ function YourHalf(props: HalfProps) {
       role="region"
       aria-label="Your half"
     >
-      <CharacterRow zones={props.zones} playerId={props.playerId} />
+      <CharacterRow zones={props.zones} playerId={props.playerId} isFriendly={true} />
       <LeaderRow {...props} />
       <FarRow playerId={props.playerId} isYou={true} />
     </div>
   );
 }
 
-/** Contact zone — the visual mirror line where attacks cross. */
+/** Contact-zone strip — brass-canary glow line between halves. */
 function ContactZone() {
   return (
     <div
@@ -174,6 +336,12 @@ function ContactZone() {
 export const PlayfieldStage = memo(function PlayfieldStage() {
   const state = useGameStore((s) => s.state);
   const seat = useGameStore((s) => s.viewAs);
+  const setInspectedCardId = useGameStore((s) => s.setInspectedCardId);
+  const inspectedCardId = useGameStore((s) => s.inspectedCardId);
+  const setSelectedAttackerId = useGameStore((s) => s.setSelectedAttackerId);
+  const selectedAttackerId = useGameStore((s) => s.selectedAttackerId);
+  const disarmDon = useDonArm((s) => s.disarm);
+  const armedDonId = useDonArm((s) => s.armedDonId);
   const opponentSeat: PlayerId = seat === 'A' ? 'B' : 'A';
 
   const you = state.players[seat];
@@ -181,12 +349,30 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
   const youLeader = state.cardLibrary[you.leader.cardId];
   const oppLeader = state.cardLibrary[opp.leader.cardId];
 
+  // Tap-outside-card on the playmat surface clears transient UI state.
+  const onPlaymatTap = useCallback(() => {
+    if (inspectedCardId) setInspectedCardId(null);
+    if (selectedAttackerId) setSelectedAttackerId(null);
+    if (armedDonId) disarmDon();
+  }, [
+    inspectedCardId,
+    setInspectedCardId,
+    selectedAttackerId,
+    setSelectedAttackerId,
+    armedDonId,
+    disarmDon,
+  ]);
+
   return (
     <LayoutGroup>
-      <div className="absolute inset-0 overflow-hidden" style={{ perspective: '1200px' }}>
-        {/* Felt-green playmat surface — design-reference §3.4 L8. */}
+      <div
+        className="absolute inset-0 overflow-hidden"
+        style={{ perspective: '1200px' }}
+        onClick={onPlaymatTap}
+      >
+        {/* Cream-paper playmat surface — design-reference §3 (replaces felt-green). */}
         <div
-          className="felt-playmat absolute inset-0"
+          className="paper-playmat paper-grain absolute inset-0"
           style={{
             transform: 'rotateX(8deg)',
             transformOrigin: '50% 60%',
@@ -197,15 +383,14 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
             className="grid h-full w-full"
             style={{
               gridTemplateColumns: 'var(--playmat-life-col-w, 32px) 1fr',
-              // Leave room at the bottom for the hand fan (~24dvh) and a bit
-              // for the top-bar header (~6dvh) so nothing collides.
-              paddingTop: '6dvh',
-              paddingBottom: '24dvh',
-              paddingLeft: '2px',
-              paddingRight: '4px',
+              // design-reference §10 edge padding + safe area.
+              paddingTop: 'calc(env(safe-area-inset-top, 0px) + 6dvh)',
+              paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 24dvh)',
+              paddingLeft: 16,
+              paddingRight: 16,
             }}
           >
-            {/* ────────── LIFE column — design-reference §3.4 L1. ────────── */}
+            {/* ────────── LIFE column ────────── */}
             <div
               className="grid h-full w-full"
               style={{ gridTemplateRows: '1fr 6px 1fr' }}
@@ -221,7 +406,7 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
               </div>
             </div>
 
-            {/* ────────── Field column — opp half / contact / your half. ────────── */}
+            {/* ────────── Field column ────────── */}
             <div
               className="grid h-full w-full"
               style={{ gridTemplateRows: '1fr auto 1fr' }}
@@ -243,22 +428,15 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
           </div>
         </div>
 
-        {/* Hand fan is absolute-positioned to bottom; sits over the tilt so cards stay flat. */}
+        {/* Hand fan — absolute-bottom, sits over the tilt so cards stay flat. */}
         <HandFan playerId={seat} interactive />
 
-        {/* Damage / counter overlay — only renders when pendingAttack + counter_window. */}
+        {/* Card detail modal — second-tap on inspected card opens it. */}
+        <CardDetailModal />
+
         <AttackResolutionOverlay />
-
-        {/* Life reveal — center-screen flip when one of YOUR life cards is taken,
-            with shared-element layoutId flight into the hand on dismiss. */}
         <LifeRevealOverlay />
-
-        {/* Event card reveal — center-screen flash when an event resolves,
-            with shared-element flight into the trash on dismiss. */}
         <EventCardOverlay />
-
-        {/* Trigger prompt — modal Activate/Decline dialog when state.pendingTrigger
-            is set AND the viewer is the trigger's controller. */}
         <TriggerPrompt />
       </div>
     </LayoutGroup>

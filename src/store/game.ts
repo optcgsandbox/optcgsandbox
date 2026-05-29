@@ -67,10 +67,25 @@ interface GameStore {
   viewAs: PlayerId;
   legalActions: Action[];
   aiThinking: boolean;
+  /** UI-D3 (design-reference §5 + visual-design-spec §3.5):
+   *  Instance ID of the hand or field card the player has "lifted" for
+   *  inspection. Null when nothing is lifted. A second tap on a lifted hand
+   *  card opens the CardDetailModal; tap-outside clears it. */
+  inspectedCardId: string | null;
+  /** UI-D3: When true, the CardDetailModal is open for `inspectedCardId`. */
+  cardDetailOpen: boolean;
+  /** UI-D2 (design-reference §7): Instance ID of the friendly character/leader
+   *  selected as the attacker. Tapping a legal opp target dispatches
+   *  DECLARE_ATTACK; tapping the same attacker again or an empty playmat
+   *  cancels. Cleared whenever phase or activePlayer changes. */
+  selectedAttackerId: string | null;
   dispatch: (action: Action) => void;
   reset: (seed?: number) => void;
   setMode: (m: GameMode) => void;
   endTurnAndAdvance: () => Promise<void>;
+  setInspectedCardId: (id: string | null) => void;
+  setCardDetailOpen: (open: boolean) => void;
+  setSelectedAttackerId: (id: string | null) => void;
 }
 
 const AI_HUMAN: PlayerId = 'A';
@@ -120,6 +135,9 @@ export const useGameStore = create<GameStore>((set, get) => {
     viewAs: 'A',
     legalActions: getLegalActions(initial, 'A'),
     aiThinking: false,
+    inspectedCardId: null,
+    cardDetailOpen: false,
+    selectedAttackerId: null,
 
     dispatch(action) {
       const { state } = get();
@@ -143,10 +161,32 @@ export const useGameStore = create<GameStore>((set, get) => {
         next = applyAction(next, reactivePlayer, skip).state;
       }
 
+      // UI-D2/D3: any phase or active-player change clears transient UI state.
+      const phaseOrPlayerChanged =
+        next.phase !== state.phase || next.activePlayer !== state.activePlayer;
       set({
         state: next,
         legalActions: getLegalActions(next, next.activePlayer),
+        ...(phaseOrPlayerChanged
+          ? { inspectedCardId: null, cardDetailOpen: false, selectedAttackerId: null }
+          : {}),
       });
+    },
+
+    setInspectedCardId(id) {
+      // Switching to a new card or clearing also closes any open detail modal.
+      set({
+        inspectedCardId: id,
+        cardDetailOpen: id === null ? false : get().cardDetailOpen,
+      });
+    },
+
+    setCardDetailOpen(open) {
+      set({ cardDetailOpen: open });
+    },
+
+    setSelectedAttackerId(id) {
+      set({ selectedAttackerId: id });
     },
 
     async endTurnAndAdvance() {
@@ -156,7 +196,15 @@ export const useGameStore = create<GameStore>((set, get) => {
       s = runDrawPhase(s);
       s = runDonPhase(s);
       const newViewAs = get().mode === 'hot-seat' ? s.activePlayer : AI_HUMAN;
-      set({ state: s, legalActions: getLegalActions(s, s.activePlayer), viewAs: newViewAs });
+      // UI-D2/D3: turn boundary clears transient UI state.
+      set({
+        state: s,
+        legalActions: getLegalActions(s, s.activePlayer),
+        viewAs: newViewAs,
+        inspectedCardId: null,
+        cardDetailOpen: false,
+        selectedAttackerId: null,
+      });
 
       const m = get().mode;
       if ((m === 'vs-easy' || m === 'vs-medium') && s.activePlayer === AI_OPPONENT && !s.result) {
@@ -171,6 +219,9 @@ export const useGameStore = create<GameStore>((set, get) => {
         legalActions: getLegalActions(fresh, fresh.activePlayer),
         viewAs: 'A',
         aiThinking: false,
+        inspectedCardId: null,
+        cardDetailOpen: false,
+        selectedAttackerId: null,
       });
     },
 

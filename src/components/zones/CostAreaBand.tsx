@@ -25,29 +25,101 @@ interface CostAreaBandProps {
   isYou: boolean;
 }
 
-// DON card aesthetic (per rule_manual.pdf p4): teal-green DON card with a
-// brass "+1000" stamp at center. We render a compact representation: a
-// rounded chip with the +1000 stamp visible, sized so 10 fit horizontally
-// across the bottom band of a 430px-wide phone frame.
+// DON card front — visual-design-spec.md §1.2–1.4.
+// Cream body with ink ど!! mark sitting on a faint radial speed-line burst,
+// brass underline accent, and a brass "+1000" stamp inside an ink bottom band.
+// 30×42px base; scales for hand/field renders if ever needed.
 const DON_CARD_W = 30;
 const DON_CARD_H = 42;
+
+/** Radial speed-lines burst behind the ど!! mark. Pure decoration. */
+function SpeedLines() {
+  // 12 evenly-spaced radial dashes (every 30°) emanating from (50%, 38%).
+  const dashes = Array.from({ length: 12 }, (_, i) => i * 30);
+  return (
+    <svg
+      viewBox="0 0 30 42"
+      className="absolute inset-0 h-full w-full"
+      aria-hidden="true"
+      preserveAspectRatio="none"
+    >
+      <g
+        stroke="var(--color-ink-black)"
+        strokeOpacity={0.18}
+        strokeWidth={0.5}
+        strokeLinecap="round"
+      >
+        {dashes.map((deg) => (
+          <line
+            key={deg}
+            x1={15}
+            y1={16}
+            x2={15}
+            y2={10}
+            transform={`rotate(${deg} 15 16)`}
+          />
+        ))}
+      </g>
+    </svg>
+  );
+}
 
 function DonCardArt({ active }: { active: boolean }) {
   return (
     <div
       className={[
-        'absolute inset-0 rounded-md overflow-hidden flex flex-col items-center justify-center',
+        'absolute inset-0 overflow-hidden rounded-[3px]',
+        'bg-paper-cream paper-grain',
         active
-          ? 'bg-hull-teal shadow-[0_2px_4px_rgba(0,0,0,0.35)]'
-          : 'bg-hull-teal/70 shadow-[0_1px_2px_rgba(0,0,0,0.25)]',
+          ? 'shadow-[0_2px_4px_rgba(15,20,15,0.35)]'
+          : 'shadow-[0_1px_2px_rgba(15,20,15,0.18)]',
       ].join(' ')}
+      style={{
+        border: '0.75px solid var(--color-ink-black)',
+      }}
       aria-hidden="true"
     >
-      <div className="absolute inset-0.5 rounded-sm ring-1 ring-brass-canary/60" />
-      {/* "+1000" brass stamp — the DON card's defining visual. */}
-      <span className="font-display tabular text-[0.7rem] leading-none text-brass-canary drop-shadow-[0_1px_0_rgba(0,0,0,0.5)]">
-        +1000
-      </span>
+      <SpeedLines />
+      {/* ど!! mark — Lilita One ink with subtle drop shadow + 4° forward lean. */}
+      <div
+        className="absolute left-1/2 top-[40%] -translate-x-1/2 -translate-y-1/2"
+        style={{ transform: 'translate(-50%, -50%) rotate(-4deg)' }}
+      >
+        <span
+          className="font-display leading-none text-ink-black"
+          style={{
+            fontSize: 11,
+            letterSpacing: '-0.02em',
+            textShadow: '0 1px 0 var(--color-paper-cream)',
+            fontWeight: 600,
+          }}
+        >
+          ど!!
+        </span>
+      </div>
+      {/* Brass underline accent — small "stamp" cue under the mark. */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2 bg-brass-canary"
+        style={{ top: '54%', width: 8, height: 0.75 }}
+        aria-hidden="true"
+      />
+      {/* Bottom band with +1000 brass stamp. */}
+      <div
+        className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-ink-black"
+        style={{ height: 12, borderRadius: '0 0 3px 3px' }}
+      >
+        <span
+          className="font-display tabular text-brass-canary"
+          style={{
+            fontSize: 8,
+            letterSpacing: '0.04em',
+            lineHeight: 1,
+            fontWeight: 600,
+          }}
+        >
+          +1000
+        </span>
+      </div>
     </div>
   );
 }
@@ -63,8 +135,10 @@ interface DonCardProps {
 }
 
 function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap }: DonCardProps) {
-  // Per CR §4-4 active vs rested = upright vs 90° rotated. Match the physical
-  // game's "tap to rest" gesture.
+  // Per CR §4-4 active vs rested = upright vs 90° rotated.
+  // visual-design-spec.md §1.3 rested treatment: `transform-origin: 0 100%`
+  // so the card pivots around its bottom-left, anchoring the slot position
+  // (per MOOgiwara card.ts:117-128).
   const targetRotate = rested ? 90 : 0;
   return (
     <motion.button
@@ -73,19 +147,21 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
       animate={
         armed && !reduced
           ? {
-              scale: [1, 1.10, 1],
+              scale: [1, 1.08, 1],
               opacity: 1,
               rotate: targetRotate,
+              y: -2,
               boxShadow: [
                 '0 0 0 0px var(--color-sun-brass)',
-                '0 0 0 3px var(--color-sun-brass)',
+                '0 0 0 2px var(--color-sun-brass), 0 0 8px rgba(232,180,61,0.5)',
                 '0 0 0 0px var(--color-sun-brass)',
               ],
             }
           : {
               scale: 1,
-              opacity: rested ? 0.7 : 1,
+              opacity: rested ? 0.72 : 1,
               rotate: targetRotate,
+              y: 0,
               boxShadow: '0 0 0 0px transparent',
             }
       }
@@ -111,11 +187,19 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
       }
       aria-pressed={armed}
       className={[
-        'relative shrink-0 rounded-md',
+        'relative shrink-0 rounded-[3px]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sun-brass',
         interactive && !rested ? 'cursor-pointer' : 'cursor-default',
       ].join(' ')}
-      style={{ width: DON_CARD_W, height: DON_CARD_H, minWidth: 28, minHeight: 28 }}
+      style={{
+        width: DON_CARD_W,
+        height: DON_CARD_H,
+        minWidth: 28,
+        minHeight: 28,
+        // §1.3 — rested pivot anchors bottom-left so the slot footprint stays put.
+        transformOrigin: rested ? '0 100%' : '50% 50%',
+        pointerEvents: rested ? 'none' : undefined,
+      }}
     >
       <DonCardArt active={!rested} />
     </motion.button>
@@ -160,11 +244,11 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
       data-zone={`costArea:${playerId}`}
       aria-label={`${isYou ? 'Your' : 'Opponent'} cost area — ${donCostArea.length} active DON, ${donRested.length} rested DON`}
       className="relative flex h-full w-full items-center justify-start gap-1
-                 rounded-md bg-felt-green-dark/30 px-1.5
-                 ring-1 ring-paper-cream/15"
+                 rounded-md bg-paper-fog/40 px-1.5
+                 ring-1 ring-ink-iron/15"
     >
       <span
-        className="shrink-0 font-body text-[0.5rem] font-extrabold uppercase tracking-wider text-paper-cream/85"
+        className="shrink-0 font-body text-[0.5rem] font-extrabold uppercase tracking-wider text-ink-iron/75"
         aria-hidden="true"
       >
         Cost
@@ -195,7 +279,7 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
         ))}
       </div>
       {totalDon === 0 && (
-        <span className="absolute inset-0 flex items-center justify-center font-body text-[0.55rem] font-extrabold uppercase tracking-wider text-paper-cream/55">
+        <span className="absolute inset-0 flex items-center justify-center font-body text-[0.55rem] font-extrabold uppercase tracking-wider text-ink-iron/55">
           No DON
         </span>
       )}

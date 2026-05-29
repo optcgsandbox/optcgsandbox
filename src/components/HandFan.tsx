@@ -1,20 +1,27 @@
-// HandFan — visual-spec.md §5.4.
-// Distributes cards along a shallow arc anchored at the bottom of the screen.
-// originY:1 so each card pivots from its bottom edge (anchored fan).
-// LayoutGroup so adding/removing cards re-fans smoothly instead of popping.
+// HandFan — visual-design-spec.md §3.
+// Mobile-tuned fan that distributes 1–10 cards along a shallow arc inside the
+// 398px inner playmat width. Cards pivot from their bottom-center.
+//
+// Interaction (replaces the old immediate-PLAY behavior):
+//   • Tap a resting card        → setInspectedCardId(thatId) (card lifts)
+//   • Tap the lifted card again → setCardDetailOpen(true) (opens CardDetailModal)
+//   • Tap a different card      → switch lift to the new card
+//   • Tap outside any card      → clearing handled by App-level listener
+//
+// PLAY_CARD is now dispatched ONLY from CardDetailModal's primary action.
 
 import { memo, useCallback } from 'react';
 import { LayoutGroup, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
-import { fanPosition } from '../lib/fanLayout';
+import { fanPosition, HAND_CARD_W, HAND_CARD_H } from '../lib/fanLayout';
 import { springs } from '../lib/animationTokens';
-import { CardArt, CARD_DIMS } from './CardArt';
+import { CardArt } from './CardArt';
 import type { PlayerId } from '@shared/engine/GameState';
 
 interface HandFanProps {
   /** Which seat's hand to render. Defaults to viewAs. */
   playerId?: PlayerId;
-  /** When true (humans's seat), tapping a card dispatches PLAY_CARD. */
+  /** When true (human's seat), tapping a card lifts it / opens the modal. */
   interactive?: boolean;
 }
 
@@ -23,52 +30,81 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true }: H
   const handIds = useGameStore((s) => s.state.players[seat].hand);
   const instances = useGameStore((s) => s.state.instances);
   const library = useGameStore((s) => s.state.cardLibrary);
-  const dispatch = useGameStore((s) => s.dispatch);
+  const inspectedCardId = useGameStore((s) => s.inspectedCardId);
+  const setInspectedCardId = useGameStore((s) => s.setInspectedCardId);
+  const setCardDetailOpen = useGameStore((s) => s.setCardDetailOpen);
   const reduced = useReducedMotion() ?? false;
   const spring = springs(reduced);
 
   const onTap = useCallback(
     (instanceId: string) => {
       if (!interactive) return;
-      dispatch({ type: 'PLAY_CARD', instanceId, replaceTargetId: null });
+      // visual-design-spec.md §3.9 tap state machine.
+      if (inspectedCardId === instanceId) {
+        // Second tap on the lifted card → open detail modal.
+        setCardDetailOpen(true);
+      } else {
+        // First tap (or switching) → lift this card.
+        setInspectedCardId(instanceId);
+      }
     },
-    [dispatch, interactive],
+    [interactive, inspectedCardId, setCardDetailOpen, setInspectedCardId],
   );
 
   const n = handIds.length;
-  // Card height drives the fan's footprint; tallest reveal sits at the center.
-  const cardH = CARD_DIMS.hand.h;
 
   return (
     <div
+      // pointer-events-none lets the container pass clicks through to the
+      // playmat (which clears inspectedCardId at App level). Individual cards
+      // re-enable pointer events.
       className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex items-end justify-center"
       style={{
-        // Reserve at least the card height + arc lift; safe-area inset added below.
-        height: `calc(${cardH + 24}px + env(safe-area-inset-bottom, 0px))`,
+        // Reserve card height + apex lift + buffer for the lifted state.
+        height: `calc(${HAND_CARD_H + 80}px + env(safe-area-inset-bottom, 0px))`,
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       }}
       aria-label={`${interactive ? 'Your' : 'Opponent'} hand, ${n} cards`}
+      data-hand-fan
     >
       <LayoutGroup>
-        <div className="relative" style={{ width: 1, height: cardH }}>
+        <div className="relative" style={{ width: 1, height: HAND_CARD_H }}>
           {handIds.map((instanceId, i) => {
             const inst = instances[instanceId];
             if (!inst) return null;
             const card = library[inst.cardId];
-            const { x, y, rotate } = fanPosition(i, n);
+            const fan = fanPosition(i, n);
+            const isInspected = inspectedCardId === instanceId;
+            const someoneElseInspected =
+              inspectedCardId !== null && !isInspected;
+
+            // visual-design-spec.md §3.5 lift override.
+            const animate = isInspected
+              ? { x: fan.x, y: -60, rotate: 0, scale: 1.15, opacity: 1 }
+              : {
+                  x: fan.x,
+                  y: fan.y,
+                  rotate: fan.rotate,
+                  scale: 1,
+                  opacity: someoneElseInspected ? 0.5 : 1,
+                };
+
             return (
               <motion.div
                 key={instanceId}
                 layout
                 initial={{ opacity: 0, y: 60 }}
-                animate={{ opacity: 1, x, y: -y, rotate }}
+                animate={animate}
                 exit={{ opacity: 0, y: 80, transition: { duration: 0.2 } }}
                 transition={spring.handFan}
                 style={{
                   position: 'absolute',
-                  left: -CARD_DIMS.hand.w / 2,
+                  left: -HAND_CARD_W / 2,
                   bottom: 0,
                   transformOrigin: '50% 100%',
+                  zIndex: isInspected ? 40 : 20 + i,
+                  filter:
+                    someoneElseInspected && !reduced ? 'saturate(0.7)' : undefined,
                 }}
                 className="pointer-events-auto"
               >

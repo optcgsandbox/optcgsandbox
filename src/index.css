@@ -16,13 +16,22 @@
   --color-sky-day: #E8F0F4;
   --color-sun-brass: #E8B43D;
 
-  /* Tournament-felt playmat surface — design-reference.md §3.4 L8.
-     Replaces the cream-paper field on the playmat itself (NOT the masthead /
-     app chrome, which stays cream). Light theme uses Vegas-table green;
-     dark theme uses a deeper forest-green. */
-  --color-felt-green: #1F4D3B;
-  --color-felt-green-light: #2A6249;
-  --color-felt-green-dark: #13362A;
+  /* Card color tints — visual-design-spec.md §4.2.
+     Per-color soft gradient stops used by the placeholder card frame
+     (CardArt.tsx) so cards read as One-Piece-style at ~30% saturation
+     without clashing with the cream playmat. */
+  --card-tint-red-top: #E8B8B0;
+  --card-tint-red-bot: #D89890;
+  --card-tint-green-top: #BBD4B8;
+  --card-tint-green-bot: #9BBE9A;
+  --card-tint-blue-top: #B0C8DC;
+  --card-tint-blue-bot: #8FB0CC;
+  --card-tint-purple-top: #C9B8D4;
+  --card-tint-purple-bot: #A990BC;
+  --card-tint-black-top: #9A968F;
+  --card-tint-black-bot: #6F6C66;
+  --card-tint-yellow-top: #E8D78F;
+  --card-tint-yellow-bot: #D4B65E;
 
   --font-display: "Lilita One", system-ui, sans-serif;
   --font-body: "Nunito", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -116,51 +125,30 @@ html, body {
   background-size: 5px 5px, 7px 7px;
 }
 
-/* Felt-playmat surface — design-reference.md §3.4 L8.
-   Vegas-blackjack-table look without a raster asset: a soft radial gradient
-   for the table-light pool plus a fine noise pattern made of staggered radial
-   dots in two scales. Light + dark themes both render felt-green; only the
-   tone shifts. */
-.felt-playmat {
-  background-color: var(--color-felt-green);
+/* Cream-paper playmat surface — design-reference.md §3.
+   Replaces the rejected felt-green playmat. Uses the existing paper-cream
+   ground plus a faint two-tone radial vignette to suggest a softly-lit
+   adventure board without distracting from the cards on top. Dark theme
+   flips to hull-deep + hull-teal accents per design-reference §3.4. */
+.paper-playmat {
+  background-color: var(--color-paper-cream);
   background-image:
     radial-gradient(
-      ellipse at 50% 45%,
-      var(--color-felt-green-light) 0%,
-      var(--color-felt-green) 55%,
-      var(--color-felt-green-dark) 100%
-    ),
-    radial-gradient(
-      circle at 25% 30%,
-      rgba(255, 255, 255, 0.025) 0 1px,
-      transparent 1px
-    ),
-    radial-gradient(
-      circle at 75% 70%,
-      rgba(0, 0, 0, 0.06) 0 1px,
-      transparent 1px
+      ellipse at 50% 40%,
+      rgba(255, 248, 225, 0.6) 0%,
+      var(--color-paper-cream) 55%,
+      var(--color-paper-fog) 100%
     );
-  background-size: 100% 100%, 6px 6px, 8px 8px;
-  background-blend-mode: normal, overlay, multiply;
+  background-size: 100% 100%;
 }
-[data-theme="dark"] .felt-playmat {
-  background-color: var(--color-felt-green-dark);
+[data-theme="dark"] .paper-playmat {
+  background-color: var(--color-hull-deep);
   background-image:
     radial-gradient(
-      ellipse at 50% 45%,
-      var(--color-felt-green) 0%,
-      var(--color-felt-green-dark) 60%,
-      #0A1F18 100%
-    ),
-    radial-gradient(
-      circle at 25% 30%,
-      rgba(255, 255, 255, 0.02) 0 1px,
-      transparent 1px
-    ),
-    radial-gradient(
-      circle at 75% 70%,
-      rgba(0, 0, 0, 0.08) 0 1px,
-      transparent 1px
+      ellipse at 50% 40%,
+      var(--color-hull-teal) 0%,
+      var(--color-hull-deep) 60%,
+      #051A1C 100%
     );
-  background-size: 100% 100%, 6px 6px, 8px 8px;
+  background-size: 100% 100%;
 }

@@ -3,11 +3,12 @@
 // daylight backdrop bleeding to the screen edges. Header carries the mode
 // switcher + reset + theme toggle. PlayfieldStage owns all gameplay surface.
 
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useGameStore } from './store/game';
 import { useTheme } from './hooks/useTheme';
 import { PlayfieldStage } from './components/PlayfieldStage';
 import type { GameMode } from './store/game';
+import type { Action } from '@shared/protocol/actions';
 
 const MODE_LABEL: Record<GameMode, string> = {
   'vs-easy': 'vs Easy',
@@ -17,6 +18,61 @@ const MODE_LABEL: Record<GameMode, string> = {
 
 const MODES: GameMode[] = ['vs-easy', 'vs-medium', 'hot-seat'];
 
+interface EndTurnAffordance {
+  label: string;
+  enabled: boolean;
+  /** When set, click calls dispatch(action). When null and label is END TURN,
+   *  click calls endTurnAndAdvance. Otherwise click is a no-op. */
+  action: Action | null;
+  isEndTurn: boolean;
+}
+
+/** design-reference.md §9 — phase-reactive End-Turn button text. */
+function computeEndTurnAffordance(
+  phase: string,
+  activePlayer: 'A' | 'B',
+  viewAs: 'A' | 'B',
+  gameOver: boolean,
+): EndTurnAffordance {
+  if (gameOver) {
+    return { label: 'GAME OVER', enabled: false, action: null, isEndTurn: false };
+  }
+  const yourTurn = activePlayer === viewAs;
+  if (yourTurn) {
+    if (phase === 'main') {
+      return { label: 'END TURN', enabled: true, action: null, isEndTurn: true };
+    }
+    if (phase === 'attack_declaration' || phase === 'damage_resolution') {
+      return { label: 'ATTACKING…', enabled: false, action: null, isEndTurn: false };
+    }
+    if (phase === 'trigger_window') {
+      return { label: 'TRIGGER…', enabled: false, action: null, isEndTurn: false };
+    }
+    return { label: 'OPPONENT’S TURN', enabled: false, action: null, isEndTurn: false };
+  }
+  // Opp's turn.
+  if (phase === 'block_window') {
+    return {
+      label: 'DECLINE BLOCK',
+      enabled: true,
+      action: { type: 'SKIP_BLOCKER' },
+      isEndTurn: false,
+    };
+  }
+  if (phase === 'counter_window') {
+    return {
+      label: 'DECLINE COUNTER',
+      enabled: true,
+      action: { type: 'SKIP_COUNTER' },
+      isEndTurn: false,
+    };
+  }
+  if (phase === 'trigger_window') {
+    return { label: 'TRIGGER…', enabled: false, action: null, isEndTurn: false };
+  }
+  return { label: 'OPPONENT’S TURN', enabled: false, action: null, isEndTurn: false };
+}
+
 export default function App() {
   const state = useGameStore((s) => s.state);
   const mode = useGameStore((s) => s.mode);
@@ -24,7 +80,24 @@ export default function App() {
   const reset = useGameStore((s) => s.reset);
   const aiThinking = useGameStore((s) => s.aiThinking);
   const endTurnAndAdvance = useGameStore((s) => s.endTurnAndAdvance);
+  const dispatch = useGameStore((s) => s.dispatch);
+  const viewAs = useGameStore((s) => s.viewAs);
   const { theme, toggleTheme } = useTheme();
+
+  const endTurnAffordance = useMemo(
+    () =>
+      computeEndTurnAffordance(state.phase, state.activePlayer, viewAs, !!state.result),
+    [state.phase, state.activePlayer, viewAs, state.result],
+  );
+
+  const onEndTurnClick = useCallback(() => {
+    if (!endTurnAffordance.enabled) return;
+    if (endTurnAffordance.isEndTurn) {
+      void endTurnAndAdvance();
+      return;
+    }
+    if (endTurnAffordance.action) dispatch(endTurnAffordance.action);
+  }, [endTurnAffordance, endTurnAndAdvance, dispatch]);
 
   const onPickMode = useCallback(
     (m: GameMode) => {
@@ -127,26 +200,27 @@ export default function App() {
         ) : (
           <>
             <PlayfieldStage />
-            {/* Floating end-turn button — design-reference §3.4 L9 fix.
-                Previously sat at `calc(24dvh + 16px)` from the bottom, which put
-                it right on top of the leader row and collided with the leader's
-                power readout. Moved down into the bottom-right corner of the
-                hand-fan area; the fan is anchored center-bottom so the corner
-                is free. Small bottom inset keeps it above the safe-area. */}
+            {/* Phase-reactive End-Turn button — design-reference §9.
+                Sits bottom-right inside the hand-strip area at
+                `bottom: calc(24dvh + 16px + safe-area-bottom)`. Floats above
+                the hand fan without overlapping the leader row. Label and
+                enabled state change with phase + active player. */}
             <button
               type="button"
-              onClick={endTurnAndAdvance}
-              disabled={aiThinking}
+              onClick={onEndTurnClick}
+              disabled={!endTurnAffordance.enabled || aiThinking}
+              aria-label={endTurnAffordance.label}
+              aria-busy={aiThinking}
               className="absolute right-3 z-40 min-h-[44px] rounded-2xl bg-seal-red px-4
-                         py-2 font-body text-[0.8125rem] font-extrabold uppercase
+                         py-2 font-body text-[0.75rem] font-extrabold uppercase
                          tracking-wider text-paper-cream shadow-[0_4px_12px_rgba(168,38,31,0.30)]
-                         disabled:opacity-40
+                         disabled:opacity-40 disabled:cursor-not-allowed
                          focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
               style={{
-                bottom: `calc(12px + env(safe-area-inset-bottom, 0px))`,
+                bottom: 'calc(24dvh + 16px + env(safe-area-inset-bottom, 0px))',
               }}
             >
-              End turn
+              {endTurnAffordance.label}
             </button>
           </>
         )}

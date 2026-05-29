@@ -1,35 +1,182 @@
-// CardArt — visual-spec.md §5.3. Replaces CardChip.
-// Renders real card art when card.imageUrl is present, otherwise a colored
-// gradient fallback with name + cost + power. Face-down cards show the
-// generic anchor-and-rope card back (SVG, no Bandai imagery).
+// CardArt — visual-design-spec.md §4 (placeholder anatomy).
+//
+// Renders a Bandai-style placeholder card frame when no commissioned art
+// exists: cost square top-left, power stamp top-right, faint compass crest
+// in the mid art slot, name strip below, kind/traits bar near bottom,
+// optional counter chip bottom-left, set·number microtype bottom-right.
+// Background = soft per-color gradient at ~30% saturation so cream/ink/
+// brass elements stay legible. Replaces the prior raw "card-id" text render
+// (design-reference.md §12.2 L21).
+//
+// Sizes (owner instruction):
+//   hand    64 × 88
+//   field   52 × 72   (5 slots × 52 = 260px, fits inside 398px playmat)
+//   leader  60 × 84
+//   modal  220 × 308  (used by CardDetailModal)
+//   mini    28 × 40
+//   lifeStack 24 × 34
 
 import { memo, useMemo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import type { Card } from '@shared/engine/cards/Card';
+import type { Card, CardColor } from '@shared/engine/cards/Card';
 import type { CardInstance } from '@shared/engine/GameState';
 import { springs } from '../lib/animationTokens';
 
-export type CardArtSize = 'hand' | 'field' | 'leader' | 'mini' | 'lifeStack';
+export type CardArtSize = 'hand' | 'field' | 'leader' | 'modal' | 'mini' | 'lifeStack';
 
-// OPTCG cards are 600:838 ~ 0.716 aspect. Heights chosen so:
-//  - hand cards comfortably hit ≥ 44pt tap targets (HIG)
-//  - 5 character slots fit horizontally within 430px frame
-//  - leader is 1.15× the character slot focal
-//  - lifeStack matches visual-spec-layout-correction.md §D.3 (24×34 face-down)
 export const CARD_DIMS: Record<CardArtSize, { w: number; h: number }> = {
-  hand: { w: 92, h: 128 },
-  field: { w: 60, h: 84 },
-  leader: { w: 72, h: 100 },
+  hand: { w: 64, h: 88 },
+  field: { w: 52, h: 72 },
+  leader: { w: 60, h: 84 },
+  modal: { w: 220, h: 308 },
   mini: { w: 28, h: 40 },
   lifeStack: { w: 24, h: 34 },
 };
 
+/** Per-size typography + chip dimensions used by the placeholder frame. */
+interface FrameMetrics {
+  costChip: { size: number; inset: number; font: number; radius: number };
+  powerStamp: { w: number; h: number; inset: number; font: number };
+  crest: number;
+  nameStrip: { h: number; font: number; pad: number };
+  kindStrip: { h: number; font: number; pad: number };
+  counterChip: { w: number; h: number; inset: number; font: number };
+  microtype: { font: number; inset: number };
+  bodyRadius: number;
+  bodyStroke: number;
+}
+
+function metricsFor(size: CardArtSize): FrameMetrics {
+  switch (size) {
+    case 'hand':
+      return {
+        costChip: { size: 14, inset: 4, font: 9, radius: 2 },
+        powerStamp: { w: 20, h: 12, inset: 4, font: 9 },
+        crest: 32,
+        nameStrip: { h: 14, font: 7, pad: 4 },
+        kindStrip: { h: 10, font: 6, pad: 4 },
+        counterChip: { w: 16, h: 10, inset: 2, font: 7 },
+        microtype: { font: 5, inset: 3 },
+        bodyRadius: 4,
+        bodyStroke: 0.75,
+      };
+    case 'field':
+      return {
+        costChip: { size: 12, inset: 3, font: 8, radius: 2 },
+        powerStamp: { w: 18, h: 11, inset: 3, font: 8 },
+        crest: 26,
+        nameStrip: { h: 12, font: 6.5, pad: 3 },
+        kindStrip: { h: 9, font: 5.5, pad: 3 },
+        counterChip: { w: 14, h: 9, inset: 2, font: 6 },
+        microtype: { font: 4.5, inset: 2 },
+        bodyRadius: 4,
+        bodyStroke: 0.75,
+      };
+    case 'leader':
+      return {
+        costChip: { size: 14, inset: 4, font: 9, radius: 2 },
+        powerStamp: { w: 22, h: 13, inset: 4, font: 9 },
+        crest: 30,
+        nameStrip: { h: 13, font: 7, pad: 4 },
+        kindStrip: { h: 10, font: 6, pad: 4 },
+        counterChip: { w: 16, h: 10, inset: 2, font: 7 },
+        microtype: { font: 5, inset: 3 },
+        bodyRadius: 5,
+        bodyStroke: 0.75,
+      };
+    case 'modal':
+      return {
+        costChip: { size: 36, inset: 10, font: 22, radius: 4 },
+        powerStamp: { w: 56, h: 32, inset: 10, font: 22 },
+        crest: 132,
+        nameStrip: { h: 28, font: 18, pad: 8 },
+        kindStrip: { h: 22, font: 11, pad: 8 },
+        counterChip: { w: 44, h: 28, inset: 6, font: 14 },
+        microtype: { font: 10, inset: 8 },
+        bodyRadius: 8,
+        bodyStroke: 1,
+      };
+    case 'mini':
+      return {
+        costChip: { size: 8, inset: 2, font: 5, radius: 1 },
+        powerStamp: { w: 12, h: 7, inset: 2, font: 5 },
+        crest: 12,
+        nameStrip: { h: 7, font: 4, pad: 1 },
+        kindStrip: { h: 5, font: 4, pad: 1 },
+        counterChip: { w: 0, h: 0, inset: 0, font: 0 },
+        microtype: { font: 4, inset: 1 },
+        bodyRadius: 2,
+        bodyStroke: 0.5,
+      };
+    case 'lifeStack':
+    default:
+      return {
+        costChip: { size: 0, inset: 0, font: 0, radius: 0 },
+        powerStamp: { w: 0, h: 0, inset: 0, font: 0 },
+        crest: 12,
+        nameStrip: { h: 0, font: 0, pad: 0 },
+        kindStrip: { h: 0, font: 0, pad: 0 },
+        counterChip: { w: 0, h: 0, inset: 0, font: 0 },
+        microtype: { font: 0, inset: 0 },
+        bodyRadius: 2,
+        bodyStroke: 0.5,
+      };
+  }
+}
+
+interface TintPair {
+  top: string;
+  bot: string;
+  stroke: string;
+}
+
+const TINT_BY_COLOR: Record<CardColor, TintPair> = {
+  red: {
+    top: 'var(--card-tint-red-top)',
+    bot: 'var(--card-tint-red-bot)',
+    stroke: 'var(--color-seal-red)',
+  },
+  green: {
+    top: 'var(--card-tint-green-top)',
+    bot: 'var(--card-tint-green-bot)',
+    stroke: 'var(--color-hull-teal)',
+  },
+  blue: {
+    top: 'var(--card-tint-blue-top)',
+    bot: 'var(--card-tint-blue-bot)',
+    stroke: 'var(--color-hull-teal)',
+  },
+  purple: {
+    top: 'var(--card-tint-purple-top)',
+    bot: 'var(--card-tint-purple-bot)',
+    stroke: 'var(--color-ink-iron)',
+  },
+  black: {
+    top: 'var(--card-tint-black-top)',
+    bot: 'var(--card-tint-black-bot)',
+    stroke: 'var(--color-ink-black)',
+  },
+  yellow: {
+    top: 'var(--card-tint-yellow-top)',
+    bot: 'var(--card-tint-yellow-bot)',
+    stroke: 'var(--color-brass-canary)',
+  },
+};
+
+function tintForCard(card: Card): TintPair {
+  const primary = card.colors[0];
+  if (primary && TINT_BY_COLOR[primary]) return TINT_BY_COLOR[primary];
+  // Default neutral tint when colors is empty (vanilla / DON / unknown).
+  return {
+    top: 'var(--color-paper-fog)',
+    bot: 'var(--color-marine-fog)',
+    stroke: 'var(--color-ink-iron)',
+  };
+}
+
 /**
  * Pure derivation for the leader's life pill count.
  * Source of truth = `zones.life.length` passed in via `liveLifeCount`.
- * The printed `card.life` is the initial value, NOT the current life remaining,
- * so reading from it produces a stale display once any life has been taken.
- * Visual-spec-layout-correction.md §E.1.
  */
 export function deriveLifeCount(args: {
   isLeader: boolean;
@@ -39,34 +186,21 @@ export function deriveLifeCount(args: {
 }
 
 interface CardArtProps {
-  /** Engine instance — provides instanceId for layoutId and per-instance state (rest, attached DON). */
   inst?: CardInstance;
   card?: Card;
   size: CardArtSize;
   faceDown?: boolean;
   onTap?: () => void;
   highlighted?: boolean;
-  /** When true, render with a glowing valid-drop ring. */
   validDrop?: boolean;
-  /**
-   * Live life count from `state.players[X].life.length`. The leader pill MUST
-   * read this — never the printed `card.life`, which is the initial value and
-   * stays at 5 forever after any life is taken. Only meaningful when the
-   * underlying `card.kind === 'leader'`; ignored for non-leaders.
-   * Visual-spec-layout-correction.md §E.1.
-   */
   liveLifeCount?: number;
+  /** When true, render the brass selected-attacker glow ring (design-reference §7). */
+  selectedAttacker?: boolean;
+  /** When true, pulse a seal-red dashed ring (legal attack target). */
+  pendingTarget?: boolean;
+  /** When true, pulse a brass-canary ring (DON-armed drop zone). */
+  donDropTarget?: boolean;
 }
-
-// Deterministic color tint per color, used as the fallback when no image URL exists.
-const COLOR_FILL: Record<string, string> = {
-  red: '#A8261F',
-  blue: '#1D4FA8',
-  green: '#2A7A3F',
-  purple: '#5D2C7B',
-  black: '#15140F',
-  yellow: '#D4A017',
-};
 
 function describeForA11y(card: Card | undefined, inst: CardInstance | undefined): string {
   if (!card) return 'Card';
@@ -74,6 +208,9 @@ function describeForA11y(card: Card | undefined, inst: CardInstance | undefined)
   if (card.kind) parts.push(card.kind);
   if (card.cost !== null && card.cost !== undefined) parts.push(`cost ${card.cost}`);
   if (card.power !== null && card.power !== undefined) parts.push(`power ${card.power}`);
+  if (typeof card.counterValue === 'number' && card.counterValue > 0) {
+    parts.push(`counter ${card.counterValue}`);
+  }
   if (inst?.attachedDon && inst.attachedDon.length > 0) {
     parts.push(`+${inst.attachedDon.length * 1000} attached DON`);
   }
@@ -81,59 +218,276 @@ function describeForA11y(card: Card | undefined, inst: CardInstance | undefined)
   return parts.join(', ');
 }
 
-/**
- * Deterministic placeholder gradient when card art is missing.
- * Seeded by card.id so the same card always paints the same way.
- */
-function PlaceholderArt({ card }: { card: Card }) {
-  const primary = COLOR_FILL[card.colors[0] ?? ''] ?? '#3A372E';
-  // Hash card.id → secondary hue, keeps v0.1 visually varied.
-  const seed = useMemo(() => {
-    let h = 0;
-    for (const ch of card.id) h = (h * 31 + ch.charCodeAt(0)) | 0;
-    return Math.abs(h) % 360;
-  }, [card.id]);
+/** Format power like 5000 → "5K" (hand/field/leader/mini); full digits at modal size. */
+function formatPower(power: number | null | undefined, size: CardArtSize): string {
+  if (power === null || power === undefined) return '';
+  if (size === 'modal') return String(power);
+  if (power >= 1000) {
+    const k = power / 1000;
+    return Number.isInteger(k) ? `${k}K` : `${k.toFixed(1)}K`;
+  }
+  return String(power);
+}
+
+/** Compress long names at hand/mini size: "Monkey D. Luffy" → "M. Luffy". */
+function compressName(name: string, size: CardArtSize): string {
+  if (size !== 'hand' && size !== 'mini') return name;
+  if (name.length <= 12) return name;
+  // First-name initial + last name.
+  const parts = name.split(/\s+/);
+  if (parts.length >= 2) {
+    const first = parts[0];
+    const last = parts[parts.length - 1];
+    return `${first.charAt(0)}. ${last}`;
+  }
+  return name.slice(0, 11) + '…';
+}
+
+/** Faint compass-rose crest in the art slot — "where commissioned art goes". */
+function CrestPlaceholder({ size }: { size: number }) {
+  return (
+    <svg
+      viewBox="0 0 36 36"
+      width={size}
+      height={size}
+      aria-hidden="true"
+      className="pointer-events-none"
+    >
+      <g
+        fill="none"
+        stroke="var(--color-paper-cream)"
+        strokeOpacity={0.38}
+        strokeWidth={0.75}
+      >
+        <circle cx={18} cy={18} r={14} />
+        <circle cx={18} cy={18} r={9} />
+        <circle cx={18} cy={18} r={5} />
+        <line x1={4} y1={18} x2={32} y2={18} />
+        <line x1={18} y1={4} x2={18} y2={32} />
+        <polygon points="18,8 21,18 18,28 15,18" fill="var(--color-paper-cream)" fillOpacity={0.18} />
+      </g>
+    </svg>
+  );
+}
+
+interface PlaceholderArtProps {
+  card: Card;
+  size: CardArtSize;
+}
+
+/** Bandai-anatomy placeholder card frame — visual-design-spec.md §4. */
+function PlaceholderArt({ card, size }: PlaceholderArtProps) {
+  const m = metricsFor(size);
+  const tint = tintForCard(card);
+  const isLeader = card.kind === 'leader';
+  const showCost = !isLeader && card.cost !== null && card.cost !== undefined;
+  const showPower =
+    (card.kind === 'character' || card.kind === 'leader') &&
+    card.power !== null &&
+    card.power !== undefined;
+  const showCounter =
+    card.kind === 'character' &&
+    typeof card.counterValue === 'number' &&
+    card.counterValue > 0;
+  // Leaders get a slightly saturated background per §4.2.
+  const saturationFilter = isLeader ? 'saturate(1.15)' : undefined;
+  const kindLabel = card.kind?.toUpperCase() ?? '';
+  const subText = (() => {
+    if (size === 'hand' || size === 'mini') return kindLabel;
+    if (card.traits && card.traits.length > 0) {
+      const trait = card.traits.slice(0, 2).join(' / ');
+      return `${kindLabel} · ${trait}`;
+    }
+    return kindLabel;
+  })();
+  const displayName = compressName(card.name || '—', size);
+  const cardNumber = (() => {
+    // card.id format: e.g. "OP01-001", "ST01-001", or our test ids like "red-5-2".
+    if (!card.id) return '';
+    if (card.id.includes('-')) {
+      const idx = card.id.lastIndexOf('-');
+      const setCode = card.id.slice(0, idx);
+      const num = card.id.slice(idx + 1);
+      return `${setCode.toUpperCase()}·${num}`;
+    }
+    return card.id.toUpperCase();
+  })();
+
   return (
     <div
-      className="absolute inset-0 flex flex-col items-center justify-between p-1 text-paper-cream"
+      className="absolute inset-0 overflow-hidden"
       style={{
-        background: `linear-gradient(155deg, ${primary} 0%, hsl(${seed}, 35%, 22%) 100%)`,
+        borderRadius: m.bodyRadius,
+        border: `${m.bodyStroke}px solid ${tint.stroke}`,
+        background: `linear-gradient(180deg, ${tint.top} 0%, ${tint.bot} 100%)`,
+        filter: saturationFilter,
       }}
       aria-hidden="true"
     >
-      <span className="font-display text-[0.65rem] leading-tight text-center w-full truncate px-0.5">
-        {card.name}
-      </span>
-      <div className="flex w-full justify-between px-0.5 text-[0.6rem] font-body font-bold tabular">
-        {card.cost !== null && <span>{card.cost}c</span>}
-        {card.power !== null && <span>{card.power}</span>}
+      {/* Crest placeholder (center art slot). */}
+      <div
+        className="absolute left-1/2 top-[36%] -translate-x-1/2 -translate-y-1/2"
+        aria-hidden="true"
+      >
+        <CrestPlaceholder size={m.crest} />
       </div>
+
+      {/* Cost chip (top-left) — characters / events / stages. */}
+      {showCost && (
+        <div
+          className="absolute flex items-center justify-center bg-paper-cream"
+          style={{
+            top: m.costChip.inset,
+            left: m.costChip.inset,
+            width: m.costChip.size,
+            height: m.costChip.size,
+            borderRadius: m.costChip.radius,
+            border: '1px solid var(--color-ink-black)',
+          }}
+        >
+          <span
+            className="font-display tabular text-ink-black"
+            style={{ fontSize: m.costChip.font, lineHeight: 1, fontWeight: 600 }}
+          >
+            {card.cost}
+          </span>
+        </div>
+      )}
+
+      {/* Power stamp (top-right) — characters / leaders. */}
+      {showPower && (
+        <div
+          className="absolute flex items-center justify-center bg-seal-red"
+          style={{
+            top: m.powerStamp.inset,
+            right: m.powerStamp.inset,
+            width: m.powerStamp.w,
+            height: m.powerStamp.h,
+            borderRadius: 2,
+          }}
+        >
+          <span
+            className="font-display tabular text-paper-cream"
+            style={{ fontSize: m.powerStamp.font, lineHeight: 1, fontWeight: 600 }}
+          >
+            {formatPower(card.power, size)}
+          </span>
+        </div>
+      )}
+
+      {/* Name strip (cream band, ~60–72% Y). */}
+      {m.nameStrip.h > 0 && (
+        <div
+          className="absolute left-0 right-0 flex items-center justify-center bg-paper-cream"
+          style={{
+            bottom: m.kindStrip.h + (m.microtype.font + 4),
+            height: m.nameStrip.h,
+            paddingLeft: m.nameStrip.pad,
+            paddingRight: m.nameStrip.pad,
+          }}
+        >
+          <span
+            className="font-display text-ink-black truncate"
+            style={{ fontSize: m.nameStrip.font, lineHeight: 1, fontWeight: 600 }}
+          >
+            {displayName}
+          </span>
+        </div>
+      )}
+
+      {/* Kind/traits strip (ink band, below name). */}
+      {m.kindStrip.h > 0 && (
+        <div
+          className="absolute left-0 right-0 flex items-center justify-center bg-ink-black"
+          style={{
+            bottom: m.microtype.font + 4,
+            height: m.kindStrip.h,
+            paddingLeft: m.kindStrip.pad,
+            paddingRight: m.kindStrip.pad,
+          }}
+        >
+          <span
+            className="font-body uppercase text-paper-cream truncate"
+            style={{
+              fontSize: m.kindStrip.font,
+              lineHeight: 1,
+              letterSpacing: '0.06em',
+              fontWeight: 700,
+            }}
+          >
+            {subText}
+          </span>
+        </div>
+      )}
+
+      {/* Counter chip (bottom-left) — characters with counterValue > 0. */}
+      {showCounter && m.counterChip.w > 0 && (
+        <div
+          className="absolute flex items-center justify-center bg-brass-canary"
+          style={{
+            bottom: m.counterChip.inset,
+            left: m.counterChip.inset,
+            width: m.counterChip.w,
+            height: m.counterChip.h,
+            borderRadius: 2,
+            border: '0.5px solid var(--color-ink-black)',
+          }}
+        >
+          <span
+            className="font-display tabular text-ink-black"
+            style={{ fontSize: m.counterChip.font, lineHeight: 1, fontWeight: 600 }}
+          >
+            +{(card.counterValue ?? 0) / 1000}K
+          </span>
+        </div>
+      )}
+
+      {/* Set·number microtype (bottom-right). */}
+      {m.microtype.font > 0 && cardNumber && (
+        <span
+          className="absolute font-body text-ink-black/55"
+          style={{
+            bottom: m.microtype.inset,
+            right: m.microtype.inset,
+            fontSize: m.microtype.font,
+            lineHeight: 1,
+          }}
+        >
+          {cardNumber}
+        </span>
+      )}
     </div>
   );
 }
 
-/** Anchor-on-teal generic card back, drawn inline. v0.1 placeholder for the commissioned asset. */
+/** Generic cream-with-teal-compass card back for face-down cards. */
 function CardBack() {
   return (
     <div
-      className="absolute inset-0 bg-hull-teal flex items-center justify-center"
+      className="absolute inset-0 overflow-hidden rounded-[3px] bg-paper-cream"
+      style={{ border: '0.5px solid var(--color-ink-black)' }}
       aria-hidden="true"
     >
-      <div className="absolute inset-1 rounded-lg ring-1 ring-brass-canary/70" />
-      <svg viewBox="0 0 24 24" className="w-1/2 h-1/2 text-brass-canary" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        {/* anchor — generic sea-adventure motif, no Bandai/One Piece IP */}
-        <circle cx="12" cy="5" r="1.6" />
-        <line x1="12" y1="6.6" x2="12" y2="20" />
-        <line x1="9" y1="9" x2="15" y2="9" />
-        <path d="M5 15c0 3 3 5 7 5s7-2 7-5" />
-        <line x1="5" y1="15" x2="3.5" y2="13.5" />
-        <line x1="19" y1="15" x2="20.5" y2="13.5" />
+      <div
+        className="absolute inset-0.5 rounded-[2px]"
+        style={{ boxShadow: 'inset 0 0 0 1px rgba(212,160,23,0.35)' }}
+      />
+      <svg viewBox="0 0 36 50" className="absolute inset-0 h-full w-full" aria-hidden="true">
+        <g fill="none" stroke="var(--color-hull-teal)" strokeWidth={0.75}>
+          <circle cx={18} cy={25} r={6} />
+          <circle cx={18} cy={25} r={9} />
+          <circle cx={18} cy={25} r={12} />
+        </g>
+        <g fill="var(--color-hull-teal)">
+          <polygon points="18,25 22.5,20.5 27.5,15.5 23,20 18,25" />
+          <polygon points="18,25 13.5,29.5 8.5,34.5 13,30 18,25" opacity={0.55} />
+        </g>
       </svg>
     </div>
   );
 }
 
-/** Floating life pill above leader's top edge — visual-spec §5.3. */
+/** Floating life pill above leader's top edge. */
 function LifePill({ count }: { count: number }) {
   return (
     <div
@@ -149,7 +503,7 @@ function LifePill({ count }: { count: number }) {
   );
 }
 
-/** Attached DON badge top-right — keeps reading of "+N" boost. */
+/** Attached DON badge top-right (brass "+N" chip). */
 function DonBadge({ count }: { count: number }) {
   return (
     <motion.div
@@ -158,7 +512,7 @@ function DonBadge({ count }: { count: number }) {
       transition={{ type: 'spring', stiffness: 500, damping: 25 }}
       className="absolute -top-1 -right-1 bg-brass-canary text-ink-black
                  text-[0.6rem] font-body font-bold rounded-full
-                 w-4 h-4 flex items-center justify-center tabular"
+                 w-4 h-4 flex items-center justify-center tabular z-10"
       aria-hidden="true"
     >
       +{count}
@@ -175,49 +529,78 @@ export const CardArt = memo(function CardArt({
   highlighted,
   validDrop,
   liveLifeCount,
+  selectedAttacker,
+  pendingTarget,
+  donDropTarget,
 }: CardArtProps) {
   const dims = CARD_DIMS[size];
   const reduced = useReducedMotion() ?? false;
   const spring = springs(reduced);
   const isLeader = card?.kind === 'leader';
-  // Source of truth = live engine state, not printed card.life.
-  // Visual-spec-layout-correction.md §E.1.
   const lifeCount = deriveLifeCount({ isLeader, liveLifeCount });
 
   const a11y = describeForA11y(card, inst);
-  // `mini` (opponent hand minis) and `lifeStack` (face-down life cards) are
-  // both non-interactive — they exist purely as readout affordances.
   const interactive = !!onTap && size !== 'mini' && size !== 'lifeStack';
 
-  const base = (
+  // Used to build the box-shadow stack so multiple states can compose.
+  const shadowStack = useMemo(() => {
+    const parts: string[] = ['0 1px 3px rgba(15,20,15,0.30)'];
+    if (selectedAttacker) {
+      parts.unshift('0 0 0 2px var(--color-brass-canary)');
+    }
+    if (validDrop || donDropTarget) {
+      parts.unshift('0 0 0 2px var(--color-sun-brass)');
+    }
+    if (pendingTarget) {
+      parts.unshift('0 0 0 2px var(--color-seal-red)');
+    }
+    if (highlighted) {
+      parts.unshift('0 0 0 2px var(--color-brass-canary)');
+    }
+    return parts.join(', ');
+  }, [selectedAttacker, validDrop, donDropTarget, pendingTarget, highlighted]);
+
+  // Selected attacker lifts -8px and scales 1.05 per design-reference §7.
+  const attackerHover = selectedAttacker ? { y: -8, scale: 1.05 } : {};
+
+  return (
     <motion.button
+      type="button"
       layoutId={inst?.instanceId}
       layout
       onClick={onTap}
       disabled={!interactive}
       aria-label={a11y}
+      aria-pressed={selectedAttacker}
       title={card?.name}
       transition={spring.cardTravel}
       whileHover={interactive && !reduced ? { y: -2, transition: { duration: 0.15 } } : undefined}
       whileTap={interactive && !reduced ? { scale: 0.97 } : undefined}
+      animate={{
+        ...attackerHover,
+        boxShadow: pendingTarget || donDropTarget
+          ? [
+              shadowStack,
+              shadowStack.replace('0 0 0 2px', '0 0 0 3px'),
+              shadowStack,
+            ]
+          : shadowStack,
+      }}
       style={{ width: dims.w, height: dims.h }}
       className={[
-        'relative rounded-xl overflow-visible',
+        'relative overflow-visible',
         'outline-none focus-visible:ring-2 focus-visible:ring-sun-brass',
         interactive ? 'cursor-pointer' : 'cursor-default',
         inst?.rested ? 'rotate-90' : '',
-        highlighted ? 'ring-2 ring-brass-canary' : '',
       ].join(' ')}
     >
       <div
-        className="absolute inset-0 rounded-xl overflow-hidden shadow-[0_4px_12px_rgba(15,20,15,0.18)]"
-        style={validDrop ? { boxShadow: '0 0 0 3px var(--color-sun-brass), 0 4px 12px rgba(15,20,15,0.18)' } : undefined}
+        className="absolute inset-0 overflow-hidden"
+        style={{ borderRadius: size === 'modal' ? 8 : size === 'leader' ? 5 : 4 }}
       >
         {faceDown || !card ? (
           <CardBack />
         ) : card.imageUrl ? (
-          // v0.1: corpus has no real image URLs yet. When provided later, this branch
-          // renders the Bandai SAMPLE-watermarked WebP from Cloudflare R2.
           <img
             src={card.imageUrl}
             alt=""
@@ -226,19 +609,16 @@ export const CardArt = memo(function CardArt({
             loading={size === 'mini' ? 'lazy' : 'eager'}
           />
         ) : (
-          <PlaceholderArt card={card} />
+          <PlaceholderArt card={card} size={size} />
         )}
       </div>
       {isLeader && typeof lifeCount === 'number' && <LifePill count={lifeCount} />}
       {inst && inst.attachedDon.length > 0 && <DonBadge count={inst.attachedDon.length} />}
     </motion.button>
   );
-
-  return base;
 });
 
-// Add `imageUrl` to the Card type via module augmentation so engine types stay
-// pure. Engine never reads imageUrl; only CardArt does.
+// Card type augmentation kept for image URL support.
 declare module '@shared/engine/cards/Card' {
   interface CardBase {
     imageUrl?: string;
