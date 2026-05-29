@@ -82,7 +82,11 @@ export const EndTurnButton = memo(function EndTurnButton() {
     if (affordance.action) dispatch(affordance.action);
   }, [affordance, endTurnAndAdvance, dispatch]);
 
-  if (cardDetailOpen) return null;
+  // When the card detail modal is open we keep the button in the DOM so
+  // the LeaderRow's justify-end layout doesn't collapse — otherwise Framer's
+  // `layout` prop on the leader card animates it rightward into the freed
+  // space when the modal opens. Hide via visibility + pointer-events.
+  const hidden = cardDetailOpen;
 
   return (
     <button
@@ -91,6 +95,8 @@ export const EndTurnButton = memo(function EndTurnButton() {
       disabled={!affordance.enabled || aiThinking}
       aria-label={affordance.label}
       aria-busy={aiThinking}
+      aria-hidden={hidden}
+      tabIndex={hidden ? -1 : 0}
       className="rounded-[10px] bg-seal-red px-1.5 py-1 font-body text-[0.65rem]
                  font-extrabold uppercase tracking-wider text-paper-cream
                  shadow-[0_3px_8px_rgba(168,38,31,0.30)]
@@ -102,6 +108,8 @@ export const EndTurnButton = memo(function EndTurnButton() {
         // button + trash pile form a vertical pair on the right edge.
         width: 'var(--zone-trash-w, 52px)',
         minHeight: 36,
+        visibility: hidden ? 'hidden' : 'visible',
+        pointerEvents: hidden ? 'none' : undefined,
         // Force "END TURN" / "DECLINE BLOCK" etc. onto two lines via
         // word-wrap; tracking-wider gives the lines breathing room.
         whiteSpace: 'normal',
