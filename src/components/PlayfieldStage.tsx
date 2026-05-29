@@ -229,7 +229,7 @@ function LeaderRow({
     >
       <PhaseColumn playerId={playerId} isYou={isYou} />
       <div
-        className="flex grow items-center justify-start"
+        className="flex grow items-center justify-end"
         style={{ gap: 6 }}
       >
         <ZoneSlot
@@ -259,7 +259,7 @@ function LeaderRow({
             Only renders on YOUR side — opp side stays empty. Owner direction
             2026-05-29: pack leader/stage/deck left + End Turn next to them. */}
         {isYou && (
-          <div className="ml-auto flex h-full items-center">
+          <div className="flex h-full items-center">
             <EndTurnButton />
           </div>
         )}
