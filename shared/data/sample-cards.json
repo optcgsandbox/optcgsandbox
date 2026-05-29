@@ -1,0 +1,72 @@
+[
+  {
+    "id": "DEMO-L1",
+    "name": "Demo Red Leader",
+    "kind": "leader",
+    "colors": ["red"],
+    "power": 5000,
+    "life": 5,
+    "traits": ["Straw Hat Crew"],
+    "keywords": [],
+    "effectTags": []
+  },
+  {
+    "id": "DEMO-C1",
+    "name": "Vanilla 1c",
+    "kind": "character",
+    "colors": ["red"],
+    "cost": 1,
+    "power": 2000,
+    "counterValue": 1000,
+    "traits": [],
+    "keywords": [],
+    "effectTags": ["vanilla"]
+  },
+  {
+    "id": "DEMO-C2",
+    "name": "Searcher 2c",
+    "kind": "character",
+    "colors": ["red"],
+    "cost": 2,
+    "power": 3000,
+    "counterValue": 1000,
+    "traits": [],
+    "keywords": ["on_play"],
+    "effectTags": ["searcher"]
+  },
+  {
+    "id": "DEMO-C3",
+    "name": "Blocker 3c",
+    "kind": "character",
+    "colors": ["red"],
+    "cost": 3,
+    "power": 4000,
+    "counterValue": 1000,
+    "traits": [],
+    "keywords": ["blocker"],
+    "effectTags": ["blocker"]
+  },
+  {
+    "id": "DEMO-C4",
+    "name": "Big Body 5c",
+    "kind": "character",
+    "colors": ["red"],
+    "cost": 5,
+    "power": 6000,
+    "counterValue": 1000,
+    "traits": [],
+    "keywords": [],
+    "effectTags": ["vanilla"]
+  },
+  {
+    "id": "DEMO-E1",
+    "name": "Counter Event 2k",
+    "kind": "event",
+    "colors": ["red"],
+    "cost": 1,
+    "counterValue": 2000,
+    "traits": [],
+    "keywords": ["counter"],
+    "effectTags": ["counter_event"]
+  }
+]
