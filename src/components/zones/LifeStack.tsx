@@ -46,10 +46,11 @@ export const LifeStack = memo(function LifeStack({ playerId, offsetPx = 4, hideL
   const cardH = CARD_DIMS.lifeStack.h;
   const count = lifeInstanceIds.length;
 
-  // Per owner reference 2026-05-29: top card renders fully, and each card
-  // behind it shows only its 6px bottom edge. This reads as a deck-offset
-  // stack rather than a single elongated "pill".
-  const EDGE_SLICE_H = 6;
+  // Per owner reference 2026-05-29: top card renders at normal size; cards
+  // behind it spread vertically as deck-thickness slivers. EDGE_SLICE_H sets
+  // how far apart each sliver sits — bigger value = stack uses more of the
+  // available vertical column space.
+  const EDGE_SLICE_H = 12;
   const containerH = cardH + Math.max(0, count - 1) * EDGE_SLICE_H;
 
   if (count === 0) {
