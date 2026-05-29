@@ -107,12 +107,13 @@ export const LifeStack = memo(function LifeStack({ playerId, offsetPx = 4, hideL
           );
         })}
         {/* Count badge — brass numeral overlay on the top card so the player
-            can read remaining life at a glance. */}
+            can read remaining life at a glance. 2026-05-29 polish: stronger
+            ring contrast so the chip reads cleanly against the navy back. */}
         <span
-          className="absolute -top-1 -right-1 z-50 rounded-full bg-brass-canary px-1.5 py-px
-                     font-display tabular text-[0.7rem] leading-none text-ink-black
-                     shadow-[0_1px_3px_rgba(15,20,15,0.45)]
-                     ring-1 ring-ink-black/30"
+          className="absolute -top-1.5 -right-1.5 z-50 rounded-full bg-brass-canary px-1.5
+                     font-display tabular text-[0.72rem] leading-[1.15] text-ink-black
+                     shadow-[0_1px_3px_rgba(15,20,15,0.55)]
+                     ring-[1.5px] ring-ink-black/55"
           aria-hidden="true"
         >
           {count}

@@ -51,10 +51,10 @@ export const TrashSlot = memo(function TrashSlot({ playerId, isYou }: TrashSlotP
         ) : (
           <div
             className="absolute inset-0 flex items-center justify-center rounded-md
-                       border border-dashed border-marine-fog/60 bg-paper-fog/10"
+                       border-2 border-dashed border-ink-iron/35 bg-paper-fog/35"
             aria-hidden="true"
           >
-            <span className="font-body text-[0.55rem] font-extrabold uppercase tracking-wider text-paper-cream/80">
+            <span className="font-body text-[0.6rem] font-extrabold uppercase tracking-wider text-ink-iron/75">
               Trash
             </span>
           </div>

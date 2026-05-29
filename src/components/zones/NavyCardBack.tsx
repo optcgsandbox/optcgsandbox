@@ -10,13 +10,20 @@ import { memo } from 'react';
 export const NavyCardBack = memo(function NavyCardBack() {
   return (
     <div
-      className="absolute inset-0 rounded-md overflow-hidden bg-hull-deep flex flex-col items-center justify-center"
+      className="absolute inset-0 rounded-md overflow-hidden flex flex-col items-center justify-center"
+      style={{
+        // 2026-05-29 polish: a touch of gradient lift so the back reads as a
+        // physical card edge rather than a flat blue rectangle at 24×34.
+        background:
+          'radial-gradient(ellipse at 50% 25%, #143C40 0%, var(--color-hull-deep) 70%, #051A1C 100%)',
+        boxShadow: 'inset 0 0 0 1px rgba(212,160,23,0.25)',
+      }}
       aria-hidden="true"
     >
-      <div className="absolute inset-1 rounded-sm ring-1 ring-brass-canary/60" />
+      <div className="absolute inset-1 rounded-sm ring-1 ring-brass-canary/65" />
       <svg
         viewBox="0 0 24 24"
-        className="w-1/2 h-1/2 text-brass-canary"
+        className="w-[55%] h-[55%] text-brass-canary"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.6"

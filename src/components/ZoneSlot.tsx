@@ -60,9 +60,11 @@ export function ZoneSlot({
       className={[
         'relative rounded-2xl flex items-center justify-center',
         // Character slots get a stronger dashed outline so empty slots are
-        // unambiguously visible — owner caught 5th slot invisibility 2026-05-29.
+        // unambiguously visible at 430×844 on cream paper — bumped 2026-05-29
+        // to ink-iron/35 + paper-fog/35 so the row reads as a clear zone band
+        // (owner: "did absolutely nothing visible" feedback).
         kind === 'character'
-          ? 'border-2 border-dashed border-marine-fog/55 bg-paper-fog/15'
+          ? 'border-2 border-dashed border-ink-iron/35 bg-paper-fog/35'
           : 'ring-1 ring-marine-fog/40 bg-paper-fog/20',
       ].join(' ')}
       style={{ minWidth: minDim, minHeight: minDim }}

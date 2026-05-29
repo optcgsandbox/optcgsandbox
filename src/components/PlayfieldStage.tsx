@@ -372,12 +372,18 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
                 gridTemplateRows: '31dvh 1dvh 31dvh',
               }}
             >
-              {/* TOP HALF — opponent. Rotated 180° as one unit. */}
+              {/* TOP HALF — opponent. Rotated 180° as one unit.
+                  Per design-reference §3 the OPP half carries a faint
+                  --color-sky-horizon wash as a subtle "distance cue" so the
+                  eye reads it as further away than YOUR half. Cool-blue tint
+                  at low opacity over cream so the surface stays cream-paper. */}
               <div
-                className="grid h-full w-full"
+                className="grid h-full w-full relative"
                 style={{
                   gridTemplateColumns: 'var(--playmat-life-col-w, 32px) 1fr',
                   transform: 'rotate(180deg)',
+                  backgroundColor: 'rgba(201, 220, 230, 0.18)',
+                  boxShadow: 'inset 0 0 24px rgba(15, 69, 73, 0.05)',
                 }}
                 aria-label="Opponent playmat"
               >
