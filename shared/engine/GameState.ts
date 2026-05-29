@@ -5,6 +5,7 @@
 // dependencies (no DOM, no localStorage, no setTimeout). Driver/runtime supplies
 // the Random instance and clock.
 
+import { DON_CARD } from './cards/Card';
 import type { Card, LeaderCard } from './cards/Card';
 
 export type PlayerId = 'A' | 'B';
@@ -18,6 +19,7 @@ export type Phase =
   | 'block_window'
   | 'counter_window'
   | 'damage_resolution'
+  | 'trigger_window'
   | 'end';
 
 /** State of a card on the field. */
@@ -27,8 +29,9 @@ export interface CardInstance {
   cardId: string; // → Card.id
   controller: PlayerId;
   rested: boolean;
-  /** DON cards attached (each grants +1000 power this turn or until detached). */
-  attachedDon: number;
+  /** DON instance IDs attached to this character/leader. Each grants +1000 power
+   *  for the controller's turn. On KO / end-of-turn they return to donRested. */
+  attachedDon: string[];
   /** Per-turn flags — reset at end of turn. */
   perTurn: {
     hasAttacked: boolean;
@@ -50,12 +53,12 @@ export interface PlayerZones {
   field: CardInstance[];
   /** Life cards — top to bottom. Face-down to both players. */
   life: string[];
-  /** Active (face-up) DON not yet attached. */
-  donActive: number;
+  /** DON deck — remaining DON instance IDs (popped to costArea each DON phase). 10 at setup. */
+  donDeck: string[];
+  /** Active (face-up) DON in the cost area, available to spend or attach. */
+  donCostArea: string[];
   /** Rested (used) DON in the cost area, to be refreshed next refresh phase. */
-  donRested: number;
-  /** DON deck — count of remaining DON cards (10 minus already-dealt). */
-  donDeck: number;
+  donRested: string[];
 }
 
 export interface GameState {
@@ -76,6 +79,9 @@ export interface GameState {
   result: GameResult | null;
   /** Active attack being resolved through block + counter windows. Null when no attack in flight. */
   pendingAttack: PendingAttack | null;
+  /** When non-null, a life card with [Trigger] was just flipped and is awaiting
+   *  the controller's choice (activate vs decline). See rules-reference.md §1.7. */
+  pendingTrigger: PendingTrigger | null;
 }
 
 export interface PendingAttack {
@@ -84,6 +90,17 @@ export interface PendingAttack {
   targetInstanceId: string;
   /** Sum of counter boosts played by defender so far (in points; e.g. 1000, 2000). */
   counterBoost: number;
+}
+
+export interface PendingTrigger {
+  /** The life-card instance that was flipped and has a `trigger` effect tag. */
+  lifeCardInstanceId: string;
+  /** Whose life was taken — the player who may activate the trigger. */
+  controller: PlayerId;
+  /** Phase to restore after the trigger choice is resolved. Damage-resolution
+   *  finishes by returning to 'main', so this is currently always 'main' — but
+   *  stored explicitly so future suspending effects can resume mid-flow. */
+  resumePhase: Phase;
 }
 
 export interface GameResult {
@@ -102,6 +119,8 @@ export type GameEvent =
   | { type: 'LIFE_TAKEN'; player: PlayerId; instanceId: string }
   | { type: 'DON_DEALT'; player: PlayerId; count: number }
   | { type: 'DON_ATTACHED'; targetInstanceId: string; count: number }
+  | { type: 'TRIGGER_FLIPPED'; player: PlayerId; instanceId: string }
+  | { type: 'TRIGGER_RESOLVED'; player: PlayerId; instanceId: string; activated: boolean }
   | { type: 'PHASE_CHANGED'; phase: Phase }
   | { type: 'TURN_ENDED'; player: PlayerId }
   | { type: 'GAME_ENDED'; result: GameResult };
@@ -125,7 +144,7 @@ export function initialState(args: {
 }): GameState {
   // Engine doesn't seed RNG here — that happens in the bootstrap phase function
   // when the caller is ready to commit to shuffle order. This keeps the surface pure.
-  const library: Record<string, Card> = {};
+  const library: Record<string, Card> = { [DON_CARD.id]: DON_CARD };
   const instances: Record<string, CardInstance> = {};
   const players: Record<PlayerId, PlayerZones> = {} as Record<PlayerId, PlayerZones>;
 
@@ -137,7 +156,7 @@ export function initialState(args: {
       cardId,
       controller,
       rested: false,
-      attachedDon: 0,
+      attachedDon: [],
       perTurn: { hasAttacked: false, onceEffectUsed: false },
       summoningSick: false,
     };
@@ -153,6 +172,13 @@ export function initialState(args: {
     const leaderInst = mintInstance(deck.leader.id, pid);
     const deckInsts = deck.cards.map((c) => mintInstance(c.id, pid).instanceId);
 
+    // Mint 10 DON instances per player. Each DON card has cardId === DON_CARD.id;
+    // controller is fixed (DON belongs to the player who deals it).
+    const donDeck: string[] = [];
+    for (let i = 0; i < RULES.DON_DECK_SIZE; i++) {
+      donDeck.push(mintInstance(DON_CARD.id, pid).instanceId);
+    }
+
     players[pid] = {
       leader: leaderInst,
       hand: [],
@@ -160,9 +186,9 @@ export function initialState(args: {
       trash: [],
       field: [],
       life: [],
-      donActive: 0,
-      donRested: 0,
-      donDeck: RULES.DON_DECK_SIZE,
+      donDeck,
+      donCostArea: [],
+      donRested: [],
     };
   }
 
@@ -177,5 +203,6 @@ export function initialState(args: {
     history: [],
     result: null,
     pendingAttack: null,
+    pendingTrigger: null,
   };
 }

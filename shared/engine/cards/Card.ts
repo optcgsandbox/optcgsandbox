@@ -43,7 +43,8 @@ export type EffectTag =
   | 'lifegain'
   | 'life_to_hand'
   | 'disruption'
-  | 'vanilla';
+  | 'vanilla'
+  | 'trigger';
 
 /** Base card definition. Card-specific effect functions are attached separately
  *  by the effects/ modules; this type is just the printed data. */

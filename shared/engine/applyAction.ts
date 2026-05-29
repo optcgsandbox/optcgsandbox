@@ -7,6 +7,11 @@
 //   3. SKIP_COUNTER (or PLAY_COUNTER then SKIP_COUNTER) → resolve damage, phase = 'main'
 //
 // pendingAttack on GameState carries the in-flight attack across phases.
+//
+// Trigger window (rules-reference.md §1.7): when a life card with the `trigger`
+// effect tag is flipped, damage processing suspends, phase becomes
+// 'trigger_window', and pendingTrigger carries the choice point until the
+// controller RESOLVE_TRIGGERs (activate or decline).
 
 import type { Action } from '../protocol/actions';
 import type { Card, CharacterCard, LeaderCard } from './cards/Card';
@@ -37,13 +42,14 @@ export function applyAction(
       return playCounter(state, player, action.instanceId);
     case 'SKIP_COUNTER':
       return resolvePending(state);
+    case 'RESOLVE_TRIGGER':
+      return resolveTrigger(state, player, action.activate);
     case 'END_TURN':
       return runEndTurnReshim(state);
     case 'RESIGN':
       return resign(state, player);
     case 'MULLIGAN_CONFIRM':
     case 'ACTIVATE_MAIN':
-    case 'RESOLVE_TRIGGER':
       // v0.1 hooks — return state untouched for now.
       return { state, events: [] };
   }
@@ -66,10 +72,12 @@ function playCard(
   if (handIdx === -1) return { state, events: [] };
 
   const card = next.cardLibrary[inst.cardId];
-  if (card.cost === null || card.cost > p.donActive) return { state, events: [] };
+  if (card.cost === null || card.cost > p.donCostArea.length) return { state, events: [] };
 
-  p.donActive -= card.cost;
-  p.donRested += card.cost;
+  // Pay cost: rest `card.cost` DON from the cost area.
+  for (let i = 0; i < card.cost; i++) {
+    p.donRested.push(p.donCostArea.shift()!);
+  }
   p.hand.splice(handIdx, 1);
 
   if (card.kind === 'character') {
@@ -77,6 +85,10 @@ function playCard(
       const idx = p.field.findIndex((c) => c.instanceId === replaceTargetId);
       if (idx !== -1) {
         const removed = p.field.splice(idx, 1)[0];
+        // Detach DON before trashing (rules-reference.md §1.4).
+        while (removed.attachedDon.length > 0) {
+          p.donRested.push(removed.attachedDon.shift()!);
+        }
         p.trash.push(removed.instanceId);
         next.history.push({ type: 'CARD_KOED', instanceId: removed.instanceId });
       }
@@ -102,7 +114,7 @@ function attachDon(
   const next: GameState = structuredClone(state);
   const start = next.history.length;
   const p = next.players[player];
-  if (p.donActive <= 0) return { state, events: [] };
+  if (p.donCostArea.length <= 0) return { state, events: [] };
 
   let target: CardInstance | null = null;
   if (p.leader.instanceId === targetInstanceId) target = p.leader;
@@ -110,8 +122,9 @@ function attachDon(
 
   if (!target || target.controller !== player) return { state, events: [] };
 
-  target.attachedDon += 1;
-  p.donActive -= 1;
+  // Move a DON instance from the cost area onto the target.
+  const donInstanceId = p.donCostArea.shift()!;
+  target.attachedDon.push(donInstanceId);
   next.history.push({ type: 'DON_ATTACHED', targetInstanceId, count: 1 });
   return { state: next, events: next.history.slice(start) };
 }
@@ -210,7 +223,15 @@ function resolvePending(state: GameState): { state: GameState; events: GameEvent
   return resolveDamage(state);
 }
 
-/** Compute power, apply life loss / KO, return phase to main. */
+/** Compute power, apply life loss / KO, return phase to main.
+ *
+ *  Rules-reference.md §1.7: if the life card drawn has [Trigger], damage
+ *  processing SUSPENDS and the controller is asked to activate. We model that
+ *  by setting `pendingTrigger` and `phase = 'trigger_window'` instead of
+ *  pushing the card straight to hand. The controller resolves via
+ *  RESOLVE_TRIGGER, which either runs the effect or just adds the card to hand
+ *  (decline path), then resumes.
+ */
 function resolveDamage(state: GameState): { state: GameState; events: GameEvent[] } {
   const pa: PendingAttack = state.pendingAttack!;
   const next: GameState = structuredClone(state);
@@ -234,6 +255,26 @@ function resolveDamage(state: GameState): { state: GameState; events: GameEvent[
     if (attackerPower >= targetPower) {
       const lifeId = defenderSide.life.shift();
       if (lifeId) {
+        const lifeInst = next.instances[lifeId];
+        const lifeCard = lifeInst ? next.cardLibrary[lifeInst.cardId] : null;
+        const hasTrigger = !!lifeCard && lifeCard.effectTags.includes('trigger');
+
+        if (hasTrigger) {
+          // Suspend damage processing; ask the controller to activate or decline.
+          next.pendingTrigger = {
+            lifeCardInstanceId: lifeId,
+            controller: OTHER[player],
+            resumePhase: 'main',
+          };
+          next.pendingAttack = null;
+          next.phase = 'trigger_window';
+          next.history.push({ type: 'LIFE_TAKEN', player: OTHER[player], instanceId: lifeId });
+          next.history.push({ type: 'TRIGGER_FLIPPED', player: OTHER[player], instanceId: lifeId });
+          next.history.push({ type: 'PHASE_CHANGED', phase: 'trigger_window' });
+          return { state: next, events: next.history.slice(start) };
+        }
+
+        // No trigger: standard "add to hand".
         defenderSide.hand.push(lifeId);
         next.history.push({ type: 'LIFE_TAKEN', player: OTHER[player], instanceId: lifeId });
       } else {
@@ -246,8 +287,10 @@ function resolveDamage(state: GameState): { state: GameState; events: GameEvent[
       const idx = defenderSide.field.findIndex((i) => i.instanceId === pa.targetInstanceId);
       if (idx !== -1) {
         const removed = defenderSide.field.splice(idx, 1)[0];
-        defenderSide.donRested += removed.attachedDon;
-        removed.attachedDon = 0;
+        // Detach DON before trashing (rules-reference.md §1.4 — DON returns rested).
+        while (removed.attachedDon.length > 0) {
+          defenderSide.donRested.push(removed.attachedDon.shift()!);
+        }
         defenderSide.trash.push(removed.instanceId);
         next.history.push({ type: 'CARD_KOED', instanceId: pa.targetInstanceId });
       }
@@ -260,11 +303,57 @@ function resolveDamage(state: GameState): { state: GameState; events: GameEvent[
   return { state: next, events: next.history.slice(start) };
 }
 
+/** RESOLVE_TRIGGER: controller activates or declines a flipped life-card trigger.
+ *
+ *  v0: effect resolution is deferred to the templates registry stub. For now,
+ *  activation = consume the trigger card (move to trash per
+ *  rule_comprehensive.pdf 10-1-5 "trigger card is trashed unless otherwise
+ *  specified"); decline = add card to hand normally.
+ *
+ *  Future cards with bespoke trigger effects will dispatch via
+ *  cards/effects/templates by tag; the call site goes here.
+ */
+function resolveTrigger(
+  state: GameState,
+  player: PlayerId,
+  activate: boolean,
+): { state: GameState; events: GameEvent[] } {
+  if (state.phase !== 'trigger_window' || !state.pendingTrigger) return { state, events: [] };
+  if (state.pendingTrigger.controller !== player) return { state, events: [] };
+
+  const next: GameState = structuredClone(state);
+  const start = next.history.length;
+  const pt = next.pendingTrigger!;
+  const lifeCardInstanceId = pt.lifeCardInstanceId;
+  const triggerOwner = next.players[pt.controller];
+
+  if (activate) {
+    // v0: just consume the trigger card to trash. Effect resolution will be
+    // routed through the templates registry once card-specific handlers exist.
+    triggerOwner.trash.push(lifeCardInstanceId);
+  } else {
+    // Decline: card goes to hand as if no trigger was present.
+    triggerOwner.hand.push(lifeCardInstanceId);
+  }
+
+  next.history.push({
+    type: 'TRIGGER_RESOLVED',
+    player: pt.controller,
+    instanceId: lifeCardInstanceId,
+    activated: activate,
+  });
+
+  next.pendingTrigger = null;
+  next.phase = pt.resumePhase;
+  next.history.push({ type: 'PHASE_CHANGED', phase: pt.resumePhase });
+  return { state: next, events: next.history.slice(start) };
+}
+
 function effectivePower(card: Card, inst: CardInstance): number {
   let base = 0;
   if (card.kind === 'leader') base = (card as LeaderCard).power;
   if (card.kind === 'character') base = (card as CharacterCard).power;
-  return base + inst.attachedDon * 1000;
+  return base + inst.attachedDon.length * 1000;
 }
 
 function runEndTurnReshim(state: GameState): { state: GameState; events: GameEvent[] } {

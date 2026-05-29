@@ -42,10 +42,10 @@ describe('Effect templates', () => {
 
   it('ramp adds 1 DON from the DON deck', () => {
     const s = build();
-    const before = s.players.A.donActive;
+    const before = s.players.A.donCostArea.length;
     const s2 = TEMPLATES.ramp(s, { sourceInstanceId: 'X', controller: 'A', trigger: 'on_play' });
-    expect(s2.players.A.donActive).toBe(before + 1);
-    expect(s2.players.A.donDeck).toBe(s.players.A.donDeck - 1);
+    expect(s2.players.A.donCostArea.length).toBe(before + 1);
+    expect(s2.players.A.donDeck.length).toBe(s.players.A.donDeck.length - 1);
   });
 
   it('lifegain adds a life card from top of deck', () => {

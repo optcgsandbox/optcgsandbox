@@ -19,6 +19,7 @@ import { setupGame } from '../phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 import { deriveLifeCount } from '../../../src/components/CardArt';
 import type { Card, CharacterCard, LeaderCard } from '../cards/Card';
+import { attachDonCount } from './_donHelpers';
 
 function makeLeader(id: string, life = 5): LeaderCard {
   return {
@@ -57,7 +58,7 @@ function attackLeader(
   const attackerLeader = s.players[attacker].leader.instanceId;
   const defenderLeader = s.players[defender].leader.instanceId;
   // Boost attacker to guarantee power > defender (5000 vs 5000 ties — no life taken).
-  s.players[attacker].leader.attachedDon = 1;
+  attachDonCount(s, attacker, attackerLeader, 1);
   let next = applyAction(s, attacker, {
     type: 'DECLARE_ATTACK',
     attackerInstanceId: attackerLeader,

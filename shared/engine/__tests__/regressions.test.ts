@@ -6,6 +6,7 @@ import { setupGame } from '../phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 import { getLegalActions } from '../rules/legality';
 import type { Card, CharacterCard, LeaderCard } from '../cards/Card';
+import { setDonActive, attachDonCount } from './_donHelpers';
 
 function makeLeader(id: string, color: 'red' | 'blue' = 'red'): LeaderCard {
   return {
@@ -27,7 +28,7 @@ describe('Summoning sickness (legality.ts + applyAction.ts)', () => {
     s = setupGame(s);
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
-    s.players.B.donActive = 5;
+    setDonActive(s, 'B', 5);
     const handCard = s.players.B.hand[0];
     const { state: s2 } = applyAction(s, 'B', { type: 'PLAY_CARD', instanceId: handCard, replaceTargetId: null });
     const newInst = s2.players.B.field.find((i) => i.instanceId === handCard);
@@ -42,7 +43,7 @@ describe('Summoning sickness (legality.ts + applyAction.ts)', () => {
     s = setupGame(s);
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
-    s.players.B.donActive = 5;
+    setDonActive(s, 'B', 5);
     const handCard = s.players.B.hand[0];
     let s2 = applyAction(s, 'B', { type: 'PLAY_CARD', instanceId: handCard, replaceTargetId: null }).state;
     s2 = endTurn(s2);                 // A's turn
@@ -59,7 +60,7 @@ describe('Color rules (legality.ts)', () => {
     let s = initialState({ seed: 3, decks: { A: { leader: makeLeader('LA', 'red'), cards }, B: { leader: makeLeader('LB', 'red'), cards } } });
     s = setupGame(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
-    s.players.A.donActive = 5;
+    setDonActive(s, 'A', 5);
     // Inject blueGuy into hand directly so we can test the gating.
     const blueInstId = Object.values(s.instances).find((i) => i.controller === 'A' && s.cardLibrary[i.cardId].colors[0] === 'blue')?.instanceId;
     if (blueInstId && !s.players.A.hand.includes(blueInstId)) {
@@ -77,7 +78,7 @@ describe('resolveAttack returns events from history slice (applyAction.ts)', () 
     s = setupGame(s);
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
-    s.players.B.leader.attachedDon = 1; // 6000 > 5000
+    attachDonCount(s, 'B', s.players.B.leader.instanceId, 1); // 6000 > 5000
 
     // declare → SKIP_BLOCKER → SKIP_COUNTER → resolve
     const r1 = applyAction(s, 'B', { type: 'DECLARE_ATTACK', attackerInstanceId: s.players.B.leader.instanceId, targetInstanceId: s.players.A.leader.instanceId });
@@ -94,13 +95,13 @@ describe('resolveAttack returns events from history slice (applyAction.ts)', () 
     s = setupGame(s);
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
-    s.players.B.donActive = 2;
-    s.players.B.leader.attachedDon = 1;
+    setDonActive(s, 'B', 2);
+    attachDonCount(s, 'B', s.players.B.leader.instanceId, 1);
 
     // Inject a Blocker character on A's field that A controls.
     const blockerCard = makeChar('Blocker1', 2, 4000, 'red', ['blocker']);
     s.cardLibrary['Blocker1'] = blockerCard;
-    const blockerInst = { instanceId: 'B-INST', cardId: 'Blocker1', controller: 'A' as const, rested: false, attachedDon: 0, perTurn: { hasAttacked: false, onceEffectUsed: false }, summoningSick: false };
+    const blockerInst = { instanceId: 'B-INST', cardId: 'Blocker1', controller: 'A' as const, rested: false, attachedDon: [], perTurn: { hasAttacked: false, onceEffectUsed: false }, summoningSick: false };
     s.instances['B-INST'] = blockerInst;
     s.players.A.field.push(blockerInst);
 
@@ -122,12 +123,12 @@ describe('resolveAttack returns events from history slice (applyAction.ts)', () 
     s = setupGame(s);
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
-    s.players.B.leader.attachedDon = 1; // 6000 attacker
+    attachDonCount(s, 'B', s.players.B.leader.instanceId, 1); // 6000 attacker
     // A has a counter card in hand
     const counterCard = makeChar('Counter2k', 2, 1000, 'red');
     counterCard.counterValue = 2000;
     s.cardLibrary['Counter2k'] = counterCard;
-    const cInst = { instanceId: 'C-INST', cardId: 'Counter2k', controller: 'A' as const, rested: false, attachedDon: 0, perTurn: { hasAttacked: false, onceEffectUsed: false }, summoningSick: false };
+    const cInst = { instanceId: 'C-INST', cardId: 'Counter2k', controller: 'A' as const, rested: false, attachedDon: [], perTurn: { hasAttacked: false, onceEffectUsed: false }, summoningSick: false };
     s.instances['C-INST'] = cInst;
     s.players.A.hand.push('C-INST');
 

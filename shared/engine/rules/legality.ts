@@ -10,6 +10,18 @@ import { RULES } from '../GameState';
 
 export function getLegalActions(state: GameState, player: PlayerId): Action[] {
   if (state.result) return [];
+
+  // Trigger window: only the trigger's controller may act, and the only legal
+  // actions are RESOLVE_TRIGGER (activate true/false). All other actions are
+  // illegal — damage resolution is suspended.
+  if (state.phase === 'trigger_window') {
+    if (!state.pendingTrigger || state.pendingTrigger.controller !== player) return [];
+    return [
+      { type: 'RESOLVE_TRIGGER', targetInstanceId: null, activate: true },
+      { type: 'RESOLVE_TRIGGER', targetInstanceId: null, activate: false },
+    ];
+  }
+
   if (state.activePlayer !== player) {
     // Only the inactive player has the limited set of reactive actions
     // (counter, blocker). Those are gated by phase.
@@ -40,7 +52,7 @@ function playCardActions(state: GameState, player: PlayerId): Action[] {
   for (const instanceId of p.hand) {
     const inst = state.instances[instanceId];
     const card = state.cardLibrary[inst.cardId];
-    if (card.cost === null || card.cost > p.donActive) continue;
+    if (card.cost === null || card.cost > p.donCostArea.length) continue;
     if (!sharesColorWithLeader(card, leaderCard)) continue;
 
     if (card.kind === 'character') {
@@ -63,7 +75,7 @@ function playCardActions(state: GameState, player: PlayerId): Action[] {
 
 function attachDonActions(state: GameState, player: PlayerId): Action[] {
   const p = state.players[player];
-  if (p.donActive <= 0) return [];
+  if (p.donCostArea.length <= 0) return [];
 
   const out: Action[] = [
     { type: 'ATTACH_DON', targetInstanceId: p.leader.instanceId },

@@ -43,8 +43,9 @@ export const removal_ko: EffectFn = (state, ctx) => {
     const idx = s.players[pid].field.findIndex((i) => i.instanceId === ctx.targetInstanceId);
     if (idx !== -1) {
       const removed = s.players[pid].field.splice(idx, 1)[0];
-      s.players[pid].donRested += removed.attachedDon;
-      removed.attachedDon = 0;
+      while (removed.attachedDon.length > 0) {
+        s.players[pid].donRested.push(removed.attachedDon.shift()!);
+      }
       s.players[pid].trash.push(removed.instanceId);
       return s;
     }
@@ -60,8 +61,9 @@ export const removal_bounce: EffectFn = (state, ctx) => {
     const idx = s.players[pid].field.findIndex((i) => i.instanceId === ctx.targetInstanceId);
     if (idx !== -1) {
       const removed = s.players[pid].field.splice(idx, 1)[0];
-      s.players[pid].donRested += removed.attachedDon;
-      removed.attachedDon = 0;
+      while (removed.attachedDon.length > 0) {
+        s.players[pid].donRested.push(removed.attachedDon.shift()!);
+      }
       s.players[pid].hand.push(removed.instanceId);
       return s;
     }
@@ -113,9 +115,9 @@ export const recursion: EffectFn = (state, ctx) => {
 export const ramp: EffectFn = (state, ctx) => {
   const s: GameState = structuredClone(state);
   const p = s.players[ctx.controller];
-  const dealt = Math.min(1, p.donDeck);
-  p.donActive += dealt;
-  p.donDeck -= dealt;
+  if (p.donDeck.length > 0) {
+    p.donCostArea.push(p.donDeck.shift()!);
+  }
   return s;
 };
 

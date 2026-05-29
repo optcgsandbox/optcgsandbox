@@ -74,7 +74,9 @@ describe('initialState', () => {
     expect(state.players.A.leader.cardId).toBe('LA');
     expect(state.players.B.leader.cardId).toBe('LB');
     expect(state.players.A.hand).toEqual([]);
-    expect(state.players.A.donDeck).toBe(RULES.DON_DECK_SIZE);
+    expect(state.players.A.donDeck.length).toBe(RULES.DON_DECK_SIZE);
+    expect(state.players.A.donCostArea).toEqual([]);
+    expect(state.players.A.donRested).toEqual([]);
     expect(state.result).toBeNull();
   });
 

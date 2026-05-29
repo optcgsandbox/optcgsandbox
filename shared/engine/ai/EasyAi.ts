@@ -49,8 +49,8 @@ function isSuicideAttack(
   const attackerCard = state.cardLibrary[attacker.cardId];
   const targetCard = state.cardLibrary[target.cardId];
 
-  const attackerPower = basePower(attackerCard) + attacker.attachedDon * 1000;
-  const targetPower = basePower(targetCard) + target.attachedDon * 1000;
+  const attackerPower = basePower(attackerCard) + attacker.attachedDon.length * 1000;
+  const targetPower = basePower(targetCard) + target.attachedDon.length * 1000;
 
   // For leader attacks: a fizzle (attacker < target) just wastes the attack action
   // and rests the attacker — count as suicide.

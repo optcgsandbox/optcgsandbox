@@ -139,5 +139,5 @@ function effectivePower(card: Card, inst: CardInstance): number {
   let base = 0;
   if (card.kind === 'leader') base = (card as LeaderCard).power;
   if (card.kind === 'character') base = (card as CharacterCard).power;
-  return base + inst.attachedDon * 1000;
+  return base + inst.attachedDon.length * 1000;
 }

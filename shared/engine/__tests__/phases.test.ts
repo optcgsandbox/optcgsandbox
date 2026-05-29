@@ -76,7 +76,7 @@ describe('turn phases', () => {
     expect(s.phase).toBe('don');
 
     s = runDonPhase(s);
-    expect(s.players.A.donActive).toBe(RULES.DON_PER_TURN_FIRST);
+    expect(s.players.A.donCostArea.length).toBe(RULES.DON_PER_TURN_FIRST);
     expect(s.phase).toBe('main');
   });
 
@@ -92,7 +92,7 @@ describe('turn phases', () => {
     expect(s.players.B.hand).toHaveLength(handSize + 1);
 
     s = runDonPhase(s);
-    expect(s.players.B.donActive).toBe(RULES.DON_PER_TURN_AFTER_FIRST);
+    expect(s.players.B.donCostArea.length).toBe(RULES.DON_PER_TURN_AFTER_FIRST);
   });
 
   it('deck-out triggers game end', () => {

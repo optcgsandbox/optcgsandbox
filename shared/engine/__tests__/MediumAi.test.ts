@@ -4,6 +4,7 @@ import { initialState } from '../GameState';
 import { setupGame } from '../phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 import type { Card, CharacterCard, LeaderCard } from '../cards/Card';
+import { setDonActive, attachDonCount } from './_donHelpers';
 
 function makeLeader(id: string): LeaderCard {
   return {
@@ -27,7 +28,7 @@ function bootMainPhase() {
   s = setupGame(s);
   s = endTurn(s);
   s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
-  s.players.B.donActive = 6;
+  setDonActive(s, 'B', 6);
   return s;
 }
 
@@ -35,7 +36,7 @@ describe('MediumAi', () => {
   it('picks LETHAL when opp has 0 life and we can clear leader', async () => {
     const s = bootMainPhase();
     s.players.A.life = [];                       // opp at 0
-    s.players.B.leader.attachedDon = 1;          // 6000 > 5000
+    attachDonCount(s, 'B', s.players.B.leader.instanceId, 1); // 6000 > 5000
     const ai = new MediumAi();
     const action = await ai.chooseAction(s, 'B', 100);
     expect(action.type).toBe('DECLARE_ATTACK');
@@ -47,7 +48,7 @@ describe('MediumAi', () => {
   it('falls back to END_TURN when no useful options', async () => {
     const s = bootMainPhase();
     s.players.B.hand = [];
-    s.players.B.donActive = 0;
+    setDonActive(s, 'B', 0);
     s.players.B.leader.rested = true;
     s.players.B.leader.perTurn.hasAttacked = true;
     const ai = new MediumAi();
@@ -61,12 +62,12 @@ describe('MediumAi', () => {
     const bigCard: CharacterCard = { ...makeChar('BIG', 4, 5000) };
     s.cardLibrary['BIG'] = bigCard;
     const bigInst = {
-      instanceId: 'BIG-INST', cardId: 'BIG', controller: 'B' as const, rested: false, attachedDon: 0,
+      instanceId: 'BIG-INST', cardId: 'BIG', controller: 'B' as const, rested: false, attachedDon: [],
       perTurn: { hasAttacked: false, onceEffectUsed: false }, summoningSick: false,
     };
     s.instances['BIG-INST'] = bigInst;
     s.players.B.hand.push('BIG-INST');
-    s.players.B.donActive = 4;
+    setDonActive(s, 'B', 4);
     s.players.B.leader.rested = true;            // No attacks/lethal noise.
     s.players.B.leader.perTurn.hasAttacked = true;
 

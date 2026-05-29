@@ -17,9 +17,10 @@ export function runRefreshPhase(state: GameState): GameState {
     inst.rested = false;
     inst.summoningSick = false; // Can attack starting this turn.
   }
-  // All rested DON returns to active pool.
-  p.donActive += p.donRested;
-  p.donRested = 0;
+  // All rested DON returns to active pool (donCostArea).
+  while (p.donRested.length > 0) {
+    p.donCostArea.push(p.donRested.shift()!);
+  }
 
   next.phase = 'draw';
   next.history.push({ type: 'PHASE_CHANGED', phase: 'draw' });
@@ -55,9 +56,10 @@ export function runDonPhase(state: GameState): GameState {
 
   const isFirstPlayerFirstTurn = next.turn === 1 && next.activePlayer === 'A';
   const count = isFirstPlayerFirstTurn ? RULES.DON_PER_TURN_FIRST : RULES.DON_PER_TURN_AFTER_FIRST;
-  const dealt = Math.min(count, p.donDeck);
-  p.donActive += dealt;
-  p.donDeck -= dealt;
+  const dealt = Math.min(count, p.donDeck.length);
+  for (let i = 0; i < dealt; i++) {
+    p.donCostArea.push(p.donDeck.shift()!);
+  }
   if (dealt > 0) {
     next.history.push({ type: 'DON_DEALT', player: next.activePlayer, count: dealt });
   }
@@ -76,9 +78,13 @@ export function endTurn(state: GameState): GameState {
   // (DON-attached-to-characters return at end of opponent's turn; for simplicity
   // we model "DON returns at end of YOUR turn" — matches Bandai's rule §1.5.)
   for (const inst of p.field) {
-    p.donRested += inst.attachedDon;
-    inst.attachedDon = 0;
+    while (inst.attachedDon.length > 0) {
+      p.donRested.push(inst.attachedDon.shift()!);
+    }
     inst.perTurn = { hasAttacked: false, onceEffectUsed: false };
+  }
+  while (p.leader.attachedDon.length > 0) {
+    p.donRested.push(p.leader.attachedDon.shift()!);
   }
   p.leader.perTurn = { hasAttacked: false, onceEffectUsed: false };
 
