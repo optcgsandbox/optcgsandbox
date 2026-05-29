@@ -13,7 +13,10 @@ export function runRefreshPhase(state: GameState): GameState {
   const p = next.players[next.activePlayer];
 
   p.leader.rested = false;
-  for (const inst of p.field) inst.rested = false;
+  for (const inst of p.field) {
+    inst.rested = false;
+    inst.summoningSick = false; // Can attack starting this turn.
+  }
   // All rested DON returns to active pool.
   p.donActive += p.donRested;
   p.donRested = 0;

@@ -72,9 +72,10 @@ export default function App() {
       {/* Action bar */}
       <div className="flex flex-wrap gap-2 text-[11px]">
         <button
-          className={`border px-3 py-1 rounded ${attachDonMode ? 'bg-brass-canary' : 'border-ink-black/40'}`}
+          className={`border px-3 py-1 rounded ${attachDonMode ? 'bg-brass-canary' : 'border-ink-black/60'}`}
           onClick={() => setAttachDonMode((v) => !v)}
           disabled={state.players[active].donActive <= 0}
+          aria-pressed={attachDonMode}
         >
           {attachDonMode ? 'Cancel attach' : `Attach DON (${state.players[active].donActive} avail)`}
         </button>

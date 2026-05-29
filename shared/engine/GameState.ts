@@ -34,6 +34,8 @@ export interface CardInstance {
     hasAttacked: boolean;
     onceEffectUsed: boolean;
   };
+  /** True if the instance was played this turn — blocks attack unless Rush. Cleared in Refresh. */
+  summoningSick: boolean;
 }
 
 export interface PlayerZones {
@@ -127,6 +129,7 @@ export function initialState(args: {
       rested: false,
       attachedDon: 0,
       perTurn: { hasAttacked: false, onceEffectUsed: false },
+      summoningSick: false,
     };
     instances[instanceId] = inst;
     return inst;

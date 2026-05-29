@@ -76,6 +76,7 @@ function playCard(
         next.history.push({ type: 'CARD_KOED', instanceId: removed.instanceId });
       }
     }
+    inst.summoningSick = true;
     p.field.push(inst);
   } else if (card.kind === 'stage') {
     // Stages replace the previous stage (if any). v0: no stage slot — push to field.
@@ -117,6 +118,7 @@ function resolveAttack(
   targetId: string,
 ): { state: GameState; events: GameEvent[] } {
   const next: GameState = structuredClone(state);
+  const historyStart = next.history.length;
   const defenderSide = next.players[OTHER[player]];
 
   const attacker = findInstance(next, attackerId);
@@ -136,19 +138,18 @@ function resolveAttack(
 
   if (targetCard.kind === 'leader') {
     // Attack on leader → take a life card (top to hand) UNLESS attacker power < target.
-    if (attackerPower < targetPower) {
-      // Whiff. Per §1.6 unmatched leader attack does nothing.
-      return { state: next, events: [] };
+    if (attackerPower >= targetPower) {
+      const lifeId = defenderSide.life.shift();
+      if (lifeId) {
+        defenderSide.hand.push(lifeId);
+        next.history.push({ type: 'LIFE_TAKEN', player: OTHER[player], instanceId: lifeId });
+      } else {
+        // No life cards left → final attack = lethal.
+        next.result = { winner: player, reason: 'lethal' };
+        next.history.push({ type: 'GAME_ENDED', result: next.result });
+      }
     }
-    const lifeId = defenderSide.life.shift();
-    if (lifeId) {
-      defenderSide.hand.push(lifeId);
-      next.history.push({ type: 'LIFE_TAKEN', player: OTHER[player], instanceId: lifeId });
-    } else {
-      // No life cards left → final attack = lethal.
-      next.result = { winner: player, reason: 'lethal' };
-      next.history.push({ type: 'GAME_ENDED', result: next.result });
-    }
+    // attackerPower < targetPower → leader attack fizzles.
   } else if (targetCard.kind === 'character') {
     if (attackerPower >= targetPower) {
       const idx = defenderSide.field.findIndex((i) => i.instanceId === targetId);
@@ -164,7 +165,7 @@ function resolveAttack(
     // attackerPower < targetPower → attack fizzles.
   }
 
-  return { state: next, events: [] };
+  return { state: next, events: next.history.slice(historyStart) };
 }
 
 function effectivePower(card: Card, inst: CardInstance): number {

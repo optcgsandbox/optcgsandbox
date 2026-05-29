@@ -5,7 +5,7 @@
 
 import type { Action } from '../../protocol/actions';
 import type { Card } from '../cards/Card';
-import type { CardInstance, GameState, PlayerId, PlayerZones } from '../GameState';
+import type { CardInstance, GameState, PlayerId } from '../GameState';
 import { RULES } from '../GameState';
 
 export function getLegalActions(state: GameState, player: PlayerId): Action[] {
@@ -35,12 +35,13 @@ function playCardActions(state: GameState, player: PlayerId): Action[] {
   const p = state.players[player];
   const out: Action[] = [];
   const characterCount = p.field.filter((inst) => state.cardLibrary[inst.cardId].kind === 'character').length;
+  const leaderCard = state.cardLibrary[p.leader.cardId];
 
   for (const instanceId of p.hand) {
     const inst = state.instances[instanceId];
     const card = state.cardLibrary[inst.cardId];
     if (card.cost === null || card.cost > p.donActive) continue;
-    if (!cardColorMatchesLeader(card, p)) continue;
+    if (!sharesColorWithLeader(card, leaderCard)) continue;
 
     if (card.kind === 'character') {
       if (characterCount < RULES.MAX_CHARACTERS_ON_FIELD) {
@@ -91,9 +92,10 @@ function attackActions(state: GameState, player: PlayerId): Action[] {
     if (card.kind !== 'character') continue;
     if (inst.rested) continue;
     if (inst.perTurn.hasAttacked) continue;
-    // Summoning sickness — no attacks the turn played unless Rush.
-    if (cardHasRushAndPlayedThisTurn(card, inst, state)) attackers.push(inst);
-    else if (!playedThisTurn(inst, state)) attackers.push(inst);
+    // Summoning sickness (rules-reference.md §1.6): characters cannot attack the
+    // turn they're played unless they have Rush.
+    if (inst.summoningSick && !card.keywords.includes('rush')) continue;
+    attackers.push(inst);
   }
 
   const targets: string[] = [opp.leader.instanceId];
@@ -135,19 +137,8 @@ function counterActions(state: GameState, player: PlayerId): Action[] {
   return out;
 }
 
-function cardColorMatchesLeader(card: Card, p: PlayerZones): boolean {
-  const leaderColors = new Set(p.leader.cardId.split(':').flatMap(() => [])); // placeholder
-  // We don't have the leader's Card here without a state lookup; assume valid for v0.
-  // Deck construction guarantees deckbuilding color match per §1.10; reuse.
-  void leaderColors;
-  return card.colors.length > 0;
-}
-
-function playedThisTurn(_inst: CardInstance, _state: GameState): boolean {
-  // TODO: track played-this-turn flag. For v0, allow attacks freely.
-  return false;
-}
-
-function cardHasRushAndPlayedThisTurn(card: Card, inst: CardInstance, state: GameState): boolean {
-  return card.keywords.includes('rush') && playedThisTurn(inst, state);
+/** Per rules-reference.md §1.10: a card may be played only if it shares ≥1 color with the leader. */
+function sharesColorWithLeader(card: Card, leader: Card): boolean {
+  const leaderColors = new Set(leader.colors);
+  return card.colors.some((c) => leaderColors.has(c));
 }
