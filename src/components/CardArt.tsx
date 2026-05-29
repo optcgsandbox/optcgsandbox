@@ -27,7 +27,7 @@ export type CardArtSize = 'hand' | 'field' | 'leader' | 'modal' | 'mini' | 'life
 export const CARD_DIMS: Record<CardArtSize, { w: number; h: number }> = {
   hand: { w: 64, h: 88 },
   field: { w: 52, h: 72 },
-  leader: { w: 60, h: 84 },
+  leader: { w: 52, h: 72 },
   modal: { w: 220, h: 308 },
   mini: { w: 28, h: 40 },
   lifeStack: { w: 24, h: 34 },
@@ -335,29 +335,9 @@ function PlaceholderArt({ card, size }: PlaceholderArtProps) {
     return card.id.toUpperCase();
   })();
 
-  // C1 — Leader frame: brass-canary inset ring scaled per size so it
-  // reads as "more important" than character cards. Inset shadow keeps the
-  // 60×84 footprint identical (no overflow into adjacent slots — owner
-  // explicitly forbade bumping CARD_DIMS). 2026-05-29 polish pass:
-  //   - Bumped thickness for leader/field so the gold reads clearly at
-  //     phone-portrait scale (owner: "did absolutely nothing visible").
-  //   - Added a 1px ink-black outer hairline INSIDE the brass via a second
-  //     inset shadow so the gold doesn't bleed into the cream playmat.
-  const leaderFrameWidth = (() => {
-    if (!isLeader) return 0;
-    if (size === 'modal') return 5;
-    if (size === 'leader') return 4;
-    if (size === 'hand') return 3;
-    if (size === 'field') return 3;
-    return 0;
-  })();
-  const leaderFrameShadow =
-    leaderFrameWidth > 0
-      ? [
-          `inset 0 0 0 ${leaderFrameWidth}px var(--color-brass-canary)`,
-          `inset 0 0 0 ${leaderFrameWidth + 1}px rgba(15,20,15,0.55)`,
-        ].join(', ')
-      : undefined;
+  // Leader brass-canary inset frame removed 2026-05-29 per owner direction
+  // ("let's remove it if it is"). Leader now reads same as other field cards.
+  const leaderFrameShadow: string | undefined = undefined;
 
   return (
     <div

@@ -235,11 +235,11 @@ function LeaderRow({
           kind="leader"
           playerId={playerId}
           ariaLabel={`${leaderCard.name} (leader)`}
-          width={68}
-          height={94}
+          width={52}
+          height={72}
           emptyLabel={null}
         >
-          <div style={{ transform: 'scale(var(--zone-leader-scale, 1.12))' }}>
+          <div>
             <CardArt
               inst={zones.leader}
               card={leaderCard}
