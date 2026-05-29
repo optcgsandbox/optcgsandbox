@@ -19,6 +19,7 @@
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
+import { useDonArm } from '../store/donArm';
 import { CardArt } from './CardArt';
 import type { Action } from '@shared/protocol/actions';
 
@@ -42,6 +43,11 @@ export const CardDetailModal = memo(function CardDetailModal() {
   const legalActions = useGameStore((s) => s.legalActions);
   const result = useGameStore((s) => s.state.result);
   const dispatch = useGameStore((s) => s.dispatch);
+  const players = useGameStore((s) => s.state.players);
+  const selectedAttackerId = useGameStore((s) => s.selectedAttackerId);
+  const setSelectedAttackerId = useGameStore((s) => s.setSelectedAttackerId);
+  const armedDonId = useDonArm((s) => s.armedDonId);
+  const disarmDon = useDonArm((s) => s.disarm);
   const reduced = useReducedMotion() ?? false;
 
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -65,6 +71,63 @@ export const CardDetailModal = memo(function CardDetailModal() {
     const isYourTurn = activePlayer === viewAs;
     const isMain = isYourTurn && phase === 'main';
     const isOppCounterWindow = !isYourTurn && phase === 'counter_window';
+
+    // Field-card affordances — tap any field card opens this modal; actions
+    // exposed depend on whose card it is + state (per owner direction 2026-05-29).
+    const friendlyId: 'A' | 'B' = viewAs;
+    const friendly = players[friendlyId];
+    const opponentId: 'A' | 'B' = viewAs === 'A' ? 'B' : 'A';
+    const opponent = players[opponentId];
+    const isFriendlyLeader = inst.instanceId === friendly.leader.instanceId;
+    const isFriendlyCharOrStage =
+      friendly.field.some((i) => i.instanceId === inst.instanceId) ||
+      friendly.stage?.instanceId === inst.instanceId;
+    const isOppLeader = inst.instanceId === opponent.leader.instanceId;
+    const isOppCharOrStage =
+      opponent.field.some((i) => i.instanceId === inst.instanceId) ||
+      opponent.stage?.instanceId === inst.instanceId;
+    const onField = isFriendlyLeader || isFriendlyCharOrStage || isOppLeader || isOppCharOrStage;
+
+    if (onField) {
+      const out: ActionButton[] = [];
+      // ATTACH DON — owner has armed a DON; this is a friendly attach target.
+      if (armedDonId && (isFriendlyLeader || isFriendlyCharOrStage)) {
+        const attach = legalActions.find(
+          (a) => a.type === 'ATTACH_DON' && a.targetInstanceId === inst.instanceId,
+        );
+        if (attach) {
+          out.push({ label: 'ATTACH DON', action: attach, variant: 'primary-teal' });
+        }
+      }
+      // ATTACK THIS — owner has selected an attacker; this is a legal opp target.
+      if (selectedAttackerId && (isOppLeader || isOppCharOrStage)) {
+        const attack = legalActions.find(
+          (a) =>
+            a.type === 'DECLARE_ATTACK' &&
+            a.attackerInstanceId === selectedAttackerId &&
+            a.targetInstanceId === inst.instanceId,
+        );
+        if (attack) {
+          out.push({ label: 'ATTACK THIS', action: attack, variant: 'primary-red' });
+        }
+      }
+      // SELECT AS ATTACKER — this friendly card can attack right now.
+      if (isYourTurn && (isFriendlyLeader || isFriendlyCharOrStage) && !armedDonId) {
+        const canAttack = legalActions.some(
+          (a) => a.type === 'DECLARE_ATTACK' && a.attackerInstanceId === inst.instanceId,
+        );
+        if (canAttack) {
+          out.push({
+            label: selectedAttackerId === inst.instanceId ? 'CANCEL ATTACK' : 'SELECT AS ATTACKER',
+            action: null, // handled out-of-band so we toggle state, then close
+            variant: selectedAttackerId === inst.instanceId ? 'secondary' : 'primary-red',
+          });
+        }
+      }
+      out.push({ label: 'CLOSE', action: null, variant: 'secondary' });
+      // If we tagged a SELECT button, intercept it via a sentinel before returning.
+      return out;
+    }
 
     if (card.kind === 'leader') {
       return [{ label: 'CLOSE', action: null, variant: 'secondary' }];
@@ -198,7 +261,18 @@ export const CardDetailModal = memo(function CardDetailModal() {
     }
 
     return [{ label: 'CLOSE', action: null, variant: 'secondary' }];
-  }, [inst, card, result, activePlayer, viewAs, phase, legalActions]);
+  }, [
+    inst,
+    card,
+    result,
+    activePlayer,
+    viewAs,
+    phase,
+    legalActions,
+    players,
+    armedDonId,
+    selectedAttackerId,
+  ]);
 
   // ESC closes; focus initial = primary button; tab-trap.
   useEffect(() => {
@@ -243,17 +317,31 @@ export const CardDetailModal = memo(function CardDetailModal() {
   }, [open, close]);
 
   const onActionClick = useCallback(
-    (action: Action | null) => {
+    (action: Action | null, label?: string) => {
+      // Sentinel labels handled out-of-band (toggle UI state, not dispatch).
       if (!action) {
+        if (label === 'SELECT AS ATTACKER' && inst) {
+          setSelectedAttackerId(inst.instanceId);
+          close();
+          return;
+        }
+        if (label === 'CANCEL ATTACK') {
+          setSelectedAttackerId(null);
+          close();
+          return;
+        }
         close();
         return;
       }
+      // ATTACH_DON path clears the armed-DON state immediately.
+      if (action.type === 'ATTACH_DON') disarmDon();
+      // DECLARE_ATTACK path clears selectedAttacker.
+      if (action.type === 'DECLARE_ATTACK') setSelectedAttackerId(null);
       dispatch(action);
-      // After dispatch, clear inspection + close.
       setCardDetailOpen(false);
       setInspectedCardId(null);
     },
-    [dispatch, close, setCardDetailOpen, setInspectedCardId],
+    [dispatch, close, setCardDetailOpen, setInspectedCardId, inst, setSelectedAttackerId, disarmDon],
   );
 
   // Backdrop click closes (returns to inspected state).
@@ -265,9 +353,6 @@ export const CardDetailModal = memo(function CardDetailModal() {
   );
 
   if (!open || !inst || !card) return null;
-
-  // Effect text — fall back to a friendly placeholder when none is printed.
-  const effectText = card.effectText || (card.effectTags.includes('vanilla') ? 'No effect.' : '');
 
   return (
     <AnimatePresence>
@@ -299,27 +384,27 @@ export const CardDetailModal = memo(function CardDetailModal() {
             animate={reduced ? { opacity: 1 } : { opacity: 1, scale: 1 }}
             exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
             transition={{ duration: 0.22, ease: [0.2, 0.9, 0.3, 1] }}
-            className="relative flex w-full max-w-[386px] flex-col"
+            className="relative flex w-full max-w-[386px] flex-col items-center"
             style={{
               maxHeight:
                 'calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 48px)',
-              background: 'var(--color-paper-cream)',
-              border: '1px solid rgba(15,20,15,0.35)',
-              borderRadius: 14,
-              boxShadow:
-                '0 12px 32px rgba(15,20,15,0.45), inset 0 0 0 1px var(--color-brass-canary)',
-              padding: '14px 16px 16px 16px',
+              // Owner direction 2026-05-29: transparent — let the card itself
+              // self-frame. No panel chrome, no border, no shadow, no padding.
+              background: 'transparent',
+              padding: 0,
             }}
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Close (top-right). */}
-            <div className="flex items-center justify-end" style={{ height: 32 }}>
+            {/* Close (top-right on backdrop). */}
+            <div className="absolute right-0 top-0 z-10" style={{ height: 32 }}>
               <button
                 ref={closeButtonRef}
                 type="button"
                 onClick={close}
                 aria-label="Close card details"
-                className="flex h-8 w-8 items-center justify-center rounded-full
-                           text-ink-black/65 hover:bg-ink-black/10
+                className="flex h-9 w-9 items-center justify-center rounded-full
+                           bg-ink-black/55 text-paper-cream
+                           hover:bg-ink-black/75
                            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sun-brass"
               >
                 <svg viewBox="0 0 16 16" className="h-4 w-4" fill="currentColor" aria-hidden="true">
@@ -328,63 +413,27 @@ export const CardDetailModal = memo(function CardDetailModal() {
               </button>
             </div>
 
-            {/* Card art (centered, 220×308). */}
-            <div className="mb-3 flex justify-center">
+            {/* Card art — scaled up so printed text is readable.
+                CardArt at 'modal' size is 220×308; scale 1.5x → ~330×462. */}
+            <div
+              className="flex justify-center"
+              style={{
+                transform: 'scale(1.5)',
+                transformOrigin: 'center top',
+                marginTop: 48,
+                marginBottom: 240, // reserve scaled footprint (308*1.5/2 ≈ 230) + gap
+              }}
+            >
               <CardArt card={card} size="modal" />
             </div>
 
-            {/* Meta strip: Cost + Power pills. */}
-            <div className="mb-2 flex items-center justify-center gap-3">
-              {card.kind !== 'leader' && card.cost !== null && card.cost !== undefined && (
-                <MetaPill label="COST" value={String(card.cost)} ring="brass" />
-              )}
-              {(card.kind === 'character' || card.kind === 'leader') &&
-                card.power !== null &&
-                card.power !== undefined && (
-                  <MetaPill label="POWER" value={String(card.power)} ring="red" />
-                )}
-            </div>
-
-            {/* Name + sub. */}
-            <h2
-              id="card-detail-name"
-              className="font-display text-center text-ink-black"
-              style={{ fontSize: 18, lineHeight: '22px', fontWeight: 600 }}
-            >
-              {card.name}
+            {/* Accessibility-only name (sr-only) so the dialog aria-labelledby resolves. */}
+            <h2 id="card-detail-name" className="sr-only">
+              {card.name} ({card.kind})
             </h2>
-            <p
-              className="mt-1 text-center font-body uppercase text-ink-iron"
-              style={{ fontSize: 11, letterSpacing: '0.04em' }}
-            >
-              {card.kind?.toUpperCase()}
-              {card.traits && card.traits.length > 0
-                ? ` · ${card.traits.slice(0, 2).join(' / ')}`
-                : ''}
-            </p>
 
-            {/* Effect text box. */}
-            <div
-              className="mt-3 overflow-y-auto"
-              style={{
-                background: 'var(--color-paper-fog)',
-                border: '1px solid rgba(15,20,15,0.20)',
-                borderRadius: 8,
-                padding: '10px 12px',
-                maxHeight: 160,
-                scrollbarWidth: 'none',
-              }}
-            >
-              <p
-                className="font-body text-ink-black"
-                style={{ fontSize: 13, lineHeight: 1.45 }}
-              >
-                {effectText || '—'}
-              </p>
-            </div>
-
-            {/* Action row. */}
-            <div className="mt-3 flex items-center justify-center gap-2">
+            {/* Action row floats below the scaled card. */}
+            <div className="flex items-center justify-center gap-2">
               {buttons.map((btn, idx) => {
                 const isPrimary = btn.variant !== 'secondary';
                 const ref = isPrimary && idx === 0 ? primaryButtonRef : undefined;
@@ -393,7 +442,7 @@ export const CardDetailModal = memo(function CardDetailModal() {
                     key={`${btn.label}-${idx}`}
                     ref={ref}
                     type="button"
-                    onClick={() => onActionClick(btn.action)}
+                    onClick={() => onActionClick(btn.action, btn.label)}
                     disabled={btn.disabled}
                     className={[
                       'min-h-[44px] font-display uppercase',
@@ -426,39 +475,5 @@ export const CardDetailModal = memo(function CardDetailModal() {
   );
 });
 
-interface MetaPillProps {
-  label: string;
-  value: string;
-  ring: 'brass' | 'red';
-}
-
-function MetaPill({ label, value, ring }: MetaPillProps) {
-  const ringColor = ring === 'brass' ? 'var(--color-brass-canary)' : 'var(--color-seal-red)';
-  const labelColor =
-    ring === 'brass' ? 'var(--color-brass-canary)' : 'var(--color-seal-red)';
-  return (
-    <div
-      className="flex flex-col items-center justify-center bg-paper-cream"
-      style={{
-        width: 88,
-        height: 36,
-        borderRadius: 8,
-        border: `1.5px solid ${ringColor}`,
-      }}
-      aria-label={`${label} ${value}`}
-    >
-      <span
-        className="font-body uppercase"
-        style={{ fontSize: 8, letterSpacing: '0.06em', color: labelColor, lineHeight: 1 }}
-      >
-        {label}
-      </span>
-      <span
-        className="font-display tabular text-ink-black"
-        style={{ fontSize: 18, lineHeight: 1, fontWeight: 600 }}
-      >
-        {value}
-      </span>
-    </div>
-  );
-}
+// MetaPill removed 2026-05-29 when modal switched to transparent (card
+// self-frames; cost/power now read from the scaled card art directly).

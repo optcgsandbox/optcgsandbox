@@ -59,16 +59,8 @@ function useLegalAttackTargets(): Set<string> {
   return out;
 }
 
-/** Returns the set of friendly instance IDs that can be selected as attackers
- *  this turn (engine's DECLARE_ATTACK actions enumerate them). */
-function useAttackerCandidates(): Set<string> {
-  const legalActions = useGameStore((s) => s.legalActions);
-  const out = new Set<string>();
-  for (const a of legalActions) {
-    if (a.type === 'DECLARE_ATTACK') out.add(a.attackerInstanceId);
-  }
-  return out;
-}
+// useAttackerCandidates removed 2026-05-29 — attacker selection now flows
+// through the CardDetailModal (tap field card → see options → SELECT AS ATTACKER).
 
 /** Returns the set of friendly instance IDs that are legal ATTACH_DON targets. */
 function useDonAttachCandidates(): Set<string> {
@@ -85,68 +77,23 @@ function useDonAttachCandidates(): Set<string> {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * design-reference §7 tap order:
- *   1. If DON armed AND target is friendly + legal      → dispatch ATTACH_DON
- *   2. Else if attacker selected AND target legal opp   → dispatch DECLARE_ATTACK
- *   3. Else if friendly + can attack this turn          → setSelectedAttackerId
- *   4. Else                                             → setInspectedCardId
+ * Owner direction 2026-05-29: tap on ANY field card (friendly OR opponent,
+ * leader OR character OR stage) opens the CardDetailModal. Actions
+ * (ATTACH DON / SELECT AS ATTACKER / ATTACK THIS) are exposed from inside
+ * the modal so the owner can always read the card before committing.
  */
 function useFieldTapRouter() {
-  const armedDonId = useDonArm((s) => s.armedDonId);
-  const disarmDon = useDonArm((s) => s.disarm);
-  const selectedAttackerId = useGameStore((s) => s.selectedAttackerId);
-  const setSelectedAttackerId = useGameStore((s) => s.setSelectedAttackerId);
   const setInspectedCardId = useGameStore((s) => s.setInspectedCardId);
-  const dispatch = useGameStore((s) => s.dispatch);
-  const legalAttackTargets = useLegalAttackTargets();
-  const attackerCandidates = useAttackerCandidates();
-  const donAttachCandidates = useDonAttachCandidates();
+  const setCardDetailOpen = useGameStore((s) => s.setCardDetailOpen);
 
   return useCallback(
-    (instanceId: string, isFriendly: boolean) => {
-      // 1. DON-attach mode.
-      if (armedDonId && isFriendly && donAttachCandidates.has(instanceId)) {
-        dispatch({ type: 'ATTACH_DON', targetInstanceId: instanceId });
-        disarmDon();
-        return;
-      }
-      // 2. Declare attack on legal opponent target.
-      if (
-        selectedAttackerId &&
-        !isFriendly &&
-        legalAttackTargets.has(instanceId)
-      ) {
-        dispatch({
-          type: 'DECLARE_ATTACK',
-          attackerInstanceId: selectedAttackerId,
-          targetInstanceId: instanceId,
-        });
-        setSelectedAttackerId(null);
-        return;
-      }
-      // 3. Friendly card can attack → select as attacker. Toggle off when
-      //    re-tapping the same one.
-      if (isFriendly && attackerCandidates.has(instanceId)) {
-        if (selectedAttackerId === instanceId) {
-          setSelectedAttackerId(null);
-        } else {
-          setSelectedAttackerId(instanceId);
-        }
-        return;
-      }
-      // 4. Otherwise — inspect.
+    (instanceId: string, _isFriendly: boolean) => {
       setInspectedCardId(instanceId);
+      setCardDetailOpen(true);
     },
     [
-      armedDonId,
-      disarmDon,
-      selectedAttackerId,
-      setSelectedAttackerId,
       setInspectedCardId,
-      dispatch,
-      legalAttackTargets,
-      attackerCandidates,
-      donAttachCandidates,
+      setCardDetailOpen,
     ],
   );
 }

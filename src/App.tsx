@@ -82,6 +82,7 @@ export default function App() {
   const endTurnAndAdvance = useGameStore((s) => s.endTurnAndAdvance);
   const dispatch = useGameStore((s) => s.dispatch);
   const viewAs = useGameStore((s) => s.viewAs);
+  const cardDetailOpen = useGameStore((s) => s.cardDetailOpen);
   const { theme, toggleTheme } = useTheme();
 
   const endTurnAffordance = useMemo(
@@ -204,24 +205,27 @@ export default function App() {
                 Sits bottom-right inside the hand-strip area at
                 `bottom: calc(24dvh + 16px + safe-area-bottom)`. Floats above
                 the hand fan without overlapping the leader row. Label and
-                enabled state change with phase + active player. */}
-            <button
-              type="button"
-              onClick={onEndTurnClick}
-              disabled={!endTurnAffordance.enabled || aiThinking}
-              aria-label={endTurnAffordance.label}
-              aria-busy={aiThinking}
-              className="absolute right-3 z-40 min-h-[44px] rounded-2xl bg-seal-red px-4
-                         py-2 font-body text-[0.75rem] font-extrabold uppercase
-                         tracking-wider text-paper-cream shadow-[0_4px_12px_rgba(168,38,31,0.30)]
-                         disabled:opacity-40 disabled:cursor-not-allowed
-                         focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
-              style={{
-                bottom: 'calc(24dvh + 16px + env(safe-area-inset-bottom, 0px))',
-              }}
-            >
-              {endTurnAffordance.label}
-            </button>
+                enabled state change with phase + active player.
+                Hidden when CardDetailModal is open so it doesn't bleed through. */}
+            {!cardDetailOpen && (
+              <button
+                type="button"
+                onClick={onEndTurnClick}
+                disabled={!endTurnAffordance.enabled || aiThinking}
+                aria-label={endTurnAffordance.label}
+                aria-busy={aiThinking}
+                className="absolute right-3 z-40 min-h-[44px] rounded-2xl bg-seal-red px-4
+                           py-2 font-body text-[0.75rem] font-extrabold uppercase
+                           tracking-wider text-paper-cream shadow-[0_4px_12px_rgba(168,38,31,0.30)]
+                           disabled:opacity-40 disabled:cursor-not-allowed
+                           focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
+                style={{
+                  bottom: 'calc(24dvh + 16px + env(safe-area-inset-bottom, 0px))',
+                }}
+              >
+                {endTurnAffordance.label}
+              </button>
+            )}
           </>
         )}
       </div>
