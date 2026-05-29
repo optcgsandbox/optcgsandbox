@@ -1,26 +1,45 @@
-// PhaseColumn — design-reference.md §3.4 L7.
-// Vertical column of phase chips: Refresh → Draw → DON!! → Main → End.
-// Active chip = sun-brass background + ink-black text (full opacity);
-// inactive chips = marine-fog at 30% opacity with ink-iron text. Replaces
-// the horizontal PhaseRibbon for the official Bandai-aligned layout.
+// PhaseColumn — playmat-redesign.md §2.9.
 //
-// `aria-current="step"` is set on the active chip so screen readers can
-// follow turn progress.
+// Vertical column of 5 phase chips printed to the LEFT of the LEADER on the
+// Bandai playsheet:
+//
+//   ┌──────────────┐
+//   │ Refresh Phase│
+//   └──────┬───────┘
+//          │
+//          ▼
+//   ┌──────────────┐
+//   │  Draw Phase  │
+//   └──────┬───────┘
+//          │
+//          ▼
+//   ┌──────────────┐
+//   │  DON!! Phase │
+//   └──────┬───────┘
+//          │
+//          ▼
+//   ┌──────────────┐
+//   │  Main Phase  │   ← ACTIVE (brass fill)
+//   └──────┬───────┘
+//          │
+//          ▼
+//   ┌──────────────┐
+//   │  End Phase   │
+//   └──────────────┘
+//
+// Active chip = sun-brass fill + ink-black text. Inactive = ink-iron fill
+// with cream text — matches the Bandai cardboard playsheet (dark chips on
+// gray paper). Connecting arrows are decorative.
 
 import { memo } from 'react';
 import { useGameStore } from '../../store/game';
 import type { Phase, PlayerId } from '@shared/engine/GameState';
 
 interface PhaseColumnProps {
-  /** Which player's phase column this is — used to gray out when it isn't this player's turn. */
   playerId: PlayerId;
   isYou: boolean;
 }
 
-/** The five player-visible turn phases shown on the Bandai playmat.
- *  Reactive windows (attack/block/counter/damage/trigger) are NOT shown here;
- *  they live in the AttackResolutionOverlay + TriggerPrompt. The `end` phase
- *  is collapsed into "End". */
 const PHASE_SEQUENCE: { key: PhaseLike; label: string }[] = [
   { key: 'refresh', label: 'Refresh' },
   { key: 'draw', label: 'Draw' },
@@ -31,8 +50,6 @@ const PHASE_SEQUENCE: { key: PhaseLike; label: string }[] = [
 
 type PhaseLike = 'refresh' | 'draw' | 'don' | 'main' | 'end';
 
-/** Map any engine phase to the player-facing 5-step sequence. Reactive
- *  windows resolve back to 'main' since they're sub-states of the Main Phase. */
 function mapPhase(phase: Phase): PhaseLike | null {
   switch (phase) {
     case 'refresh':
@@ -63,25 +80,56 @@ export const PhaseColumn = memo(function PhaseColumn({ playerId, isYou }: PhaseC
     <div
       role="list"
       aria-label={`${ownerLabel} phase progress`}
-      className="flex h-full flex-col items-stretch justify-center gap-1"
-      style={{ width: '52px', minWidth: '52px' }}
+      className="flex h-full flex-col items-center justify-center"
+      style={{
+        width: 56,
+        minWidth: 56,
+        gap: 0,
+      }}
     >
-      {PHASE_SEQUENCE.map(({ key, label }) => {
+      {PHASE_SEQUENCE.map(({ key, label }, idx) => {
         const isActive = key === currentStep;
+        const isLast = idx === PHASE_SEQUENCE.length - 1;
         return (
-          <div
-            key={key}
-            role="listitem"
-            aria-current={isActive ? 'step' : undefined}
-            className={[
-              'rounded-md px-1.5 py-0.5 text-center font-body text-[0.55rem]',
-              'font-extrabold uppercase tracking-wider leading-tight',
-              isActive
-                ? 'bg-sun-brass text-ink-black shadow-[0_1px_3px_rgba(0,0,0,0.30)]'
-                : 'bg-marine-fog/30 text-ink-iron',
-            ].join(' ')}
-          >
-            {label}
+          <div key={key} className="flex flex-col items-center" style={{ width: '100%' }}>
+            <div
+              role="listitem"
+              aria-current={isActive ? 'step' : undefined}
+              className={[
+                'flex w-full items-center justify-center rounded-[5px] font-display tracking-wider',
+                'leading-none',
+                isActive
+                  ? 'bg-sun-brass text-ink-black shadow-[0_1px_3px_rgba(0,0,0,0.35)]'
+                  : 'bg-ink-iron/85 text-paper-cream/90',
+              ].join(' ')}
+              style={{
+                fontSize: 8,
+                padding: '3.5px 4px',
+                letterSpacing: '0.06em',
+                minHeight: 14,
+              }}
+            >
+              {label}
+            </div>
+            {!isLast && (
+              <svg
+                viewBox="0 0 10 8"
+                width={10}
+                height={6}
+                aria-hidden="true"
+                style={{ margin: '1.5px 0' }}
+              >
+                <path
+                  d="M5 0 L5 5 M1.5 3.5 L5 7 L8.5 3.5"
+                  fill="none"
+                  stroke="var(--color-ink-iron)"
+                  strokeOpacity={0.55}
+                  strokeWidth={1}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )}
           </div>
         );
       })}

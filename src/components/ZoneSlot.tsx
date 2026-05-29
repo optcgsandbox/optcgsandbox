@@ -1,22 +1,31 @@
-// ZoneSlot — visual-spec.md §5.2. Generic positioned dropzone container.
-// Replaces PlayerSide as the per-zone primitive. Wraps children in a
-// pulsing brass ring when the engine flags this zone as a valid drop target.
+// ZoneSlot — playmat-redesign.md §2.
+//
+// Generic positioned dropzone container for a single card-shaped slot
+// (Leader, Stage, Deck, Trash, DON DECK, character slot, life card). Renders:
+//
+//   - Empty: a dashed cream-on-cream outline ("playmat-slot-empty") with an
+//     optional centered wordmark ("LEADER" / "STAGE" / "DECK" / etc.) so the
+//     player can identify the empty zone at a glance.
+//   - Occupied: just renders children (the card itself), with optional pulsing
+//     brass ring overlay when the engine flags this zone as a valid drop
+//     target.
+//
+// Replaces the old ring-1 / dashed-character / ring-marine-fog hodgepodge
+// with a single consistent visual language matching the Bandai playsheet:
+// gray-on-cream filled zone tiles + dashed empty slots inside them.
 //
 // data-zone attribute powers the DOMRect-based hit-test in src/lib/hitTest.ts.
 
 import { motion, useReducedMotion } from 'framer-motion';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { springs } from '../lib/animationTokens';
 import { zoneKey } from '../lib/hitTest';
 
-// `stage`, `donDeck`, `costArea` and `phase` added 2026-05-29 for the official
-// Bandai playmat rebuild (design-reference.md §3.4). `don` is retained for
-// legacy DON Deck call sites until they migrate to `donDeck`.
 export type ZoneKind =
   | 'leader'
   | 'character'
   | 'life'
-  | 'don'
+  | 'don'       // legacy alias for donDeck (some hit-test call sites)
   | 'donDeck'
   | 'deck'
   | 'trash'
@@ -30,18 +39,46 @@ interface ZoneSlotProps {
   index?: number;
   /** Engine signals this zone is currently a valid drop target. */
   validDrop?: boolean;
-  /** Tighten the visual chrome for chrome rows (deck/trash mini stacks). */
-  compact?: boolean;
+  /** Override the inner empty-state wordmark. Falls back to the kind's
+   *  default label (e.g. "Leader", "Stage", "Deck"). Pass `null` for none. */
+  emptyLabel?: string | null;
+  /** When true the empty-slot dashed outline is suppressed (e.g. character
+   *  slots inside the wide CHARACTER AREA band — the band IS the outline). */
+  hideEmptyOutline?: boolean;
+  /** Explicit dimensions for the slot box. */
+  width?: number | string;
+  height?: number | string;
+  /** Extra className for the outer wrapper. */
+  className?: string;
+  style?: CSSProperties;
   children?: ReactNode;
   ariaLabel?: string;
 }
+
+const DEFAULT_LABEL: Record<ZoneKind, string | null> = {
+  leader: 'Leader',
+  character: null, // characters live inside a labeled CHARACTER AREA band
+  life: null,      // life cards live inside a labeled LIFE column
+  don: 'Don',
+  donDeck: 'Don Deck',
+  deck: 'Deck',
+  trash: 'Trash',
+  stage: 'Stage',
+  costArea: 'Cost',
+  phase: null,
+};
 
 export function ZoneSlot({
   kind,
   playerId,
   index,
   validDrop,
-  compact,
+  emptyLabel,
+  hideEmptyOutline,
+  width,
+  height,
+  className,
+  style,
   children,
   ariaLabel,
 }: ZoneSlotProps) {
@@ -49,25 +86,31 @@ export function ZoneSlot({
   const spring = springs(reduced);
   const id = zoneKey(kind, playerId, index);
 
-  // Minimum tap target = 44pt per iOS HIG. Even when empty, the slot is hit-testable.
-  const minDim = compact ? '36px' : '44px';
+  const label =
+    emptyLabel === undefined ? DEFAULT_LABEL[kind] : emptyLabel;
+  const isOccupied = !!children;
+
+  const wrapperStyle: CSSProperties = {
+    width,
+    height,
+    minWidth: 44, // iOS HIG min hit target
+    minHeight: 44,
+    ...style,
+  };
 
   return (
     <motion.div
       data-zone={id}
       role="region"
-      aria-label={ariaLabel ?? `${kind} ${playerId}${typeof index === 'number' ? ` slot ${index + 1}` : ''}`}
+      aria-label={
+        ariaLabel ??
+        `${kind} ${playerId}${typeof index === 'number' ? ` slot ${index + 1}` : ''}`
+      }
       className={[
-        'relative rounded-2xl flex items-center justify-center',
-        // Character slots get a stronger dashed outline so empty slots are
-        // unambiguously visible at 430×844 on cream paper — bumped 2026-05-29
-        // to ink-iron/35 + paper-fog/35 so the row reads as a clear zone band
-        // (owner: "did absolutely nothing visible" feedback).
-        kind === 'character'
-          ? 'border-2 border-dashed border-ink-iron/35 bg-paper-fog/35'
-          : 'ring-1 ring-marine-fog/40 bg-paper-fog/20',
+        'relative flex items-center justify-center',
+        className ?? '',
       ].join(' ')}
-      style={{ minWidth: minDim, minHeight: minDim }}
+      style={wrapperStyle}
       animate={
         validDrop && !reduced
           ? {
@@ -82,6 +125,21 @@ export function ZoneSlot({
       }
       transition={validDrop ? spring.zonePulse : { duration: 0.2 }}
     >
+      {!isOccupied && !hideEmptyOutline && (
+        <div
+          className="playmat-slot-empty absolute inset-0 flex items-center justify-center"
+          aria-hidden="true"
+        >
+          {label && (
+            <span
+              className="playmat-zone__label font-display"
+              style={{ fontSize: 9, lineHeight: 1 }}
+            >
+              {label}
+            </span>
+          )}
+        </div>
+      )}
       {children}
     </motion.div>
   );

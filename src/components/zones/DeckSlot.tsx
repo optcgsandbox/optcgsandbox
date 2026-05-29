@@ -1,8 +1,9 @@
-// DeckSlot — design-reference.md §3.4.
-// Single face-down deck card-back showing the remaining deck count. Uses the
-// navy OP-compass back per design-reference.md §3.3 (Character/Event/Stage
-// back color). Count = `state.players[X].deck.length` (NEVER render the
-// string[] array directly).
+// DeckSlot — playmat-redesign.md §2.5.
+//
+// FAR-RIGHT of the LEADER row. Single 52×72 face-down navy card-back with a
+// cream count chip bottom-right. The chip count = `state.players[X].deck.length`
+// (never render the raw string[]). When the deck is empty (game-loss state per
+// CR §1-2-1-1-2) we fall back to the dashed empty outline + "DECK" wordmark.
 
 import { memo } from 'react';
 import { useGameStore } from '../../store/game';
@@ -20,39 +21,42 @@ export const DeckSlot = memo(function DeckSlot({ playerId, isYou }: DeckSlotProp
   const count = useGameStore((s) => s.state.players[playerId].deck.length);
   const dims = CARD_DIMS.field;
   const label = `${isYou ? 'Your' : 'Opponent'} deck — ${count} cards remaining`;
+
   return (
-    <ZoneSlot kind="deck" playerId={playerId} ariaLabel={label}>
-      <div
-        className="relative"
-        style={{ width: dims.w, height: dims.h }}
-      >
-        {count > 0 ? (
-          <>
-            <NavyCardBack />
-            {/* Count overlay — bottom-right corner of the back. */}
-            <span
-              className="absolute bottom-0.5 right-0.5 rounded-sm bg-paper-cream/95 px-1 py-px
-                         font-display tabular text-[0.7rem] leading-none text-ink-black
-                         shadow-[0_1px_2px_rgba(0,0,0,0.35)]"
-              aria-hidden="true"
-            >
-              {count}
-            </span>
-          </>
-        ) : (
-          // D3 (playmat-redesign §10) — dashed empty fallback for game-loss
-          // state (CR §1-2-1-1-2: empty deck triggers loss). Brief but possible.
-          <div
-            className="absolute inset-0 flex items-center justify-center rounded-md
-                       border border-dashed border-marine-fog/60 bg-paper-fog/10"
+    <ZoneSlot
+      kind="deck"
+      playerId={playerId}
+      ariaLabel={label}
+      width={dims.w}
+      height={dims.h}
+      emptyLabel="DECK"
+    >
+      {count > 0 && (
+        <div
+          className="relative"
+          style={{ width: dims.w, height: dims.h }}
+        >
+          <NavyCardBack radius={4} />
+          {/* Count chip — cream pill bottom-right corner of card. */}
+          <span
+            className="absolute z-10 rounded-[3px] bg-paper-cream/95
+                       font-display tabular text-ink-black ring-[0.5px] ring-ink-black/40
+                       shadow-[0_1px_2px_rgba(0,0,0,0.55)]"
+            style={{
+              right: 3,
+              bottom: 3,
+              padding: '0px 4px',
+              fontSize: '0.62rem',
+              lineHeight: 1.3,
+              minWidth: 14,
+              textAlign: 'center',
+            }}
             aria-hidden="true"
           >
-            <span className="font-body text-[0.5rem] font-extrabold uppercase tracking-wider text-ink-iron">
-              Deck 0
-            </span>
-          </div>
-        )}
-      </div>
+            {count}
+          </span>
+        </div>
+      )}
     </ZoneSlot>
   );
 });

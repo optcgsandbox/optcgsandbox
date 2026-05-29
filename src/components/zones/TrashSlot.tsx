@@ -1,8 +1,9 @@
-// TrashSlot — design-reference.md §3.4 L6.
-// Bottom-right corner of player's half (mirror top-right for opp). Single
-// slot, face-up. When the trash has cards, show the TOP card (last index) art.
-// When empty, show a "TRASH" label inside a dashed marine-fog outline.
-// Count = `state.players[X].trash.length` (never render the string[] array).
+// TrashSlot — playmat-redesign.md §2.8.
+//
+// Bottom-RIGHT corner of each player's FAR row. Single 52×72 slot showing
+// the TOP card of the trash (last index per CR §3-5). When the pile has
+// more than 1 card, a small cream count chip overlays bottom-right. When
+// empty, the slot collapses to the dashed empty outline + "TRASH" wordmark.
 
 import { memo } from 'react';
 import { useGameStore } from '../../store/game';
@@ -19,6 +20,9 @@ export const TrashSlot = memo(function TrashSlot({ playerId, isYou }: TrashSlotP
   const trash = useGameStore((s) => s.state.players[playerId].trash);
   const instances = useGameStore((s) => s.state.instances);
   const library = useGameStore((s) => s.state.cardLibrary);
+  const setInspectedCardId = useGameStore((s) => s.setInspectedCardId);
+  const setCardDetailOpen = useGameStore((s) => s.setCardDetailOpen);
+
   const dims = CARD_DIMS.field;
   const count = trash.length;
   const label =
@@ -26,40 +30,49 @@ export const TrashSlot = memo(function TrashSlot({ playerId, isYou }: TrashSlotP
       ? `${isYou ? 'Your' : 'Opponent'} trash — empty`
       : `${isYou ? 'Your' : 'Opponent'} trash — ${count} cards`;
 
-  // Top of trash = last index (CR §3-5 — new cards placed on top).
   const topInstanceId = count > 0 ? trash[count - 1] : null;
   const topInst = topInstanceId ? instances[topInstanceId] : undefined;
   const topCard = topInst ? library[topInst.cardId] : undefined;
 
+  const onTapTop = () => {
+    if (!topInst) return;
+    setInspectedCardId(topInst.instanceId);
+    setCardDetailOpen(true);
+  };
+
   return (
-    <ZoneSlot kind="trash" playerId={playerId} ariaLabel={label}>
-      <div className="relative" style={{ width: dims.w, height: dims.h }}>
-        {topInst && topCard ? (
-          <>
-            <CardArt inst={topInst} card={topCard} size="field" />
-            {count > 1 && (
-              <span
-                className="absolute bottom-0.5 right-0.5 rounded-sm bg-paper-cream/95 px-1 py-px
-                           font-display tabular text-[0.65rem] leading-none text-ink-black
-                           shadow-[0_1px_2px_rgba(0,0,0,0.35)]"
-                aria-hidden="true"
-              >
-                {count}
-              </span>
-            )}
-          </>
-        ) : (
-          <div
-            className="absolute inset-0 flex items-center justify-center rounded-md
-                       border-2 border-dashed border-ink-iron/35 bg-paper-fog/35"
-            aria-hidden="true"
-          >
-            <span className="font-body text-[0.6rem] font-extrabold uppercase tracking-wider text-ink-iron/75">
-              Trash
+    <ZoneSlot
+      kind="trash"
+      playerId={playerId}
+      ariaLabel={label}
+      width={dims.w}
+      height={dims.h}
+      emptyLabel="TRASH"
+    >
+      {topInst && topCard && (
+        <div
+          className="relative cursor-pointer"
+          style={{ width: dims.w, height: dims.h }}
+          onClick={onTapTop}
+        >
+          <CardArt inst={topInst} card={topCard} size="field" />
+          {count > 1 && (
+            <span
+              className="absolute bottom-1 right-1 z-10 rounded-[3px] bg-paper-cream/95
+                         font-display tabular text-ink-black ring-[0.5px] ring-ink-black/40
+                         shadow-[0_1px_2px_rgba(0,0,0,0.45)]"
+              style={{
+                padding: '0.5px 5px',
+                fontSize: '0.7rem',
+                lineHeight: 1.1,
+              }}
+              aria-hidden="true"
+            >
+              {count}
             </span>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </ZoneSlot>
   );
 });

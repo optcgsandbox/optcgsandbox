@@ -1,17 +1,15 @@
-// CostAreaBand — design-reference.md §3.4 L5 + rules-reference.md §4.8.
-// Wide bottom-center band that renders ALL DON in the Cost Area together:
-// active DON face-up (upright `+1000` card) AND rested DON rotated 90°
-// (sideways `+1000` card). Per the Bandai playmat both states live in the
-// SAME zone and should be visible at a glance.
+// CostAreaBand — playmat-redesign.md §2.7.
 //
-// Replaces the earlier `CostAreaStrip` (active brass coins only) +
-// `DonRested` (rested coins only) split — those were a UI simplification
-// that diverged from the playmat (design-reference §3.1 L5). The card-front
-// art ("+1000" DON card) matches rule_manual.pdf p4.
+// Wide horizontal band in the FAR row, sitting between DON DECK (left) and
+// TRASH (right). On the Bandai playsheet this is the gray "COST AREA"
+// rectangle — the largest single zone in the FAR row. It hosts ALL DON
+// cards: active DON upright on the left, rested DON rotated 90° in place
+// to its right. Max 10 DON; with up to 10 DON the cards overlap in a
+// compressed stack so the band footprint stays fixed.
 //
-// ATTACH affordance preserved: tap an active DON card to "arm" it (visual
-// ring + pulse), then tap a friendly character or your leader to dispatch
-// ATTACH_DON. Tapping the same card again, or anywhere else, disarms.
+// Interaction: tap an active DON to ARM it (pulsing brass ring) — then tap
+// a friendly character / leader to ATTACH_DON via the CardDetailModal.
+// Rested DON are non-interactive.
 
 import { memo, useCallback, useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
@@ -25,38 +23,36 @@ interface CostAreaBandProps {
   isYou: boolean;
 }
 
-// DON card front — visual-design-spec.md §1.2–1.4.
-// Cream body with ink ど!! mark sitting on a faint radial speed-line burst,
-// brass underline accent, and a brass "+1000" stamp inside an ink bottom band.
-// 30×42px base; scales for hand/field renders if ever needed.
-const DON_CARD_W = 30;
-const DON_CARD_H = 42;
+// DON card front — Bandai's "+1000" stamp on a cream body with a ど!! mark.
+// 38×52 base inside the 60px-tall COST band so the cards read clearly.
+const DON_CARD_W = 38;
+const DON_CARD_H = 52;
+const DON_STRIDE = 18; // compressed stack; 10 DON × 18 + 38 = 218px (fits the band)
 
-/** Radial speed-lines burst behind the ど!! mark. Pure decoration. */
+/** 12 radial dashes behind the ど!! mark — speed-line burst. */
 function SpeedLines() {
-  // 12 evenly-spaced radial dashes (every 30°) emanating from (50%, 38%).
   const dashes = Array.from({ length: 12 }, (_, i) => i * 30);
   return (
     <svg
-      viewBox="0 0 30 42"
+      viewBox="0 0 38 52"
       className="absolute inset-0 h-full w-full"
       aria-hidden="true"
       preserveAspectRatio="none"
     >
       <g
         stroke="var(--color-ink-black)"
-        strokeOpacity={0.18}
-        strokeWidth={0.5}
+        strokeOpacity={0.20}
+        strokeWidth={0.7}
         strokeLinecap="round"
       >
         {dashes.map((deg) => (
           <line
             key={deg}
-            x1={15}
-            y1={16}
-            x2={15}
-            y2={10}
-            transform={`rotate(${deg} 15 16)`}
+            x1={19}
+            y1={20}
+            x2={19}
+            y2={12}
+            transform={`rotate(${deg} 19 20)`}
           />
         ))}
       </g>
@@ -68,53 +64,56 @@ function DonCardArt({ active }: { active: boolean }) {
   return (
     <div
       className={[
-        'absolute inset-0 overflow-hidden rounded-[3px]',
+        'absolute inset-0 overflow-hidden rounded-[4px]',
         'bg-paper-cream paper-grain',
         active
-          ? 'shadow-[0_2px_4px_rgba(15,20,15,0.35)]'
+          ? 'shadow-[0_2px_5px_rgba(15,20,15,0.40)]'
           : 'shadow-[0_1px_2px_rgba(15,20,15,0.18)]',
       ].join(' ')}
       style={{
         border: '0.75px solid var(--color-ink-black)',
+        // Thin brass inset hairline — matches the back design language.
+        backgroundImage:
+          'radial-gradient(ellipse at 50% 30%, rgba(255,248,225,0.7) 0%, transparent 60%)',
       }}
       aria-hidden="true"
     >
       <SpeedLines />
-      {/* ど!! mark — Lilita One ink with subtle drop shadow + 4° forward lean. */}
+      {/* ど!! mark — Lilita One ink-black with a 4° forward lean. */}
       <div
-        className="absolute left-1/2 top-[40%] -translate-x-1/2 -translate-y-1/2"
+        className="absolute left-1/2 top-[36%] -translate-x-1/2 -translate-y-1/2"
         style={{ transform: 'translate(-50%, -50%) rotate(-4deg)' }}
       >
         <span
           className="font-display leading-none text-ink-black"
           style={{
-            fontSize: 11,
+            fontSize: 14,
             letterSpacing: '-0.02em',
             textShadow: '0 1px 0 var(--color-paper-cream)',
-            fontWeight: 600,
+            fontWeight: 700,
           }}
         >
           ど!!
         </span>
       </div>
-      {/* Brass underline accent — small "stamp" cue under the mark. */}
+      {/* Brass underline beneath the mark. */}
       <div
         className="absolute left-1/2 -translate-x-1/2 bg-brass-canary"
-        style={{ top: '54%', width: 8, height: 0.75 }}
+        style={{ top: '52%', width: 14, height: 1 }}
         aria-hidden="true"
       />
-      {/* Bottom band with +1000 brass stamp. */}
+      {/* Brass +1000 stamp inside an ink bottom band — Bandai's signature. */}
       <div
         className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-ink-black"
-        style={{ height: 12, borderRadius: '0 0 3px 3px' }}
+        style={{ height: 14, borderRadius: '0 0 4px 4px' }}
       >
         <span
           className="font-display tabular text-brass-canary"
           style={{
-            fontSize: 8,
-            letterSpacing: '0.04em',
+            fontSize: 10,
+            letterSpacing: '0.06em',
             lineHeight: 1,
-            fontWeight: 600,
+            fontWeight: 700,
           }}
         >
           +1000
@@ -135,10 +134,6 @@ interface DonCardProps {
 }
 
 function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap }: DonCardProps) {
-  // Per CR §4-4 active vs rested = upright vs 90° rotated.
-  // visual-design-spec.md §1.3 rested treatment: `transform-origin: 0 100%`
-  // so the card pivots around its bottom-left, anchoring the slot position
-  // (per MOOgiwara card.ts:117-128).
   const targetRotate = rested ? 90 : 0;
   return (
     <motion.button
@@ -153,13 +148,13 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
               y: -2,
               boxShadow: [
                 '0 0 0 0px var(--color-sun-brass)',
-                '0 0 0 2px var(--color-sun-brass), 0 0 8px rgba(232,180,61,0.5)',
+                '0 0 0 2px var(--color-sun-brass), 0 0 10px rgba(232,180,61,0.6)',
                 '0 0 0 0px var(--color-sun-brass)',
               ],
             }
           : {
               scale: 1,
-              opacity: rested ? 0.72 : 1,
+              opacity: rested ? 0.74 : 1,
               rotate: targetRotate,
               y: 0,
               boxShadow: '0 0 0 0px transparent',
@@ -187,7 +182,7 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
       }
       aria-pressed={armed}
       className={[
-        'relative shrink-0 rounded-[3px]',
+        'relative shrink-0 rounded-[4px]',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sun-brass',
         interactive && !rested ? 'cursor-pointer' : 'cursor-default',
       ].join(' ')}
@@ -196,7 +191,7 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
         height: DON_CARD_H,
         minWidth: 28,
         minHeight: 28,
-        // §1.3 — rested pivot anchors bottom-left so the slot footprint stays put.
+        // Bottom-left pivot keeps the slot footprint anchored when rotating.
         transformOrigin: rested ? '0 100%' : '50% 50%',
         pointerEvents: rested ? 'none' : undefined,
       }}
@@ -220,7 +215,6 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
   // Only the active player during their main phase can attach.
   const interactive = isYou && activePlayer === playerId && phase === 'main';
 
-  // Disarm whenever the band stops being interactive (phase/turn changes).
   useEffect(() => {
     if (!interactive && armedDonId) disarmDon();
   }, [interactive, armedDonId, disarmDon]);
@@ -237,45 +231,37 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
   );
 
   const totalDon = donCostArea.length + donRested.length;
+  const stackWidth =
+    totalDon > 0 ? (totalDon - 1) * DON_STRIDE + DON_CARD_W : 0;
 
   return (
     <div
       role="region"
       data-zone={`costArea:${playerId}`}
       aria-label={`${isYou ? 'Your' : 'Opponent'} cost area — ${donCostArea.length} active DON, ${donRested.length} rested DON`}
-      className="relative flex h-full w-full items-center justify-start gap-1
-                 rounded-md bg-paper-fog/40 px-1.5
-                 ring-1 ring-ink-iron/15"
+      className="playmat-zone playmat-zone--strong relative flex h-full w-full items-center justify-start px-2"
+      style={{ minHeight: 'var(--zone-cost-strip-h, 60px)' }}
     >
-      <span
-        className="shrink-0 font-body text-[0.5rem] font-extrabold uppercase tracking-wider text-ink-iron/75"
-        aria-hidden="true"
-      >
-        Cost
-      </span>
-      {/* DON cards STACK with overlap so max 10 always fit inside the cost band.
-          Per owner direction 2026-05-29: DON cards can overlap rather than
-          sitting side-by-side. 10 × 14px stride + 30px card width = 156px max
-          footprint, well inside the playmat. */}
-      <div
-        className="relative h-full grow"
-        style={{
-          // Reserve exact footprint of the stack so the band sizes correctly:
-          // n DON → (n-1) * stride + card width; clamp to band's grow space.
-          minWidth: 0,
-        }}
-      >
+      {/* Wordmark — printed CENTER on Bandai's cardboard mat when zone is empty. */}
+      {totalDon === 0 && (
+        <span
+          className="playmat-zone__label absolute inset-0 flex items-center justify-center font-display"
+          style={{ fontSize: 12, letterSpacing: '0.16em' }}
+          aria-hidden="true"
+        >
+          COST AREA
+        </span>
+      )}
+      {totalDon > 0 && (
         <div
-          className="absolute inset-y-0 left-0 flex items-center"
-          style={{
-            width: `${(donCostArea.length + donRested.length - 1) * 14 + DON_CARD_W}px`,
-          }}
+          className="relative h-full flex items-center"
+          style={{ width: stackWidth, minWidth: 0 }}
         >
           {donCostArea.map((instanceId, i) => (
             <div
               key={instanceId}
               className="absolute"
-              style={{ left: `${i * 14}px`, zIndex: i + 1 }}
+              style={{ left: i * DON_STRIDE, zIndex: i + 1, top: '50%', transform: 'translateY(-50%)' }}
             >
               <DonCard
                 instanceId={instanceId}
@@ -294,12 +280,17 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
               <div
                 key={instanceId}
                 className="absolute"
-                style={{ left: `${stackedIndex * 14}px`, zIndex: stackedIndex + 1 }}
+                style={{
+                  left: stackedIndex * DON_STRIDE,
+                  zIndex: stackedIndex + 1,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                }}
               >
                 <DonCard
                   instanceId={instanceId}
                   index={stackedIndex}
-                  rested={true}
+                  rested
                   reduced={reduced}
                   interactive={false}
                   armed={false}
@@ -308,12 +299,6 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
             );
           })}
         </div>
-      </div>
-      {totalDon === 0 && (
-        // D4 (playmat-redesign §10) — solid ink-iron for WCAG AA on paper-fog.
-        <span className="absolute inset-0 flex items-center justify-center font-body text-[0.55rem] font-extrabold uppercase tracking-wider text-ink-iron">
-          No DON
-        </span>
       )}
     </div>
   );

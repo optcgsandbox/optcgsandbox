@@ -1,17 +1,18 @@
-// LifeStack — design-reference.md §3.4 L1.
-// Vertical face-down column on the FAR LEFT of the playmat, full height of
-// the player's half. 5 (or fewer) card-shaped slots stacked top-to-bottom
-// with a 4px overlap, matching the official Bandai OPTCG playsheet. The
-// card count IS the readout — no numeric badge on the stack itself. Top
-// card animates a flip-to-hand when life is taken; until then, all cards
-// render face-down.
+// LifeStack — playmat-redesign.md §2.1.
 //
-// Source of truth = `instances` (each life card has its own CardInstance.id),
-// so we layoutId the top card and Framer Motion can animate it to the hand row.
+// Vertical face-down card column. On the Bandai playsheet the LIFE zone is
+// a tall slim gray BAND on the far-left of each player's half, full height
+// of the CHARACTER + LEADER rows, with the player's life cards stacked
+// inside it top-to-bottom. The cards peek by a few px so the player can
+// read the count at a glance; the column itself carries the "LIFE" wordmark
+// on the bottom of the band so the zone is identified even when empty.
+//
+// Engine truth: life cards are SECRET per CR §3-10-2 — no tap handler.
+// `LifeRevealOverlay` owns the flip-to-hand animation via layoutId on the
+// top card.
 
 import { memo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { CARD_DIMS } from '../CardArt';
 import { NavyCardBack } from './NavyCardBack';
 import { springs } from '../../lib/animationTokens';
 import { useGameStore } from '../../store/game';
@@ -20,73 +21,63 @@ import type { PlayerId } from '@shared/engine/GameState';
 interface LifeStackProps {
   /** Whose life pile to render. */
   playerId: PlayerId;
-  /** Vertical stack offset between cards (px). Falls back to CSS token at 4px. */
-  offsetPx?: number;
-  /** When true, render WITHOUT the "Life" micro-label (used inside the dedicated
-   *  far-left column where the column itself is labeled). Default false. */
-  hideLabel?: boolean;
+  /** Owner direction text — "Your" / "Opp" — for aria + the floating count
+   *  chip. Defaults to "Your" if isYou, else "Opp". */
+  isYou?: boolean;
 }
 
-/**
- * 5-card vertical stack (or fewer if life has been taken).
- * Spec: stack offset 4px per card downward; top card has highest z; max 5.
- * Empty state: dashed marine-fog/30 outline of the same container size.
- */
-export const LifeStack = memo(function LifeStack({ playerId, offsetPx = 4, hideLabel = false }: LifeStackProps) {
+const CARD_W = 28;
+const CARD_H = 38;
+const OFFSET = 6;
+
+export const LifeStack = memo(function LifeStack({
+  playerId,
+  isYou = false,
+}: LifeStackProps) {
   const lifeInstanceIds = useGameStore((s) => s.state.players[playerId].life);
   const instances = useGameStore((s) => s.state.instances);
   const reduced = useReducedMotion() ?? false;
   const spring = springs(reduced);
 
-  const cardW = CARD_DIMS.lifeStack.w;
-  const cardH = CARD_DIMS.lifeStack.h;
   const count = lifeInstanceIds.length;
-
-  // Per owner reference 2026-05-29: real cards stacked physically with a
-  // small downward offset per card so each card's top edge peeks above the
-  // one in front. Same dimensions as before — no layout-bumping.
-  const containerH = cardH + Math.max(0, count - 1) * offsetPx;
-
-  if (count === 0) {
-    return (
-      <div
-        role="region"
-        aria-label={`${playerId === 'A' ? 'Your' : 'Opponent'} life: 0`}
-        className="flex flex-col items-center justify-center"
-        style={{ width: cardW, minWidth: cardW }}
-      >
-        <div
-          className="rounded-md border border-dashed border-marine-fog/40"
-          style={{ width: cardW, height: cardH }}
-          aria-hidden="true"
-        />
-        {!hideLabel && (
-          /* WCAG 1.4.3 — was text-ink-iron/70 on paper-cream (~3.1:1). Solid ink-iron is ~10.5:1. */
-          <span className="mt-1 text-[0.55rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">
-            Life
-          </span>
-        )}
-      </div>
-    );
-  }
+  const ownerLabel = isYou ? 'Your' : 'Opponent';
 
   return (
     <div
       role="region"
-      aria-label={`${playerId === 'A' ? 'Your' : 'Opponent'} life: ${count}`}
-      className="flex flex-col items-center"
-      style={{ width: cardW, minWidth: cardW }}
+      aria-label={`${ownerLabel} life: ${count}`}
+      className="playmat-zone playmat-zone--strong relative flex h-full w-full flex-col items-center justify-start"
+      style={{
+        padding: '6px 0 22px 0',
+      }}
     >
-      <div className="relative" style={{ width: cardW, height: containerH }}>
-        {/* Real cards stacked physically — each life card is a full navy
-            card-back; subsequent cards sit ${offsetPx}px lower than the one
-            above so the back edges peek out below. The TOP card (index 0)
-            sits on top with the highest z. Per CR §3-10-2 the life area is
-            SECRET — no tap handler, no reveal until LIFE_TAKEN.
-            (Top card uses layoutId so LifeRevealOverlay can do its
-            shared-element fly-to-hand transition.) */}
-        {lifeInstanceIds.map((instanceId, i) => {
-          const isTop = i === 0;
+      {/* Card stack — 5 face-down cards peeking 6px down. Centered inside
+          the column with a small top inset. */}
+      <div
+        className="relative"
+        style={{ width: CARD_W, height: CARD_H + 4 * OFFSET }}
+      >
+        {Array.from({ length: 5 }).map((_, slotIdx) => {
+          const instanceId = lifeInstanceIds[slotIdx];
+          const top = slotIdx * OFFSET;
+          if (!instanceId) {
+            return (
+              <div
+                key={`empty-${slotIdx}`}
+                className="playmat-slot-empty absolute"
+                style={{
+                  top,
+                  left: 0,
+                  width: CARD_W,
+                  height: CARD_H,
+                  borderRadius: 4,
+                  zIndex: slotIdx,
+                }}
+                aria-hidden="true"
+              />
+            );
+          }
+          const isTop = slotIdx === 0;
           const Wrapper = isTop ? motion.div : 'div';
           return (
             <Wrapper
@@ -94,37 +85,59 @@ export const LifeStack = memo(function LifeStack({ playerId, offsetPx = 4, hideL
               {...(isTop ? { layoutId: instanceId, transition: spring.lifeFlip } : {})}
               style={{
                 position: 'absolute',
-                top: i * offsetPx,
+                top,
                 left: 0,
-                width: cardW,
-                height: cardH,
-                zIndex: count - i,
+                width: CARD_W,
+                height: CARD_H,
+                // Top of the pile renders on top so the layoutId card animates
+                // correctly when it flies to the hand.
+                zIndex: 10 + (5 - slotIdx),
               }}
               aria-hidden="true"
             >
-              {instances[instanceId] && <NavyCardBack />}
+              {instances[instanceId] && (
+                <NavyCardBack hideWordmark radius={3} />
+              )}
             </Wrapper>
           );
         })}
-        {/* Count badge — brass numeral overlay on the top card so the player
-            can read remaining life at a glance. 2026-05-29 polish: stronger
-            ring contrast so the chip reads cleanly against the navy back. */}
-        <span
-          className="absolute -top-1.5 -right-1.5 z-50 rounded-full bg-brass-canary px-1.5
-                     font-display tabular text-[0.72rem] leading-[1.15] text-ink-black
-                     shadow-[0_1px_3px_rgba(15,20,15,0.55)]
-                     ring-[1.5px] ring-ink-black/55"
-          aria-hidden="true"
-        >
-          {count}
-        </span>
+        {/* Count chip — small brass pill bottom-right of the top card so the
+            player can read remaining life without revealing cards. */}
+        {count > 0 && (
+          <span
+            className="absolute z-50 rounded-full bg-brass-canary font-display tabular text-ink-black
+                       shadow-[0_1px_2px_rgba(0,0,0,0.55)] ring-[1px] ring-ink-black/55"
+            style={{
+              top: -6,
+              right: -8,
+              padding: '1px 5px',
+              fontSize: '0.7rem',
+              lineHeight: 1.1,
+            }}
+            aria-hidden="true"
+          >
+            {count}
+          </span>
+        )}
       </div>
-      {!hideLabel && (
-        /* WCAG 1.4.3 — was text-ink-iron/80 on paper-cream (~4.0:1). Solid ink-iron is ~10.5:1. */
-        <span className="mt-1 text-[0.55rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">
-          Life
-        </span>
-      )}
+      {/* "LIFE" wordmark printed at the bottom of the band — matches the
+          large block label on the Bandai cardboard playsheet. */}
+      <span
+        className="playmat-zone__label absolute font-display font-bold"
+        style={{
+          left: 0,
+          right: 0,
+          bottom: 5,
+          textAlign: 'center',
+          fontSize: 11,
+          letterSpacing: '0.18em',
+          color: 'var(--color-ink-iron)',
+          opacity: 0.7,
+        }}
+        aria-hidden="true"
+      >
+        LIFE
+      </span>
     </div>
   );
 });

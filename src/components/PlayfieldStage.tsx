@@ -1,22 +1,29 @@
-// PlayfieldStage — design-reference.md §2 + §7 + §10.
+// PlayfieldStage — playmat-redesign.md §1 + §2 (Bandai playsheet rebuild).
 //
-// Official Bandai-aligned playmat for the 430px portrait phone frame. Layout
-// follows the playsheet's two-player mirror (design-reference §2):
+// Mobile portrait (430 × dvh) playmat. Each player's half mirrors the
+// official Bandai single-player playsheet, with the opp half rotated 180°
+// so the two halves meet at the center contact zone (physical-table
+// convention).
 //
-//   ┌──┬─────────────────────────────────────────────┐
-//   │L │ DonDeck │ CostArea │ Trash                  │  ← opp far row
-//   │I │ Phase │ Leader │ Stage │ Deck                │  ← opp leader row
-//   │F │ ── Character Area (5 slots) ────────────────│  ← opp chars (closest to contact)
-//   │E │═══════════════ CONTACT ZONE ═══════════════ │  ← attacks cross here
-//   │  │ ── Character Area (5 slots) ────────────────│  ← your chars (closest to contact)
-//   │c │ Phase │ Leader │ Stage │ Deck                │  ← your leader row
-//   │ol│ DonDeck │ CostArea │ Trash                  │  ← your far row
-//   └──┴─────────────────────────────────────────────┘
-//                                              [HAND]
+// ┌──────┬──────────────────────────────────────────┐
+// │      │            CHARACTER  AREA               │
+// │ LIFE ├────┬─────────┬───────┬──────────────────┤
+// │      │ PH │ Leader  │ Stage │       Deck       │
+// │      ├────┴─────────┴───────┴──────────────────┤
+// │ DON  │    COST  AREA            │    TRASH     │
+// │ DECK │                          │              │
+// └──────┴──────────────────────────────────────────┘
 //
-// The playmat surface is CREAM PAPER (cream `.paper-playmat`) — not felt.
-// Tap-outside-card on the surface clears inspectedCardId AND deselects any
-// pending attacker.
+//  - LIFE column hugs the inside-LEFT of each half, full height of the
+//    CHARACTER + LEADER rows.
+//  - DON DECK sits BELOW the LIFE column in the FAR row's left bay.
+//  - CHARACTER AREA is one wide gray banner with 5 dashed slots inside.
+//  - LEADER row: phase column → leader → stage → deck.
+//  - FAR row: DON DECK → COST AREA → TRASH.
+//  - Opp half is the same layout rotated 180° (one block).
+//  - Hand fan + End-Turn button live below the playmat (out of scope here).
+//
+// Cream-paper playmat surface (NO felt). Card sizes / CardArt unchanged.
 
 import { memo, useCallback } from 'react';
 import { LayoutGroup } from 'framer-motion';
@@ -41,11 +48,9 @@ import type { CardInstance, PlayerId, PlayerZones } from '@shared/engine/GameSta
 import type { Card } from '@shared/engine/cards/Card';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Hooks: legal-action lookups for tap-routing affordances.
+// Tap-routing affordances.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Returns the set of instance IDs that are legal DECLARE_ATTACK targets for
- *  the currently-selected attacker (or empty set if no attacker selected). */
 function useLegalAttackTargets(): Set<string> {
   const selectedAttackerId = useGameStore((s) => s.selectedAttackerId);
   const legalActions = useGameStore((s) => s.legalActions);
@@ -59,10 +64,6 @@ function useLegalAttackTargets(): Set<string> {
   return out;
 }
 
-// useAttackerCandidates removed 2026-05-29 — attacker selection now flows
-// through the CardDetailModal (tap field card → see options → SELECT AS ATTACKER).
-
-/** Returns the set of friendly instance IDs that are legal ATTACH_DON targets. */
 function useDonAttachCandidates(): Set<string> {
   const legalActions = useGameStore((s) => s.legalActions);
   const out = new Set<string>();
@@ -72,42 +73,24 @@ function useDonAttachCandidates(): Set<string> {
   return out;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Tap routing for field cards (Leader + Character + Stage).
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * Owner direction 2026-05-29: tap on ANY field card (friendly OR opponent,
- * leader OR character OR stage) opens the CardDetailModal. Actions
- * (ATTACH DON / SELECT AS ATTACKER / ATTACK THIS) are exposed from inside
- * the modal so the owner can always read the card before committing.
- */
+/** Single tap on any field card opens CardDetailModal — owner direction
+ *  2026-05-29. */
 function useFieldTapRouter() {
   const setInspectedCardId = useGameStore((s) => s.setInspectedCardId);
   const setCardDetailOpen = useGameStore((s) => s.setCardDetailOpen);
 
   return useCallback(
-    (instanceId: string, _isFriendly: boolean) => {
+    (instanceId: string) => {
       setInspectedCardId(instanceId);
       setCardDetailOpen(true);
     },
-    [
-      setInspectedCardId,
-      setCardDetailOpen,
-    ],
+    [setInspectedCardId, setCardDetailOpen],
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Sub-row components.
+// CHARACTER AREA — wide horizontal banner with 5 character slots inside.
 // ─────────────────────────────────────────────────────────────────────────────
-
-interface HalfProps {
-  zones: PlayerZones;
-  playerId: PlayerId;
-  isYou: boolean;
-  leaderCard: Card;
-}
 
 function FieldCharacter({
   inst,
@@ -144,8 +127,7 @@ function FieldCharacter({
   );
 }
 
-/** Row of 5 character slots — design-reference §2. */
-function CharacterRow({
+function CharacterArea({
   zones,
   playerId,
   isFriendly,
@@ -160,28 +142,72 @@ function CharacterRow({
   for (let i = 0; i < 5; i++) slots[i] = zones.field[i] ?? null;
   return (
     <div
-      className="grid h-full w-full grid-cols-5 items-center gap-1 px-1"
+      className="playmat-zone playmat-zone--strong relative flex h-full w-full items-center justify-center"
       role="region"
       aria-label="Character area, 5 slots"
+      style={{ padding: '4px 6px' }}
     >
-      {slots.map((inst, i) => (
-        <ZoneSlot key={`${playerId}-char-${i}`} kind="character" playerId={playerId} index={i}>
-          {inst && (
-            <FieldCharacter
-              inst={inst}
-              card={library[inst.cardId]}
-              isFriendly={isFriendly}
-              onTap={() => tapRouter(inst.instanceId, isFriendly)}
-            />
-          )}
-        </ZoneSlot>
-      ))}
+      {/* Wordmark — printed center-top on Bandai's cardboard mat. Stays
+          visible behind cards at low opacity so the zone is identifiable. */}
+      <span
+        className="playmat-zone__label absolute font-display"
+        style={{
+          top: 3,
+          left: 0,
+          right: 0,
+          textAlign: 'center',
+          fontSize: 9,
+          letterSpacing: '0.16em',
+        }}
+        aria-hidden="true"
+      >
+        CHARACTER AREA
+      </span>
+      <div className="grid h-full w-full grid-cols-5 items-center gap-1.5 pt-2.5">
+        {slots.map((inst, i) => (
+          <div
+            key={`${playerId}-char-${i}`}
+            className="flex items-center justify-center"
+          >
+            <ZoneSlot
+              kind="character"
+              playerId={playerId}
+              index={i}
+              width={52}
+              height={72}
+              emptyLabel={null}
+            >
+              {inst && (
+                <FieldCharacter
+                  inst={inst}
+                  card={library[inst.cardId]}
+                  isFriendly={isFriendly}
+                  onTap={() => tapRouter(inst.instanceId)}
+                />
+              )}
+            </ZoneSlot>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
 
-/** Leader row — Phase column / Leader / Stage / Deck. */
-function LeaderRow({ zones, playerId, isYou, leaderCard }: HalfProps) {
+// ─────────────────────────────────────────────────────────────────────────────
+// LEADER row — Phase column → Leader → Stage → Deck.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function LeaderRow({
+  zones,
+  playerId,
+  isYou,
+  leaderCard,
+}: {
+  zones: PlayerZones;
+  playerId: PlayerId;
+  isYou: boolean;
+  leaderCard: Card;
+}) {
   const tapRouter = useFieldTapRouter();
   const selectedAttackerId = useGameStore((s) => s.selectedAttackerId);
   const armedDonId = useDonArm((s) => s.armedDonId);
@@ -196,17 +222,30 @@ function LeaderRow({ zones, playerId, isYou, leaderCard }: HalfProps) {
     isYou && !!armedDonId && donAttachCandidates.has(leaderId);
 
   return (
-    <div className="flex h-full w-full items-center justify-between gap-1 px-1">
+    <div
+      className="flex h-full w-full items-center"
+      style={{ paddingLeft: 2, paddingRight: 2, gap: 4 }}
+    >
       <PhaseColumn playerId={playerId} isYou={isYou} />
-      <div className="flex grow items-center justify-center gap-1.5">
-        <ZoneSlot kind="leader" playerId={playerId} ariaLabel={`${leaderCard.name} (leader)`}>
-          <div style={{ transform: 'scale(var(--zone-leader-scale, 1.15))' }}>
+      <div
+        className="flex grow items-center justify-around"
+        style={{ gap: 4 }}
+      >
+        <ZoneSlot
+          kind="leader"
+          playerId={playerId}
+          ariaLabel={`${leaderCard.name} (leader)`}
+          width={68}
+          height={94}
+          emptyLabel={null}
+        >
+          <div style={{ transform: 'scale(var(--zone-leader-scale, 1.12))' }}>
             <CardArt
               inst={zones.leader}
               card={leaderCard}
               size="leader"
               liveLifeCount={zones.life.length}
-              onTap={() => tapRouter(leaderId, isYou)}
+              onTap={() => tapRouter(leaderId)}
               selectedAttacker={isSelectedAttacker}
               pendingTarget={isPendingTarget}
               donDropTarget={isDonDropTarget}
@@ -220,11 +259,17 @@ function LeaderRow({ zones, playerId, isYou, leaderCard }: HalfProps) {
   );
 }
 
-/** Far row — DonDeck / CostArea / Trash. */
+// ─────────────────────────────────────────────────────────────────────────────
+// FAR row — COST AREA (with TRASH on the right). DON DECK is rendered in
+// the LIFE column's bottom bay, so this row carries Cost + Trash only.
+// ─────────────────────────────────────────────────────────────────────────────
+
 function FarRow({ playerId, isYou }: { playerId: PlayerId; isYou: boolean }) {
   return (
-    <div className="flex h-full w-full items-center justify-between gap-1.5 px-1">
-      <DonDeckSlot playerId={playerId} isYou={isYou} />
+    <div
+      className="flex h-full w-full items-center"
+      style={{ paddingLeft: 4, paddingRight: 4, gap: 6 }}
+    >
       <div className="flex h-full grow items-center">
         <CostAreaBand playerId={playerId} isYou={isYou} />
       </div>
@@ -233,54 +278,101 @@ function FarRow({ playerId, isYou }: { playerId: PlayerId; isYou: boolean }) {
   );
 }
 
-/**
- * OpponentHalf uses the SAME row order as YourHalf so that when the entire
- * opp section is rotated 180° (per owner direction 2026-05-29 reference image
- * showing two-player playmat with opp's side flipped), the opp's character
- * row visually lands closest to the contact zone — matching the physical
- * Bandai table convention.
- */
-// D6 (playmat-redesign §1.3) — explicit dvh budget so the layout doesn't
-// drift when the hand strip compresses on smaller phones. After the opp
-// half is rotated 180°, its row1 (character, 11dvh) lands at the bottom
-// of the opp area (closest to the contact zone), row2 (leader, 12dvh) in
-// the middle, row3 (far, 8dvh) at the top of the screen. Your half stays
-// upright: character 11dvh (top, closest to contact), leader 12dvh, far
-// 8dvh (bottom). Sum each half = 31dvh × 2 + contact 1dvh + chrome 6dvh +
-// hand 24dvh = 93dvh, leaving ~7dvh for safe-area compression.
-const HALF_GRID_ROWS = '11dvh 12dvh 8dvh';
+// Each player's half consumes 31dvh: 12dvh CHAR + 11dvh LEADER + 8dvh FAR.
+// Defined here so LeftBay below can share the same grid template.
+const HALF_TEMPLATE_ROWS = '12dvh 11dvh 8dvh';
 
-function OpponentHalf(props: HalfProps) {
+// ─────────────────────────────────────────────────────────────────────────────
+// LIFE column + DON DECK bay — left edge of each half.
+//
+// Per the Bandai playsheet the LIFE column is full-height of CHARACTER +
+// LEADER rows, and the DON DECK sits in its own card-shaped slot in the
+// FAR row's left bay (directly below the LIFE column). Stacked vertically
+// they form the left edge of each player's half.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function LeftBay({
+  playerId,
+  isYou,
+}: {
+  playerId: PlayerId;
+  isYou: boolean;
+}) {
+  // Use the SAME grid template as HalfBody so the LIFE column lines up
+  // exactly with the CHAR+LEADER bands, and the DON DECK lines up with
+  // the FAR row. The LIFE column spans the first two row tracks.
   return (
     <div
-      className="grid h-full w-full"
-      style={{ gridTemplateRows: HALF_GRID_ROWS, rowGap: 'var(--playmat-band-px, 4px)' }}
-      role="region"
-      aria-label="Opponent half"
+      className="grid h-full"
+      style={{
+        width: 'var(--zone-life-col-w, 40px)',
+        minWidth: 'var(--zone-life-col-w, 40px)',
+        gridTemplateRows: HALF_TEMPLATE_ROWS,
+        rowGap: 'var(--playmat-band-gap, 6px)',
+      }}
     >
-      <CharacterRow zones={props.zones} playerId={props.playerId} isFriendly={false} />
-      <LeaderRow {...props} />
-      <FarRow playerId={props.playerId} isYou={false} />
+      {/* LIFE column spans both CHAR (row 1) and LEADER (row 2). */}
+      <div style={{ gridRow: '1 / span 2' }} className="relative">
+        <LifeStack playerId={playerId} isYou={isYou} />
+      </div>
+      {/* DON DECK sits in the FAR-row bay below LIFE. */}
+      <div
+        style={{ gridRow: '3 / span 1' }}
+        className="flex items-center justify-center"
+      >
+        <DonDeckSlot playerId={playerId} isYou={isYou} />
+      </div>
     </div>
   );
 }
 
-function YourHalf(props: HalfProps) {
+// ─────────────────────────────────────────────────────────────────────────────
+// Half = LeftBay (LIFE + DON DECK) + RightStack (CHAR / LEADER / FAR).
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface HalfProps {
+  zones: PlayerZones;
+  playerId: PlayerId;
+  isYou: boolean;
+  leaderCard: Card;
+}
+
+function HalfBody({ zones, playerId, isYou, leaderCard }: HalfProps) {
   return (
     <div
       className="grid h-full w-full"
-      style={{ gridTemplateRows: HALF_GRID_ROWS, rowGap: 'var(--playmat-band-px, 4px)' }}
-      role="region"
-      aria-label="Your half"
+      style={{
+        gridTemplateRows: HALF_TEMPLATE_ROWS,
+        rowGap: 'var(--playmat-band-gap, 6px)',
+      }}
     >
-      <CharacterRow zones={props.zones} playerId={props.playerId} isFriendly={true} />
-      <LeaderRow {...props} />
-      <FarRow playerId={props.playerId} isYou={true} />
+      <CharacterArea zones={zones} playerId={playerId} isFriendly={isYou} />
+      <LeaderRow zones={zones} playerId={playerId} isYou={isYou} leaderCard={leaderCard} />
+      <FarRow playerId={playerId} isYou={isYou} />
     </div>
   );
 }
 
-/** Contact-zone strip — brass-canary glow line between halves. */
+function PlayerHalf(props: HalfProps) {
+  return (
+    <div
+      className="flex h-full w-full items-stretch"
+      style={{ gap: 'var(--playmat-band-gap, 6px)', padding: '0 var(--playmat-band-h-pad, 8px)' }}
+      role="region"
+      aria-label={props.isYou ? 'Your half' : 'Opponent half'}
+    >
+      <LeftBay playerId={props.playerId} isYou={props.isYou} />
+      <div className="flex h-full grow">
+        <HalfBody {...props} />
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Contact zone — thin brass-canary hairline + glow between halves.
+// ─────────────────────────────────────────────────────────────────────────────
+
 function ContactZone() {
   return (
     <div
@@ -288,7 +380,7 @@ function ContactZone() {
       aria-hidden="true"
       style={{ minHeight: 6 }}
     >
-      <div className="h-px w-full bg-brass-canary/70 shadow-[0_0_6px_rgba(232,180,61,0.35)]" />
+      <div className="h-px w-[88%] bg-brass-canary/70 shadow-[0_0_6px_rgba(232,180,61,0.45)]" />
     </div>
   );
 }
@@ -334,98 +426,57 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
         style={{ perspective: '1200px' }}
         onClick={onPlaymatTap}
       >
-        {/* Cream-paper playmat surface — design-reference §3 (replaces felt-green). */}
-        <div
-          className="paper-playmat paper-grain absolute inset-0"
-          style={{
-            transform: 'rotateX(8deg)',
-            transformOrigin: '50% 60%',
-          }}
-        >
-          {/* Top-level container — single column. Each half (opp + you)
-              hosts its own LIFE column internally. The opp half is rotated
-              180° so the playmat reads like two players sitting opposite. */}
+        {/* Cream-paper playmat surface — no felt, soft vignette only. */}
+        <div className="paper-playmat paper-grain absolute inset-0">
           <div
             className="grid h-full w-full"
             style={{
-              gridTemplateColumns: '1fr',
-              // design-reference §10 edge padding + safe area.
+              // Top — app chrome from App.tsx (6dvh).
+              // Bottom — hand fan strip (24dvh).
               paddingTop: 'calc(env(safe-area-inset-top, 0px) + 6dvh)',
               paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 24dvh)',
-              paddingLeft: 16,
-              paddingRight: 16,
+              paddingLeft: 4,
+              paddingRight: 4,
+              gridTemplateRows: '1fr auto 1fr',
+              rowGap: 0,
             }}
           >
-            {/* Single-column playmat layout — physical-table convention per
-                owner direction 2026-05-29: opp's entire half is rotated 180°
-                so their cards face me, their text reads upside-down, and
-                their LIFE column ends up on my top-right (was their far-left).
-                Each half hosts its own LIFE column + field side-by-side. */}
+            {/* OPP half — rotated 180° so the cards face the viewer's POV,
+                and the LIFE/DON-DECK bay lands on the upper-right. */}
             <div
-              className="grid h-full w-full"
+              className="relative"
               style={{
-                // D6 — explicit dvh per playmat-redesign §1.3.
-                // Two halves at 31dvh each + 1dvh contact-zone strip = 63dvh
-                // of vertical content between the 6dvh chrome (paddingTop) and
-                // 24dvh hand strip (paddingBottom). 7dvh slack absorbs the
-                // safe-area inset compression noted in §1.3.
-                gridTemplateRows: '31dvh 1dvh 31dvh',
+                transform: 'rotate(180deg)',
+                transformOrigin: '50% 50%',
               }}
+              aria-label="Opponent playmat"
             >
-              {/* TOP HALF — opponent. Rotated 180° as one unit.
-                  Per design-reference §3 the OPP half carries a faint
-                  --color-sky-horizon wash as a subtle "distance cue" so the
-                  eye reads it as further away than YOUR half. Cool-blue tint
-                  at low opacity over cream so the surface stays cream-paper. */}
-              <div
-                className="grid h-full w-full relative"
-                style={{
-                  gridTemplateColumns: 'var(--playmat-life-col-w, 32px) 1fr',
-                  transform: 'rotate(180deg)',
-                  backgroundColor: 'rgba(201, 220, 230, 0.18)',
-                  boxShadow: 'inset 0 0 24px rgba(15, 69, 73, 0.05)',
-                }}
-                aria-label="Opponent playmat"
-              >
-                <div className="flex h-full items-end justify-center pb-1">
-                  <LifeStack playerId={opponentSeat} hideLabel />
-                </div>
-                <OpponentHalf
-                  zones={opp}
-                  playerId={opponentSeat}
-                  isYou={false}
-                  leaderCard={oppLeader}
-                />
-              </div>
+              <PlayerHalf
+                zones={opp}
+                playerId={opponentSeat}
+                isYou={false}
+                leaderCard={oppLeader}
+              />
+            </div>
 
-              <ContactZone />
+            <ContactZone />
 
-              {/* BOTTOM HALF — you. Normal orientation. */}
-              <div
-                className="grid h-full w-full"
-                style={{ gridTemplateColumns: 'var(--playmat-life-col-w, 32px) 1fr' }}
-                aria-label="Your playmat"
-              >
-                <div className="flex h-full items-end justify-center pb-1">
-                  <LifeStack playerId={seat} hideLabel />
-                </div>
-                <YourHalf
-                  zones={you}
-                  playerId={seat}
-                  isYou={true}
-                  leaderCard={youLeader}
-                />
-              </div>
+            {/* YOUR half — upright. */}
+            <div className="relative" aria-label="Your playmat">
+              <PlayerHalf
+                zones={you}
+                playerId={seat}
+                isYou={true}
+                leaderCard={youLeader}
+              />
             </div>
           </div>
         </div>
 
-        {/* Hand fan — absolute-bottom, sits over the tilt so cards stay flat. */}
+        {/* Hand fan — absolute-bottom overlay strip. */}
         <HandFan playerId={seat} interactive />
 
-        {/* Card detail modal — second-tap on inspected card opens it. */}
         <CardDetailModal />
-
         <AttackResolutionOverlay />
         <LifeRevealOverlay />
         <EventCardOverlay />

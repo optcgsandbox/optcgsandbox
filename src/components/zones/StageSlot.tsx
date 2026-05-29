@@ -1,8 +1,11 @@
-// StageSlot — design-reference.md §3.4 L3 + rules-reference.md §4.7.
-// Single Stage Area slot, sits right of the Leader in the mid-row. Renders
-// `state.players[X].stage: CardInstance | null`. When null, shows a faint
-// "STAGE" label inside a dashed marine-fog outline. When occupied, renders
-// the Stage card at `size="field"` (same dims as a character slot).
+// StageSlot — playmat-redesign.md §2.4.
+//
+// Sits immediately to the RIGHT of the LEADER in the mid-row, identical
+// dimensions to a character slot (52×72). Max 1 stage at a time per CR
+// §3-8-5. When empty, shows the dashed empty outline + "STAGE CARD"
+// wordmark matching the Bandai playsheet print. When occupied, renders
+// the Stage card at size="field" (placeholder anatomy in CardArt suppresses
+// the power stamp and counter chip for stages per §3.4).
 
 import { memo } from 'react';
 import { useGameStore } from '../../store/game';
@@ -26,22 +29,22 @@ export const StageSlot = memo(function StageSlot({ playerId, isYou }: StageSlotP
   const card = stage ? library[stage.cardId] : undefined;
 
   return (
-    <ZoneSlot kind="stage" playerId={playerId} ariaLabel={label}>
-      <div className="relative" style={{ width: dims.w, height: dims.h }}>
-        {stage && card ? (
+    <ZoneSlot
+      kind="stage"
+      playerId={playerId}
+      ariaLabel={label}
+      width={dims.w}
+      height={dims.h}
+      emptyLabel="STAGE"
+    >
+      {stage && card && (
+        <div
+          className="relative"
+          style={{ width: dims.w, height: dims.h }}
+        >
           <CardArt inst={stage} card={card} size="field" />
-        ) : (
-          <div
-            className="absolute inset-0 flex items-center justify-center rounded-md
-                       border-2 border-dashed border-ink-iron/35 bg-paper-fog/35"
-            aria-hidden="true"
-          >
-            <span className="font-body text-[0.6rem] font-extrabold uppercase tracking-wider text-ink-iron/75">
-              Stage
-            </span>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </ZoneSlot>
   );
 });

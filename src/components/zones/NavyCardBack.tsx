@@ -1,48 +1,108 @@
-// NavyCardBack — shared card-back design for Deck + Life stacks.
-// Per design-reference §3.3, Character/Event/Stage cards (which is what life
-// cards ARE — drawn from the top of the deck per CR §5-2-1-7) share the
-// NAVY OP-compass back. The same back must render for both the Deck slot
-// and the Life stack so the player immediately reads "these are face-down
-// deck cards in waiting" rather than two unrelated back designs.
+// NavyCardBack — playmat-redesign.md §3.7.
+//
+// Shared face-down card back for the main deck, hand cards drawn face-down,
+// and the life stack (life cards are deck cards waiting to be drawn per
+// CR §5-2-1-7, so they share the same navy back).
+//
+// Rule-manual.pdf p2 shows Bandai's Character/Event/Stage back: deep navy
+// body, brass compass rose at center, "ONE PIECE CARD GAME" wordmark below.
+// We use "CREW SIM" to avoid the trademark.
+//
+// The component absolutely-fills its parent so it can be dropped into any
+// card-sized container without sizing math.
 
 import { memo } from 'react';
 
-export const NavyCardBack = memo(function NavyCardBack() {
+interface NavyCardBackProps {
+  /** When true the wordmark is hidden — useful at lifeStack 28×38 where the
+   *  text would be unreadable. */
+  hideWordmark?: boolean;
+  /** Override the rounding to match the parent card's radius. */
+  radius?: number;
+}
+
+export const NavyCardBack = memo(function NavyCardBack({
+  hideWordmark = false,
+  radius = 4,
+}: NavyCardBackProps) {
   return (
     <div
-      className="absolute inset-0 rounded-md overflow-hidden flex flex-col items-center justify-center"
+      className="absolute inset-0 overflow-hidden"
       style={{
-        // 2026-05-29 polish: a touch of gradient lift so the back reads as a
-        // physical card edge rather than a flat blue rectangle at 24×34.
+        borderRadius: radius,
+        // Deep navy ground with a soft top-down sheen so the back reads like
+        // a physical printed card, not a flat rectangle.
         background:
-          'radial-gradient(ellipse at 50% 25%, #143C40 0%, var(--color-hull-deep) 70%, #051A1C 100%)',
-        boxShadow: 'inset 0 0 0 1px rgba(212,160,23,0.25)',
+          'radial-gradient(ellipse at 50% 20%, #143C40 0%, #082A2D 65%, #04161A 100%)',
+        boxShadow:
+          'inset 0 0 0 1px rgba(212,160,23,0.30), 0 1px 2px rgba(0,0,0,0.35)',
       }}
       aria-hidden="true"
     >
-      <div className="absolute inset-1 rounded-sm ring-1 ring-brass-canary/65" />
-      <svg
-        viewBox="0 0 24 24"
-        className="w-[55%] h-[55%] text-brass-canary"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+      {/* Brass-canary inset hairline frame — Bandai-back signature. */}
+      <div
+        className="absolute"
+        style={{
+          inset: 2.5,
+          borderRadius: Math.max(0, radius - 1.5),
+          boxShadow: 'inset 0 0 0 0.75px rgba(212,160,23,0.55)',
+        }}
+      />
+      {/* Compass rose — concentric ring + crossed needle diamonds. */}
+      <div
+        className="absolute inset-0 flex items-center justify-center"
+        style={{ paddingBottom: hideWordmark ? 0 : '20%' }}
       >
-        {/* Generic sea-adventure compass rose — no Bandai IP. */}
-        <circle cx="12" cy="12" r="6.5" />
-        <path d="M12 5.5 L13.5 12 L12 18.5 L10.5 12 Z" />
-        <path d="M5.5 12 L12 10.5 L18.5 12 L12 13.5 Z" />
-      </svg>
-      {/* Wordmark — reads as a real card-back, not just a compass icon.
-          Uses "CREW SIM" to match DonDeckSlot pattern + IP isolation. */}
-      <span
-        className="mt-1 font-display tabular text-brass-canary"
-        style={{ fontSize: '0.5rem', letterSpacing: '0.08em', lineHeight: 1 }}
-      >
-        CREW SIM
-      </span>
+        <svg
+          viewBox="0 0 24 24"
+          className="text-brass-canary"
+          style={{ width: '58%', height: '58%' }}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.4}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx={12} cy={12} r={7.5} opacity={0.85} />
+          <circle cx={12} cy={12} r={5} opacity={0.55} />
+          {/* North-south needle (filled hot, dimmed cold). */}
+          <polygon
+            points="12,4 13.6,12 12,20 10.4,12"
+            fill="currentColor"
+            fillOpacity={0.9}
+            stroke="none"
+          />
+          {/* East-west crossbar. */}
+          <polygon
+            points="4,12 12,10.6 20,12 12,13.4"
+            fill="currentColor"
+            fillOpacity={0.45}
+            stroke="none"
+          />
+          {/* Tiny center pivot bead. */}
+          <circle cx={12} cy={12} r={0.9} fill="#082A2D" stroke="currentColor" strokeWidth={0.6} />
+        </svg>
+      </div>
+      {/* Wordmark sits at the bottom of the card, mirroring the Bandai back. */}
+      {!hideWordmark && (
+        <div
+          className="absolute inset-x-0 flex items-center justify-center"
+          style={{ bottom: '10%' }}
+        >
+          <span
+            className="font-display tabular text-brass-canary/90"
+            style={{
+              fontSize: 'clamp(5.5px, 1.4cqw, 8px)',
+              letterSpacing: '0.14em',
+              lineHeight: 1,
+              textShadow: '0 1px 0 rgba(0,0,0,0.45)',
+            }}
+          >
+            CREW SIM
+          </span>
+        </div>
+      )}
     </div>
   );
 });
