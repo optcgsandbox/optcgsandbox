@@ -8,37 +8,12 @@ import { memo } from 'react';
 import { useGameStore } from '../../store/game';
 import { ZoneSlot } from '../ZoneSlot';
 import { CARD_DIMS } from '../CardArt';
+import { NavyCardBack } from './NavyCardBack';
 import type { PlayerId } from '@shared/engine/GameState';
 
 interface DeckSlotProps {
   playerId: PlayerId;
   isYou: boolean;
-}
-
-/** Navy OP-compass back, code-drawn. v0.1 placeholder for the commissioned asset. */
-function NavyBack() {
-  return (
-    <div
-      className="absolute inset-0 rounded-md overflow-hidden bg-hull-deep flex items-center justify-center"
-      aria-hidden="true"
-    >
-      <div className="absolute inset-1 rounded-sm ring-1 ring-brass-canary/60" />
-      <svg
-        viewBox="0 0 24 24"
-        className="w-1/2 h-1/2 text-brass-canary"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        {/* Compass rose — generic sea-adventure motif, no Bandai IP. */}
-        <circle cx="12" cy="12" r="6.5" />
-        <path d="M12 5.5 L13.5 12 L12 18.5 L10.5 12 Z" />
-        <path d="M5.5 12 L12 10.5 L18.5 12 L12 13.5 Z" />
-      </svg>
-    </div>
-  );
 }
 
 export const DeckSlot = memo(function DeckSlot({ playerId, isYou }: DeckSlotProps) {
@@ -51,7 +26,7 @@ export const DeckSlot = memo(function DeckSlot({ playerId, isYou }: DeckSlotProp
         className="relative"
         style={{ width: dims.w, height: dims.h }}
       >
-        <NavyBack />
+        <NavyCardBack />
         {/* Count overlay — bottom-right corner of the back. */}
         <span
           className="absolute bottom-0.5 right-0.5 rounded-sm bg-paper-cream/95 px-1 py-px

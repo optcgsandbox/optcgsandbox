@@ -11,7 +11,8 @@
 
 import { memo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { CardArt, CARD_DIMS } from '../CardArt';
+import { CARD_DIMS } from '../CardArt';
+import { NavyCardBack } from './NavyCardBack';
 import { springs } from '../../lib/animationTokens';
 import { useGameStore } from '../../store/game';
 import type { PlayerId } from '@shared/engine/GameState';
@@ -91,13 +92,29 @@ export const LifeStack = memo(function LifeStack({ playerId, offsetPx = 4, hideL
                 position: 'absolute',
                 top,
                 left: 0,
+                width: cardW,
+                height: cardH,
                 zIndex: z,
               }}
             >
-              <CardArt inst={inst} size="lifeStack" faceDown />
+              {/* Owner direction 2026-05-29: life cards use the same navy
+                  OP-compass back as the deck — because they ARE deck cards
+                  drawn from the top of the deck at setup (CR §5-2-1-7). */}
+              <NavyCardBack />
             </motion.div>
           );
         })}
+        {/* Count badge — brass numeral overlay on the top card so the player
+            can read remaining life at a glance. Per owner direction 2026-05-29. */}
+        <span
+          className="absolute -top-1 -right-1 z-50 rounded-full bg-brass-canary px-1.5 py-px
+                     font-display tabular text-[0.7rem] leading-none text-ink-black
+                     shadow-[0_1px_3px_rgba(15,20,15,0.45)]
+                     ring-1 ring-ink-black/30"
+          aria-hidden="true"
+        >
+          {count}
+        </span>
       </div>
       {!hideLabel && (
         /* WCAG 1.4.3 — was text-ink-iron/80 on paper-cream (~4.0:1). Solid ink-iron is ~10.5:1. */
