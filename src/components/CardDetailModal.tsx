@@ -344,13 +344,10 @@ export const CardDetailModal = memo(function CardDetailModal() {
     [dispatch, close, setCardDetailOpen, setInspectedCardId, inst, setSelectedAttackerId, disarmDon],
   );
 
-  // Backdrop click closes (returns to inspected state).
-  const onBackdropClick = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (e.target === e.currentTarget) close();
-    },
-    [close],
-  );
+  // Backdrop click closes. The inner card panel has stopPropagation so
+  // child clicks never bubble here — any click that reaches the backdrop
+  // means the user tapped outside the card content.
+  const onBackdropClick = useCallback(() => close(), [close]);
 
   if (!open || !inst || !card) return null;
 
