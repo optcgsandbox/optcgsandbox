@@ -203,3 +203,15 @@ html, body {
   border-color: rgba(184, 199, 201, 0.30);
   background-color: rgba(8, 42, 45, 0.30);
 }
+
+/* Opponent half — counter-rotate the leaf visual content so text + cards
+   read upright while their POSITIONS stay in the mirrored slots.
+   Owner direction 2026-05-29: "all I want is the user can read all the text".
+   The opponent half wrapper is rotate(180deg). Every leaf element that
+   renders text or an icon gets counter-rotated 180° so the player can
+   read it. Layout positions (which zone sits where) are UNCHANGED. */
+.is-opp-content-flip span,
+.is-opp-content-flip svg,
+.is-opp-content-flip [data-flip-back] {
+  transform: rotate(180deg);
+}

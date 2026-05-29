@@ -441,10 +441,14 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
               rowGap: 0,
             }}
           >
-            {/* OPP half — rotated 180° so the cards face the viewer's POV,
-                and the LIFE/DON-DECK bay lands on the upper-right. */}
+            {/* OPP half — rotated 180° so zones land in mirrored positions
+                (Bandai 2-player playmat convention). Owner direction
+                2026-05-29: counter-rotate the visible LEAF content
+                (text labels + card faces + badges) inside so the viewer
+                can READ them upright. `is-opp-content-flip` CSS targets
+                those leaf elements; positions stay in their mirrored slots. */}
             <div
-              className="relative"
+              className="relative is-opp-content-flip"
               style={{
                 transform: 'rotate(180deg)',
                 transformOrigin: '50% 50%',
