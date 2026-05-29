@@ -11,14 +11,18 @@ import { RULES } from '../GameState';
 export function getLegalActions(state: GameState, player: PlayerId): Action[] {
   if (state.result) return [];
 
-  // Trigger window: only the trigger's controller may act, and the only legal
-  // actions are RESOLVE_TRIGGER (activate true/false). All other actions are
-  // illegal — damage resolution is suspended.
+  // Trigger window: only the trigger's controller may act on the trigger; all
+  // game-state actions are illegal — damage resolution is suspended. RESIGN is
+  // a universal out-of-band action and remains available to both players
+  // (rules-reference.md §1.11; you can always concede a stuck game).
   if (state.phase === 'trigger_window') {
-    if (!state.pendingTrigger || state.pendingTrigger.controller !== player) return [];
+    if (!state.pendingTrigger || state.pendingTrigger.controller !== player) {
+      return [{ type: 'RESIGN' }];
+    }
     return [
       { type: 'RESOLVE_TRIGGER', targetInstanceId: null, activate: true },
       { type: 'RESOLVE_TRIGGER', targetInstanceId: null, activate: false },
+      { type: 'RESIGN' },
     ];
   }
 

@@ -97,10 +97,17 @@ export interface PendingTrigger {
   lifeCardInstanceId: string;
   /** Whose life was taken — the player who may activate the trigger. */
   controller: PlayerId;
-  /** Phase to restore after the trigger choice is resolved. Damage-resolution
-   *  finishes by returning to 'main', so this is currently always 'main' — but
-   *  stored explicitly so future suspending effects can resume mid-flow. */
+  /** Phase to restore after the trigger choice is resolved. Set to
+   *  'damage_resolution' when additional life flips remain (e.g. attacker has
+   *  Double Attack and this was the first of two flips); set to 'main' when
+   *  damage resolution is finished and play continues in the main phase. */
   resumePhase: Phase;
+  /** Number of additional life flips owed AFTER the controller resolves this
+   *  trigger. Used for Double Attack (rules-reference.md §1.8): a successful
+   *  attack on a leader by a Double Attack source flips 2 life cards in
+   *  sequence, with a trigger window between them if either has [Trigger].
+   *  Zero for normal single-flip attacks. */
+  remainingLifeFlips: number;
 }
 
 export interface GameResult {

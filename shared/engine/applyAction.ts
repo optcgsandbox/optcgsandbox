@@ -231,6 +231,12 @@ function resolvePending(state: GameState): { state: GameState; events: GameEvent
  *  pushing the card straight to hand. The controller resolves via
  *  RESOLVE_TRIGGER, which either runs the effect or just adds the card to hand
  *  (decline path), then resumes.
+ *
+ *  Rules-reference.md §1.8 (Double Attack): if the attacker has the
+ *  `double_attack` keyword and the target is the opposing leader, 2 life cards
+ *  are flipped in sequence. A trigger on either flip suspends mid-flow, with
+ *  the second flip resumed after RESOLVE_TRIGGER returns the engine to
+ *  'damage_resolution'.
  */
 function resolveDamage(state: GameState): { state: GameState; events: GameEvent[] } {
   const pa: PendingAttack = state.pendingAttack!;
@@ -253,34 +259,9 @@ function resolveDamage(state: GameState): { state: GameState; events: GameEvent[
 
   if (targetCard.kind === 'leader') {
     if (attackerPower >= targetPower) {
-      const lifeId = defenderSide.life.shift();
-      if (lifeId) {
-        const lifeInst = next.instances[lifeId];
-        const lifeCard = lifeInst ? next.cardLibrary[lifeInst.cardId] : null;
-        const hasTrigger = !!lifeCard && lifeCard.effectTags.includes('trigger');
-
-        if (hasTrigger) {
-          // Suspend damage processing; ask the controller to activate or decline.
-          next.pendingTrigger = {
-            lifeCardInstanceId: lifeId,
-            controller: OTHER[player],
-            resumePhase: 'main',
-          };
-          next.pendingAttack = null;
-          next.phase = 'trigger_window';
-          next.history.push({ type: 'LIFE_TAKEN', player: OTHER[player], instanceId: lifeId });
-          next.history.push({ type: 'TRIGGER_FLIPPED', player: OTHER[player], instanceId: lifeId });
-          next.history.push({ type: 'PHASE_CHANGED', phase: 'trigger_window' });
-          return { state: next, events: next.history.slice(start) };
-        }
-
-        // No trigger: standard "add to hand".
-        defenderSide.hand.push(lifeId);
-        next.history.push({ type: 'LIFE_TAKEN', player: OTHER[player], instanceId: lifeId });
-      } else {
-        next.result = { winner: player, reason: 'lethal' };
-        next.history.push({ type: 'GAME_ENDED', result: next.result });
-      }
+      // Double Attack flips 2 life cards in sequence (§1.8). Standard attack = 1.
+      const lifeFlipsOwed = attackerCard.keywords.includes('double_attack') ? 2 : 1;
+      return flipLifeCards(next, OTHER[player], lifeFlipsOwed, start);
     }
   } else if (targetCard.kind === 'character') {
     if (attackerPower >= targetPower) {
@@ -303,15 +284,93 @@ function resolveDamage(state: GameState): { state: GameState; events: GameEvent[
   return { state: next, events: next.history.slice(start) };
 }
 
+/** Flip up to `flipsOwed` life cards for `defenderId`, one at a time.
+ *
+ *  Per flip:
+ *   - If life is empty → lethal, game ends.
+ *   - If the top life card has the `trigger` effect tag → suspend into
+ *     'trigger_window'. `pendingTrigger.remainingLifeFlips` carries the count
+ *     of flips still owed AFTER this one resolves. `resumePhase` is
+ *     'damage_resolution' if more flips remain (so resolveTrigger can call
+ *     back into this helper), or 'main' if this was the last flip.
+ *   - Else → standard "life to hand", continue the loop.
+ *
+ *  When the loop completes naturally (no triggers, no lethal), the phase is
+ *  set to 'main' and pendingAttack is cleared.
+ *
+ *  `start` is the history index from before any of this attack's events were
+ *  appended, so the returned events array includes the entire chain.
+ */
+function flipLifeCards(
+  state: GameState,
+  defenderId: PlayerId,
+  flipsOwed: number,
+  start: number,
+): { state: GameState; events: GameEvent[] } {
+  const next = state;
+  const defenderSide = next.players[defenderId];
+  const activePlayer = next.activePlayer;
+
+  let remaining = flipsOwed;
+  while (remaining > 0) {
+    const lifeId = defenderSide.life.shift();
+    if (!lifeId) {
+      next.result = { winner: activePlayer, reason: 'lethal' };
+      next.history.push({ type: 'GAME_ENDED', result: next.result });
+      next.pendingAttack = null;
+      return { state: next, events: next.history.slice(start) };
+    }
+
+    const lifeInst = next.instances[lifeId];
+    const lifeCard = lifeInst ? next.cardLibrary[lifeInst.cardId] : null;
+    const hasTrigger = !!lifeCard && lifeCard.effectTags.includes('trigger');
+
+    next.history.push({ type: 'LIFE_TAKEN', player: defenderId, instanceId: lifeId });
+
+    if (hasTrigger) {
+      // Suspend: controller must RESOLVE_TRIGGER. Carry the remaining flip count
+      // so the resume path can finish the sequence.
+      const flipsAfterThis = remaining - 1;
+      next.pendingTrigger = {
+        lifeCardInstanceId: lifeId,
+        controller: defenderId,
+        resumePhase: flipsAfterThis > 0 ? 'damage_resolution' : 'main',
+        remainingLifeFlips: flipsAfterThis,
+      };
+      next.phase = 'trigger_window';
+      next.history.push({ type: 'TRIGGER_FLIPPED', player: defenderId, instanceId: lifeId });
+      next.history.push({ type: 'PHASE_CHANGED', phase: 'trigger_window' });
+      // Keep pendingAttack only if we still need its context after resume; the
+      // helper itself doesn't read pa again, so it's safe to clear either way.
+      next.pendingAttack = null;
+      return { state: next, events: next.history.slice(start) };
+    }
+
+    // No trigger: standard "life to hand", move on to next flip if owed.
+    defenderSide.hand.push(lifeId);
+    remaining -= 1;
+  }
+
+  next.pendingAttack = null;
+  next.phase = 'main';
+  next.history.push({ type: 'PHASE_CHANGED', phase: 'main' });
+  return { state: next, events: next.history.slice(start) };
+}
+
 /** RESOLVE_TRIGGER: controller activates or declines a flipped life-card trigger.
  *
- *  v0: effect resolution is deferred to the templates registry stub. For now,
- *  activation = consume the trigger card (move to trash per
- *  rule_comprehensive.pdf 10-1-5 "trigger card is trashed unless otherwise
- *  specified"); decline = add card to hand normally.
- *
+ *  v0: per-card trigger effects are not yet registered. The TRIGGER_RESOLVED
+ *  event carries `activated: boolean` so the UI can clearly distinguish
+ *  "trigger declined" (card to hand) vs "trigger activated (effect handler
+ *  pending — card to trash per rule_comprehensive.pdf 10-1-5 default)".
  *  Future cards with bespoke trigger effects will dispatch via
  *  cards/effects/templates by tag; the call site goes here.
+ *
+ *  Resume semantics:
+ *   - If pendingTrigger.resumePhase === 'damage_resolution' and there are
+ *     more life flips owed (Double Attack), continue the flip loop in place.
+ *   - Otherwise restore the stored resumePhase (currently always 'main' for
+ *     single-flip attacks).
  */
 function resolveTrigger(
   state: GameState,
@@ -328,8 +387,10 @@ function resolveTrigger(
   const triggerOwner = next.players[pt.controller];
 
   if (activate) {
-    // v0: just consume the trigger card to trash. Effect resolution will be
-    // routed through the templates registry once card-specific handlers exist.
+    // v0: card-specific effect resolution is not wired yet. Per
+    // rule_comprehensive.pdf 10-1-5 default ("trigger card is trashed unless
+    // otherwise specified"), send the card to trash. UI shows "trigger
+    // activated" based on the TRIGGER_RESOLVED event below.
     triggerOwner.trash.push(lifeCardInstanceId);
   } else {
     // Decline: card goes to hand as if no trigger was present.
@@ -343,7 +404,16 @@ function resolveTrigger(
     activated: activate,
   });
 
+  const remaining = pt.remainingLifeFlips;
   next.pendingTrigger = null;
+
+  if (pt.resumePhase === 'damage_resolution' && remaining > 0) {
+    // Resume Double Attack mid-flow: keep flipping for the same defender.
+    next.phase = 'damage_resolution';
+    next.history.push({ type: 'PHASE_CHANGED', phase: 'damage_resolution' });
+    return flipLifeCards(next, pt.controller, remaining, start);
+  }
+
   next.phase = pt.resumePhase;
   next.history.push({ type: 'PHASE_CHANGED', phase: pt.resumePhase });
   return { state: next, events: next.history.slice(start) };
