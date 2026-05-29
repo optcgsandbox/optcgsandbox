@@ -310,7 +310,8 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
         </div>
       </div>
       {totalDon === 0 && (
-        <span className="absolute inset-0 flex items-center justify-center font-body text-[0.55rem] font-extrabold uppercase tracking-wider text-ink-iron/55">
+        // D4 (playmat-redesign §10) — solid ink-iron for WCAG AA on paper-fog.
+        <span className="absolute inset-0 flex items-center justify-center font-body text-[0.55rem] font-extrabold uppercase tracking-wider text-ink-iron">
           No DON
         </span>
       )}

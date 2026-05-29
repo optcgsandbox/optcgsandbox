@@ -240,11 +240,21 @@ function FarRow({ playerId, isYou }: { playerId: PlayerId; isYou: boolean }) {
  * row visually lands closest to the contact zone — matching the physical
  * Bandai table convention.
  */
+// D6 (playmat-redesign §1.3) — explicit dvh budget so the layout doesn't
+// drift when the hand strip compresses on smaller phones. After the opp
+// half is rotated 180°, its row1 (character, 11dvh) lands at the bottom
+// of the opp area (closest to the contact zone), row2 (leader, 12dvh) in
+// the middle, row3 (far, 8dvh) at the top of the screen. Your half stays
+// upright: character 11dvh (top, closest to contact), leader 12dvh, far
+// 8dvh (bottom). Sum each half = 31dvh × 2 + contact 1dvh + chrome 6dvh +
+// hand 24dvh = 93dvh, leaving ~7dvh for safe-area compression.
+const HALF_GRID_ROWS = '11dvh 12dvh 8dvh';
+
 function OpponentHalf(props: HalfProps) {
   return (
     <div
       className="grid h-full w-full"
-      style={{ gridTemplateRows: '1fr 1fr 1fr', rowGap: 'var(--playmat-band-px, 4px)' }}
+      style={{ gridTemplateRows: HALF_GRID_ROWS, rowGap: 'var(--playmat-band-px, 4px)' }}
       role="region"
       aria-label="Opponent half"
     >
@@ -259,7 +269,7 @@ function YourHalf(props: HalfProps) {
   return (
     <div
       className="grid h-full w-full"
-      style={{ gridTemplateRows: '1fr 1fr 1fr', rowGap: 'var(--playmat-band-px, 4px)' }}
+      style={{ gridTemplateRows: HALF_GRID_ROWS, rowGap: 'var(--playmat-band-px, 4px)' }}
       role="region"
       aria-label="Your half"
     >
@@ -353,7 +363,14 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
                 Each half hosts its own LIFE column + field side-by-side. */}
             <div
               className="grid h-full w-full"
-              style={{ gridTemplateRows: '1fr auto 1fr' }}
+              style={{
+                // D6 — explicit dvh per playmat-redesign §1.3.
+                // Two halves at 31dvh each + 1dvh contact-zone strip = 63dvh
+                // of vertical content between the 6dvh chrome (paddingTop) and
+                // 24dvh hand strip (paddingBottom). 7dvh slack absorbs the
+                // safe-area inset compression noted in §1.3.
+                gridTemplateRows: '31dvh 1dvh 31dvh',
+              }}
             >
               {/* TOP HALF — opponent. Rotated 180° as one unit. */}
               <div

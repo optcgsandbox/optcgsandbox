@@ -26,16 +26,32 @@ export const DeckSlot = memo(function DeckSlot({ playerId, isYou }: DeckSlotProp
         className="relative"
         style={{ width: dims.w, height: dims.h }}
       >
-        <NavyCardBack />
-        {/* Count overlay — bottom-right corner of the back. */}
-        <span
-          className="absolute bottom-0.5 right-0.5 rounded-sm bg-paper-cream/95 px-1 py-px
-                     font-display tabular text-[0.7rem] leading-none text-ink-black
-                     shadow-[0_1px_2px_rgba(0,0,0,0.35)]"
-          aria-hidden="true"
-        >
-          {count}
-        </span>
+        {count > 0 ? (
+          <>
+            <NavyCardBack />
+            {/* Count overlay — bottom-right corner of the back. */}
+            <span
+              className="absolute bottom-0.5 right-0.5 rounded-sm bg-paper-cream/95 px-1 py-px
+                         font-display tabular text-[0.7rem] leading-none text-ink-black
+                         shadow-[0_1px_2px_rgba(0,0,0,0.35)]"
+              aria-hidden="true"
+            >
+              {count}
+            </span>
+          </>
+        ) : (
+          // D3 (playmat-redesign §10) — dashed empty fallback for game-loss
+          // state (CR §1-2-1-1-2: empty deck triggers loss). Brief but possible.
+          <div
+            className="absolute inset-0 flex items-center justify-center rounded-md
+                       border border-dashed border-marine-fog/60 bg-paper-fog/10"
+            aria-hidden="true"
+          >
+            <span className="font-body text-[0.5rem] font-extrabold uppercase tracking-wider text-ink-iron">
+              Deck 0
+            </span>
+          </div>
+        )}
       </div>
     </ZoneSlot>
   );

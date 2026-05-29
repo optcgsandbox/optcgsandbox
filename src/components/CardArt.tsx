@@ -18,7 +18,7 @@
 
 import { memo, useMemo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import type { Card, CardColor } from '@shared/engine/cards/Card';
+import type { Card, CardColor, LeaderCard } from '@shared/engine/cards/Card';
 import type { CardInstance } from '@shared/engine/GameState';
 import { springs } from '../lib/animationTokens';
 
@@ -280,6 +280,7 @@ function PlaceholderArt({ card, size }: PlaceholderArtProps) {
   const m = metricsFor(size);
   const tint = tintForCard(card);
   const isLeader = card.kind === 'leader';
+  const isStage = card.kind === 'stage';
   const showCost = !isLeader && card.cost !== null && card.cost !== undefined;
   const showPower =
     (card.kind === 'character' || card.kind === 'leader') &&
@@ -289,8 +290,29 @@ function PlaceholderArt({ card, size }: PlaceholderArtProps) {
     card.kind === 'character' &&
     typeof card.counterValue === 'number' &&
     card.counterValue > 0;
-  // Leaders get a slightly saturated background per §4.2.
-  const saturationFilter = isLeader ? 'saturate(1.15)' : undefined;
+  // Per §3.1 leaders +15% saturation; per §3.4 stages -8% saturation so
+  // they read as lower-energy than characters. Hand-off C2 + spec §3.4.
+  const saturationFilter = isLeader
+    ? 'saturate(1.15)'
+    : isStage
+      ? 'saturate(0.92)'
+      : undefined;
+  // C3 + C6 — printed life square (seal-red, bottom-LEFT of leader body).
+  // Uses `card.life` from CardBase (leaders carry printed life). At modal
+  // size we render a larger badge; at non-modal leader sizes we render a
+  // small 10×10 pill so the printed-life cue is still visible inside the
+  // body without colliding with the floating live LifePill on the top edge.
+  const printedLife = isLeader ? (card as LeaderCard).life ?? undefined : undefined;
+  const showPrintedLife = isLeader && typeof printedLife === 'number';
+  // Modal: 28×28 rounded square; leader/hand sizes: scaled-down badge.
+  const printedLifeDims = (() => {
+    if (!showPrintedLife) return null;
+    if (size === 'modal') return { w: 28, h: 28, inset: 10, font: 16, radius: 4 };
+    if (size === 'leader') return { w: 10, h: 10, inset: 3, font: 6.5, radius: 2 };
+    if (size === 'hand') return { w: 10, h: 10, inset: 3, font: 6.5, radius: 2 };
+    if (size === 'field') return { w: 9, h: 9, inset: 2, font: 6, radius: 2 };
+    return null;
+  })();
   const kindLabel = card.kind?.toUpperCase() ?? '';
   const subText = (() => {
     if (size === 'hand' || size === 'mini') return kindLabel;
@@ -313,6 +335,24 @@ function PlaceholderArt({ card, size }: PlaceholderArtProps) {
     return card.id.toUpperCase();
   })();
 
+  // C1 — Leader frame: 4px brass-canary inset ring scaled per size so it
+  // reads as "more important" than character cards. Inset shadow keeps the
+  // 60×84 footprint identical (no overflow into adjacent slots — owner
+  // explicitly forbade bumping CARD_DIMS). Frame thickness scales: 4px at
+  // modal/leader (legible), 2px at field, 3px at hand.
+  const leaderFrameWidth = (() => {
+    if (!isLeader) return 0;
+    if (size === 'modal') return 4;
+    if (size === 'leader') return 3;
+    if (size === 'hand') return 3;
+    if (size === 'field') return 2;
+    return 0;
+  })();
+  const leaderFrameShadow =
+    leaderFrameWidth > 0
+      ? `inset 0 0 0 ${leaderFrameWidth}px var(--color-brass-canary)`
+      : undefined;
+
   return (
     <div
       className="absolute inset-0 overflow-hidden"
@@ -321,6 +361,7 @@ function PlaceholderArt({ card, size }: PlaceholderArtProps) {
         border: `${m.bodyStroke}px solid ${tint.stroke}`,
         background: `linear-gradient(180deg, ${tint.top} 0%, ${tint.bot} 100%)`,
         filter: saturationFilter,
+        boxShadow: leaderFrameShadow,
       }}
       aria-hidden="true"
     >
@@ -331,6 +372,45 @@ function PlaceholderArt({ card, size }: PlaceholderArtProps) {
       >
         <CrestPlaceholder size={m.crest} />
       </div>
+
+      {/* C3 + C6 — printed life square. Distinct from the floating LifePill
+          overlay: this badge shows the PRINTED starting life from `card.life`,
+          while the floating pill shows the LIVE life count from
+          `liveLifeCount`. At MODAL size the square sits bottom-LEFT inside
+          the body (per §3.1 table — leaders carry the life square at the
+          bottom-LEFT). At hand/leader/field sizes the bottom strip area is
+          already busy with the kind/microtype strips, so the badge moves to
+          the TOP-LEFT corner (where leaders never carry a cost chip — leaders
+          have `cost: null`). Both placements preserve the printed-life cue
+          without collision. */}
+      {showPrintedLife && printedLifeDims && (
+        <div
+          className="absolute flex items-center justify-center bg-seal-red"
+          style={{
+            // Modal: bottom-LEFT (matches §3.1 anatomy). Other sizes: top-LEFT
+            // (avoids name/kind strip overlap; leaders have no cost chip).
+            ...(size === 'modal'
+              ? { bottom: printedLifeDims.inset, left: printedLifeDims.inset }
+              : { top: printedLifeDims.inset, left: printedLifeDims.inset }),
+            width: printedLifeDims.w,
+            height: printedLifeDims.h,
+            borderRadius: printedLifeDims.radius,
+            border: '0.5px solid var(--color-ink-black)',
+            zIndex: 2,
+          }}
+        >
+          <span
+            className="font-display tabular text-paper-cream"
+            style={{
+              fontSize: printedLifeDims.font,
+              lineHeight: 1,
+              fontWeight: 600,
+            }}
+          >
+            {printedLife}
+          </span>
+        </div>
+      )}
 
       {/* Cost chip (top-left) — characters / events / stages. */}
       {showCost && (
