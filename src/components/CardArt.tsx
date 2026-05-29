@@ -74,8 +74,8 @@ function describeForA11y(card: Card | undefined, inst: CardInstance | undefined)
   if (card.kind) parts.push(card.kind);
   if (card.cost !== null && card.cost !== undefined) parts.push(`cost ${card.cost}`);
   if (card.power !== null && card.power !== undefined) parts.push(`power ${card.power}`);
-  if (inst?.attachedDon && inst.attachedDon > 0) {
-    parts.push(`+${inst.attachedDon * 1000} attached DON`);
+  if (inst?.attachedDon && inst.attachedDon.length > 0) {
+    parts.push(`+${inst.attachedDon.length * 1000} attached DON`);
   }
   if (inst?.rested) parts.push('rested');
   return parts.join(', ');
@@ -230,7 +230,7 @@ export const CardArt = memo(function CardArt({
         )}
       </div>
       {isLeader && typeof lifeCount === 'number' && <LifePill count={lifeCount} />}
-      {inst && inst.attachedDon > 0 && <DonBadge count={inst.attachedDon} />}
+      {inst && inst.attachedDon.length > 0 && <DonBadge count={inst.attachedDon.length} />}
     </motion.button>
   );
 

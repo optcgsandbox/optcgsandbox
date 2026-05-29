@@ -18,6 +18,10 @@ const PHASE_LABEL: Record<Phase, string> = {
   block_window: 'Block?',
   counter_window: 'Counter?',
   damage_resolution: 'Damage',
+  // Trigger window opens when a life card with [Trigger] is flipped during
+  // damage resolution; controller resolves via RESOLVE_TRIGGER. See
+  // shared/engine/applyAction.ts:316.
+  trigger_window: 'Trigger',
   end: 'End',
 };
 

@@ -22,8 +22,12 @@ import { ZoneSlot } from './ZoneSlot';
 import { PhaseRibbon } from './PhaseRibbon';
 import { HandFan } from './HandFan';
 import { AttackResolutionOverlay } from './AttackResolutionOverlay';
+import { TriggerPrompt } from './TriggerPrompt';
+import { LifeRevealOverlay } from './LifeRevealOverlay';
+import { EventCardOverlay } from './EventCardOverlay';
 import { LifeStack } from './zones/LifeStack';
 import { CostAreaStrip } from './zones/CostAreaStrip';
+import { DonRested } from './zones/DonRested';
 import type { CardInstance, PlayerId, PlayerZones } from '@shared/engine/GameState';
 import type { Card } from '@shared/engine/cards/Card';
 
@@ -236,6 +240,7 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
             {/* Row 1: Opponent chrome */}
             <div className="bg-paper-fog/40 ring-1 ring-marine-fog/20">
               <ChromeRow zones={opp} isYou={false} playerId={opponentSeat} leaderCard={oppLeader} />
+              <DonRested playerId={opponentSeat} isYou={false} />
             </div>
 
             {/* Row 2: Opponent field */}
@@ -266,6 +271,7 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
             {/* Row 5: Your chrome */}
             <div className="bg-paper-fog/40 ring-1 ring-marine-fog/20">
               <ChromeRow zones={you} isYou={true} playerId={seat} leaderCard={youLeader} />
+              <DonRested playerId={seat} isYou={true} />
             </div>
 
             {/* Row 6: Your hand (HandFan handles its own positioning at the bottom). */}
@@ -278,6 +284,18 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
 
         {/* Damage / counter overlay — only renders when pendingAttack + counter_window. */}
         <AttackResolutionOverlay />
+
+        {/* Life reveal — center-screen flip when one of YOUR life cards is taken,
+            with shared-element layoutId flight into the hand on dismiss. */}
+        <LifeRevealOverlay />
+
+        {/* Event card reveal — center-screen flash when an event resolves,
+            with shared-element flight into the trash on dismiss. */}
+        <EventCardOverlay />
+
+        {/* Trigger prompt — modal Activate/Decline dialog when state.pendingTrigger
+            is set AND the viewer is the trigger's controller. */}
+        <TriggerPrompt />
       </div>
     </LayoutGroup>
   );
