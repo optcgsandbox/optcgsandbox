@@ -57,7 +57,14 @@ export function ZoneSlot({
       data-zone={id}
       role="region"
       aria-label={ariaLabel ?? `${kind} ${playerId}${typeof index === 'number' ? ` slot ${index + 1}` : ''}`}
-      className="relative rounded-2xl ring-1 ring-marine-fog/40 bg-paper-fog/20 flex items-center justify-center"
+      className={[
+        'relative rounded-2xl flex items-center justify-center',
+        // Character slots get a stronger dashed outline so empty slots are
+        // unambiguously visible — owner caught 5th slot invisibility 2026-05-29.
+        kind === 'character'
+          ? 'border-2 border-dashed border-marine-fog/55 bg-paper-fog/15'
+          : 'ring-1 ring-marine-fog/40 bg-paper-fog/20',
+      ].join(' ')}
       style={{ minWidth: minDim, minHeight: minDim }}
       animate={
         validDrop && !reduced

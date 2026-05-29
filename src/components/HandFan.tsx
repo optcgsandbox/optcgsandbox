@@ -39,16 +39,12 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true }: H
   const onTap = useCallback(
     (instanceId: string) => {
       if (!interactive) return;
-      // visual-design-spec.md §3.9 tap state machine.
-      if (inspectedCardId === instanceId) {
-        // Second tap on the lifted card → open detail modal.
-        setCardDetailOpen(true);
-      } else {
-        // First tap (or switching) → lift this card.
-        setInspectedCardId(instanceId);
-      }
+      // Owner direction 2026-05-29: single tap opens detail modal directly.
+      // The two-step lift-then-tap-again was too small to read on a phone.
+      setInspectedCardId(instanceId);
+      setCardDetailOpen(true);
     },
-    [interactive, inspectedCardId, setCardDetailOpen, setInspectedCardId],
+    [interactive, setCardDetailOpen, setInspectedCardId],
   );
 
   const n = handIds.length;

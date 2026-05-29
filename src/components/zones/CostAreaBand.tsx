@@ -253,30 +253,61 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
       >
         Cost
       </span>
-      <div className="flex h-full grow items-center gap-0.5 overflow-x-auto">
-        {donCostArea.map((instanceId, i) => (
-          <DonCard
-            key={instanceId}
-            instanceId={instanceId}
-            index={i}
-            rested={false}
-            reduced={reduced}
-            interactive={interactive}
-            armed={armedDonId === instanceId}
-            onTap={() => handleCoinTap(instanceId)}
-          />
-        ))}
-        {donRested.map((instanceId, i) => (
-          <DonCard
-            key={instanceId}
-            instanceId={instanceId}
-            index={donCostArea.length + i}
-            rested={true}
-            reduced={reduced}
-            interactive={false}
-            armed={false}
-          />
-        ))}
+      {/* DON cards STACK with overlap so max 10 always fit inside the cost band.
+          Per owner direction 2026-05-29: DON cards can overlap rather than
+          sitting side-by-side. 10 × 14px stride + 30px card width = 156px max
+          footprint, well inside the playmat. */}
+      <div
+        className="relative h-full grow"
+        style={{
+          // Reserve exact footprint of the stack so the band sizes correctly:
+          // n DON → (n-1) * stride + card width; clamp to band's grow space.
+          minWidth: 0,
+        }}
+      >
+        <div
+          className="absolute inset-y-0 left-0 flex items-center"
+          style={{
+            width: `${(donCostArea.length + donRested.length - 1) * 14 + DON_CARD_W}px`,
+          }}
+        >
+          {donCostArea.map((instanceId, i) => (
+            <div
+              key={instanceId}
+              className="absolute"
+              style={{ left: `${i * 14}px`, zIndex: i + 1 }}
+            >
+              <DonCard
+                instanceId={instanceId}
+                index={i}
+                rested={false}
+                reduced={reduced}
+                interactive={interactive}
+                armed={armedDonId === instanceId}
+                onTap={() => handleCoinTap(instanceId)}
+              />
+            </div>
+          ))}
+          {donRested.map((instanceId, i) => {
+            const stackedIndex = donCostArea.length + i;
+            return (
+              <div
+                key={instanceId}
+                className="absolute"
+                style={{ left: `${stackedIndex * 14}px`, zIndex: stackedIndex + 1 }}
+              >
+                <DonCard
+                  instanceId={instanceId}
+                  index={stackedIndex}
+                  rested={true}
+                  reduced={reduced}
+                  interactive={false}
+                  armed={false}
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
       {totalDon === 0 && (
         <span className="absolute inset-0 flex items-center justify-center font-body text-[0.55rem] font-extrabold uppercase tracking-wider text-ink-iron/55">
