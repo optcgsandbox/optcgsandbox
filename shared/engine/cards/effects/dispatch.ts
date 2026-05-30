@@ -152,7 +152,15 @@ export function fireEffects(
   const allowed = TAGS_BY_TRIGGER[trigger];
   if (allowed.size === 0) return state;
 
-  let cur = state;
+  // Batch 4 (audit 2026-05-30): clone ONCE here, then pass the same `cur`
+  // through every template in the chain. Templates are now mutate-in-place
+  // (see comment header in templates.ts). Previous shape did per-template
+  // structuredClone — O(N) clones of the full GameState (including
+  // cardLibrary) per fire. The pre-clone-then-mutate pattern matches the
+  // rest of applyAction.ts and stays correct across early-return no-op
+  // templates (vanilla / blocker / cost_reduction / etc. that return their
+  // input unchanged).
+  let cur: GameState = structuredClone(state);
   let fired = false;
   for (const tag of card.effectTags) {
     if (!allowed.has(tag)) continue;
@@ -169,11 +177,10 @@ export function fireEffects(
     cur = handler(cur, ctx);
   }
 
-  // D18: mark the OPT slot used. Defensive clone — if every matched template
-  // returned state unchanged (e.g. `vanilla`), `cur === state` and mutating
-  // would corrupt the caller. Cloning here is cheap on the rare OPT path.
+  // D18: mark the OPT slot used. `cur` is always a clone (Batch 4: cloned
+  // pre-loop), so direct mutation is safe — no defensive re-clone needed.
   if (fired && isOpt) {
-    const out = cur === state ? structuredClone(cur) : cur;
+    const out = cur;
     const after = out.instances[instanceId];
     if (after && !after.perTurn.effectsUsed.includes(trigger)) {
       after.perTurn.effectsUsed.push(trigger);
