@@ -11,7 +11,7 @@
 // THEIR trash contents. (Pre-2026-05-29: tap opened CardDetailModal for
 // only the top card — no way to scroll the rest. Replaced.)
 
-import { memo } from 'react';
+import { memo, type SyntheticEvent } from 'react';
 import { useGameStore } from '../../store/game';
 import { ZoneSlot } from '../ZoneSlot';
 import { CardArt, CARD_DIMS } from '../CardArt';
@@ -42,11 +42,14 @@ export const TrashSlot = memo(function TrashSlot({ playerId, isYou }: TrashSlotP
   // Open the TrashViewer for THIS slot's player — works for either side
   // (CR §3-5: trash is open to both players). Empty trash is still tappable
   // so the viewer can render the "Trash is empty" affordance.
-  const onTapSlot = () => {
+  // stopPropagation: PlayfieldStage root onPlaymatTap (tap-outside handler)
+  // would otherwise also fire and clear armedDonId / selectedAttackerId.
+  const onTapSlot = (e: SyntheticEvent) => {
+    e.stopPropagation();
     setViewingTrashOf(playerId);
   };
 
-  return (
+  const slot = (
     <ZoneSlot
       kind="trash"
       playerId={playerId}
@@ -66,7 +69,7 @@ export const TrashSlot = memo(function TrashSlot({ playerId, isYou }: TrashSlotP
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              onTapSlot();
+              onTapSlot(e);
             }
           }}
         >
@@ -87,19 +90,33 @@ export const TrashSlot = memo(function TrashSlot({ playerId, isYou }: TrashSlotP
             </span>
           )}
         </div>
-      ) : (
-        // Empty trash — still tappable so the viewer can open + show
-        // "Trash is empty". Cover the full slot so the tap target meets
-        // the iOS HIG minimum.
-        <button
-          type="button"
-          onClick={onTapSlot}
-          aria-label={label}
-          className="absolute inset-0 bg-transparent border-0
-                     focus-visible:outline-none focus-visible:ring-2
-                     focus-visible:ring-sun-brass cursor-pointer"
-        />
-      )}
+      ) : null}
     </ZoneSlot>
   );
+
+  // Empty trash — wrap the dashed-outline ZoneSlot in a tappable surface so
+  // the dashed `TRASH` label stays visible (passing the button as a child
+  // would set ZoneSlot.isOccupied=true and suppress the outline — see
+  // ZoneSlot.tsx:91 + 128). Wrapping keeps the slot tappable for the viewer.
+  if (!topInst) {
+    return (
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label={label}
+        onClick={onTapSlot}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onTapSlot(e);
+          }
+        }}
+        className="relative cursor-pointer focus-visible:outline-none
+                   focus-visible:ring-2 focus-visible:ring-sun-brass rounded-[4px]"
+      >
+        {slot}
+      </div>
+    );
+  }
+  return slot;
 });

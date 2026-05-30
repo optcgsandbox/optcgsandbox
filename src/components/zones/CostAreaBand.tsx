@@ -27,7 +27,8 @@ interface CostAreaBandProps {
 // 38×52 base inside the 60px-tall COST band so the cards read clearly.
 const DON_CARD_W = 38;
 const DON_CARD_H = 52;
-const DON_STRIDE = 18; // compressed stack; 10 DON × 18 + 38 = 218px (fits the band)
+const DON_STRIDE = 12; // tight overlap, life-card style
+const REST_GAP = 16;   // gap between active group and rested group
 
 /** 12 radial dashes behind the ど!! mark — speed-line burst. */
 function SpeedLines() {
@@ -134,12 +135,7 @@ interface DonCardProps {
 }
 
 function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap }: DonCardProps) {
-  // Rest rotation +90° around bottom-left for BOTH players. The opp's parent
-  // half wrapper has `transform: rotate(180deg)` which handles the visual
-  // mirror automatically — no per-side rotation logic needed (owner direction
-  // 2026-05-29: prior isOpp split caused cards to overlap).
   const targetRotate = rested ? 90 : 0;
-  const restTransformOrigin = '0 100%';
   return (
     // Static wrapper carries data-flip-back so Framer transforms inside the
     // motion.button (animate/whileHover/whileTap) don't override the CSS
@@ -179,7 +175,16 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
               delay: reduced ? 0 : index * STAGGER_DON,
             }
       }
-      onClick={interactive && !rested ? onTap : undefined}
+      onClick={
+        interactive && !rested
+          ? (e) => {
+              // Stop bubble to PlayfieldStage root onPlaymatTap — that handler
+              // disarms armedDonId if set, which would immediately undo this arm.
+              e.stopPropagation();
+              onTap?.();
+            }
+          : undefined
+      }
       disabled={!interactive || rested}
       data-don-instance={instanceId}
       aria-label={
@@ -200,10 +205,7 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
         height: DON_CARD_H,
         minWidth: 28,
         minHeight: 28,
-        // Pivot direction tracks the rotation direction (see restRotation
-        // above) so the rested card stays anchored to its slot footprint
-        // regardless of which half of the playmat it's on.
-        transformOrigin: rested ? restTransformOrigin : '50% 50%',
+        transformOrigin: '50% 50%',
         pointerEvents: rested ? 'none' : undefined,
       }}
     >
@@ -267,13 +269,18 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
       {totalDon > 0 && (
         <div
           className="relative h-full flex items-center"
-          style={{ width: stackWidth, minWidth: 0 }}
+          style={{ width: stackWidth, minWidth: 0, overflow: 'visible' }}
         >
           {donCostArea.map((instanceId, i) => (
             <div
               key={instanceId}
               className="absolute"
-              style={{ left: i * DON_STRIDE, zIndex: i + 1, bottom: 4 }}
+              style={{
+                left: i * DON_STRIDE,
+                zIndex: i + 1,
+                top: '50%',
+                transform: 'translateY(-50%)',
+              }}
             >
               <DonCard
                 instanceId={instanceId}
@@ -287,25 +294,29 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
             </div>
           ))}
           {donRested.map((instanceId, i) => {
-            const stackedIndex = donCostArea.length + i;
+            // Rested group starts AFTER all active DONs + a small gap.
+            const restedLeft =
+              (donCostArea.length > 0 ? donCostArea.length * DON_STRIDE + REST_GAP : 0) +
+              i * DON_STRIDE;
             return (
               <div
                 key={instanceId}
                 className="absolute"
                 style={{
-                  left: stackedIndex * DON_STRIDE,
-                  zIndex: stackedIndex + 1,
-                  bottom: 4,
+                  left: restedLeft,
+                  zIndex: donCostArea.length + i + 1,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
                 }}
               >
                 <DonCard
                   instanceId={instanceId}
-                  index={stackedIndex}
+                  index={i}
                   rested
                   reduced={reduced}
                   interactive={false}
                   armed={false}
-                  />
+                />
               </div>
             );
           })}

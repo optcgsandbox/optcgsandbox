@@ -640,7 +640,15 @@ export const CardArt = memo(function CardArt({
       type="button"
       layoutId={inst?.instanceId}
       layout
-      onClick={onTap}
+      onClick={(e) => {
+        // Stop bubble to PlayfieldStage root onPlaymatTap (clears armedDonId /
+        // selectedAttackerId / inspectedCardId) — that handler is intended for
+        // taps on EMPTY playmat surface only. Without this, clicking a friendly
+        // card after arming a DON disarms it before the modal can render the
+        // ATTACH DON button; same race breaks the SELECT ATTACKER → ATTACK flow.
+        e.stopPropagation();
+        onTap?.();
+      }}
       disabled={!interactive}
       aria-label={a11y}
       aria-pressed={selectedAttacker}
