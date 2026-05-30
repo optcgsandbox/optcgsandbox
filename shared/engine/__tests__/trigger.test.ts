@@ -352,4 +352,87 @@ describe('Trigger window (applyAction.ts:235–349)', () => {
     expect(events.filter((e) => e.type === 'LIFE_TAKEN')).toHaveLength(1); // second flip only (first happened pre-resolve)
     expect(events.some((e) => e.type === 'PHASE_CHANGED' && e.phase === 'main')).toBe(true);
   });
+
+  // Phase D / D11: trigger effect dispatch
+  it('RESOLVE_TRIGGER activate fires the life card`s effect tags via dispatch', () => {
+    // Shape the life pile so the top card has [Trigger] + [draw]. When B
+    // attacks A's leader, A's top life flips → trigger window → on activate
+    // the dispatched draw template adds 1 to A's hand BEFORE the card itself
+    // is trashed.
+    let s = setupAttackScenario(202);
+    const topLifeId = s.players.A.life[0];
+    const topInst = s.instances[topLifeId];
+    const shapedId = 'TRIGGER-DRAW-TOP';
+    s.cardLibrary[shapedId] = {
+      id: shapedId, name: shapedId, kind: 'character', colors: ['red'],
+      cost: 2, power: 3000, counterValue: 1000, traits: [], keywords: [],
+      effectTags: ['trigger', 'draw'],
+    } as CharacterCard;
+    topInst.cardId = shapedId;
+
+    const handBefore = s.players.A.hand.length;
+    const deckBefore = s.players.A.deck.length;
+    const trashBefore = s.players.A.trash.length;
+
+    s = applyAction(s, 'B', {
+      type: 'DECLARE_ATTACK',
+      attackerInstanceId: s.players.B.leader.instanceId,
+      targetInstanceId: s.players.A.leader.instanceId,
+    }).state;
+    s = applyAction(s, 'A', { type: 'SKIP_BLOCKER' }).state;
+    s = applyAction(s, 'A', { type: 'SKIP_COUNTER' }).state;
+    expect(s.phase).toBe('trigger_window');
+
+    const { state: resolved } = applyAction(s, 'A', {
+      type: 'RESOLVE_TRIGGER',
+      targetInstanceId: null,
+      activate: true,
+    });
+
+    // Trigger card itself went to trash (default per CR §10-1-5-3).
+    expect(resolved.players.A.trash.length).toBe(trashBefore + 1);
+    expect(resolved.players.A.trash).toContain(topLifeId);
+    // Dispatched draw fired: hand +1 (the drawn card from deck), deck -1.
+    expect(resolved.players.A.hand.length).toBe(handBefore + 1);
+    expect(resolved.players.A.deck.length).toBe(deckBefore - 1);
+    expect(resolved.phase).toBe('main');
+  });
+
+  it('RESOLVE_TRIGGER decline does NOT dispatch effects; card goes to hand', () => {
+    let s = setupAttackScenario(303);
+    const topLifeId = s.players.A.life[0];
+    const topInst = s.instances[topLifeId];
+    const shapedId = 'TRIGGER-DRAW-TOP-2';
+    s.cardLibrary[shapedId] = {
+      id: shapedId, name: shapedId, kind: 'character', colors: ['red'],
+      cost: 2, power: 3000, counterValue: 1000, traits: [], keywords: [],
+      effectTags: ['trigger', 'draw'],
+    } as CharacterCard;
+    topInst.cardId = shapedId;
+
+    const handBefore = s.players.A.hand.length;
+    const deckBefore = s.players.A.deck.length;
+
+    s = applyAction(s, 'B', {
+      type: 'DECLARE_ATTACK',
+      attackerInstanceId: s.players.B.leader.instanceId,
+      targetInstanceId: s.players.A.leader.instanceId,
+    }).state;
+    s = applyAction(s, 'A', { type: 'SKIP_BLOCKER' }).state;
+    s = applyAction(s, 'A', { type: 'SKIP_COUNTER' }).state;
+
+    const { state: resolved } = applyAction(s, 'A', {
+      type: 'RESOLVE_TRIGGER',
+      targetInstanceId: null,
+      activate: false,
+    });
+
+    // Decline: card to hand (hand +1 ONLY from the life card itself, NOT from
+    // a dispatched draw).
+    expect(resolved.players.A.hand.length).toBe(handBefore + 1);
+    expect(resolved.players.A.hand).toContain(topLifeId);
+    // No deck draw fired (deck unchanged).
+    expect(resolved.players.A.deck.length).toBe(deckBefore);
+    expect(resolved.phase).toBe('main');
+  });
 });

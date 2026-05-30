@@ -15,7 +15,11 @@
 //   activate_main    → searcher, draw, removal_ko, removal_bounce,
 //                      removal_cost_reduce, recursion, ramp, lifegain,
 //                      life_to_hand, disruption, power_buff, cost_reduction
-//   trigger          → handled in applyAction.resolveTrigger directly
+//   trigger          → searcher, draw, removal_ko, removal_bounce,
+//                      removal_cost_reduce, recursion, ramp, lifegain,
+//                      life_to_hand, disruption, power_buff, cost_reduction
+//                      (dispatched from applyAction.resolveTrigger when
+//                      controller activates a flipped life card)
 //
 // `blocker`, `rush`, `double_attack`, `counter_event`, `counter_character`,
 // `vanilla` are passive markers — calling their templates is a no-op by
@@ -73,7 +77,25 @@ const TAGS_BY_TRIGGER: Record<EffectTrigger, ReadonlySet<EffectTag>> = {
     'power_buff',
     'cost_reduction',
   ]),
-  trigger: new Set<EffectTag>(),
+  // Phase D / D11 (CR §10-1-5): when a life card with [Trigger] is flipped
+  // and the controller activates, fire the same effect-tag surface as on_play.
+  // Card-level trigger semantics (exile/banish/special play) are NOT here —
+  // those need card-specific handlers; this dispatch covers the common
+  // "draw/search/remove/buff" trigger effects.
+  trigger: new Set<EffectTag>([
+    'searcher',
+    'draw',
+    'removal_ko',
+    'removal_bounce',
+    'removal_cost_reduce',
+    'recursion',
+    'ramp',
+    'lifegain',
+    'life_to_hand',
+    'disruption',
+    'power_buff',
+    'cost_reduction',
+  ]),
 };
 
 /** Fire every relevant template on `instance` for the given `trigger`.

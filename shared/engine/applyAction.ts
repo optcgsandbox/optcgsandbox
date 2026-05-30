@@ -669,11 +669,19 @@ function resolveTrigger(
   const triggerOwner = next.players[pt.controller];
 
   if (activate) {
-    // v0: card-specific effect resolution is not wired yet. Per
-    // rule_comprehensive.pdf 10-1-5 default ("trigger card is trashed unless
-    // otherwise specified"), send the card to trash. UI shows "trigger
-    // activated" based on the TRIGGER_RESOLVED event below.
-    triggerOwner.trash.push(lifeCardInstanceId);
+    // Phase D / D11 (CR §10-1-5): fire the trigger card's effect tags via
+    // dispatch.ts (trigger → draw/searcher/removal/etc.) BEFORE the default
+    // trash placement so the effect resolves while the card is still
+    // "in flight." Per CR §10-1-5-3 the card then goes to trash unless its
+    // text says otherwise — card-specific override semantics are not modeled
+    // (those need per-card handlers); the dispatched tags cover the common
+    // trigger templates.
+    const after = fireEffects(next, lifeCardInstanceId, 'trigger', pt.controller);
+    Object.assign(next, after);
+    // Re-resolve triggerOwner after Object.assign: fireEffects returns a
+    // new state whose `players` subtree replaces next.players, so the
+    // earlier `triggerOwner` reference now points to a stale subtree.
+    next.players[pt.controller].trash.push(lifeCardInstanceId);
   } else {
     // Decline: card goes to hand as if no trigger was present.
     triggerOwner.hand.push(lifeCardInstanceId);
