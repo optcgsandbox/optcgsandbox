@@ -658,7 +658,15 @@ export const CardArt = memo(function CardArt({
       // Pointer-events:none in `style` below still handles the mouse path.
       aria-disabled={!interactive ? true : undefined}
       tabIndex={interactive ? undefined : -1}
-      aria-label={a11y}
+      // Append target-state hints so SR users get the same info as the
+      // color-only ring cues (red = pending attack target, brass = DON drop
+      // target, brass = selected attacker). WCAG 1.4.1 "Use of Color".
+      aria-label={[
+        a11y,
+        pendingTarget && 'legal attack target',
+        donDropTarget && 'DON drop target',
+        selectedAttacker && 'selected attacker',
+      ].filter(Boolean).join(', ')}
       aria-pressed={selectedAttacker}
       title={card?.name}
       transition={spring.cardTravel}

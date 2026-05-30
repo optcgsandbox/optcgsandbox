@@ -35,6 +35,7 @@ import { HandFan } from './HandFan';
 import { CardDetailModal } from './CardDetailModal';
 import { TrashViewer } from './TrashViewer';
 import { AttackResolutionOverlay } from './AttackResolutionOverlay';
+import { A11yGameLog } from './A11yGameLog';
 import { TriggerPrompt } from './TriggerPrompt';
 import { MulliganPrompt } from './MulliganPrompt';
 import { DiceRollPrompt } from './DiceRollPrompt';
@@ -517,6 +518,7 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
         <CardDetailModal />
         <TrashViewer />
         <AttackResolutionOverlay />
+        <A11yGameLog />
         <LifeRevealOverlay />
         <EventCardOverlay />
         <TriggerPrompt />

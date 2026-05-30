@@ -77,11 +77,10 @@ export const PhaseColumn = memo(function PhaseColumn({ playerId, isYou }: PhaseC
   const ownerLabel = isYou ? 'Your' : 'Opponent';
 
   return (
-    <div
-      role="list"
+    <ol
       data-flip-back
       aria-label={`${ownerLabel} phase progress`}
-      className="flex h-full flex-col items-center justify-center"
+      className="flex h-full flex-col items-center justify-center list-none p-0 m-0"
       style={{
         width: 56,
         minWidth: 56,
@@ -92,11 +91,11 @@ export const PhaseColumn = memo(function PhaseColumn({ playerId, isYou }: PhaseC
         const isActive = key === currentStep;
         const isLast = idx === PHASE_SEQUENCE.length - 1;
         return (
-          <div key={key} className="flex flex-col items-center" style={{ width: '100%' }}>
+          <li key={key} className="flex flex-col items-center" style={{ width: '100%' }}>
             <div
-              role="listitem"
               aria-current={isActive ? 'step' : undefined}
-              aria-label={`${label} phase${isActive ? ' (active)' : ''}`}
+              aria-label={isActive ? `${label} phase (active)` : undefined}
+              aria-hidden={!isActive}
               className={[
                 'flex w-full items-center justify-center rounded-[5px] font-display tracking-wider',
                 'leading-none',
@@ -136,9 +135,9 @@ export const PhaseColumn = memo(function PhaseColumn({ playerId, isYou }: PhaseC
                 />
               </svg>
             )}
-          </div>
+          </li>
         );
       })}
-    </div>
+    </ol>
   );
 });
