@@ -639,7 +639,6 @@ export const CardArt = memo(function CardArt({
     <motion.button
       type="button"
       layoutId={inst?.instanceId}
-      layout
       onClick={(e) => {
         // Stop bubble to PlayfieldStage root onPlaymatTap (clears armedDonId /
         // selectedAttackerId / inspectedCardId) — that handler is intended for

@@ -287,6 +287,8 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
                              font-display text-[0.75rem] uppercase tracking-[0.16em]
                              text-ink-iron px-2 text-center"
                   role="status"
+                  aria-live="polite"
+                  aria-atomic="true"
                 >
                   {oppSpinning
                     ? 'AI is rolling…'

@@ -15,7 +15,9 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['apple-touch-icon-180.png', 'icons/*.png'],
+      // includeAssets dropped — entries are duplicates of `workbox.globPatterns`
+      // (the **/*.{png,webmanifest} glob already matches every icon + manifest).
+      // Removing this dedup saves ~60 KB on the precache manifest.
       manifest: {
         name: 'OPTCGSandbox',
         short_name: 'Sandbox',

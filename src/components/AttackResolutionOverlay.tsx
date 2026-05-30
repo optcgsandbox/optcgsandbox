@@ -173,12 +173,13 @@ export const AttackResolutionOverlay = memo(function AttackResolutionOverlay({
           <button
             type="button"
             onClick={handlePass}
+            aria-label={phase === 'block_window' ? 'Decline Blocker' : 'Decline Counter'}
             className="fixed bottom-6 right-6 min-h-[44px] min-w-[64px] rounded-2xl
                        bg-hull-teal px-5 py-2 font-body font-extrabold uppercase
                        tracking-wider text-paper-cream shadow-[0_4px_12px_rgba(15,69,73,0.30)]
                        focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
           >
-            Pass
+            {phase === 'block_window' ? 'Decline Blocker' : 'Decline Counter'}
           </button>
         </motion.div>
       )}
