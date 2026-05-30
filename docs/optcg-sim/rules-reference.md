@@ -490,12 +490,7 @@ Engine test count: 148/148 passing (99 prior + 14 D24b + 3 D5 + 9 D14/D13 + 3 D1
 
 ### 15.2 Keyword gaps
 
-| # | Divergence | Spec | Engine |
-|---|---|---|---|
-| D7 | `[Banish]` not handled | CR §10-1-3: damage to opp Leader trashes life card without revealing; Trigger does NOT fire | engine flips life normally regardless |
-| D9 | `[Rush: Character]` distinct from `[Rush]` not modeled | CR §10-1-6: Char may attack opp **Characters** only on turn played | engine has only `rush`; no character-only variant |
-
-D8 [Unblockable] previously listed here — already CLOSED, see §15.1.
+D7 [Banish], D8 [Unblockable], D9 [Rush:Character] — all CLOSED. See §15.1.
 
 ### 15.3 Unwired V0 stubs (acknowledged in code; deferred to effects engine)
 
@@ -521,12 +516,10 @@ D8 [Unblockable] previously listed here — already CLOSED, see §15.1.
 
 ### 15.5 UI layer (split into `design-reference.md §12`)
 
-Engine emits correct legal actions per `legality.ts`. The UI does NOT dispatch them. Owner-blocking issues:
-
-- **UI-D1.** `PlayfieldStage.tsx` doesn't wire `onTap` on Leader/Character cards → can't attach DON, can't attack (engine-diagnosis agent 2026-05-29)
-- **UI-D2.** `src/store/game.ts` has no `selectedAttackerId` state → no way to do 2-tap attack
-- **UI-D3.** `src/store/game.ts` has no `inspectedCardId` state → no Pokemon-style tap-to-lift
-- **UI-D4.** No `CardDetailModal` component exists → owner can't read card before deciding
+- ~~**UI-D1.** `PlayfieldStage.tsx` doesn't wire `onTap` on Leader/Character cards~~ → CLOSED 2026-05-29 (`PlayfieldStage.tsx:128,191,260` — `useFieldTapRouter` wires onTap across field, char, leader).
+- ~~**UI-D2.** `src/store/game.ts` has no `selectedAttackerId` state~~ → CLOSED 2026-05-29 (`src/store/game.ts:184` `selectedAttackerId: string | null`; 2-tap attack flow via CardDetailModal SELECT AS ATTACKER / ATTACK THIS).
+- ~~**UI-D3.** `src/store/game.ts` has no `inspectedCardId` state~~ → CLOSED 2026-05-29 (`src/store/game.ts:177` `inspectedCardId: string | null`; tap-to-lift in HandFan opens detail modal on second tap).
+- ~~**UI-D4.** No `CardDetailModal` component exists~~ → CLOSED 2026-05-29 (`src/components/CardDetailModal.tsx` ships with PLAY / ACTIVATE / ATTACH DON / SELECT AS ATTACKER / ATTACK THIS / counter buttons).
 
 Full UI divergence list: see `design-reference.md §12.2` (L10–L23).
 
