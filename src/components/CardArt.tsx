@@ -635,7 +635,7 @@ export const CardArt = memo(function CardArt({
     // (whileHover/whileTap/animate write transform=...; that would clobber
     // the rotate(180deg) from the CSS rule and cause the card to flip back
     // upside-down on hover).
-    <div data-flip-back style={{ display: 'inline-block', width: dims.w, height: dims.h }}>
+    <div data-flip-back style={{ display: 'block', width: dims.w, height: dims.h }}>
     <motion.button
       type="button"
       layoutId={inst?.instanceId}
