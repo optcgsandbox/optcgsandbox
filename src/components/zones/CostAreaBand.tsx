@@ -143,13 +143,20 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
     <div data-flip-back style={{ display: 'block', width: DON_CARD_W, height: DON_CARD_H }}>
     <motion.button
       type="button"
-      initial={reduced ? false : { scale: 0, opacity: 0 }}
+      // On mount: the card "flies" from the DON-deck direction (left) and
+      // flips face-up (rotateY: -90 → 0) into its cost-area slot. The
+      // playmat root has perspective: 1200px, so rotateY reads as 3D. We
+      // stop at 0 (never cross 90°) so we never expose a mirrored backface.
+      // Owner direction 2026-05-30.
+      initial={reduced ? false : { scale: 0.8, opacity: 0, x: -100, rotateY: -90 }}
       animate={
         armed && !reduced
           ? {
               scale: [1, 1.08, 1],
               opacity: 1,
               rotate: targetRotate,
+              rotateY: 0,
+              x: 0,
               y: -2,
               boxShadow: [
                 '0 0 0 0px var(--color-sun-brass)',
@@ -161,6 +168,8 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
               scale: 1,
               opacity: rested ? 0.74 : 1,
               rotate: targetRotate,
+              rotateY: 0,
+              x: 0,
               y: 0,
               boxShadow: '0 0 0 0px transparent',
             }
@@ -170,8 +179,8 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
           ? { duration: 1, repeat: Infinity, ease: 'easeInOut' }
           : {
               type: 'spring',
-              stiffness: 280,
-              damping: 26,
+              stiffness: 220,
+              damping: 24,
               delay: reduced ? 0 : index * STAGGER_DON,
             }
       }
