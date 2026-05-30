@@ -273,7 +273,7 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
             <div
               key={instanceId}
               className="absolute"
-              style={{ left: i * DON_STRIDE, zIndex: i + 1, top: '50%', transform: 'translateY(-50%)' }}
+              style={{ left: i * DON_STRIDE, zIndex: i + 1, bottom: 4 }}
             >
               <DonCard
                 instanceId={instanceId}
@@ -295,8 +295,7 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
                 style={{
                   left: stackedIndex * DON_STRIDE,
                   zIndex: stackedIndex + 1,
-                  top: '50%',
-                  transform: 'translateY(-50%)',
+                  bottom: 4,
                 }}
               >
                 <DonCard
