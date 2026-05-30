@@ -5,7 +5,7 @@ import { initialState } from '../GameState';
 import { setupGame } from '../phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 import type { Card, CharacterCard, LeaderCard } from '../cards/Card';
-import { setDonActive } from './_donHelpers';
+import { closeMulliganKeepBoth, setDonActive } from './_donHelpers';
 
 function makeLeader(id: string): LeaderCard {
   return {
@@ -27,6 +27,7 @@ function bootMainPhase() {
     decks: { A: { leader: makeLeader('LA'), cards }, B: { leader: makeLeader('LB'), cards } },
   });
   s = setupGame(s);
+  s = closeMulliganKeepBoth(s); // D10: skip past the mulligan window.
   s = endTurn(s);                              // → B's turn
   s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
   setDonActive(s, 'B', 6);                     // plenty

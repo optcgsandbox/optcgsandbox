@@ -4,8 +4,11 @@
 import { z } from 'zod';
 
 export const ActionSchema = z.discriminatedUnion('type', [
-  // Setup
-  z.object({ type: z.literal('MULLIGAN_CONFIRM'), keep: z.boolean() }),
+  // Setup — D10, CR §5-2-1-6: mulligan window. Each player may, once, choose
+  // to return their opening hand to the deck, reshuffle, and redraw 5. The
+  // first player decides first.
+  z.object({ type: z.literal('MULLIGAN') }),
+  z.object({ type: z.literal('KEEP_HAND') }),
 
   // Main phase
   z.object({

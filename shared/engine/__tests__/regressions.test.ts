@@ -6,7 +6,7 @@ import { setupGame } from '../phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 import { getLegalActions } from '../rules/legality';
 import type { Card, CharacterCard, LeaderCard } from '../cards/Card';
-import { setDonActive, attachDonCount, advanceOneFullCycle } from './_donHelpers';
+import { closeMulliganKeepBoth, setDonActive, attachDonCount, advanceOneFullCycle } from './_donHelpers';
 
 function makeLeader(id: string, color: 'red' | 'blue' = 'red'): LeaderCard {
   return {
@@ -26,6 +26,7 @@ describe('Summoning sickness (legality.ts + applyAction.ts)', () => {
     const cards: Card[] = Array.from({ length: 50 }, (_, i) => makeChar(`C${i}`, 2, 3000));
     let s = initialState({ seed: 1, decks: { A: { leader: makeLeader('LA'), cards }, B: { leader: makeLeader('LB'), cards } } });
     s = setupGame(s);
+    s = closeMulliganKeepBoth(s); // D10: skip past the mulligan window.
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
     setDonActive(s, 'B', 5);
@@ -41,6 +42,7 @@ describe('Summoning sickness (legality.ts + applyAction.ts)', () => {
     const cards: Card[] = Array.from({ length: 50 }, (_, i) => makeChar(`C${i}`, 2, 3000));
     let s = initialState({ seed: 2, decks: { A: { leader: makeLeader('LA'), cards }, B: { leader: makeLeader('LB'), cards } } });
     s = setupGame(s);
+    s = closeMulliganKeepBoth(s); // D10: skip past the mulligan window.
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
     setDonActive(s, 'B', 5);
@@ -59,6 +61,7 @@ describe('Color rules (legality.ts)', () => {
     const cards: Card[] = [makeChar('blueGuy', 1, 2000, 'blue'), ...Array.from({ length: 49 }, (_, i) => makeChar(`C${i}`, 2, 3000, 'red'))];
     let s = initialState({ seed: 3, decks: { A: { leader: makeLeader('LA', 'red'), cards }, B: { leader: makeLeader('LB', 'red'), cards } } });
     s = setupGame(s);
+    s = closeMulliganKeepBoth(s); // D10: skip past the mulligan window.
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
     setDonActive(s, 'A', 5);
     // Inject blueGuy into hand directly so we can test the gating.
@@ -76,6 +79,7 @@ describe('resolveAttack returns events from history slice (applyAction.ts)', () 
     const cards: Card[] = Array.from({ length: 50 }, (_, i) => makeChar(`C${i}`, 2, 3000));
     let s = initialState({ seed: 4, decks: { A: { leader: makeLeader('LA'), cards }, B: { leader: makeLeader('LB'), cards } } });
     s = setupGame(s);
+    s = closeMulliganKeepBoth(s); // D10: skip past the mulligan window.
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
     s = advanceOneFullCycle(s); // D2: skip first-turn-no-attack window.
@@ -94,6 +98,7 @@ describe('resolveAttack returns events from history slice (applyAction.ts)', () 
     const cards: Card[] = Array.from({ length: 50 }, (_, i) => makeChar(`C${i}`, 2, 3000));
     let s = initialState({ seed: 5, decks: { A: { leader: makeLeader('LA'), cards }, B: { leader: makeLeader('LB'), cards } } });
     s = setupGame(s);
+    s = closeMulliganKeepBoth(s); // D10: skip past the mulligan window.
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
     s = advanceOneFullCycle(s); // D2: skip first-turn-no-attack window.
@@ -123,6 +128,7 @@ describe('resolveAttack returns events from history slice (applyAction.ts)', () 
     const cards: Card[] = Array.from({ length: 50 }, (_, i) => makeChar(`C${i}`, 2, 3000));
     let s = initialState({ seed: 6, decks: { A: { leader: makeLeader('LA'), cards }, B: { leader: makeLeader('LB'), cards } } });
     s = setupGame(s);
+    s = closeMulliganKeepBoth(s); // D10: skip past the mulligan window.
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
     s = advanceOneFullCycle(s); // D2: skip first-turn-no-attack window.

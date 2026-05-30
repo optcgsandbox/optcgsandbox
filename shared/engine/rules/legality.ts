@@ -11,6 +11,24 @@ import { RULES } from '../GameState';
 export function getLegalActions(state: GameState, player: PlayerId): Action[] {
   if (state.result) return [];
 
+  // D10 (CR §5-2-1-6): mulligan window. The relevant player may choose
+  // MULLIGAN or KEEP_HAND; everything else is illegal except RESIGN.
+  //   mulligan_first  → state.activePlayer (P1) decides.
+  //   mulligan_second → the OTHER player (P2) decides.
+  // The non-deciding player can only RESIGN (concession is always available
+  // per CR §1-2-3).
+  if (state.phase === 'mulligan_first' || state.phase === 'mulligan_second') {
+    const decider: PlayerId = state.phase === 'mulligan_first'
+      ? state.activePlayer
+      : (state.activePlayer === 'A' ? 'B' : 'A');
+    if (player !== decider) return [{ type: 'RESIGN' }];
+    return [
+      { type: 'MULLIGAN' },
+      { type: 'KEEP_HAND' },
+      { type: 'RESIGN' },
+    ];
+  }
+
   // Trigger window: only the trigger's controller may act on the trigger; all
   // game-state actions are illegal — damage resolution is suspended. RESIGN is
   // a universal out-of-band action and remains available to both players

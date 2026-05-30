@@ -4,6 +4,15 @@ import { mulligan, setupGame } from '../phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 import { getLegalActions } from '../rules/legality';
 import type { Card, CharacterCard, LeaderCard } from '../cards/Card';
+import { closeMulliganKeepBoth } from './_donHelpers';
+
+/** D10 wrapper: `setupGame` now leaves the engine in the mulligan window with
+ *  no life cards dealt. Pre-D10 tests assume life cards exist immediately
+ *  after setup; this helper restores that contract for tests that don't
+ *  exercise the mulligan flow itself. */
+function setup(state: ReturnType<typeof initialState>): ReturnType<typeof initialState> {
+  return closeMulliganKeepBoth(setupGame(state));
+}
 
 function makeLeader(id: string): LeaderCard {
   return {
@@ -31,13 +40,23 @@ function build() {
 }
 
 describe('setupGame', () => {
-  it('places life cards and opening hand', () => {
+  it('deals opening hand and opens mulligan window (no life yet — D10/CR §5-2-1-6)', () => {
     const s = setupGame(build());
-    expect(s.players.A.life).toHaveLength(RULES.LIFE_DEFAULT);
     expect(s.players.A.hand).toHaveLength(RULES.STARTING_HAND);
-    expect(s.players.A.deck).toHaveLength(50 - RULES.LIFE_DEFAULT - RULES.STARTING_HAND);
-    expect(s.players.B.life).toHaveLength(RULES.LIFE_DEFAULT);
+    expect(s.players.B.hand).toHaveLength(RULES.STARTING_HAND);
+    // D10: life cards are placed only after both mulligans resolve (CR §5-2-1-7).
+    expect(s.players.A.life).toHaveLength(0);
+    expect(s.players.B.life).toHaveLength(0);
+    expect(s.phase).toBe('mulligan_first');
     expect(s.history).toContainEqual({ type: 'GAME_STARTED', firstPlayer: 'A' });
+  });
+
+  it('after both players keep, life is dealt and phase = refresh', () => {
+    const s = setup(build());
+    expect(s.players.A.life).toHaveLength(RULES.LIFE_DEFAULT);
+    expect(s.players.B.life).toHaveLength(RULES.LIFE_DEFAULT);
+    expect(s.players.A.deck).toHaveLength(50 - RULES.LIFE_DEFAULT - RULES.STARTING_HAND);
+    expect(s.phase).toBe('refresh');
   });
 
   it('is deterministic per seed', () => {
@@ -48,7 +67,7 @@ describe('setupGame', () => {
   });
 });
 
-describe('mulligan', () => {
+describe('mulligan helper (applyMulligan)', () => {
   it('returns hand to deck and redraws full hand', () => {
     const s = setupGame(build());
     const before = s.players.A.hand;
@@ -58,12 +77,13 @@ describe('mulligan', () => {
     expect(after.players.A.deck.length + after.players.A.hand.length).toBe(
       before.length + s.players.A.deck.length
     );
+    expect(after.mulliganUsed.A).toBe(true);
   });
 });
 
 describe('turn phases', () => {
   it('refresh → draw → don → main, first player skips draw on turn 1', () => {
-    let s = setupGame(build());
+    let s = setup(build());
     expect(s.activePlayer).toBe('A');
     expect(s.turn).toBe(1);
     expect(s.phase).toBe('refresh');
@@ -81,7 +101,7 @@ describe('turn phases', () => {
   });
 
   it('player B turn 1: draws + gets 2 DON', () => {
-    let s = setupGame(build());
+    let s = setup(build());
     s = endTurn(runDonPhase(runDrawPhase(runRefreshPhase(s))));
     expect(s.activePlayer).toBe('B');
     expect(s.turn).toBe(2);
@@ -96,7 +116,7 @@ describe('turn phases', () => {
   });
 
   it('deck-out triggers game end', () => {
-    let s = setupGame(build());
+    let s = setup(build());
     s = endTurn(runDonPhase(runDrawPhase(runRefreshPhase(s))));
     // Force B's deck empty before draw phase.
     s.players.B.deck = [];
@@ -109,12 +129,12 @@ describe('turn phases', () => {
 
 describe('getLegalActions', () => {
   it('inactive player has no main-phase actions', () => {
-    const s = setupGame(build());
+    const s = setup(build());
     expect(getLegalActions(s, 'B')).toEqual([]);
   });
 
   it('active player on main phase can END_TURN and RESIGN', () => {
-    let s = setupGame(build());
+    let s = setup(build());
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
     const actions = getLegalActions(s, 'A');
     expect(actions).toContainEqual({ type: 'END_TURN' });
@@ -122,7 +142,7 @@ describe('getLegalActions', () => {
   });
 
   it('cannot attack on first player turn 1', () => {
-    let s = setupGame(build());
+    let s = setup(build());
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
     const actions = getLegalActions(s, 'A');
     expect(actions.find((a) => a.type === 'DECLARE_ATTACK')).toBeUndefined();

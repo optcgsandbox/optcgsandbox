@@ -19,7 +19,7 @@ import { setupGame } from '../phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 import { deriveLifeCount } from '../../../src/components/CardArt';
 import type { Card, CharacterCard, LeaderCard } from '../cards/Card';
-import { attachDonCount, advanceOneFullCycle } from './_donHelpers';
+import { closeMulliganKeepBoth, attachDonCount, advanceOneFullCycle } from './_donHelpers';
 
 function makeLeader(id: string, life = 5): LeaderCard {
   return {
@@ -46,7 +46,8 @@ function build(printedLeaderLife = 5) {
 }
 
 function advanceToMain(s: ReturnType<typeof build>) {
-  return runDonPhase(runDrawPhase(runRefreshPhase(setupGame(s))));
+  // D10: close the mulligan window before driving the turn-phase pipeline.
+  return runDonPhase(runDrawPhase(runRefreshPhase(closeMulliganKeepBoth(setupGame(s)))));
 }
 
 /** Drive a leader-on-leader attack through the 3-stage window flow. */

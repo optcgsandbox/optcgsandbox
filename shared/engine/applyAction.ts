@@ -16,6 +16,7 @@
 import type { Action } from '../protocol/actions';
 import type { Card, CharacterCard, LeaderCard } from './cards/Card';
 import type { CardInstance, GameEvent, GameState, PlayerId, PendingAttack } from './GameState';
+import { applyMulligan, dealLifeCards } from './phases/setup';
 import { endTurn as runEndTurn } from './phases/turn';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
@@ -50,11 +51,62 @@ export function applyAction(
       return runEndTurnReshim(state);
     case 'RESIGN':
       return resign(state, player);
-    case 'MULLIGAN_CONFIRM':
+    case 'MULLIGAN':
+      return resolveMulliganDecision(state, player, /* mulligan */ true);
+    case 'KEEP_HAND':
+      return resolveMulliganDecision(state, player, /* mulligan */ false);
     case 'ACTIVATE_MAIN':
-      // v0.1 hooks — return state untouched for now.
+      // v0.1 hook — return state untouched for now.
       return { state, events: [] };
   }
+}
+
+// === D10: MULLIGAN / KEEP_HAND ===
+// CR §5-2-1-6: each player may, once, return their opening hand to the deck,
+// reshuffle, and redraw 5. First player decides first; the option is consumed
+// either way (reshuffle OR explicit keep) by the phase transition.
+function resolveMulliganDecision(
+  state: GameState,
+  player: PlayerId,
+  mulligan: boolean,
+): { state: GameState; events: GameEvent[] } {
+  // Phase gate: only the correct player on the correct phase may act.
+  //   mulligan_first  → active player (P1) decides.
+  //   mulligan_second → other player (P2) decides.
+  if (state.phase === 'mulligan_first') {
+    if (player !== state.activePlayer) return { state, events: [] };
+  } else if (state.phase === 'mulligan_second') {
+    if (player === state.activePlayer) return { state, events: [] };
+  } else {
+    return { state, events: [] };
+  }
+
+  // Defense in depth: if the player already mulliganed in this window, reject.
+  // The phase transitions already prevent a second MULLIGAN from the same
+  // player, but `mulliganUsed` is the authoritative single-use guard per
+  // CR §5-2-1-6-1.
+  if (mulligan && state.mulliganUsed[player]) {
+    return { state, events: [] };
+  }
+
+  const start = state.history.length;
+  let next: GameState = mulligan
+    ? applyMulligan(state, player)
+    : structuredClone(state);
+
+  next.history.push({ type: 'MULLIGAN_DECISION', player, kept: !mulligan });
+
+  if (next.phase === 'mulligan_first') {
+    next.phase = 'mulligan_second';
+    next.history.push({ type: 'PHASE_CHANGED', phase: 'mulligan_second' });
+  } else {
+    // Both players have decided — close the window: deal life and head into
+    // player A's first refresh phase (CR §5-2-1-7).
+    next = dealLifeCards(next);
+    next.history.push({ type: 'PHASE_CHANGED', phase: 'refresh' });
+  }
+
+  return { state: next, events: next.history.slice(start) };
 }
 
 // === PLAY_CARD ===

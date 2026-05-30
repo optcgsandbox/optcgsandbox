@@ -16,7 +16,7 @@ import { getLegalActions } from '../rules/legality';
 import { setupGame } from '../phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 import type { Card, CharacterCard, LeaderCard, Keyword, EffectTag } from '../cards/Card';
-import { attachDonCount, advanceOneFullCycle } from './_donHelpers';
+import { closeMulliganKeepBoth, attachDonCount, advanceOneFullCycle } from './_donHelpers';
 
 function makeLeader(id: string, color: 'red' | 'blue' = 'red', overrides: Partial<LeaderCard> = {}): LeaderCard {
   return {
@@ -56,6 +56,7 @@ function setupAttackScenario(seed: number, leaderOverrides: { B?: Partial<Leader
     },
   });
   s = setupGame(s);
+  s = closeMulliganKeepBoth(s); // D10: skip past the mulligan window.
   s = endTurn(s); // hand turn to B
   s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
   // D2 (CR §6-5-6-1): B can't battle on its first turn (turn 2). Advance one

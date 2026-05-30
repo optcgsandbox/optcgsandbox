@@ -12,6 +12,7 @@
 // All helpers mutate state in-place. They are test-only conveniences and
 // should NEVER be imported from src/ or the engine itself.
 
+import { applyAction } from '../applyAction';
 import type { GameState, PlayerId } from '../GameState';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 
@@ -36,6 +37,21 @@ export function advanceOneFullCycle(state: GameState): GameState {
   s = endTurn(s);
   s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
   return s;
+}
+
+/** D10 (CR §5-2-1-6): close the mulligan window for both players with KEEP
+ *  decisions. After `setupGame`, the state sits in `'mulligan_first'` with
+ *  empty life arrays. Tests that don't exercise the mulligan flow use this
+ *  helper to advance to the post-mulligan world (life dealt, phase = refresh)
+ *  so the rest of their setup chain (`runRefreshPhase`, `endTurn`, etc.) works
+ *  as it did pre-D10. */
+export function closeMulliganKeepBoth(state: GameState): GameState {
+  // P1 (activePlayer) decides first per CR §5-2-1-6.
+  const p1 = state.activePlayer;
+  const p2: PlayerId = p1 === 'A' ? 'B' : 'A';
+  const r1 = applyAction(state, p1, { type: 'KEEP_HAND' });
+  const r2 = applyAction(r1.state, p2, { type: 'KEEP_HAND' });
+  return r2.state;
 }
 
 /** Force the cost area to contain exactly `count` active DON. Surplus is

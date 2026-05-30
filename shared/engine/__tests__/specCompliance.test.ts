@@ -26,7 +26,7 @@ import type {
   LeaderCard,
   StageCard,
 } from '../cards/Card';
-import { setDonActive, attachDonCount, advanceOneFullCycle } from './_donHelpers';
+import { closeMulliganKeepBoth, setDonActive, attachDonCount, advanceOneFullCycle } from './_donHelpers';
 
 function makeLeader(id: string): LeaderCard {
   return {
@@ -63,7 +63,8 @@ function build(seed = 1) {
 }
 
 function advanceToMain(s: ReturnType<typeof build>) {
-  return runDonPhase(runDrawPhase(runRefreshPhase(setupGame(s))));
+  // D10: close the mulligan window so refresh runs on a properly initialized state.
+  return runDonPhase(runDrawPhase(runRefreshPhase(closeMulliganKeepBoth(setupGame(s)))));
 }
 
 /** Inject a fresh CardInstance into `player`'s hand referencing `cardId`. */
@@ -217,6 +218,7 @@ describe('D3: Event counter cards (CR §7-1-3-2-2)', () => {
       seed, decks: { A: { leader: makeLeader('LA'), cards }, B: { leader: makeLeader('LB'), cards } },
     });
     s = setupGame(s);
+    s = closeMulliganKeepBoth(s); // D10: skip past the mulligan window.
     s = endTurn(s);
     s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
     s = advanceOneFullCycle(s); // D2: B can now attack on turn 4.

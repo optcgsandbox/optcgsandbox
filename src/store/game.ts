@@ -70,6 +70,11 @@ function quickDeck(color: 'red' | 'blue'): Card[] {
   return deck.slice(0, 50);
 }
 
+/** D10 (CR §5-2-1-6): `setupGame` now leaves the engine in the mulligan
+ *  window with life cards undealt. The store stops here so the UI can prompt
+ *  the active player. Once both players resolve their mulligan via the
+ *  MulliganPrompt, the dispatch path calls `runFirstTurnPhases` to deal life
+ *  and run player A's refresh → draw → don. */
 function bootGame(seed: number): GameState {
   let s = initialState({
     seed,
@@ -79,10 +84,16 @@ function bootGame(seed: number): GameState {
     },
   });
   s = setupGame(s);
-  s = runRefreshPhase(s);
-  s = runDrawPhase(s);
-  s = runDonPhase(s);
+  // Phase is now 'mulligan_first'. Do NOT run refresh/draw/don yet.
   return s;
+}
+
+/** Run player A's first turn pipeline (refresh → draw → don) after the engine
+ *  transitions out of the mulligan window into 'refresh'. Idempotent: a no-op
+ *  unless `state.phase === 'refresh'`. */
+function runFirstTurnPhases(state: GameState): GameState {
+  if (state.phase !== 'refresh') return state;
+  return runDonPhase(runDrawPhase(runRefreshPhase(state)));
 }
 
 interface GameStore {
@@ -167,7 +178,14 @@ export const useGameStore = create<GameStore>((set, get) => {
     dispatch(action) {
       const { state } = get();
       // Reactive-window actions come from the *inactive* player. Route accordingly.
-      const player = (state.phase === 'block_window' || state.phase === 'counter_window')
+      //   - block_window / counter_window: opponent of activePlayer reacts.
+      //   - mulligan_second: opponent of activePlayer decides (D10, CR §5-2-1-6).
+      // Mulligan_first uses activePlayer as normal.
+      const isInactivePlayerPhase =
+        state.phase === 'block_window' ||
+        state.phase === 'counter_window' ||
+        state.phase === 'mulligan_second';
+      const player = isInactivePlayerPhase
         ? (state.activePlayer === 'A' ? 'B' : 'A')
         : state.activePlayer;
       const result = applyAction(state, player, action);
@@ -186,12 +204,56 @@ export const useGameStore = create<GameStore>((set, get) => {
         next = applyAction(next, reactivePlayer, skip).state;
       }
 
+      // D10: if the mulligan window just closed (phase → refresh), auto-run
+      // player A's first turn pipeline. Without this, the UI lands on
+      // phase='refresh' with no DON in cost area and no draw — broken.
+      if (next.phase === 'refresh' && state.phase !== 'refresh') {
+        next = runFirstTurnPhases(next);
+      }
+
+      // D10: AI auto-mulligan. When the AI is player B (vs-easy / vs-medium)
+      // and the engine just transitioned into `mulligan_second`, auto-KEEP for
+      // the AI so the human isn't stuck waiting. Per the task spec, both Easy
+      // and Medium AI just KEEP_HAND.
+      const aiMode = get().mode;
+      if (
+        (aiMode === 'vs-easy' || aiMode === 'vs-medium') &&
+        next.phase === 'mulligan_second' &&
+        // AI is B; B's turn to decide.
+        next.activePlayer === AI_HUMAN
+      ) {
+        const aiResult = applyAction(next, AI_OPPONENT, { type: 'KEEP_HAND' });
+        next = aiResult.state;
+        if (next.phase === 'refresh') {
+          next = runFirstTurnPhases(next);
+        }
+      }
+
+      // D10 (hot-seat): when the mulligan window advances to mulligan_second,
+      // hand the viewer over to player B so the prompt renders for the
+      // correct human. activePlayer stays A throughout the window (per
+      // CR §5-2-1-6 "first player decides first"), so we use phase + mode as
+      // the trigger rather than activePlayer change.
+      const isHotSeat = get().mode === 'hot-seat';
+      const viewAsOverride =
+        isHotSeat && state.phase === 'mulligan_first' && next.phase === 'mulligan_second'
+          ? (state.activePlayer === 'A' ? 'B' as PlayerId : 'A' as PlayerId)
+          : null;
+      // When mulligan finishes in hot-seat, hand the seat back to the active
+      // player (A — first player goes first).
+      const viewAsAfterMulligan =
+        isHotSeat && next.phase === 'don' && state.phase !== 'don' && next.activePlayer === 'A'
+          ? 'A' as PlayerId
+          : null;
+
       // UI-D2/D3: any phase or active-player change clears transient UI state.
       const phaseOrPlayerChanged =
         next.phase !== state.phase || next.activePlayer !== state.activePlayer;
       set({
         state: next,
         legalActions: getLegalActions(next, next.activePlayer),
+        ...(viewAsOverride ? { viewAs: viewAsOverride } : {}),
+        ...(viewAsAfterMulligan ? { viewAs: viewAsAfterMulligan } : {}),
         ...(phaseOrPlayerChanged
           ? { inspectedCardId: null, cardDetailOpen: false, selectedAttackerId: null }
           : {}),

@@ -11,6 +11,12 @@ import type { Card, LeaderCard } from './cards/Card';
 export type PlayerId = 'A' | 'B';
 
 export type Phase =
+  // D10 (CR §5-2-1-6): mulligan window. Active player decides first
+  // (`mulligan_first`), then the other player (`mulligan_second`). Once both
+  // have either MULLIGAN'd or KEPT, life cards are dealt (CR §5-2-1-7) and the
+  // engine transitions to `refresh` for player A's first turn.
+  | 'mulligan_first'
+  | 'mulligan_second'
   | 'refresh'
   | 'draw'
   | 'don'
@@ -94,6 +100,13 @@ export interface GameState {
   /** When non-null, a life card with [Trigger] was just flipped and is awaiting
    *  the controller's choice (activate vs decline). See rules-reference.md §1.7. */
   pendingTrigger: PendingTrigger | null;
+  /** D10 (CR §5-2-1-6-1): per-player flag tracking whether the player has
+   *  already exhausted their one-time mulligan during the setup window.
+   *  Initially false for both. Set true the moment MULLIGAN resolves
+   *  (KEEP_HAND does NOT flip this — keeping leaves the option formally
+   *  consumed by the phase transition, but the flag is reserved for actual
+   *  reshuffles so test surfaces can assert the rule). */
+  mulliganUsed: Record<PlayerId, boolean>;
 }
 
 export interface PendingAttack {
@@ -129,6 +142,14 @@ export interface GameResult {
 
 export type GameEvent =
   | { type: 'GAME_STARTED'; firstPlayer: PlayerId }
+  /** D10 (CR §5-2-1-6): emitted when a player resolves their mulligan window —
+   *  either by reshuffling (`kept: false`) or keeping their opening 5
+   *  (`kept: true`). UI uses this for log feedback. */
+  | { type: 'MULLIGAN_DECISION'; player: PlayerId; kept: boolean }
+  /** D10 (CR §5-2-1-7): emitted once both players have resolved mulligan and
+   *  life cards have been dealt. Drives UI transitions out of the mulligan
+   *  overlay and into the first refresh phase. */
+  | { type: 'LIFE_DEALT'; firstPlayer: PlayerId }
   | { type: 'CARD_DRAWN'; player: PlayerId; instanceId: string }
   | { type: 'CARD_PLAYED'; player: PlayerId; instanceId: string; cost: number }
   | { type: 'ATTACK_DECLARED'; attacker: string; target: string }
@@ -224,5 +245,6 @@ export function initialState(args: {
     result: null,
     pendingAttack: null,
     pendingTrigger: null,
+    mulliganUsed: { A: false, B: false },
   };
 }

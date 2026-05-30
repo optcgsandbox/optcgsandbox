@@ -4,7 +4,7 @@ import { initialState } from '../GameState';
 import { setupGame } from '../phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 import type { Card, CharacterCard, LeaderCard } from '../cards/Card';
-import { setDonActive, attachDonCount, advanceOneFullCycle } from './_donHelpers';
+import { closeMulliganKeepBoth, setDonActive, attachDonCount, advanceOneFullCycle } from './_donHelpers';
 
 function makeLeader(id: string): LeaderCard {
   return {
@@ -31,7 +31,8 @@ function build() {
 }
 
 function advanceToMainPhase(s: ReturnType<typeof build>) {
-  return runDonPhase(runDrawPhase(runRefreshPhase(setupGame(s))));
+  // D10: close the mulligan window first so refresh runs in the correct phase.
+  return runDonPhase(runDrawPhase(runRefreshPhase(closeMulliganKeepBoth(setupGame(s)))));
 }
 
 describe('applyAction: PLAY_CARD', () => {

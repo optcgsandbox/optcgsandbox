@@ -460,8 +460,9 @@ Audited 2026-05-29 against engine commit `a84f87d` + UI commit `0ea7edb`.
 - ✅ **D3 Event counter cards** — `EventCard.counterEventBoost` field + `playCounter` handles Char + Event sources
 - ✅ **D4 Once Per Turn per-card** — `CardInstance.perTurn.effectsUsed: string[]` replaces single boolean
 - ✅ **D8 Unblockable** — `Keyword` union includes `'unblockable'`; `blockerActions` short-circuits
+- ✅ **D10 Mulligan window implemented** (CR §5-2-1-6 + §5-2-1-7) — `Phase` adds `'mulligan_first'` / `'mulligan_second'`; new `MULLIGAN` + `KEEP_HAND` actions replace the prior `MULLIGAN_CONFIRM` no-op; `setupGame` defers life dealing until both decisions resolve via `dealLifeCards`; `legality.ts` gates the window to the correct decider; UI prompt at `src/components/MulliganPrompt.tsx`; both AI tiers auto-KEEP
 
-Engine test count: 62/62 passing.
+Engine test count: 73/73 passing (62 prior + 11 D10).
 
 ### 15.2 Engine — OPEN
 
@@ -480,7 +481,7 @@ Engine test count: 62/62 passing.
 
 ### 15.3 Unwired V0 stubs (acknowledged in code; deferred to effects engine)
 
-- D10 — Mulligan unwired (`MULLIGAN_CONFIRM` is a no-op in `applyAction.ts:51`); setup deals 5 cards directly, no mulligan window.
+- ~~D10 — Mulligan unwired~~ → CLOSED, see §15.1 above.
 - D11 — `[Trigger]` activate path trashes life card but does NOT dispatch the trigger effect (v0 default per CR §10-1-5-3).
 - D12 — `[Activate:Main]` action is a no-op stub.
 - D13 — Event `[Main]` effects are not dispatched (event just goes to trash).
