@@ -14,6 +14,9 @@ export type CardAttribute = 'slash' | 'strike' | 'ranged' | 'special' | 'wisdom'
 export type Keyword =
   | 'blocker'
   | 'rush'
+  // D9 (CR §10-1-6): Character variant of Rush — char may attack opp
+  // characters (NOT leader) on the turn played. Plain `rush` permits both.
+  | 'rush_character'
   | 'double_attack'
   | 'banish'
   | 'unblockable'

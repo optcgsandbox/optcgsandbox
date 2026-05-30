@@ -435,4 +435,70 @@ describe('Trigger window (applyAction.ts:235–349)', () => {
     expect(resolved.players.A.deck.length).toBe(deckBefore);
     expect(resolved.phase).toBe('main');
   });
+
+  // Phase E / D7: [Banish]
+  it('attacker with [Banish] trashes flipped life card and skips the trigger window', () => {
+    let s = setupAttackScenario(404);
+    // Give B's leader [Banish].
+    const bLeader = s.cardLibrary['LB'] as LeaderCard;
+    s.cardLibrary['LB'] = { ...bLeader, keywords: [...bLeader.keywords, 'banish'] };
+    // Shape A's top life card to have [Trigger] so we can prove the window
+    // is skipped despite the tag.
+    const topLifeId = s.players.A.life[0];
+    const topInst = s.instances[topLifeId];
+    const shapedId = 'BANISH-TRIGGER-LIFE';
+    s.cardLibrary[shapedId] = {
+      id: shapedId, name: shapedId, kind: 'character', colors: ['red'],
+      cost: 2, power: 3000, counterValue: 1000, traits: [], keywords: [],
+      effectTags: ['trigger', 'draw'],
+    } as CharacterCard;
+    topInst.cardId = shapedId;
+
+    const handBefore = s.players.A.hand.length;
+    const trashBefore = s.players.A.trash.length;
+    const deckBefore = s.players.A.deck.length;
+
+    s = applyAction(s, 'B', {
+      type: 'DECLARE_ATTACK',
+      attackerInstanceId: s.players.B.leader.instanceId,
+      targetInstanceId: s.players.A.leader.instanceId,
+    }).state;
+    s = applyAction(s, 'A', { type: 'SKIP_BLOCKER' }).state;
+    const { state: after } = applyAction(s, 'A', { type: 'SKIP_COUNTER' });
+
+    // No trigger window opened.
+    expect(after.phase).toBe('main');
+    expect(after.pendingTrigger).toBeNull();
+    // Life card was trashed (NOT to hand, NOT to trigger queue).
+    expect(after.players.A.trash.length).toBe(trashBefore + 1);
+    expect(after.players.A.trash).toContain(topLifeId);
+    expect(after.players.A.hand.length).toBe(handBefore);
+    // No dispatched draw fired (trigger never resolved).
+    expect(after.players.A.deck.length).toBe(deckBefore);
+  });
+
+  it('attacker without [Banish] still opens trigger window on trigger life card', () => {
+    // Sanity / control: banish gate truly gates on the keyword, not always-on.
+    let s = setupAttackScenario(405);
+    const topLifeId = s.players.A.life[0];
+    const topInst = s.instances[topLifeId];
+    const shapedId = 'NO-BANISH-TRIGGER-LIFE';
+    s.cardLibrary[shapedId] = {
+      id: shapedId, name: shapedId, kind: 'character', colors: ['red'],
+      cost: 2, power: 3000, counterValue: 1000, traits: [], keywords: [],
+      effectTags: ['trigger'],
+    } as CharacterCard;
+    topInst.cardId = shapedId;
+
+    s = applyAction(s, 'B', {
+      type: 'DECLARE_ATTACK',
+      attackerInstanceId: s.players.B.leader.instanceId,
+      targetInstanceId: s.players.A.leader.instanceId,
+    }).state;
+    s = applyAction(s, 'A', { type: 'SKIP_BLOCKER' }).state;
+    const { state: after } = applyAction(s, 'A', { type: 'SKIP_COUNTER' });
+
+    expect(after.phase).toBe('trigger_window');
+    expect(after.pendingTrigger?.lifeCardInstanceId).toBe(topLifeId);
+  });
 });

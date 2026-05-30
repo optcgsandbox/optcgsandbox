@@ -535,7 +535,9 @@ function resolveDamage(state: GameState): { state: GameState; events: GameEvent[
     if (attackerPower >= targetPower) {
       // Double Attack flips 2 life cards in sequence (§1.8). Standard attack = 1.
       const lifeFlipsOwed = attackerCard.keywords.includes('double_attack') ? 2 : 1;
-      return flipLifeCards(next, OTHER[player], lifeFlipsOwed, start);
+      // D7 (CR §10-1-3): [Banish] short-circuits the flip → trash, no trigger.
+      const attackerHasBanish = attackerCard.keywords.includes('banish');
+      return flipLifeCards(next, OTHER[player], lifeFlipsOwed, start, attackerHasBanish);
     }
   } else if (targetCard.kind === 'character') {
     if (attackerPower >= targetPower) {
@@ -588,6 +590,7 @@ function flipLifeCards(
   defenderId: PlayerId,
   flipsOwed: number,
   start: number,
+  attackerHasBanish: boolean = false,
 ): { state: GameState; events: GameEvent[] } {
   const next = state;
   const defenderSide = next.players[defenderId];
@@ -608,6 +611,15 @@ function flipLifeCards(
     const hasTrigger = !!lifeCard && lifeCard.effectTags.includes('trigger');
 
     next.history.push({ type: 'LIFE_TAKEN', player: defenderId, instanceId: lifeId });
+
+    // D7 (CR §10-1-3): when the attacker has [Banish], the life card is
+    // trashed without revealing and Trigger does NOT fire. Short-circuit
+    // both the trigger window and the to-hand path.
+    if (attackerHasBanish) {
+      defenderSide.trash.push(lifeId);
+      remaining -= 1;
+      continue;
+    }
 
     if (hasTrigger) {
       // Suspend: controller must RESOLVE_TRIGGER. Carry the remaining flip count

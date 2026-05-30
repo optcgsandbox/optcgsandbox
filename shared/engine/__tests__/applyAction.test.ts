@@ -139,3 +139,90 @@ describe('applyAction: RESIGN', () => {
     expect(s2.result?.reason).toBe('resignation');
   });
 });
+
+// Phase E / D9: [Rush: Character]
+import { getLegalActions } from '../rules/legality';
+import type { Keyword } from '../cards/Card';
+
+function plantCharOnB(
+  s: ReturnType<typeof build>,
+  cardId: string,
+  keywords: Keyword[],
+  opts: { rested?: boolean; summoningSick?: boolean } = {},
+): string {
+  const card: CharacterCard = {
+    id: cardId, name: cardId, kind: 'character', colors: ['red'],
+    cost: 2, power: 3000, counterValue: 1000, traits: [], keywords, effectTags: ['vanilla'],
+  };
+  s.cardLibrary[cardId] = card;
+  const instanceId = `${cardId}-inst-B`;
+  s.instances[instanceId] = {
+    instanceId, cardId, controller: 'B', rested: opts.rested ?? false,
+    summoningSick: opts.summoningSick ?? true, attachedDon: [],
+    perTurn: { hasAttacked: false, effectsUsed: [] },
+  };
+  s.players.B.field.push(s.instances[instanceId]);
+  return instanceId;
+}
+function plantCharOnAasRested(s: ReturnType<typeof build>, cardId: string): string {
+  const card: CharacterCard = {
+    id: cardId, name: cardId, kind: 'character', colors: ['red'],
+    cost: 2, power: 3000, counterValue: 1000, traits: [], keywords: [], effectTags: ['vanilla'],
+  };
+  s.cardLibrary[cardId] = card;
+  const instanceId = `${cardId}-inst-A`;
+  s.instances[instanceId] = {
+    instanceId, cardId, controller: 'A', rested: true, summoningSick: false,
+    attachedDon: [], perTurn: { hasAttacked: false, effectsUsed: [] },
+  };
+  s.players.A.field.push(s.instances[instanceId]);
+  return instanceId;
+}
+
+describe('legality.attackActions: D9 [Rush:Character]', () => {
+  it('rush_character summoning-sick may attack opp rested character but NOT opp leader', () => {
+    let s = advanceToMainPhase(build());
+    s = endTurn(s);
+    s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    s = advanceOneFullCycle(s); // turn 4: B can attack
+    const attacker = plantCharOnB(s, 'RCHAR', ['rush_character'], { summoningSick: true });
+    const target = plantCharOnAasRested(s, 'TARGETCHAR');
+
+    const legal = getLegalActions(s, 'B');
+    const targetIds = legal
+      .filter((a) => a.type === 'DECLARE_ATTACK' && a.attackerInstanceId === attacker)
+      .map((a) => (a as { targetInstanceId: string }).targetInstanceId);
+    expect(targetIds).toContain(target);
+    expect(targetIds).not.toContain(s.players.A.leader.instanceId);
+  });
+
+  it('plain rush summoning-sick may attack BOTH opp character and opp leader', () => {
+    let s = advanceToMainPhase(build());
+    s = endTurn(s);
+    s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    s = advanceOneFullCycle(s);
+    const attacker = plantCharOnB(s, 'RUSHCHAR', ['rush'], { summoningSick: true });
+    const target = plantCharOnAasRested(s, 'OPPCHAR2');
+
+    const legal = getLegalActions(s, 'B');
+    const targetIds = legal
+      .filter((a) => a.type === 'DECLARE_ATTACK' && a.attackerInstanceId === attacker)
+      .map((a) => (a as { targetInstanceId: string }).targetInstanceId);
+    expect(targetIds).toContain(target);
+    expect(targetIds).toContain(s.players.A.leader.instanceId);
+  });
+
+  it('rush_character that is no longer summoning-sick may attack opp leader', () => {
+    let s = advanceToMainPhase(build());
+    s = endTurn(s);
+    s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    s = advanceOneFullCycle(s);
+    const attacker = plantCharOnB(s, 'RCHAR2', ['rush_character'], { summoningSick: false });
+
+    const legal = getLegalActions(s, 'B');
+    const targetIds = legal
+      .filter((a) => a.type === 'DECLARE_ATTACK' && a.attackerInstanceId === attacker)
+      .map((a) => (a as { targetInstanceId: string }).targetInstanceId);
+    expect(targetIds).toContain(s.players.A.leader.instanceId);
+  });
+});

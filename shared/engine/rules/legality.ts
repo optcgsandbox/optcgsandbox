@@ -162,13 +162,22 @@ function attackActions(state: GameState, player: PlayerId): Action[] {
     if (card.kind !== 'character') continue;
     if (inst.rested) continue;
     if (inst.perTurn.hasAttacked) continue;
-    // Summoning sickness (rules-reference.md §1.6): characters cannot attack the
-    // turn they're played unless they have Rush.
-    if (inst.summoningSick && !card.keywords.includes('rush')) continue;
+    // Summoning sickness (rules-reference.md §1.6 / CR §10-1-6):
+    //   - plain `rush`           → can attack any legal target this turn
+    //   - `rush_character`       → can attack opp characters only this turn (D9)
+    //   - neither                → can't attack at all this turn
+    if (
+      inst.summoningSick &&
+      !card.keywords.includes('rush') &&
+      !card.keywords.includes('rush_character')
+    ) {
+      continue;
+    }
     attackers.push(inst);
   }
 
-  const targets: string[] = [opp.leader.instanceId];
+  const opLeaderId = opp.leader.instanceId;
+  const targets: string[] = [opLeaderId];
   for (const inst of opp.field) {
     if (state.cardLibrary[inst.cardId].kind === 'character' && inst.rested) {
       targets.push(inst.instanceId);
@@ -176,7 +185,15 @@ function attackActions(state: GameState, player: PlayerId): Action[] {
   }
 
   for (const att of attackers) {
+    const attCard = state.cardLibrary[att.cardId];
+    // D9: rush_character without plain rush cannot attack opp Leader on a
+    // summoning-sick turn. Drop the leader from this attacker's target list.
+    const leaderForbidden =
+      att.summoningSick &&
+      attCard.keywords.includes('rush_character') &&
+      !attCard.keywords.includes('rush');
     for (const tgt of targets) {
+      if (leaderForbidden && tgt === opLeaderId) continue;
       out.push({ type: 'DECLARE_ATTACK', attackerInstanceId: att.instanceId, targetInstanceId: tgt });
     }
   }
