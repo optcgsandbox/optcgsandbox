@@ -128,6 +128,16 @@ export const CardDetailModal = memo(function CardDetailModal() {
           });
         }
       }
+      // ACTIVATE — Phase C / D12 (CR §10-2-13). Friendly card with an
+      // [Activate:Main] ability that isn't rested yet.
+      if (isYourTurn && (isFriendlyLeader || isFriendlyCharOrStage) && !armedDonId) {
+        const activate = legalActions.find(
+          (a) => a.type === 'ACTIVATE_MAIN' && a.instanceId === inst.instanceId,
+        );
+        if (activate) {
+          out.push({ label: 'ACTIVATE', action: activate, variant: 'primary-teal' });
+        }
+      }
       out.push({ label: 'CLOSE', action: null, variant: 'secondary' });
       // If we tagged a SELECT button, intercept it via a sentinel before returning.
       return out;

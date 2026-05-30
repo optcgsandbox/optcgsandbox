@@ -354,4 +354,70 @@ describe('Effect dispatch (D14) — wiring', () => {
     expect(typeof TEMPLATES.searcher).toBe('function');
     expect(typeof TEMPLATES.vanilla).toBe('function');
   });
+
+  // Phase C / D12: ACTIVATE_MAIN
+  it('ACTIVATE_MAIN rests the card and fires its activate_main effects', () => {
+    // Character with activate_main + draw — activate to rest + draw 1.
+    const activeChar = makeChar('act-1', { cost: 1, effectTags: ['draw'], keywords: ['activate_main'] });
+    let s = advanceToMainPhase(build([activeChar]));
+    const instId = injectIntoHand(s, 'act-1');
+    setDonActive(s, 'A', 2);
+
+    // Play the character first (on_play also fires draw → hand +1 from on_play).
+    const { state: s2 } = applyAction(s, 'A', {
+      type: 'PLAY_CARD',
+      instanceId: instId,
+      replaceTargetId: null,
+    });
+    // on_play already fired the draw template (we don't assert exact delta;
+    // the dispatch test above covers draw on_play). Capture baseline AFTER play.
+    const deckBefore = s2.players.A.deck.length;
+    const handBefore = s2.players.A.hand.length;
+
+    // The just-played character is summoning-sick + UN-rested. Activate.
+    const { state: s3 } = applyAction(s2, 'A', {
+      type: 'ACTIVATE_MAIN',
+      instanceId: instId,
+    });
+
+    // Card is now rested in both the lookup map and the per-zone struct.
+    expect(s3.instances[instId].rested).toBe(true);
+    const onField = s3.players.A.field.find((i) => i.instanceId === instId);
+    expect(onField?.rested).toBe(true);
+    // Activation drew 1: hand +1, deck -1.
+    expect(s3.players.A.hand.length).toBe(handBefore + 1);
+    expect(s3.players.A.deck.length).toBe(deckBefore - 1);
+
+    // Re-activation is rejected (already rested).
+    const { state: s4 } = applyAction(s3, 'A', {
+      type: 'ACTIVATE_MAIN',
+      instanceId: instId,
+    });
+    expect(s4.players.A.hand.length).toBe(handBefore + 1);
+    expect(s4.players.A.deck.length).toBe(deckBefore - 1);
+  });
+
+  it('ACTIVATE_MAIN is rejected for cards without the activate_main tag', () => {
+    const plainChar = makeChar('plain-1', { cost: 1, effectTags: ['draw'] });
+    let s = advanceToMainPhase(build([plainChar]));
+    const instId = injectIntoHand(s, 'plain-1');
+    setDonActive(s, 'A', 2);
+
+    const { state: s2 } = applyAction(s, 'A', {
+      type: 'PLAY_CARD',
+      instanceId: instId,
+      replaceTargetId: null,
+    });
+    const handBefore = s2.players.A.hand.length;
+    const deckBefore = s2.players.A.deck.length;
+
+    const { state: s3 } = applyAction(s2, 'A', {
+      type: 'ACTIVATE_MAIN',
+      instanceId: instId,
+    });
+    // No-op: not rested, no draw.
+    expect(s3.instances[instId].rested).toBe(false);
+    expect(s3.players.A.hand.length).toBe(handBefore);
+    expect(s3.players.A.deck.length).toBe(deckBefore);
+  });
 });

@@ -81,6 +81,7 @@ export function getLegalActions(state: GameState, player: PlayerId): Action[] {
     actions.push(...playCardActions(state, player));
     actions.push(...attachDonActions(state, player));
     actions.push(...attackActions(state, player));
+    actions.push(...activateMainActions(state, player));
   }
 
   actions.push({ type: 'RESIGN' });
@@ -225,6 +226,33 @@ function counterActions(state: GameState, player: PlayerId): Action[] {
     } else if (card.counterValue && card.counterValue > 0) {
       // Character counter (CR §7-1-3-2-1): trash from hand for printed chip.
       out.push({ type: 'PLAY_COUNTER', instanceId });
+    }
+  }
+  return out;
+}
+
+/** Phase C / D12 (CR §10-2-13): emit ACTIVATE_MAIN actions for friendly cards
+ *  that have the `activate_main` effect tag and aren't already rested.
+ *  Activation rests the card (that IS the cost), so a rested card is ineligible
+ *  until the next Refresh — naturally enforcing once-per-active-state. */
+function activateMainActions(state: GameState, player: PlayerId): Action[] {
+  const p = state.players[player];
+  const out: Action[] = [];
+
+  const leaderCard = state.cardLibrary[p.leader.cardId];
+  if (leaderCard.keywords.includes('activate_main') && !p.leader.rested) {
+    out.push({ type: 'ACTIVATE_MAIN', instanceId: p.leader.instanceId });
+  }
+  for (const inst of p.field) {
+    const card = state.cardLibrary[inst.cardId];
+    if (card.keywords.includes('activate_main') && !inst.rested) {
+      out.push({ type: 'ACTIVATE_MAIN', instanceId: inst.instanceId });
+    }
+  }
+  if (p.stage) {
+    const stageCard = state.cardLibrary[p.stage.cardId];
+    if (stageCard.keywords.includes('activate_main') && !p.stage.rested) {
+      out.push({ type: 'ACTIVATE_MAIN', instanceId: p.stage.instanceId });
     }
   }
   return out;

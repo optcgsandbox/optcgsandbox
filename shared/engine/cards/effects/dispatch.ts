@@ -12,7 +12,9 @@
 //   when_attacking   → power_buff, draw                  (intent-only stubs run)
 //   on_block         → draw, lifegain                    (intent-only stubs run)
 //   on_ko            → draw, lifegain, recursion, disruption  (intent-only stubs run)
-//   activate_main    → (handled separately by ACTIVATE_MAIN action; not yet wired)
+//   activate_main    → searcher, draw, removal_ko, removal_bounce,
+//                      removal_cost_reduce, recursion, ramp, lifegain,
+//                      life_to_hand, disruption, power_buff, cost_reduction
 //   trigger          → handled in applyAction.resolveTrigger directly
 //
 // `blocker`, `rush`, `double_attack`, `counter_event`, `counter_character`,
@@ -54,7 +56,23 @@ const TAGS_BY_TRIGGER: Record<EffectTrigger, ReadonlySet<EffectTag>> = {
   when_attacking: new Set<EffectTag>(['power_buff', 'draw']),
   on_block: new Set<EffectTag>(['draw', 'lifegain']),
   on_ko: new Set<EffectTag>(['draw', 'lifegain', 'recursion', 'disruption']),
-  activate_main: new Set<EffectTag>(),
+  // Phase C / D12 (CR §10-2-13): ACTIVATE_MAIN rests the card and fires its
+  // intent tags. Same tag surface as on_play — the cost (rest) and trigger
+  // distinguish activation from play.
+  activate_main: new Set<EffectTag>([
+    'searcher',
+    'draw',
+    'removal_ko',
+    'removal_bounce',
+    'removal_cost_reduce',
+    'recursion',
+    'ramp',
+    'lifegain',
+    'life_to_hand',
+    'disruption',
+    'power_buff',
+    'cost_reduction',
+  ]),
   trigger: new Set<EffectTag>(),
 };
 

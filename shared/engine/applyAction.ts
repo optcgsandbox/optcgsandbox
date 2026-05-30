@@ -63,9 +63,45 @@ export function applyAction(
     case 'CHOOSE_SECOND':
       return resolveFirstPlayerChoice(state, player, /* goesFirst === chooser */ false);
     case 'ACTIVATE_MAIN':
-      // v0.1 hook — return state untouched for now.
-      return { state, events: [] };
+      return activateMain(state, player, action.instanceId);
   }
+}
+
+// === Phase C / D12: ACTIVATE_MAIN ===
+// CR §10-2-13: rest the card (the cost) and fire its activate_main effect
+// tags through fireEffects. Re-activation is naturally prevented because a
+// rested card is not eligible (legality + this handler guard).
+function activateMain(
+  state: GameState,
+  player: PlayerId,
+  instanceId: string,
+): { state: GameState; events: GameEvent[] } {
+  if (state.phase !== 'main') return { state, events: [] };
+  if (state.activePlayer !== player) return { state, events: [] };
+  const inst = state.instances[instanceId];
+  if (!inst) return { state, events: [] };
+  if (inst.controller !== player) return { state, events: [] };
+  if (inst.rested) return { state, events: [] };
+  const card = state.cardLibrary[inst.cardId];
+  if (!card || !card.keywords.includes('activate_main')) return { state, events: [] };
+
+  const start = state.history.length;
+  const next: GameState = structuredClone(state);
+
+  // Rest IS the cost.
+  next.instances[instanceId].rested = true;
+  // Mirror onto the per-zone struct so UI + legality see the rested state.
+  const np = next.players[player];
+  if (np.leader.instanceId === instanceId) np.leader.rested = true;
+  for (const onField of np.field) {
+    if (onField.instanceId === instanceId) onField.rested = true;
+  }
+  if (np.stage && np.stage.instanceId === instanceId) np.stage.rested = true;
+
+  const after = fireEffects(next, instanceId, 'activate_main', player);
+  Object.assign(next, after);
+
+  return { state: next, events: next.history.slice(start) };
 }
 
 // === D24: ROLL_DICE / CHOOSE_FIRST / CHOOSE_SECOND ===
