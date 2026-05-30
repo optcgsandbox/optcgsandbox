@@ -89,12 +89,73 @@ function bootGame(seed: number): GameState {
   return s;
 }
 
-/** Run player A's first turn pipeline (refresh → draw → don) after the engine
- *  transitions out of the mulligan window into 'refresh'. Idempotent: a no-op
- *  unless `state.phase === 'refresh'`. */
-function runFirstTurnPhases(state: GameState): GameState {
-  if (state.phase !== 'refresh') return state;
-  return runDonPhase(runDrawPhase(runRefreshPhase(state)));
+/** Pacing constants for AI / phase transitions.
+ *
+ *  Owner direction 2026-05-29: opp turns were running at 250ms/action with no
+ *  banner — invisible to the human. AI moves now hold for ~1.5s each, R/D/D
+ *  steps breathe with a 700ms gap between them, and the AI→human handoff
+ *  pauses for 1s so the player has a moment to register the transition before
+ *  their own refresh kicks in. Banner overlay (OpponentActionBanner) reads
+ *  state.history to surface each action as a transient pill.
+ */
+const AI_ACTION_DELAY_MS = 1500;
+const BETWEEN_PHASE_DELAY_MS = 700;
+const TURN_HANDOFF_DELAY_MS = 1000;
+
+function wait(ms: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+/** Run the active player's refresh → draw → don pipeline with visible pacing.
+ *  Each phase commits to the store before the next, and a short delay between
+ *  them lets the OpponentActionBanner render the corresponding event. Used by
+ *  both `runFirstTurnPhases` (post-mulligan kickoff for whichever player goes
+ *  first) and `runAiTurn` (handoff back to the human at the end of AI's turn).
+ *  No-op if the current phase isn't 'refresh'.
+ *
+ *  The engine emits PHASE_CHANGED→draw at the end of runRefreshPhase but
+ *  never emits PHASE_CHANGED→refresh (phase is set directly by endTurn /
+ *  mulligan close). We splice a synthetic refresh marker into history right
+ *  before the draw marker so the banner queue reads R → D → DON in order. */
+async function runPhasePipelineWithDelays(
+  get: () => GameStore,
+  set: (partial: Partial<GameStore>) => void,
+): Promise<void> {
+  if (get().state.phase !== 'refresh') return;
+
+  // Refresh — clone the engine result and prepend a synthetic refresh marker
+  // before the engine's own PHASE_CHANGED→draw event (last entry in history).
+  let s = runRefreshPhase(get().state);
+  const last = s.history.length - 1;
+  if (last >= 0 && s.history[last].type === 'PHASE_CHANGED') {
+    s.history.splice(last, 0, { type: 'PHASE_CHANGED', phase: 'refresh' });
+  } else {
+    s.history.push({ type: 'PHASE_CHANGED', phase: 'refresh' });
+  }
+  set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });
+  await wait(BETWEEN_PHASE_DELAY_MS);
+
+  // Draw
+  s = runDrawPhase(get().state);
+  set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });
+  await wait(BETWEEN_PHASE_DELAY_MS);
+
+  // DON
+  s = runDonPhase(get().state);
+  set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });
+}
+
+/** Run the first player's first turn pipeline (refresh → draw → don) after
+ *  the engine transitions out of the mulligan window into 'refresh'. Async +
+ *  paced so the player can SEE each phase (D24 bug: when AI was first, the
+ *  sync pipeline ran R/D/D in one tick and the human saw nothing). Updates
+ *  the store directly via the paced helper. */
+async function runFirstTurnPhases(
+  get: () => GameStore,
+  set: (partial: Partial<GameStore>) => void,
+): Promise<void> {
+  if (get().state.phase !== 'refresh') return;
+  await runPhasePipelineWithDelays(get, set);
 }
 
 interface GameStore {
@@ -147,19 +208,24 @@ async function runAiTurn(
     const { state: next } = applyAction(s, AI_OPPONENT, action);
     set({ state: next, legalActions: getLegalActions(next, next.activePlayer) });
     if (action.type === 'END_TURN' || action.type === 'RESIGN') break;
-    // Yield to the event loop so the UI can render mid-turn.
-    await new Promise((r) => setTimeout(r, 250));
+    // Pace AI moves so the human can read each action. Banner overlay
+    // labels them; this delay gives the banner time to surface.
+    await wait(AI_ACTION_DELAY_MS);
   }
   // After AI ends turn, advance phases back to human's main.
   if (!get().state.result && get().state.activePlayer === AI_OPPONENT) {
-    // AI hit safety cap — force end turn.
-    let s = endTurn(get().state);
-    s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
-    set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });
+    // AI hit safety cap — force end turn, then pace the human's R/D/D so each
+    // step is visible (matches the post-END_TURN branch below).
+    const ended = endTurn(get().state);
+    set({ state: ended, legalActions: getLegalActions(ended, ended.activePlayer) });
+    await wait(TURN_HANDOFF_DELAY_MS);
+    await runPhasePipelineWithDelays(get, set);
   } else if (!get().state.result) {
-    // AI ended turn; we already called endTurn implicitly inside dispatch. Run human's R/D/D.
-    let s = runDonPhase(runDrawPhase(runRefreshPhase(get().state)));
-    set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });
+    // AI ended turn; endTurn already set phase=refresh + flipped activePlayer
+    // to the human. Pause for the handoff, then run the human's R/D/D paced
+    // so the player sees each step instead of a blink to main.
+    await wait(TURN_HANDOFF_DELAY_MS);
+    await runPhasePipelineWithDelays(get, set);
   }
   set({ aiThinking: false });
 }
@@ -210,13 +276,6 @@ export const useGameStore = create<GameStore>((set, get) => {
         next = applyAction(next, reactivePlayer, skip).state;
       }
 
-      // D10: if the mulligan window just closed (phase → refresh), auto-run
-      // player A's first turn pipeline. Without this, the UI lands on
-      // phase='refresh' with no DON in cost area and no draw — broken.
-      if (next.phase === 'refresh' && state.phase !== 'refresh') {
-        next = runFirstTurnPhases(next);
-      }
-
       // D10: AI auto-mulligan. When the AI is player B (vs-easy / vs-medium)
       // and the engine is awaiting the AI's decision, auto-KEEP for the AI
       // so the human isn't stuck waiting. Per the task spec, both Easy and
@@ -235,24 +294,18 @@ export const useGameStore = create<GameStore>((set, get) => {
       if ((aiMode === 'vs-easy' || aiMode === 'vs-medium') && (aiDeciderInFirst || aiDeciderInSecond)) {
         const aiResult = applyAction(next, AI_OPPONENT, { type: 'KEEP_HAND' });
         next = aiResult.state;
-        // If the AI's KEEP advanced the engine straight through to
-        // mulligan_second with the human as decider, stop here.
-        // Otherwise fully close the window and run first-turn phases.
-        if (next.phase === 'refresh') {
-          next = runFirstTurnPhases(next);
-        }
       }
-      // D24: if first-turn phases just put the AI on its main phase (because
-      // the AI is the first player after dice-roll), kick off the AI turn
-      // loop so it plays + ends turn back to the human.
-      const aiNowOnMain =
-        (aiMode === 'vs-easy' || aiMode === 'vs-medium') &&
-        next.phase === 'main' &&
-        next.activePlayer === AI_OPPONENT &&
-        state.phase !== 'main';
-      if (aiNowOnMain) {
-        // Defer the AI loop to a microtask so the UI commits the post-
-        // mulligan state first. runAiTurn handles legalActions + aiThinking.
+
+      // D10 / D24: if either the human's mulligan close OR the AI's
+      // auto-KEEP just transitioned the engine into 'refresh', commit the
+      // pre-pipeline state THEN run the paced first-turn pipeline. Was a
+      // synchronous chain pre-2026-05-29 (R/D/D in one tick) — caused the
+      // AI-first turn to flash by invisibly. Async + paced now so each
+      // phase is visible. After the pipeline, the AI-first path needs to
+      // kick into runAiTurn.
+      const needsFirstTurnPipeline =
+        next.phase === 'refresh' && state.phase !== 'refresh';
+      if (needsFirstTurnPipeline) {
         set({
           state: next,
           legalActions: getLegalActions(next, next.activePlayer),
@@ -260,7 +313,22 @@ export const useGameStore = create<GameStore>((set, get) => {
           cardDetailOpen: false,
           selectedAttackerId: null,
         });
-        void runAiTurn(get, set);
+        void (async () => {
+          await runFirstTurnPhases(get, set);
+          // D24: if first-turn phases just put the AI on its main phase
+          // (because the AI is the first player after dice-roll), kick
+          // off the AI turn loop so it plays + ends turn back to the
+          // human. Re-read store state since the pipeline mutated it.
+          const post = get().state;
+          if (
+            (aiMode === 'vs-easy' || aiMode === 'vs-medium') &&
+            post.phase === 'main' &&
+            post.activePlayer === AI_OPPONENT &&
+            !post.result
+          ) {
+            await runAiTurn(get, set);
+          }
+        })();
         return;
       }
 
@@ -330,24 +398,26 @@ export const useGameStore = create<GameStore>((set, get) => {
     },
 
     async endTurnAndAdvance() {
-      let s = get().state;
-      s = endTurn(s);
-      s = runRefreshPhase(s);
-      s = runDrawPhase(s);
-      s = runDonPhase(s);
-      const newViewAs = get().mode === 'hot-seat' ? s.activePlayer : AI_HUMAN;
-      // UI-D2/D3: turn boundary clears transient UI state.
+      // End the active player's turn — engine flips activePlayer + sets
+      // phase='refresh' for the new active player. Commit that state THEN
+      // pace through R/D/D so the banner can label each step. Pre-2026-05-29
+      // this ran R/D/D in one tick which felt like a blink.
+      const ended = endTurn(get().state);
+      const newViewAs = get().mode === 'hot-seat' ? ended.activePlayer : AI_HUMAN;
       set({
-        state: s,
-        legalActions: getLegalActions(s, s.activePlayer),
+        state: ended,
+        legalActions: getLegalActions(ended, ended.activePlayer),
         viewAs: newViewAs,
         inspectedCardId: null,
         cardDetailOpen: false,
         selectedAttackerId: null,
       });
+      await wait(TURN_HANDOFF_DELAY_MS);
+      await runPhasePipelineWithDelays(get, set);
 
       const m = get().mode;
-      if ((m === 'vs-easy' || m === 'vs-medium') && s.activePlayer === AI_OPPONENT && !s.result) {
+      const post = get().state;
+      if ((m === 'vs-easy' || m === 'vs-medium') && post.activePlayer === AI_OPPONENT && !post.result) {
         await runAiTurn(get, set);
       }
     },
