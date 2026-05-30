@@ -669,7 +669,16 @@ export const CardArt = memo(function CardArt({
             ]
           : shadowStack,
       }}
-      style={{ width: dims.w, height: dims.h }}
+      style={{
+        width: dims.w,
+        height: dims.h,
+        // When non-interactive (no onTap), let clicks pass through to any
+        // wrapping clickable parent (e.g. TrashSlot's wrapper opens TrashViewer).
+        // Without this, the disabled button absorbs the click (browser spec:
+        // disabled buttons don't fire click and DO have pointer-events: auto),
+        // so the wrapper's onClick never sees the tap.
+        pointerEvents: interactive ? undefined : 'none',
+      }}
       className={[
         'relative overflow-visible',
         'outline-none focus-visible:ring-2 focus-visible:ring-sun-brass',
