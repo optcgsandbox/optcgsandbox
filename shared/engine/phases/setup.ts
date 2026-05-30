@@ -5,8 +5,9 @@
 //
 // D24 (CR §5-2-1-4): the setup window starts in `dice_roll`. Both players draw
 // their opening 5 here so the UI can preview hands during the roll, but the
-// engine does NOT advance into the mulligan window until ROLL_DICE produces a
-// winner and the winner declares first/second via CHOOSE_FIRST / CHOOSE_SECOND.
+// engine does NOT advance into the mulligan window until each player has
+// fired ROLL_DICE for themselves (per-player action), a winner is produced,
+// and the winner declares first/second via CHOOSE_FIRST / CHOOSE_SECOND.
 
 import type { Card } from '../cards/Card';
 import type { GameState, PlayerId } from '../GameState';
@@ -16,8 +17,8 @@ import { Random } from '../Random';
 /** Step 1–4 of CR §5-2-1: shuffle decks, draw opening hands, hand off to the
  *  dice-roll window (D24, CR §5-2-1-4). Life cards are NOT placed yet — that
  *  happens after both players resolve mulligan via `dealLifeCards`. Sets phase
- *  to `'dice_roll'` so both players can resolve `ROLL_DICE` before the mulligan
- *  window opens. `activePlayer` is left at the caller-provided default (A) —
+ *  to `'dice_roll'` so each player can resolve their own `ROLL_DICE` before
+ *  the mulligan window opens. `activePlayer` is left at the caller-provided default (A) —
  *  it'll be reassigned by CHOOSE_FIRST / CHOOSE_SECOND based on the roll. */
 export function setupGame(state: GameState): GameState {
   const rng = new Random(state.seed);
@@ -40,37 +41,78 @@ export function setupGame(state: GameState): GameState {
   return next;
 }
 
-/** D24 (CR §5-2-1-4): perform a single dice-roll round. Both players roll a
- *  d6 atomically using a Mulberry32 RNG derived from the seed and the rolls
- *  counter (so re-rolls produce fresh values). Returns the next state:
+/** D24 (CR §5-2-1-4): perform a single per-player d6 roll. Each player presses
+ *  their OWN button — atomic-for-both rolling is gone (hot-seat needs two
+ *  humans; remote MP needs each socket to commit independently).
  *
- *   - Tie → phase stays `dice_roll`, `rolls` increments, both d6 values are
- *     recorded for UI feedback. The winner field on `DICE_ROLLED` is null.
- *   - High roll → phase transitions to `first_player_choice`, `activePlayer`
- *     becomes the winner so legality / dispatch route to them for the choice.
+ *  RNG: derived from `seed`, the rolls counter (`rolls + 1` while the round is
+ *  still being filled), and the player ID. This keeps a single round
+ *  deterministic regardless of WHICH player rolls first — A's value depends
+ *  only on seed + round, never on B's roll order — so replays and
+ *  authoritative-server reconciliation stay stable.
  *
- *  ROLL_DICE is legal for BOTH players in `dice_roll` — either can fire it;
- *  the engine atomically rolls for both at once. */
-export function rollDice(state: GameState): GameState {
+ *  State transitions:
+ *   - Only the calling player's slot is set; the other slot is left alone.
+ *   - Both slots null → still mid-round, stay in `dice_roll`.
+ *   - Both slots non-null and equal → tie: null both slots, increment
+ *     `rolls`, stay in `dice_roll` so each player can re-press.
+ *   - Both slots non-null and unequal → high roller becomes `activePlayer`,
+ *     phase advances to `first_player_choice`. DICE_ROLLED is emitted once
+ *     both rolls are in (so the log shows the matched pair, never a half
+ *     event).
+ *
+ *  `rolls` semantics: incremented only when a round CLOSES (either by tie
+ *  reset or by a winner emerging). Mid-round both-slots-null states keep the
+ *  same `rolls` so the RNG seed for the in-progress round is stable across
+ *  the two per-player calls.
+ *
+ *  ROLL_DICE caller validation (already-rolled rejection) lives in
+ *  applyAction.resolveDiceRoll and legality — this helper assumes the slot
+ *  is free.
+ */
+export function rollDice(state: GameState, player: PlayerId): GameState {
   const next: GameState = structuredClone(state);
-  // Derive a per-round RNG seed so each re-roll is independent of the previous.
-  // XOR the rolls counter with a nonce to avoid trivial coincidence with the
-  // setup shuffle.
-  const round = (state.diceRoll?.rolls ?? 0) + 1;
-  const rng = new Random((state.seed ^ 0xd1ced1ce) + round * 0x9e3779b1);
+  const current = state.diceRoll ?? { A: null, B: null, rolls: 0 };
 
-  const a = rng.nextInt(6) + 1; // 1..6 inclusive
-  const b = rng.nextInt(6) + 1;
+  // Round number while this round is still being filled. We hash on
+  // `rolls + 1` so both A's call and B's call (within the same round) use
+  // the same RNG seed — they each draw their own slot from a fresh RNG
+  // stream specific to (seed, round, player), so order independence holds.
+  const round = current.rolls + 1;
 
-  next.diceRoll = { A: a, B: b, rolls: round };
+  // Per-player RNG: distinct nonce per player so A and B's slots don't
+  // collide. Round is folded in so re-rolls after a tie produce fresh
+  // values. Setup shuffle uses `seed` plain, so XORing with constants here
+  // avoids trivial coincidence with the deck shuffle.
+  const playerNonce = player === 'A' ? 0xa1a17777 : 0xb1b18888;
+  const rng = new Random(
+    ((state.seed ^ 0xd1ced1ce) + round * 0x9e3779b1) ^ playerNonce,
+  );
+  const roll = rng.nextInt(6) + 1; // 1..6 inclusive
 
+  const a = player === 'A' ? roll : current.A;
+  const b = player === 'B' ? roll : current.B;
+
+  // Mid-round: opponent hasn't rolled yet. Record this player's value, hold
+  // the round counter, no events emitted.
+  if (a === null || b === null) {
+    next.diceRoll = { A: a, B: b, rolls: current.rolls };
+    return next;
+  }
+
+  // Both slots filled — resolve the round.
   if (a === b) {
-    // Tie: stay in dice_roll, allow re-roll.
+    // Tie: null both slots and CLOSE the round (rolls++). Both players
+    // re-press to start the next round; the bumped `rolls` reseeds the RNG
+    // so the re-rolls are independent of the tied ones.
+    next.diceRoll = { A: null, B: null, rolls: round };
     next.history.push({ type: 'DICE_ROLLED', a, b, winner: null });
     return next;
   }
 
+  // Decisive: persist both values for UI replay, close the round, advance.
   const winner: PlayerId = a > b ? 'A' : 'B';
+  next.diceRoll = { A: a, B: b, rolls: round };
   next.activePlayer = winner;
   next.phase = 'first_player_choice';
   next.history.push({ type: 'DICE_ROLLED', a, b, winner });

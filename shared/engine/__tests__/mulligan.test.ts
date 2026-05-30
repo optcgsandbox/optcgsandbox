@@ -54,15 +54,18 @@ function build(seed = 42) {
 }
 
 /** D24: advance setupGame past the dice-roll + first-player choice and into
- *  `mulligan_first`. Loops ROLL_DICE until a winner is produced (uses the
- *  pure rollDice helper to bypass the legality check, since we don't care
- *  who fires it). The winner picks CHOOSE_FIRST so they become activePlayer
- *  for the mulligan window. */
+ *  `mulligan_first`. Loops per-player ROLL_DICE until a winner is produced
+ *  (uses the pure rollDice helper to bypass the legality check). The winner
+ *  picks CHOOSE_FIRST so they become activePlayer for the mulligan window.
+ *
+ *  Per-player model (2026-05-29): each round is two rollDice calls — one
+ *  for A, one for B. Ties null both slots so the loop keeps going. */
 function advancePastDiceRoll(state: GameState, firstPlayer: PlayerId = 'A'): GameState {
   let s = state;
   let rolls = 0;
   while (s.phase === 'dice_roll' && rolls++ < 64) {
-    s = rollDice(s);
+    if (s.diceRoll!.A === null) s = rollDice(s, 'A');
+    if (s.phase === 'dice_roll' && s.diceRoll!.B === null) s = rollDice(s, 'B');
   }
   // If the winner wasn't the requested firstPlayer, the loser-of-the-choice
   // picks CHOOSE_SECOND so the requested player goes first; otherwise winner

@@ -182,8 +182,11 @@ export const useGameStore = create<GameStore>((set, get) => {
       //   - block_window / counter_window: opponent of activePlayer reacts.
       //   - mulligan_second: opponent of activePlayer decides (D10, CR §5-2-1-6).
       // Mulligan_first / dice_roll / first_player_choice use activePlayer.
-      //   D24 note: ROLL_DICE is legal for both players; routing through
-      //   activePlayer is fine because resolveDiceRoll ignores the player.
+      //   D24 (per-player ROLL_DICE 2026-05-29): ROLL_DICE carries its own
+      //   `player` field — applyAction routes by the action's player, not by
+      //   the dispatch's player. We still pass activePlayer here as the
+      //   nominal sender for parity with other phases; the engine reads
+      //   action.player for the actual slot assignment.
       const isInactivePlayerPhase =
         state.phase === 'block_window' ||
         state.phase === 'counter_window' ||

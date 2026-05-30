@@ -11,11 +11,15 @@ import { RULES } from '../GameState';
 export function getLegalActions(state: GameState, player: PlayerId): Action[] {
   if (state.result) return [];
 
-  // D24 (CR §5-2-1-4): dice-roll window. EITHER player may fire ROLL_DICE —
-  // the engine atomically rolls a d6 for both. No other game actions are legal
-  // here except RESIGN.
+  // D24 (CR §5-2-1-4): dice-roll window. Each player rolls FOR THEMSELVES
+  // (per-player ROLL_DICE) — hot-seat hands the device between humans;
+  // remote MP routes each ROLL_DICE through that player's socket. A player
+  // whose slot is already filled waits — only RESIGN remains until the
+  // round closes (tie → both slots null; winner → phase advances).
   if (state.phase === 'dice_roll') {
-    return [{ type: 'ROLL_DICE' }, { type: 'RESIGN' }];
+    const alreadyRolled = state.diceRoll?.[player] !== null && state.diceRoll?.[player] !== undefined;
+    if (alreadyRolled) return [{ type: 'RESIGN' }];
+    return [{ type: 'ROLL_DICE', player }, { type: 'RESIGN' }];
   }
 
   // D24 (CR §5-2-1-4): only the dice-winner (activePlayer) may declare first

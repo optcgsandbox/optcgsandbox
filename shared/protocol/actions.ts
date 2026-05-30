@@ -4,11 +4,17 @@
 import { z } from 'zod';
 
 export const ActionSchema = z.discriminatedUnion('type', [
-  // Setup — D24, CR §5-2-1-4: dice-roll first-player decision. Either player
-  // may fire ROLL_DICE during `dice_roll`; the engine rolls a d6 for both
-  // atomically. Ties stay in `dice_roll`; the winner advances to
-  // `first_player_choice` and uses CHOOSE_FIRST / CHOOSE_SECOND to declare.
-  z.object({ type: z.literal('ROLL_DICE') }),
+  // Setup — D24, CR §5-2-1-4: dice-roll first-player decision. Each player
+  // fires ROLL_DICE for THEMSELVES via `{ player }`. Hot-seat: two humans
+  // pass one device; each presses their own button. vs-AI: human rolls, then
+  // the AI auto-rolls after a beat. Future remote MP: same per-player action,
+  // routed by who's holding the socket. Ties null both slots and stay in
+  // `dice_roll`; once both slots are non-null and unequal, the high roller
+  // becomes `activePlayer` and the phase advances to `first_player_choice`.
+  z.object({
+    type: z.literal('ROLL_DICE'),
+    player: z.union([z.literal('A'), z.literal('B')]),
+  }),
   z.object({ type: z.literal('CHOOSE_FIRST') }),
   z.object({ type: z.literal('CHOOSE_SECOND') }),
 

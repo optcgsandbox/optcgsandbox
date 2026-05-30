@@ -1,31 +1,36 @@
 // DiceRollPrompt — D24 (CR §5-2-1-4) dice-roll first-player decision.
 //
-// Modal that surfaces the opening-game d6 roll. Per CR §5-2-1-4, before the
-// mulligan window each player rolls a die; the high roller chooses turn order.
-// Ties re-roll until a winner is produced.
+// Per-player roll model (2026-05-29 refactor): each player presses their own
+// button. Hot-seat: two humans pass one device — both YOU and OPP buttons
+// are exposed and each human presses their own. vs-AI: human (player A)
+// presses YOU; the AI auto-rolls AFTER the human has rolled, with a 600ms
+// beat to keep the dramatic pacing. Future remote MP: each socket dispatches
+// `{ player: <theirId> }` from their own client; this prompt only ever
+// surfaces a button for the seat whose slot is currently null.
 //
 // Visibility rules:
 //   - state.phase === 'dice_roll'.
-//   - In hot-seat the modal shows for whoever's "seat" is currently viewAs —
-//     either player may fire ROLL_DICE.
-//   - In vs-AI (vs-easy / vs-medium) the human (player A) sees the modal and
-//     dispatches ROLL_DICE manually; the AI auto-rolls only as the secondary
-//     actor when the game starts (handled by the parent store's auto-fire
-//     side-effect — see the useEffect in this component for AI cadence).
+//   - In hot-seat both YOU and OPP buttons render; each is enabled only when
+//     its player's slot is null.
+//   - In vs-AI only YOU renders; OPP shows "AI is rolling…" once it's the
+//     AI's turn to fire, or stays blank waiting on YOU first.
 //
-// Animation: dice icons spin for 1.2s then settle on their face values. The
-// winner gets a brass-canary ring. Tie surfaces a "Roll again" button.
-// Reduced-motion users see snap-in values with no spin.
+// Animation: the die being rolled spins for 1.2s then settles on its face
+// value. The other die holds its current state. Once both slots are filled,
+// the winning die gets a brass-canary ring (briefly visible before the modal
+// unmounts on the phase advance). Reduced-motion users see snap-in values
+// with no spin.
 //
-// Engine note: the engine handles atomic d6 rolling and phase transition;
-// this prompt is purely the affordance. After a winner is produced, this
-// prompt UNMOUNTS (phase advances to 'first_player_choice') and the
-// FirstPlayerChoicePrompt takes over.
+// Engine note: the engine handles per-player slot assignment + tie reset +
+// phase transition; this prompt is purely the affordance + theatre. After a
+// winner is produced, this prompt UNMOUNTS (phase advances to
+// 'first_player_choice') and the FirstPlayerChoicePrompt takes over.
 
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { springs } from '../lib/animationTokens';
+import type { PlayerId } from '@shared/engine/GameState';
 
 const SPIN_MS = 1200;
 const AI_DELAY_MS = 600;
@@ -93,62 +98,98 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
   const phase = useGameStore((s) => s.state.phase);
   const diceRoll = useGameStore((s) => s.state.diceRoll);
   const mode = useGameStore((s) => s.mode);
+  const viewAs = useGameStore((s) => s.viewAs);
   const dispatch = useGameStore((s) => s.dispatch);
   const reduced = useReducedMotion() ?? false;
   const spring = springs(reduced);
 
-  // Local UI state: theatre flow is "click Roll → spin 1.2s → dispatch
-  // ROLL_DICE → engine settles dice values + advances phase → modal
-  // unmounts (winner) OR re-armed (tie)". Dispatch is delayed to the END of
-  // the spin so the dice icons remain spinning during the dramatic beat;
-  // the engine values populate the moment the dispatch resolves.
-  const [spinning, setSpinning] = useState(false);
-  const rollButtonRef = useRef<HTMLButtonElement>(null);
-
   const open = phase === 'dice_roll';
-  const rollsCount = diceRoll?.rolls ?? 0;
-
-  const handleRoll = useCallback(() => {
-    if (spinning) return;
-    setSpinning(true);
-    window.setTimeout(() => {
-      dispatch({ type: 'ROLL_DICE' });
-      setSpinning(false);
-    }, reduced ? 0 : SPIN_MS);
-  }, [dispatch, reduced, spinning]);
-
-  // AI auto-roll cadence (vs-easy / vs-medium).
-  // The AI is player B. On entering dice_roll the AI auto-fires the same
-  // theatre sequence after a 600ms beat — so both humans and AI see the
-  // spin. On a tie, `rollsCount` ticks but `open` stays true, re-triggering
-  // this effect for the next roll.
+  const isHotSeat = mode === 'hot-seat';
   const isAiGame = mode === 'vs-easy' || mode === 'vs-medium';
+
+  // Theatre flow per side: clicking a YOU/OPP button kicks off a 1.2s spin
+  // for that side only; at the end of the spin the dispatch fires and the
+  // engine populates that slot. Independent per side because in hot-seat
+  // two humans may sequentially press their own buttons; only the pressed
+  // side should spin.
+  const [spinningSide, setSpinningSide] = useState<PlayerId | null>(null);
+  const youButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Seat mapping: from the viewer's perspective YOU is `viewAs` and OPP is
+  // the other player. In vs-AI viewAs is always 'A', so YOU = A, OPP = B.
+  const youPlayer: PlayerId = viewAs;
+  const oppPlayer: PlayerId = viewAs === 'A' ? 'B' : 'A';
+
+  const youValue = diceRoll?.[youPlayer] ?? null;
+  const oppValue = diceRoll?.[oppPlayer] ?? null;
+  const youSpinning = spinningSide === youPlayer;
+  const oppSpinning = spinningSide === oppPlayer;
+
+  // Buttons enable on null slot + not already spinning that side. In vs-AI
+  // the OPP button is hidden entirely (the AI rolls itself).
+  const youEnabled = open && youValue === null && !youSpinning;
+  const oppEnabledHotSeat = open && isHotSeat && oppValue === null && !oppSpinning;
+
+  // Round-close detection: when both slots are non-null briefly (before the
+  // engine transitions to first_player_choice or resets on tie), the modal
+  // shows a "Tie!" status. Otherwise the winner die gets highlighted on
+  // round close — but that happens in the same tick as the phase advance
+  // so the user mainly sees it via FirstPlayerChoicePrompt's recap.
+  const bothFilled = youValue !== null && oppValue !== null;
+  const isTie = bothFilled && youValue === oppValue;
+
+  const rollFor = useCallback(
+    (player: PlayerId) => {
+      if (spinningSide) return; // serialize spins to keep theatre coherent
+      setSpinningSide(player);
+      window.setTimeout(
+        () => {
+          dispatch({ type: 'ROLL_DICE', player });
+          setSpinningSide(null);
+        },
+        reduced ? 0 : SPIN_MS,
+      );
+    },
+    [dispatch, reduced, spinningSide],
+  );
+
+  const handleRollYou = useCallback(() => rollFor(youPlayer), [rollFor, youPlayer]);
+  const handleRollOpp = useCallback(() => rollFor(oppPlayer), [rollFor, oppPlayer]);
+
+  // vs-AI: the AI only rolls AFTER the human has rolled. Trigger condition is
+  // strictly local to the engine state — `diceRoll.A !== null && diceRoll.B
+  // === null` (or the symmetric case if a future build flips seats). The
+  // 600ms beat gives the human a moment to register their own roll settling.
+  //
+  // On a tie the engine resets both slots back to null; this effect then
+  // pauses (human re-presses YOU first) until the human rolls again, after
+  // which the same condition re-fires for the AI.
   useEffect(() => {
     if (!open) return undefined;
     if (!isAiGame) return undefined;
-    if (spinning) return undefined; // wait for prior spin to finish before re-rolling
-    const t = window.setTimeout(() => handleRoll(), AI_DELAY_MS);
+    if (spinningSide) return undefined; // wait for any spin to finish
+    // Human (A) has rolled, AI (B) has not → schedule AI roll.
+    const humanSlot = diceRoll?.A ?? null;
+    const aiSlot = diceRoll?.B ?? null;
+    if (humanSlot === null) return undefined;
+    if (aiSlot !== null) return undefined;
+    const t = window.setTimeout(() => rollFor('B'), AI_DELAY_MS);
     return () => window.clearTimeout(t);
-    // Depend on rollsCount so each tie schedules a fresh roll.
-  }, [open, isAiGame, rollsCount, spinning, handleRoll]);
+  }, [open, isAiGame, spinningSide, diceRoll, rollFor]);
 
-  // Auto-focus the Roll button when the modal opens.
+  // Auto-focus the YOU roll button when the modal opens (and re-focus after
+  // a tie clears the slots).
   useEffect(() => {
     if (!open) return;
-    const t = window.setTimeout(() => rollButtonRef.current?.focus(), reduced ? 0 : 40);
+    if (!youEnabled) return;
+    const t = window.setTimeout(() => youButtonRef.current?.focus(), reduced ? 0 : 40);
     return () => window.clearTimeout(t);
-  }, [open, reduced]);
+  }, [open, youEnabled, reduced]);
 
-  // After a settled non-tie, the engine has already transitioned out of
-  // dice_roll → first_player_choice. The modal unmounts via `open` going
-  // false on the next render.
-  const aValue = diceRoll?.A ?? null;
-  const bValue = diceRoll?.B ?? null;
-  const showValues = rollsCount > 0;
-  const isTie = showValues && aValue !== null && bValue !== null && aValue === bValue;
-  const winner: 'A' | 'B' | null = !isTie && aValue !== null && bValue !== null
-    ? (aValue > bValue ? 'A' : 'B')
-    : null;
+  // Highlight winner ring briefly on round close (before phase advance
+  // unmounts the modal).
+  const youWon = bothFilled && !isTie && youValue! > oppValue!;
+  const oppWon = bothFilled && !isTie && oppValue! > youValue!;
 
   return (
     <AnimatePresence>
@@ -187,49 +228,87 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
             High roll chooses to go first or second. Ties re-roll.
           </motion.p>
 
-          <div className="flex items-center justify-center gap-10 mb-8">
-            <DieFace
-              value={aValue}
-              spinning={spinning}
-              highlighted={!spinning && winner === 'A'}
-              label="You"
-            />
-            <DieFace
-              value={bValue}
-              spinning={spinning}
-              highlighted={!spinning && winner === 'B'}
-              label="Opp"
-            />
+          <div className="flex items-start justify-center gap-10 mb-6">
+            {/* YOU side */}
+            <div className="flex flex-col items-center gap-3">
+              <DieFace
+                value={youValue}
+                spinning={youSpinning}
+                highlighted={!youSpinning && youWon}
+                label="You"
+              />
+              <button
+                ref={youButtonRef}
+                type="button"
+                onClick={handleRollYou}
+                disabled={!youEnabled}
+                aria-busy={youSpinning}
+                aria-label={youSpinning ? 'Rolling your die' : 'Roll your die'}
+                className="min-h-[44px] min-w-[120px] rounded-2xl px-5 py-2
+                           font-body font-extrabold uppercase tracking-wider
+                           bg-seal-red text-paper-cream text-[0.875rem]
+                           shadow-[0_4px_12px_rgba(168,38,31,0.30)]
+                           focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none
+                           disabled:opacity-40 disabled:cursor-not-allowed
+                           disabled:shadow-none"
+              >
+                {youSpinning ? 'Rolling…' : youValue !== null ? 'Rolled' : 'Roll'}
+              </button>
+            </div>
+
+            {/* OPP side */}
+            <div className="flex flex-col items-center gap-3">
+              <DieFace
+                value={oppValue}
+                spinning={oppSpinning}
+                highlighted={!oppSpinning && oppWon}
+                label="Opp"
+              />
+              {isHotSeat ? (
+                <button
+                  type="button"
+                  onClick={handleRollOpp}
+                  disabled={!oppEnabledHotSeat}
+                  aria-busy={oppSpinning}
+                  aria-label={oppSpinning ? 'Rolling opponent die' : 'Roll opponent die'}
+                  className="min-h-[44px] min-w-[120px] rounded-2xl px-5 py-2
+                             font-body font-extrabold uppercase tracking-wider
+                             bg-hull-teal text-paper-cream text-[0.875rem]
+                             shadow-[0_4px_12px_rgba(15,69,73,0.30)]
+                             focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none
+                             disabled:opacity-40 disabled:cursor-not-allowed
+                             disabled:shadow-none"
+                >
+                  {oppSpinning ? 'Rolling…' : oppValue !== null ? 'Rolled' : 'Roll'}
+                </button>
+              ) : (
+                <span
+                  className="min-h-[44px] min-w-[120px] flex items-center justify-center
+                             font-display text-[0.75rem] uppercase tracking-[0.16em]
+                             text-ink-iron px-2 text-center"
+                  role="status"
+                >
+                  {oppSpinning
+                    ? 'AI is rolling…'
+                    : oppValue !== null
+                      ? 'Rolled'
+                      : 'Waiting…'}
+                </span>
+              )}
+            </div>
           </div>
 
-          {!spinning && isTie && (
+          {isTie && (
             <motion.p
               initial={reduced ? false : { opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.18 }}
-              className="font-display text-[1rem] uppercase tracking-[0.16em] text-seal-red mb-4"
+              className="font-display text-[1rem] uppercase tracking-[0.16em] text-seal-red"
               role="status"
             >
               Tie! Roll again.
             </motion.p>
           )}
-
-          <button
-            ref={rollButtonRef}
-            type="button"
-            onClick={handleRoll}
-            disabled={spinning}
-            aria-busy={spinning}
-            aria-label={showValues && isTie ? 'Roll dice again' : 'Roll dice'}
-            className="min-h-[44px] min-w-[160px] rounded-2xl px-6 py-2
-                       font-body font-extrabold uppercase tracking-wider
-                       bg-seal-red text-paper-cream
-                       shadow-[0_4px_12px_rgba(168,38,31,0.30)]
-                       focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none
-                       disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {spinning ? 'Rolling…' : (showValues && isTie ? 'Roll again' : 'Roll Dice')}
-          </button>
         </motion.div>
       )}
     </AnimatePresence>

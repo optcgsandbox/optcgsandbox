@@ -56,7 +56,7 @@ export function applyAction(
     case 'KEEP_HAND':
       return resolveMulliganDecision(state, player, /* mulligan */ false);
     case 'ROLL_DICE':
-      return resolveDiceRoll(state, player);
+      return resolveDiceRoll(state, action.player);
     case 'CHOOSE_FIRST':
       return resolveFirstPlayerChoice(state, player, /* goesFirst === chooser */ true);
     case 'CHOOSE_SECOND':
@@ -68,18 +68,26 @@ export function applyAction(
 }
 
 // === D24: ROLL_DICE / CHOOSE_FIRST / CHOOSE_SECOND ===
-// CR §5-2-1-4: before the mulligan window, both players resolve a dice-roll
-// to decide who chooses turn order. Either player may fire ROLL_DICE; the
-// engine atomically rolls a d6 for both. Ties stay in `dice_roll`. The high
-// roller becomes `activePlayer` and uses CHOOSE_FIRST / CHOOSE_SECOND to
-// declare the actual first player.
+// CR §5-2-1-4: before the mulligan window, each player resolves their own
+// dice-roll. Per-player ROLL_DICE — each player presses their own button
+// (hot-seat: two humans; vs-AI: human first then AI; remote MP: routed by
+// socket). The engine rejects re-rolls (slot already non-null) until a tie
+// nulls the slots. Once both slots are non-null:
+//   - Equal → tie: null both slots, increment rolls, stay in 'dice_roll'.
+//   - High roll → high roller becomes `activePlayer`, phase advances to
+//     'first_player_choice'.
 function resolveDiceRoll(
   state: GameState,
-  _player: PlayerId,
+  player: PlayerId,
 ): { state: GameState; events: GameEvent[] } {
   if (state.phase !== 'dice_roll') return { state, events: [] };
+  if (!state.diceRoll) return { state, events: [] };
+  // Each player can only roll while their own slot is null. Re-rolls before
+  // the opponent answers are rejected (defense in depth; legality.ts also
+  // filters them out of the action surface).
+  if (state.diceRoll[player] !== null) return { state, events: [] };
   const start = state.history.length;
-  const next = rollDice(state);
+  const next = rollDice(state, player);
   return { state: next, events: next.history.slice(start) };
 }
 
