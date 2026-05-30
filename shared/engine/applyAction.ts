@@ -81,9 +81,21 @@ function activateMain(
   const inst = state.instances[instanceId];
   if (!inst) return { state, events: [] };
   if (inst.controller !== player) return { state, events: [] };
-  if (inst.rested) return { state, events: [] };
   const card = state.cardLibrary[inst.cardId];
   if (!card || !card.keywords.includes('activate_main')) return { state, events: [] };
+  // Rested guard reads from the per-zone struct because that's the canonical
+  // source the refresh phase clears (`runRefreshPhase` at phases/turn.ts:41-50
+  // does NOT walk state.instances). Reading inst.rested here would give a stale
+  // true after the first turn and silently no-op subsequent activations — the
+  // exact regression caught by Code Reviewer 2026-05-29.
+  const p = state.players[player];
+  const zoneInst =
+    p.leader.instanceId === instanceId
+      ? p.leader
+      : p.field.find((i) => i.instanceId === instanceId) ??
+        (p.stage && p.stage.instanceId === instanceId ? p.stage : null);
+  if (!zoneInst) return { state, events: [] };
+  if (zoneInst.rested) return { state, events: [] };
 
   const start = state.history.length;
   const next: GameState = structuredClone(state);
