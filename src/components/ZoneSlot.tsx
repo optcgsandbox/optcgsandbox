@@ -137,7 +137,7 @@ export function ZoneSlot({
           {label && (
             <span
               className="playmat-zone__label font-display"
-              style={{ fontSize: 9, lineHeight: 1 }}
+              style={{ fontSize: 9, lineHeight: 1.2, textAlign: 'center' }}
             >
               {label}
             </span>
