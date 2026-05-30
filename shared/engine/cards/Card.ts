@@ -80,12 +80,19 @@ export interface LeaderCard extends CardBase {
   power: number;
   life: number;
   cost: null;
+  /** D17 (CR §10-2-10): [DON!!−X] activate cost. Number of DON to return from
+   *  the cost area to the DON deck when ACTIVATE_MAIN is dispatched. Distinct
+   *  from `cost` (which is the play cost; null for leaders). v0 only consumes
+   *  cost-area DON; attached-DON payment is voluntary and deferred. */
+  donCost?: number;
 }
 
 export interface CharacterCard extends CardBase {
   kind: 'character';
   cost: number;
   power: number;
+  /** D17 (CR §10-2-10): [DON!!−X] activate cost — see LeaderCard.donCost. */
+  donCost?: number;
 }
 
 export interface EventCard extends CardBase {
@@ -104,6 +111,8 @@ export interface StageCard extends CardBase {
   kind: 'stage';
   cost: number;
   power: null;
+  /** D17 (CR §10-2-10): [DON!!−X] activate cost — see LeaderCard.donCost. */
+  donCost?: number;
 }
 
 export interface DonCard extends CardBase {

@@ -97,10 +97,16 @@ function activateMain(
   if (!zoneInst) return { state, events: [] };
   if (zoneInst.rested) return { state, events: [] };
 
+  // D17 (CR §10-2-10): [DON!!−X] cost. Validate the player has X active DON
+  // available in the cost area BEFORE mutating anything. Attached-DON payment
+  // is voluntary and not modeled in v0.
+  const donCost = getDonCost(card);
+  if (donCost > p.donCostArea.length) return { state, events: [] };
+
   const start = state.history.length;
   const next: GameState = structuredClone(state);
 
-  // Rest IS the cost.
+  // Rest IS the rest cost (always paid).
   next.instances[instanceId].rested = true;
   // Mirror onto the per-zone struct so UI + legality see the rested state.
   const np = next.players[player];
@@ -110,10 +116,24 @@ function activateMain(
   }
   if (np.stage && np.stage.instanceId === instanceId) np.stage.rested = true;
 
+  // D17: pay X DON back to the DON deck (end). Pull from cost area head.
+  if (donCost > 0) {
+    for (let i = 0; i < donCost; i++) {
+      const donId = np.donCostArea.shift();
+      if (donId) np.donDeck.push(donId);
+    }
+  }
+
   const after = fireEffects(next, instanceId, 'activate_main', player);
   Object.assign(next, after);
 
   return { state: next, events: next.history.slice(start) };
+}
+
+/** D17: extract the [DON!!−X] cost from a card, 0 when unset / inapplicable. */
+function getDonCost(card: Card): number {
+  if (card.kind !== 'leader' && card.kind !== 'character' && card.kind !== 'stage') return 0;
+  return card.donCost ?? 0;
 }
 
 // === D24: ROLL_DICE / CHOOSE_FIRST / CHOOSE_SECOND ===

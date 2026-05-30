@@ -255,20 +255,29 @@ function counterActions(state: GameState, player: PlayerId): Action[] {
 function activateMainActions(state: GameState, player: PlayerId): Action[] {
   const p = state.players[player];
   const out: Action[] = [];
+  const activeDonAvailable = p.donCostArea.length;
+
+  // D17 (CR §10-2-10): if a card has [DON!!−X], require X active DON in the
+  // cost area before exposing the action.
+  const canPayDon = (card: Card): boolean => {
+    if (card.kind !== 'leader' && card.kind !== 'character' && card.kind !== 'stage') return true;
+    const need = card.donCost ?? 0;
+    return need <= activeDonAvailable;
+  };
 
   const leaderCard = state.cardLibrary[p.leader.cardId];
-  if (leaderCard.keywords.includes('activate_main') && !p.leader.rested) {
+  if (leaderCard.keywords.includes('activate_main') && !p.leader.rested && canPayDon(leaderCard)) {
     out.push({ type: 'ACTIVATE_MAIN', instanceId: p.leader.instanceId });
   }
   for (const inst of p.field) {
     const card = state.cardLibrary[inst.cardId];
-    if (card.keywords.includes('activate_main') && !inst.rested) {
+    if (card.keywords.includes('activate_main') && !inst.rested && canPayDon(card)) {
       out.push({ type: 'ACTIVATE_MAIN', instanceId: inst.instanceId });
     }
   }
   if (p.stage) {
     const stageCard = state.cardLibrary[p.stage.cardId];
-    if (stageCard.keywords.includes('activate_main') && !p.stage.rested) {
+    if (stageCard.keywords.includes('activate_main') && !p.stage.rested && canPayDon(stageCard)) {
       out.push({ type: 'ACTIVATE_MAIN', instanceId: p.stage.instanceId });
     }
   }

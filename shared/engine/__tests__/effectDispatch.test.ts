@@ -429,6 +429,56 @@ describe('Effect dispatch (D14) — wiring', () => {
     expect(cur.players.A.hand.length).toBeGreaterThan(handAfterFirstActivate - 1);
   });
 
+  // Phase F / D17: [DON!!−X] activate cost
+  it('ACTIVATE_MAIN with donCost: 1 returns 1 DON to deck and fires effect', () => {
+    const donCostChar: CharacterCard = {
+      ...makeChar('don1', { cost: 1, effectTags: ['draw'], keywords: ['activate_main'] }),
+      donCost: 1,
+    };
+    let s = advanceToMainPhase(build([donCostChar]));
+    const instId = injectIntoHand(s, 'don1');
+    setDonActive(s, 'A', 3);
+
+    let cur = applyAction(s, 'A', { type: 'PLAY_CARD', instanceId: instId, replaceTargetId: null }).state;
+    const costAreaBefore = cur.players.A.donCostArea.length;
+    const donDeckBefore = cur.players.A.donDeck.length;
+    const handBefore = cur.players.A.hand.length;
+    const deckBefore = cur.players.A.deck.length;
+
+    cur = applyAction(cur, 'A', { type: 'ACTIVATE_MAIN', instanceId: instId }).state;
+
+    expect(cur.players.A.donCostArea.length).toBe(costAreaBefore - 1);
+    expect(cur.players.A.donDeck.length).toBe(donDeckBefore + 1);
+    expect(cur.players.A.field.find((i) => i.instanceId === instId)?.rested).toBe(true);
+    expect(cur.players.A.hand.length).toBe(handBefore + 1);
+    expect(cur.players.A.deck.length).toBe(deckBefore - 1);
+  });
+
+  it('ACTIVATE_MAIN with donCost > available DON is rejected (no mutation)', () => {
+    const donCostChar: CharacterCard = {
+      ...makeChar('don2', { cost: 1, effectTags: ['draw'], keywords: ['activate_main'] }),
+      donCost: 3,
+    };
+    let s = advanceToMainPhase(build([donCostChar]));
+    const instId = injectIntoHand(s, 'don2');
+    setDonActive(s, 'A', 2); // only 2 active DON, need 3.
+
+    let cur = applyAction(s, 'A', { type: 'PLAY_CARD', instanceId: instId, replaceTargetId: null }).state;
+    const costAreaBefore = cur.players.A.donCostArea.length;
+    const donDeckBefore = cur.players.A.donDeck.length;
+    const handBefore = cur.players.A.hand.length;
+    const deckBefore = cur.players.A.deck.length;
+
+    cur = applyAction(cur, 'A', { type: 'ACTIVATE_MAIN', instanceId: instId }).state;
+
+    // No mutation.
+    expect(cur.players.A.donCostArea.length).toBe(costAreaBefore);
+    expect(cur.players.A.donDeck.length).toBe(donDeckBefore);
+    expect(cur.players.A.field.find((i) => i.instanceId === instId)?.rested).toBe(false);
+    expect(cur.players.A.hand.length).toBe(handBefore);
+    expect(cur.players.A.deck.length).toBe(deckBefore);
+  });
+
   it('ACTIVATE_MAIN is rejected for cards without the activate_main tag', () => {
     const plainChar = makeChar('plain-1', { cost: 1, effectTags: ['draw'] });
     let s = advanceToMainPhase(build([plainChar]));
