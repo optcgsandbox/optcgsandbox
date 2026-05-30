@@ -182,6 +182,11 @@ interface GameStore {
    *  DECLARE_ATTACK; tapping the same attacker again or an empty playmat
    *  cancels. Cleared whenever phase or activePlayer changes. */
   selectedAttackerId: string | null;
+  /** TrashViewer (rules-reference.md §4.4 / CR §3-5): which player's trash
+   *  the player is currently inspecting via TrashSlot tap. Null when the
+   *  viewer is closed. Both players' trashes are open per CR §3-1-5, so
+   *  any seat may inspect either side. */
+  viewingTrashOf: PlayerId | null;
   dispatch: (action: Action) => void;
   reset: (seed?: number) => void;
   setMode: (m: GameMode) => void;
@@ -189,6 +194,7 @@ interface GameStore {
   setInspectedCardId: (id: string | null) => void;
   setCardDetailOpen: (open: boolean) => void;
   setSelectedAttackerId: (id: string | null) => void;
+  setViewingTrashOf: (id: PlayerId | null) => void;
 }
 
 const AI_HUMAN: PlayerId = 'A';
@@ -250,6 +256,7 @@ export const useGameStore = create<GameStore>((set, get) => {
     inspectedCardId: null,
     cardDetailOpen: false,
     selectedAttackerId: null,
+    viewingTrashOf: null,
 
     dispatch(action) {
       const { state } = get();
@@ -406,6 +413,10 @@ export const useGameStore = create<GameStore>((set, get) => {
       set({ selectedAttackerId: id });
     },
 
+    setViewingTrashOf(id) {
+      set({ viewingTrashOf: id });
+    },
+
     async endTurnAndAdvance() {
       // End the active player's turn — engine flips activePlayer + sets
       // phase='refresh' for the new active player. Commit that state THEN
@@ -441,6 +452,7 @@ export const useGameStore = create<GameStore>((set, get) => {
         inspectedCardId: null,
         cardDetailOpen: false,
         selectedAttackerId: null,
+        viewingTrashOf: null,
       });
     },
 

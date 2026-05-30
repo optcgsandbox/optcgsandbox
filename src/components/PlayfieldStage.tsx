@@ -33,6 +33,7 @@ import { CardArt } from './CardArt';
 import { ZoneSlot } from './ZoneSlot';
 import { HandFan } from './HandFan';
 import { CardDetailModal } from './CardDetailModal';
+import { TrashViewer } from './TrashViewer';
 import { AttackResolutionOverlay } from './AttackResolutionOverlay';
 import { TriggerPrompt } from './TriggerPrompt';
 import { MulliganPrompt } from './MulliganPrompt';
@@ -493,6 +494,7 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
         <HandFan playerId={seat} interactive />
 
         <CardDetailModal />
+        <TrashViewer />
         <AttackResolutionOverlay />
         <LifeRevealOverlay />
         <EventCardOverlay />

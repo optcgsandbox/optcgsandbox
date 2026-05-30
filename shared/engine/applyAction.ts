@@ -15,6 +15,7 @@
 
 import type { Action } from '../protocol/actions';
 import type { Card, CharacterCard, LeaderCard } from './cards/Card';
+import { fireEffects } from './cards/effects/dispatch';
 import type { CardInstance, GameEvent, GameState, PlayerId, PendingAttack } from './GameState';
 import { applyMulligan, chooseFirstPlayer, dealLifeCards, rollDice } from './phases/setup';
 import { endTurn as runEndTurn } from './phases/turn';
@@ -191,6 +192,9 @@ function playCard(
         }
         p.trash.push(removed.instanceId);
         next.history.push({ type: 'CARD_KOED', instanceId: removed.instanceId });
+        // D6 (CR §3-7-6-1-1): trashing-for-slot-6 is RULE PROCESSING, not a
+        // K.O. — no [On K.O.] effects fire. The CARD_KOED event above is
+        // cosmetic (tracked in §15.2 D6).
       }
     }
     inst.summoningSick = true;
@@ -200,10 +204,26 @@ function playCard(
     //     to keep the action surface aligned with zone separation.
     return { state, events: [] };
   } else if (card.kind === 'event') {
-    p.trash.push(instanceId);
+    // D13 / D14 (CR §8 / §10-1-5): Event main effect fires BEFORE the card
+    // goes to trash. The dispatched templates mutate `next` via a chain;
+    // we then trash the event so its state-leaving rules trigger correctly.
+    const after = fireEffects(next, instanceId, 'on_play', player);
+    // Splice the post-effect state into our working `next` (preserve history
+    // append discipline by writing back the full structuredClone).
+    Object.assign(next, after);
+    next.players[player].trash.push(instanceId);
   }
 
   next.history.push({ type: 'CARD_PLAYED', player, instanceId, cost: card.cost });
+
+  // D14 (CR §8): on_play dispatch for character. Event already fired above
+  // (it needs to resolve BEFORE trashing); leader has no on_play (it's
+  // pre-placed at setup). Stage on_play handled in playStage.
+  if (card.kind === 'character') {
+    const after = fireEffects(next, instanceId, 'on_play', player);
+    Object.assign(next, after);
+  }
+
   return { state: next, events: next.history.slice(start) };
 }
 
@@ -246,6 +266,13 @@ function playStage(
   p.stage = inst;
 
   next.history.push({ type: 'CARD_PLAYED', player, instanceId, cost: card.cost });
+
+  // D14 (CR §8): on_play dispatch for Stage. Most stages are passive
+  // (no effect tags), so this is usually a no-op; tagged stages like
+  // [On Play] ramp / lifegain pickups fire here.
+  const after = fireEffects(next, instanceId, 'on_play', player);
+  Object.assign(next, after);
+
   return { state: next, events: next.history.slice(start) };
 }
 
@@ -309,6 +336,12 @@ function declareAttack(
   next.phase = 'block_window';
   next.history.push({ type: 'ATTACK_DECLARED', attacker: attackerId, target: targetId });
   next.history.push({ type: 'PHASE_CHANGED', phase: 'block_window' });
+
+  // D14 (CR §8): when_attacking dispatch. Fires after rest + perTurn flag so
+  // any handler that reads attacker state sees "yes, this card just attacked".
+  const after = fireEffects(next, attackerId, 'when_attacking', player);
+  Object.assign(next, after);
+
   return { state: next, events: next.history.slice(start) };
 }
 
@@ -335,6 +368,13 @@ function declareBlocker(
   next.phase = 'counter_window';
   next.history.push({ type: 'BLOCKER_ACTIVATED', blocker: blockerInstanceId });
   next.history.push({ type: 'PHASE_CHANGED', phase: 'counter_window' });
+
+  // D14 (CR §8): on_block dispatch. Fires for the defender (blocker
+  // controller). Most blocker cards have no on_block effect; ones that do
+  // (e.g. draw on block) chain in here.
+  const after = fireEffects(next, blockerInstanceId, 'on_block', player);
+  Object.assign(next, after);
+
   return { state: next, events: next.history.slice(start) };
 }
 
@@ -454,12 +494,20 @@ function resolveDamage(state: GameState): { state: GameState; events: GameEvent[
       const idx = defenderSide.field.findIndex((i) => i.instanceId === pa.targetInstanceId);
       if (idx !== -1) {
         const removed = defenderSide.field.splice(idx, 1)[0];
+        const koedController = removed.controller;
         // Detach DON before trashing (rules-reference.md §1.4 — DON returns rested).
         while (removed.attachedDon.length > 0) {
           defenderSide.donRested.push(removed.attachedDon.shift()!);
         }
         defenderSide.trash.push(removed.instanceId);
         next.history.push({ type: 'CARD_KOED', instanceId: pa.targetInstanceId });
+
+        // D14 (CR §8): on_ko dispatch. Fires under the KO'd card's FORMER
+        // controller — the player who controlled the dying character. The
+        // instance is now in trash; fireEffects still reads it from
+        // state.instances which is keyed by instanceId, not zone.
+        const after = fireEffects(next, removed.instanceId, 'on_ko', koedController);
+        Object.assign(next, after);
       }
     }
   }
