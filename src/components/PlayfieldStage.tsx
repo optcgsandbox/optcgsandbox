@@ -25,7 +25,7 @@
 //
 // Cream-paper playmat surface (NO felt). Card sizes / CardArt unchanged.
 
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import { LayoutGroup } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { useDonArm } from '../store/donArm';
@@ -437,6 +437,21 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
     armedDonId,
     disarmDon,
   ]);
+
+  // Keyboard equivalent for tap-outside: Escape clears the same transient
+  // state. Without this, keyboard-only users who select an attacker or arm a
+  // DON had no way to deselect (WCAG 2.1.1).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      // Defer to modal Escape handlers when a modal is open — those already
+      // own Escape via their own document listeners (CardDetailModal /
+      // TrashViewer). We only run when no transient modal context owns it.
+      onPlaymatTap();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onPlaymatTap]);
 
   return (
     <LayoutGroup>

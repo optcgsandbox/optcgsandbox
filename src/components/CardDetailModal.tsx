@@ -434,7 +434,10 @@ export const CardDetailModal = memo(function CardDetailModal() {
             <div className="flex items-center justify-center gap-2">
               {buttons.map((btn, idx) => {
                 const isPrimary = btn.variant !== 'secondary';
-                const ref = isPrimary && idx === 0 ? primaryButtonRef : undefined;
+                // Skip disabled primaries when binding the ref — focusing a
+                // disabled button is a no-op and leaves focus stranded.
+                // Fall back to closeButtonRef via the focus useEffect.
+                const ref = isPrimary && idx === 0 && !btn.disabled ? primaryButtonRef : undefined;
                 return (
                   <button
                     key={`${btn.label}-${idx}`}

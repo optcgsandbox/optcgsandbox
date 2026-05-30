@@ -651,7 +651,13 @@ export const CardArt = memo(function CardArt({
         e.stopPropagation();
         onTap();
       }}
-      disabled={!interactive}
+      // Non-interactive (no onTap): use aria-disabled + tabIndex={-1} instead
+      // of the `disabled` attribute. Native `disabled` on Safari iOS blocks
+      // SR/focus interaction even when `pointer-events: none` already lets
+      // clicks pass through to a wrapping tappable parent (TrashSlot, etc.).
+      // Pointer-events:none in `style` below still handles the mouse path.
+      aria-disabled={!interactive ? true : undefined}
+      tabIndex={interactive ? undefined : -1}
       aria-label={a11y}
       aria-pressed={selectedAttacker}
       title={card?.name}
