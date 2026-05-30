@@ -140,7 +140,7 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
     // Static wrapper carries data-flip-back so Framer transforms inside the
     // motion.button (animate/whileHover/whileTap) don't override the CSS
     // counter-rotation on the opp side.
-    <div data-flip-back style={{ display: 'inline-block', width: DON_CARD_W, height: DON_CARD_H }}>
+    <div data-flip-back style={{ display: 'block', width: DON_CARD_W, height: DON_CARD_H }}>
     <motion.button
       type="button"
       initial={reduced ? false : { scale: 0, opacity: 0 }}
