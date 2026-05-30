@@ -674,6 +674,10 @@ export const CardArt = memo(function CardArt({
       whileTap={interactive && !reduced ? { scale: 0.97 } : undefined}
       animate={{
         ...attackerHover,
+        // Animated rest/un-rest rotation. Framer composes this with whileHover
+        // (y) and whileTap (scale). Reduced-motion users skip the tween via
+        // the global useReducedMotion gate. Owner direction 2026-05-30.
+        rotate: inst?.rested ? 90 : 0,
         boxShadow: pendingTarget || donDropTarget
           ? [
               shadowStack,
@@ -696,7 +700,8 @@ export const CardArt = memo(function CardArt({
         'relative overflow-visible',
         'outline-none focus-visible:ring-2 focus-visible:ring-sun-brass',
         interactive ? 'cursor-pointer' : 'cursor-default',
-        inst?.rested ? 'rotate-90' : '',
+        // Rotation moved to motion `animate.rotate` above so the rest/un-rest
+        // transition tweens smoothly instead of snapping via Tailwind class.
       ].join(' ')}
     >
       <div
