@@ -40,7 +40,6 @@ import { DiceRollPrompt } from './DiceRollPrompt';
 import { FirstPlayerChoicePrompt } from './FirstPlayerChoicePrompt';
 import { LifeRevealOverlay } from './LifeRevealOverlay';
 import { EventCardOverlay } from './EventCardOverlay';
-import { OpponentActionBanner } from './OpponentActionBanner';
 import { LifeStack } from './zones/LifeStack';
 import { StageSlot } from './zones/StageSlot';
 import { DeckSlot } from './zones/DeckSlot';
@@ -497,7 +496,6 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
         <AttackResolutionOverlay />
         <LifeRevealOverlay />
         <EventCardOverlay />
-        <OpponentActionBanner />
         <TriggerPrompt />
         <DiceRollPrompt />
         <FirstPlayerChoicePrompt />

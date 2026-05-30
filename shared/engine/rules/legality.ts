@@ -142,12 +142,16 @@ function attackActions(state: GameState, player: PlayerId): Action[] {
   const out: Action[] = [];
 
   // D2 (CR §6-5-6-1): NEITHER player can battle on their first turn.
-  //   - Turn 1 = first player's (A) first turn → no attacks.
-  //   - Turn 2 = second player's (B) first turn → no attacks.
-  // Prior implementation only blocked turn 1, letting P2 attack on turn 2.
+  //   - Turn 1 = first player's first turn → no attacks.
+  //   - Turn 2 = second player's first turn → no attacks.
+  // Uses GameState.firstPlayer so the gate follows the actual first player
+  // rather than hardcoding A (D24: first player can be B). Falls back to the
+  // pre-D24 A-first assumption when firstPlayer is null (legacy test paths).
+  const fp: PlayerId = state.firstPlayer ?? 'A';
+  const sp: PlayerId = fp === 'A' ? 'B' : 'A';
   const cannotAttackTurn =
-    (state.turn === 1 && player === 'A') ||
-    (state.turn === 2 && player === 'B');
+    (state.turn === 1 && player === fp) ||
+    (state.turn === 2 && player === sp);
   if (cannotAttackTurn) return out;
 
   const attackers: CardInstance[] = [];

@@ -32,12 +32,18 @@ export function runRefreshPhase(state: GameState): GameState {
   return next;
 }
 
-/** Active player draws 1. First player skips on turn 1 (rules-reference.md §1.4). */
+/** Active player draws 1. First player skips on turn 1 (rules-reference.md §1.4 / CR §6-3-1).
+ *  "First player" is whoever was declared first via CHOOSE_FIRST/CHOOSE_SECOND,
+ *  not always A — see GameState.firstPlayer. If firstPlayer is null (legacy
+ *  test paths that bypass the dice-roll window), no skip is applied. */
 export function runDrawPhase(state: GameState): GameState {
   const next: GameState = structuredClone(state);
   const p = next.players[next.activePlayer];
 
-  const isFirstPlayerFirstTurn = next.turn === 1 && next.activePlayer === 'A';
+  const isFirstPlayerFirstTurn =
+    next.turn === 1 &&
+    next.firstPlayer !== null &&
+    next.activePlayer === next.firstPlayer;
   if (!isFirstPlayerFirstTurn) {
     if (p.deck.length === 0) {
       next.result = { winner: OTHER[next.activePlayer], reason: 'deck_out' };
@@ -54,12 +60,17 @@ export function runDrawPhase(state: GameState): GameState {
   return next;
 }
 
-/** Active player adds DON. 1 on first player's first turn, 2 otherwise. */
+/** Active player adds DON. 1 on first player's first turn (CR §6-4-1), 2
+ *  otherwise (CR §6-4-2). "First player" follows GameState.firstPlayer, not a
+ *  hardcoded A. If firstPlayer is null (legacy test paths), default to 2. */
 export function runDonPhase(state: GameState): GameState {
   const next: GameState = structuredClone(state);
   const p = next.players[next.activePlayer];
 
-  const isFirstPlayerFirstTurn = next.turn === 1 && next.activePlayer === 'A';
+  const isFirstPlayerFirstTurn =
+    next.turn === 1 &&
+    next.firstPlayer !== null &&
+    next.activePlayer === next.firstPlayer;
   const count = isFirstPlayerFirstTurn ? RULES.DON_PER_TURN_FIRST : RULES.DON_PER_TURN_AFTER_FIRST;
   const dealt = Math.min(count, p.donDeck.length);
   for (let i = 0; i < dealt; i++) {

@@ -132,6 +132,11 @@ export function chooseFirstPlayer(
 ): GameState {
   const next: GameState = structuredClone(state);
   next.activePlayer = goesFirst;
+  // D24 / CR §6-3-1 + §6-4-1: persist the first-player decision so the
+  // downstream turn-1 rules (no draw, +1 DON, no attacks) follow the actual
+  // first player rather than hardcoding A. See turn.ts runDrawPhase /
+  // runDonPhase and legality.attackActions / applyAction.declareAttack.
+  next.firstPlayer = goesFirst;
   next.phase = 'mulligan_first';
   next.history.push({ type: 'FIRST_PLAYER_CHOSEN', chooser, goesFirst });
   next.history.push({ type: 'PHASE_CHANGED', phase: 'mulligan_first' });

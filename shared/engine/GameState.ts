@@ -121,6 +121,15 @@ export interface GameState {
    *  before `setupGame`, retained read-only after the window closes so the UI
    *  log can replay the result. */
   diceRoll: { A: number | null; B: number | null; rolls: number } | null;
+  /** D24 (CR §5-2-1-4 + §6-3-1 + §6-4-1): who goes first this game. Set by
+   *  CHOOSE_FIRST / CHOOSE_SECOND once the dice-roll window closes. Null until
+   *  the first-player decision is made. The first player skips their turn-1
+   *  draw (CR §6-3-1) and gets only 1 DON instead of 2 on turn 1 (CR §6-4-1).
+   *  Also gates "no attacks on your first turn" (CR §6-5-6-1) so that the
+   *  rule follows the actual first player rather than always blocking A.
+   *  Tests that bypass dice/mulligan via `closeMulliganKeepBoth` get
+   *  `firstPlayer = 'A'` so their pre-D24 assumptions hold. */
+  firstPlayer: PlayerId | null;
 }
 
 export interface PendingAttack {
@@ -269,5 +278,6 @@ export function initialState(args: {
     pendingTrigger: null,
     mulliganUsed: { A: false, B: false },
     diceRoll: null,
+    firstPlayer: null,
   };
 }

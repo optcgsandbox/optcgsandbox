@@ -74,6 +74,15 @@ export function closeMulliganKeepBoth(state: GameState): GameState {
     s = chooseFirstPlayer(s, s.activePlayer, 'A');
   }
 
+  // D24 (2026-05-29): firstPlayer must be wired so runDrawPhase / runDonPhase
+  // / attack-gating see the correct first player. chooseFirstPlayer above
+  // already sets it; this is a defensive no-op for the path where we bypassed
+  // it (none currently, but keep the invariant explicit so legacy callers stay
+  // safe).
+  if (s.firstPlayer === null) {
+    s = { ...s, firstPlayer: 'A' };
+  }
+
   // D10: now in 'mulligan_first'. P1 (activePlayer) decides first per
   // CR §5-2-1-6, then the other player.
   const p1 = s.activePlayer;

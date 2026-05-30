@@ -284,8 +284,16 @@ function declareAttack(
 ): { state: GameState; events: GameEvent[] } {
   if (state.activePlayer !== player) return { state, events: [] };
   // D2 (CR §6-5-6-1): neither player may attack on their first turn.
-  //   Turn 1 = A's first turn; turn 2 = B's first turn. Block both.
-  if ((state.turn === 1 && player === 'A') || (state.turn === 2 && player === 'B')) {
+  //   Turn 1 = first player's first turn; turn 2 = second player's first turn.
+  //   Uses GameState.firstPlayer so the gate follows the actual first player
+  //   rather than hardcoding A.
+  if (state.firstPlayer !== null) {
+    const second: PlayerId = state.firstPlayer === 'A' ? 'B' : 'A';
+    if ((state.turn === 1 && player === state.firstPlayer) || (state.turn === 2 && player === second)) {
+      return { state, events: [] };
+    }
+  } else if ((state.turn === 1 && player === 'A') || (state.turn === 2 && player === 'B')) {
+    // Legacy path (firstPlayer not set — pre-D24 tests): preserve old behavior.
     return { state, events: [] };
   }
   const next: GameState = structuredClone(state);

@@ -91,32 +91,37 @@ function bootGame(seed: number): GameState {
 
 /** Pacing constants for AI / phase transitions.
  *
- *  Owner direction 2026-05-29: opp turns were running at 250ms/action with no
- *  banner — invisible to the human. AI moves now hold for ~1.5s each, R/D/D
- *  steps breathe with a 700ms gap between them, and the AI→human handoff
- *  pauses for 1s so the player has a moment to register the transition before
- *  their own refresh kicks in. Banner overlay (OpponentActionBanner) reads
- *  state.history to surface each action as a transient pill.
+ *  Owner direction 2026-05-29 (round 2): banner removed; pacing slowed so each
+ *  move + phase change is plainly watchable. AI ticks hold ~2.5s between
+ *  decisions, R/D/DON steps breathe at 1.5s, and the AI→human handoff pauses
+ *  for 2s. OPP_VISIBLE_HOLD_MS is an additional hold AFTER each AI action
+ *  commits to the store, so the field-state change has time to render before
+ *  the next tick fires. Without the banner the move animation + zone state
+ *  ARE the readability surface — they need room to land.
  */
-const AI_ACTION_DELAY_MS = 1500;
-const BETWEEN_PHASE_DELAY_MS = 700;
-const TURN_HANDOFF_DELAY_MS = 1000;
+const AI_ACTION_DELAY_MS = 2500;
+const BETWEEN_PHASE_DELAY_MS = 1500;
+const TURN_HANDOFF_DELAY_MS = 2000;
+const OPP_VISIBLE_HOLD_MS = 800;
 
 function wait(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
 
 /** Run the active player's refresh → draw → don pipeline with visible pacing.
- *  Each phase commits to the store before the next, and a short delay between
- *  them lets the OpponentActionBanner render the corresponding event. Used by
- *  both `runFirstTurnPhases` (post-mulligan kickoff for whichever player goes
+ *  Each phase commits to the store before the next, and a delay between them
+ *  gives the UI time to render the state change. Used by both
+ *  `runFirstTurnPhases` (post-mulligan kickoff for whichever player goes
  *  first) and `runAiTurn` (handoff back to the human at the end of AI's turn).
  *  No-op if the current phase isn't 'refresh'.
  *
  *  The engine emits PHASE_CHANGED→draw at the end of runRefreshPhase but
  *  never emits PHASE_CHANGED→refresh (phase is set directly by endTurn /
  *  mulligan close). We splice a synthetic refresh marker into history right
- *  before the draw marker so the banner queue reads R → D → DON in order. */
+ *  before the draw marker so any history-driven UI reads R → D → DON in
+ *  order. (The OpponentActionBanner that previously consumed this was
+ *  removed 2026-05-29 per owner direction — slow visible moves beat banner
+ *  pills.) */
 async function runPhasePipelineWithDelays(
   get: () => GameStore,
   set: (partial: Partial<GameStore>) => void,
@@ -208,9 +213,13 @@ async function runAiTurn(
     const { state: next } = applyAction(s, AI_OPPONENT, action);
     set({ state: next, legalActions: getLegalActions(next, next.activePlayer) });
     if (action.type === 'END_TURN' || action.type === 'RESIGN') break;
-    // Pace AI moves so the human can read each action. Banner overlay
-    // labels them; this delay gives the banner time to surface.
-    await wait(AI_ACTION_DELAY_MS);
+    // Two-stage pacing: hold AFTER the action commits so the player sees the
+    // field state change (OPP_VISIBLE_HOLD_MS), THEN wait the longer think
+    // delay before the next AI tick (AI_ACTION_DELAY_MS - OPP_VISIBLE_HOLD_MS).
+    // Net delay matches AI_ACTION_DELAY_MS; splitting it just guarantees the
+    // commit is visible before any "thinking" silence.
+    await wait(OPP_VISIBLE_HOLD_MS);
+    await wait(Math.max(0, AI_ACTION_DELAY_MS - OPP_VISIBLE_HOLD_MS));
   }
   // After AI ends turn, advance phases back to human's main.
   if (!get().state.result && get().state.activePlayer === AI_OPPONENT) {
