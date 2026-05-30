@@ -11,6 +11,13 @@ import type { Card, LeaderCard } from './cards/Card';
 export type PlayerId = 'A' | 'B';
 
 export type Phase =
+  // D24 (CR §5-2-1-4): dice-roll first-player decision. Both players roll a
+  // single d6; high roll wins. Ties stay in `dice_roll` and re-roll. Winner
+  // transitions to `first_player_choice` where they decide whether to go first
+  // or second. Whoever ends up going first becomes `activePlayer` heading into
+  // the mulligan window.
+  | 'dice_roll'
+  | 'first_player_choice'
   // D10 (CR §5-2-1-6): mulligan window. Active player decides first
   // (`mulligan_first`), then the other player (`mulligan_second`). Once both
   // have either MULLIGAN'd or KEPT, life cards are dealt (CR §5-2-1-7) and the
@@ -107,6 +114,13 @@ export interface GameState {
    *  consumed by the phase transition, but the flag is reserved for actual
    *  reshuffles so test surfaces can assert the rule). */
   mulliganUsed: Record<PlayerId, boolean>;
+  /** D24 (CR §5-2-1-4): outcome of the dice-roll first-player decision. Each
+   *  field holds the most recent d6 result for that player, or null before any
+   *  roll has occurred. `rolls` counts how many rounds were rolled (incremented
+   *  on every ROLL_DICE — including ties that produced no winner). Null
+   *  before `setupGame`, retained read-only after the window closes so the UI
+   *  log can replay the result. */
+  diceRoll: { A: number | null; B: number | null; rolls: number } | null;
 }
 
 export interface PendingAttack {
@@ -142,6 +156,14 @@ export interface GameResult {
 
 export type GameEvent =
   | { type: 'GAME_STARTED'; firstPlayer: PlayerId }
+  /** D24 (CR §5-2-1-4): emitted on every ROLL_DICE — including ties. `winner`
+   *  is null on a tie, A/B otherwise. UI uses this for the dice-spin animation
+   *  log and to know when to surface a re-roll button. */
+  | { type: 'DICE_ROLLED'; a: number; b: number; winner: PlayerId | null }
+  /** D24 (CR §5-2-1-4): emitted when the dice-winner declares first/second.
+   *  `goesFirst` is the player ID who will be active for the mulligan window
+   *  and turn 1. */
+  | { type: 'FIRST_PLAYER_CHOSEN'; chooser: PlayerId; goesFirst: PlayerId }
   /** D10 (CR §5-2-1-6): emitted when a player resolves their mulligan window —
    *  either by reshuffling (`kept: false`) or keeping their opening 5
    *  (`kept: true`). UI uses this for log feedback. */
@@ -246,5 +268,6 @@ export function initialState(args: {
     pendingAttack: null,
     pendingTrigger: null,
     mulliganUsed: { A: false, B: false },
+    diceRoll: null,
   };
 }

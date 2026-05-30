@@ -461,8 +461,9 @@ Audited 2026-05-29 against engine commit `a84f87d` + UI commit `0ea7edb`.
 - ✅ **D4 Once Per Turn per-card** — `CardInstance.perTurn.effectsUsed: string[]` replaces single boolean
 - ✅ **D8 Unblockable** — `Keyword` union includes `'unblockable'`; `blockerActions` short-circuits
 - ✅ **D10 Mulligan window implemented** (CR §5-2-1-6 + §5-2-1-7) — `Phase` adds `'mulligan_first'` / `'mulligan_second'`; new `MULLIGAN` + `KEEP_HAND` actions replace the prior `MULLIGAN_CONFIRM` no-op; `setupGame` defers life dealing until both decisions resolve via `dealLifeCards`; `legality.ts` gates the window to the correct decider; UI prompt at `src/components/MulliganPrompt.tsx`; both AI tiers auto-KEEP
+- ✅ **D24 Dice-roll first-player choice** (CR §5-2-1-4) — `Phase` adds `'dice_roll'` / `'first_player_choice'` BEFORE `'mulligan_first'`; `GameState.diceRoll` records both d6 values + rolls counter; new `ROLL_DICE` / `CHOOSE_FIRST` / `CHOOSE_SECOND` actions; `setupGame` now opens in `dice_roll` with hands dealt and life undealt; engine helpers `rollDice` + `chooseFirstPlayer` in `phases/setup.ts` use Mulberry32 derived from `seed XOR round`; ties keep phase in `dice_roll` and re-roll on next dispatch; winner becomes `activePlayer` and chooses turn order; UI prompts at `src/components/DiceRollPrompt.tsx` + `src/components/FirstPlayerChoicePrompt.tsx`; vs-AI auto-rolls + auto-chooses Go First after a 600ms beat
 
-Engine test count: 73/73 passing (62 prior + 11 D10).
+Engine test count: 95/95 passing (73 prior + 22 D24).
 
 ### 15.2 Engine — OPEN
 

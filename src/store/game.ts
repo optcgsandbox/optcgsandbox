@@ -70,11 +70,12 @@ function quickDeck(color: 'red' | 'blue'): Card[] {
   return deck.slice(0, 50);
 }
 
-/** D10 (CR §5-2-1-6): `setupGame` now leaves the engine in the mulligan
- *  window with life cards undealt. The store stops here so the UI can prompt
- *  the active player. Once both players resolve their mulligan via the
- *  MulliganPrompt, the dispatch path calls `runFirstTurnPhases` to deal life
- *  and run player A's refresh → draw → don. */
+/** D24 (CR §5-2-1-4) + D10 (CR §5-2-1-6): `setupGame` leaves the engine in
+ *  the dice-roll window with life cards undealt. The store stops here so the
+ *  UI can prompt the active player. Once both players resolve dice-roll,
+ *  first-player choice, and mulligan via their respective prompts, the
+ *  dispatch path calls `runFirstTurnPhases` to deal life and run the first
+ *  player's refresh → draw → don. */
 function bootGame(seed: number): GameState {
   let s = initialState({
     seed,
@@ -84,7 +85,7 @@ function bootGame(seed: number): GameState {
     },
   });
   s = setupGame(s);
-  // Phase is now 'mulligan_first'. Do NOT run refresh/draw/don yet.
+  // Phase is now 'dice_roll'. Do NOT run refresh/draw/don yet.
   return s;
 }
 
@@ -180,7 +181,9 @@ export const useGameStore = create<GameStore>((set, get) => {
       // Reactive-window actions come from the *inactive* player. Route accordingly.
       //   - block_window / counter_window: opponent of activePlayer reacts.
       //   - mulligan_second: opponent of activePlayer decides (D10, CR §5-2-1-6).
-      // Mulligan_first uses activePlayer as normal.
+      // Mulligan_first / dice_roll / first_player_choice use activePlayer.
+      //   D24 note: ROLL_DICE is legal for both players; routing through
+      //   activePlayer is fine because resolveDiceRoll ignores the player.
       const isInactivePlayerPhase =
         state.phase === 'block_window' ||
         state.phase === 'counter_window' ||
@@ -212,48 +215,95 @@ export const useGameStore = create<GameStore>((set, get) => {
       }
 
       // D10: AI auto-mulligan. When the AI is player B (vs-easy / vs-medium)
-      // and the engine just transitioned into `mulligan_second`, auto-KEEP for
-      // the AI so the human isn't stuck waiting. Per the task spec, both Easy
-      // and Medium AI just KEEP_HAND.
+      // and the engine is awaiting the AI's decision, auto-KEEP for the AI
+      // so the human isn't stuck waiting. Per the task spec, both Easy and
+      // Medium AI just KEEP_HAND.
+      //
+      // D24 (2026-05-29) update: post-dice-roll the AI may be the FIRST
+      // player (if it won the roll and chose to go first, or the human won
+      // and chose to go second). When that happens the AI is the decider in
+      // `mulligan_first`, NOT mulligan_second — extend the auto-fire to
+      // either window depending on who needs to decide next.
       const aiMode = get().mode;
-      if (
-        (aiMode === 'vs-easy' || aiMode === 'vs-medium') &&
-        next.phase === 'mulligan_second' &&
-        // AI is B; B's turn to decide.
-        next.activePlayer === AI_HUMAN
-      ) {
+      const aiDeciderInFirst =
+        next.phase === 'mulligan_first' && next.activePlayer === AI_OPPONENT;
+      const aiDeciderInSecond =
+        next.phase === 'mulligan_second' && next.activePlayer === AI_HUMAN;
+      if ((aiMode === 'vs-easy' || aiMode === 'vs-medium') && (aiDeciderInFirst || aiDeciderInSecond)) {
         const aiResult = applyAction(next, AI_OPPONENT, { type: 'KEEP_HAND' });
         next = aiResult.state;
+        // If the AI's KEEP advanced the engine straight through to
+        // mulligan_second with the human as decider, stop here.
+        // Otherwise fully close the window and run first-turn phases.
         if (next.phase === 'refresh') {
           next = runFirstTurnPhases(next);
         }
       }
+      // D24: if first-turn phases just put the AI on its main phase (because
+      // the AI is the first player after dice-roll), kick off the AI turn
+      // loop so it plays + ends turn back to the human.
+      const aiNowOnMain =
+        (aiMode === 'vs-easy' || aiMode === 'vs-medium') &&
+        next.phase === 'main' &&
+        next.activePlayer === AI_OPPONENT &&
+        state.phase !== 'main';
+      if (aiNowOnMain) {
+        // Defer the AI loop to a microtask so the UI commits the post-
+        // mulligan state first. runAiTurn handles legalActions + aiThinking.
+        set({
+          state: next,
+          legalActions: getLegalActions(next, next.activePlayer),
+          inspectedCardId: null,
+          cardDetailOpen: false,
+          selectedAttackerId: null,
+        });
+        void runAiTurn(get, set);
+        return;
+      }
 
       // D10 (hot-seat): when the mulligan window advances to mulligan_second,
       // hand the viewer over to player B so the prompt renders for the
-      // correct human. activePlayer stays A throughout the window (per
-      // CR §5-2-1-6 "first player decides first"), so we use phase + mode as
-      // the trigger rather than activePlayer change.
+      // correct human. activePlayer stays the FIRST player throughout the
+      // window (per CR §5-2-1-6 "first player decides first"), so we use
+      // phase + mode as the trigger rather than activePlayer change.
       const isHotSeat = get().mode === 'hot-seat';
-      const viewAsOverride =
+      const viewAsMulliganSecond =
         isHotSeat && state.phase === 'mulligan_first' && next.phase === 'mulligan_second'
-          ? (state.activePlayer === 'A' ? 'B' as PlayerId : 'A' as PlayerId)
+          ? (next.activePlayer === 'A' ? 'B' as PlayerId : 'A' as PlayerId)
+          : null;
+      // D24 (hot-seat): when ROLL_DICE produces a winner, hand the viewer
+      // over to the winner so they see the FirstPlayerChoicePrompt with the
+      // Go-First / Go-Second buttons. Both players had access to ROLL_DICE
+      // so the prior viewAs may be either; this flip normalizes.
+      const viewAsFirstChoice =
+        isHotSeat && state.phase === 'dice_roll' && next.phase === 'first_player_choice'
+          ? next.activePlayer
+          : null;
+      // D24 (hot-seat): once first-player choice closes into the mulligan
+      // window, the FIRST player (next.activePlayer) is the decider. Snap
+      // viewAs to them so MulliganPrompt renders on the right seat.
+      const viewAsMulliganFirst =
+        isHotSeat && state.phase === 'first_player_choice' && next.phase === 'mulligan_first'
+          ? next.activePlayer
           : null;
       // When mulligan finishes in hot-seat, hand the seat back to the active
-      // player (A — first player goes first).
+      // player (whoever ended up going first).
       const viewAsAfterMulligan =
-        isHotSeat && next.phase === 'don' && state.phase !== 'don' && next.activePlayer === 'A'
-          ? 'A' as PlayerId
+        isHotSeat && next.phase === 'don' && state.phase !== 'don'
+          ? next.activePlayer
           : null;
 
       // UI-D2/D3: any phase or active-player change clears transient UI state.
       const phaseOrPlayerChanged =
         next.phase !== state.phase || next.activePlayer !== state.activePlayer;
+      // viewAs override priority (later wins): mulligan_second flip, dice→
+      // choice flip, choice→mulligan_first flip, mulligan→post flip.
+      const viewAsOverride =
+        viewAsAfterMulligan ?? viewAsMulliganFirst ?? viewAsFirstChoice ?? viewAsMulliganSecond ?? null;
       set({
         state: next,
         legalActions: getLegalActions(next, next.activePlayer),
         ...(viewAsOverride ? { viewAs: viewAsOverride } : {}),
-        ...(viewAsAfterMulligan ? { viewAs: viewAsAfterMulligan } : {}),
         ...(phaseOrPlayerChanged
           ? { inspectedCardId: null, cardDetailOpen: false, selectedAttackerId: null }
           : {}),

@@ -14,6 +14,7 @@
 
 import { applyAction } from '../applyAction';
 import type { GameState, PlayerId } from '../GameState';
+import { chooseFirstPlayer } from '../phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '../phases/turn';
 
 /** Advance the game past the first-turn-no-attack window for both players
@@ -39,17 +40,45 @@ export function advanceOneFullCycle(state: GameState): GameState {
   return s;
 }
 
-/** D10 (CR §5-2-1-6): close the mulligan window for both players with KEEP
- *  decisions. After `setupGame`, the state sits in `'mulligan_first'` with
- *  empty life arrays. Tests that don't exercise the mulligan flow use this
+/** D10 (CR §5-2-1-6) + D24 (CR §5-2-1-4): close the dice-roll, first-player
+ *  choice, and mulligan window for both players, with both players KEEPing
+ *  their hands. After `setupGame`, the state sits in `'dice_roll'` with empty
+ *  life arrays. Tests that don't exercise the setup-window flow use this
  *  helper to advance to the post-mulligan world (life dealt, phase = refresh)
  *  so the rest of their setup chain (`runRefreshPhase`, `endTurn`, etc.) works
- *  as it did pre-D10. */
+ *  as it did pre-D10/D24.
+ *
+ *  Pre-D24 tests assumed `setupGame` produced `activePlayer === 'A'` heading
+ *  into the first turn — and a lot of test inventory still depends on that.
+ *  To keep that contract, this helper deterministically forces A as the first
+ *  player by skipping ROLL_DICE entirely and calling `chooseFirstPlayer`
+ *  directly. Tests that DO want to exercise the dice-roll engine path (see
+ *  `diceRoll.test.ts`) drive ROLL_DICE / CHOOSE_FIRST manually instead. */
 export function closeMulliganKeepBoth(state: GameState): GameState {
-  // P1 (activePlayer) decides first per CR §5-2-1-6.
-  const p1 = state.activePlayer;
+  let s = state;
+
+  // D24: skip past the dice-roll window deterministically. If we're already
+  // past it (tests that already advanced manually), this is a no-op.
+  if (s.phase === 'dice_roll') {
+    // Synthesize a roll result: A wins with 6 vs 1 so the diceRoll snapshot
+    // is still meaningful for any code that reads it. This bypasses the RNG
+    // so test results stay reproducible regardless of seed.
+    s = {
+      ...s,
+      diceRoll: { A: 6, B: 1, rolls: 1 },
+      phase: 'first_player_choice',
+      activePlayer: 'A',
+    };
+  }
+  if (s.phase === 'first_player_choice') {
+    s = chooseFirstPlayer(s, s.activePlayer, 'A');
+  }
+
+  // D10: now in 'mulligan_first'. P1 (activePlayer) decides first per
+  // CR §5-2-1-6, then the other player.
+  const p1 = s.activePlayer;
   const p2: PlayerId = p1 === 'A' ? 'B' : 'A';
-  const r1 = applyAction(state, p1, { type: 'KEEP_HAND' });
+  const r1 = applyAction(s, p1, { type: 'KEEP_HAND' });
   const r2 = applyAction(r1.state, p2, { type: 'KEEP_HAND' });
   return r2.state;
 }

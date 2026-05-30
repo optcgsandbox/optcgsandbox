@@ -16,7 +16,7 @@
 import type { Action } from '../protocol/actions';
 import type { Card, CharacterCard, LeaderCard } from './cards/Card';
 import type { CardInstance, GameEvent, GameState, PlayerId, PendingAttack } from './GameState';
-import { applyMulligan, dealLifeCards } from './phases/setup';
+import { applyMulligan, chooseFirstPlayer, dealLifeCards, rollDice } from './phases/setup';
 import { endTurn as runEndTurn } from './phases/turn';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
@@ -55,10 +55,48 @@ export function applyAction(
       return resolveMulliganDecision(state, player, /* mulligan */ true);
     case 'KEEP_HAND':
       return resolveMulliganDecision(state, player, /* mulligan */ false);
+    case 'ROLL_DICE':
+      return resolveDiceRoll(state, player);
+    case 'CHOOSE_FIRST':
+      return resolveFirstPlayerChoice(state, player, /* goesFirst === chooser */ true);
+    case 'CHOOSE_SECOND':
+      return resolveFirstPlayerChoice(state, player, /* goesFirst === chooser */ false);
     case 'ACTIVATE_MAIN':
       // v0.1 hook — return state untouched for now.
       return { state, events: [] };
   }
+}
+
+// === D24: ROLL_DICE / CHOOSE_FIRST / CHOOSE_SECOND ===
+// CR §5-2-1-4: before the mulligan window, both players resolve a dice-roll
+// to decide who chooses turn order. Either player may fire ROLL_DICE; the
+// engine atomically rolls a d6 for both. Ties stay in `dice_roll`. The high
+// roller becomes `activePlayer` and uses CHOOSE_FIRST / CHOOSE_SECOND to
+// declare the actual first player.
+function resolveDiceRoll(
+  state: GameState,
+  _player: PlayerId,
+): { state: GameState; events: GameEvent[] } {
+  if (state.phase !== 'dice_roll') return { state, events: [] };
+  const start = state.history.length;
+  const next = rollDice(state);
+  return { state: next, events: next.history.slice(start) };
+}
+
+function resolveFirstPlayerChoice(
+  state: GameState,
+  player: PlayerId,
+  goesFirstIsChooser: boolean,
+): { state: GameState; events: GameEvent[] } {
+  if (state.phase !== 'first_player_choice') return { state, events: [] };
+  // Only the dice-winner (activePlayer at this point) may declare.
+  if (player !== state.activePlayer) return { state, events: [] };
+  const goesFirst: PlayerId = goesFirstIsChooser
+    ? player
+    : (player === 'A' ? 'B' : 'A');
+  const start = state.history.length;
+  const next = chooseFirstPlayer(state, player, goesFirst);
+  return { state: next, events: next.history.slice(start) };
 }
 
 // === D10: MULLIGAN / KEEP_HAND ===

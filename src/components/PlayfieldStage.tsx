@@ -36,6 +36,8 @@ import { CardDetailModal } from './CardDetailModal';
 import { AttackResolutionOverlay } from './AttackResolutionOverlay';
 import { TriggerPrompt } from './TriggerPrompt';
 import { MulliganPrompt } from './MulliganPrompt';
+import { DiceRollPrompt } from './DiceRollPrompt';
+import { FirstPlayerChoicePrompt } from './FirstPlayerChoicePrompt';
 import { LifeRevealOverlay } from './LifeRevealOverlay';
 import { EventCardOverlay } from './EventCardOverlay';
 import { LifeStack } from './zones/LifeStack';
@@ -495,6 +497,8 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
         <LifeRevealOverlay />
         <EventCardOverlay />
         <TriggerPrompt />
+        <DiceRollPrompt />
+        <FirstPlayerChoicePrompt />
         <MulliganPrompt />
       </div>
     </LayoutGroup>

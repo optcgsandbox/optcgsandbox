@@ -13,13 +13,18 @@
 //     is rejected per CR §5-2-1-6-1 (once-only).
 //   - getLegalActions in mulligan phases offers exactly MULLIGAN / KEEP_HAND
 //     for the decider and only RESIGN for the non-decider.
+//
+// D24 (2026-05-29) — setupGame now opens the dice-roll window BEFORE the
+// mulligan window. These tests run the dice-roll and first-player choice
+// through a helper so they exercise mulligan flow in isolation.
 
 import { describe, expect, it } from 'vitest';
 import { applyAction } from '../applyAction';
 import { initialState, RULES } from '../GameState';
-import { setupGame } from '../phases/setup';
+import { chooseFirstPlayer, rollDice, setupGame } from '../phases/setup';
 import { getLegalActions } from '../rules/legality';
 import type { Card, CharacterCard, LeaderCard } from '../cards/Card';
+import type { GameState, PlayerId } from '../GameState';
 
 function makeLeader(id: string): LeaderCard {
   return {
@@ -48,9 +53,41 @@ function build(seed = 42) {
   });
 }
 
+/** D24: advance setupGame past the dice-roll + first-player choice and into
+ *  `mulligan_first`. Loops ROLL_DICE until a winner is produced (uses the
+ *  pure rollDice helper to bypass the legality check, since we don't care
+ *  who fires it). The winner picks CHOOSE_FIRST so they become activePlayer
+ *  for the mulligan window. */
+function advancePastDiceRoll(state: GameState, firstPlayer: PlayerId = 'A'): GameState {
+  let s = state;
+  let rolls = 0;
+  while (s.phase === 'dice_roll' && rolls++ < 64) {
+    s = rollDice(s);
+  }
+  // If the winner wasn't the requested firstPlayer, the loser-of-the-choice
+  // picks CHOOSE_SECOND so the requested player goes first; otherwise winner
+  // picks CHOOSE_FIRST.
+  if (s.phase === 'first_player_choice') {
+    const winner = s.activePlayer;
+    if (winner === firstPlayer) {
+      s = chooseFirstPlayer(s, winner, winner);
+    } else {
+      const other: PlayerId = winner === 'A' ? 'B' : 'A';
+      s = chooseFirstPlayer(s, winner, other);
+    }
+  }
+  return s;
+}
+
+/** Compose setupGame + dice-roll close so existing mulligan tests can keep
+ *  asserting against `mulligan_first` directly. */
+function setupForMulliganTests(seed = 42): GameState {
+  return advancePastDiceRoll(setupGame(build(seed)));
+}
+
 describe('D10: Mulligan window — initial state after setupGame', () => {
   it('phase is mulligan_first; both players have 5-card hands; no life dealt yet', () => {
-    const s = setupGame(build());
+    const s = setupForMulliganTests();
     expect(s.phase).toBe('mulligan_first');
     expect(s.activePlayer).toBe('A');
     expect(s.players.A.hand).toHaveLength(RULES.STARTING_HAND);
@@ -64,7 +101,7 @@ describe('D10: Mulligan window — initial state after setupGame', () => {
 
 describe('D10: legal actions during the mulligan window', () => {
   it('mulligan_first: active player gets MULLIGAN + KEEP_HAND + RESIGN', () => {
-    const s = setupGame(build());
+    const s = setupForMulliganTests();
     const legal = getLegalActions(s, 'A');
     expect(legal).toContainEqual({ type: 'MULLIGAN' });
     expect(legal).toContainEqual({ type: 'KEEP_HAND' });
@@ -73,12 +110,12 @@ describe('D10: legal actions during the mulligan window', () => {
   });
 
   it('mulligan_first: non-decider (player B) can only RESIGN', () => {
-    const s = setupGame(build());
+    const s = setupForMulliganTests();
     expect(getLegalActions(s, 'B')).toEqual([{ type: 'RESIGN' }]);
   });
 
   it('mulligan_second: only player B may decide', () => {
-    let s = setupGame(build());
+    let s = setupForMulliganTests();
     s = applyAction(s, 'A', { type: 'KEEP_HAND' }).state;
     expect(s.phase).toBe('mulligan_second');
     const legalB = getLegalActions(s, 'B');
@@ -91,7 +128,7 @@ describe('D10: legal actions during the mulligan window', () => {
 
 describe('D10: MULLIGAN action — active player', () => {
   it('reshuffles and redraws a different hand; phase → mulligan_second', () => {
-    const s = setupGame(build());
+    const s = setupForMulliganTests();
     const handBefore = [...s.players.A.hand];
 
     const { state: after, events } = applyAction(s, 'A', { type: 'MULLIGAN' });
@@ -114,7 +151,7 @@ describe('D10: MULLIGAN action — active player', () => {
     // rejected on phase grounds; additionally `mulliganUsed.A` is true so
     // even routing A through mulligan_second's decider check (it's B now)
     // can't reach the second-mulligan path. Confirm via state equality.
-    let s = setupGame(build());
+    let s = setupForMulliganTests();
     s = applyAction(s, 'A', { type: 'MULLIGAN' }).state;
     expect(s.phase).toBe('mulligan_second');
     expect(s.mulliganUsed.A).toBe(true);
@@ -130,7 +167,7 @@ describe('D10: MULLIGAN action — active player', () => {
 
 describe('D10: KEEP_HAND action — active player', () => {
   it('keeps hand unchanged; phase → mulligan_second; mulliganUsed stays false', () => {
-    const s = setupGame(build());
+    const s = setupForMulliganTests();
     const handBefore = [...s.players.A.hand];
 
     const { state: after, events } = applyAction(s, 'A', { type: 'KEEP_HAND' });
@@ -144,7 +181,7 @@ describe('D10: KEEP_HAND action — active player', () => {
 
 describe('D10: closing the window deals life and advances to refresh', () => {
   it('after both players KEEP: phase = refresh, life arrays full', () => {
-    let s = setupGame(build());
+    let s = setupForMulliganTests();
     s = applyAction(s, 'A', { type: 'KEEP_HAND' }).state;
     expect(s.phase).toBe('mulligan_second');
 
@@ -159,7 +196,7 @@ describe('D10: closing the window deals life and advances to refresh', () => {
   });
 
   it('after both players MULLIGAN: phase = refresh, both hands redrawn, life full', () => {
-    let s = setupGame(build());
+    let s = setupForMulliganTests();
     const aHandBefore = [...s.players.A.hand];
     const bHandBefore = [...s.players.B.hand];
     s = applyAction(s, 'A', { type: 'MULLIGAN' }).state;
@@ -174,7 +211,7 @@ describe('D10: closing the window deals life and advances to refresh', () => {
   });
 
   it('mixed: A KEEPS, B MULLIGANS → A hand same, B hand different, life full', () => {
-    let s = setupGame(build());
+    let s = setupForMulliganTests();
     const aHandBefore = [...s.players.A.hand];
     const bHandBefore = [...s.players.B.hand];
 

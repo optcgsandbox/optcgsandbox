@@ -6,10 +6,11 @@ import { getLegalActions } from '../rules/legality';
 import type { Card, CharacterCard, LeaderCard } from '../cards/Card';
 import { closeMulliganKeepBoth } from './_donHelpers';
 
-/** D10 wrapper: `setupGame` now leaves the engine in the mulligan window with
- *  no life cards dealt. Pre-D10 tests assume life cards exist immediately
- *  after setup; this helper restores that contract for tests that don't
- *  exercise the mulligan flow itself. */
+/** D10/D24 wrapper: `setupGame` now leaves the engine in the dice-roll window
+ *  with no life cards dealt. Pre-D10/D24 tests assume life cards exist
+ *  immediately after setup; this helper restores that contract for tests that
+ *  don't exercise the setup-window flow itself (dice-roll, first-player choice,
+ *  mulligan). */
 function setup(state: ReturnType<typeof initialState>): ReturnType<typeof initialState> {
   return closeMulliganKeepBoth(setupGame(state));
 }
@@ -40,14 +41,16 @@ function build() {
 }
 
 describe('setupGame', () => {
-  it('deals opening hand and opens mulligan window (no life yet — D10/CR §5-2-1-6)', () => {
+  it('deals opening hand and opens dice-roll window (no life yet — D24/CR §5-2-1-4)', () => {
     const s = setupGame(build());
     expect(s.players.A.hand).toHaveLength(RULES.STARTING_HAND);
     expect(s.players.B.hand).toHaveLength(RULES.STARTING_HAND);
     // D10: life cards are placed only after both mulligans resolve (CR §5-2-1-7).
     expect(s.players.A.life).toHaveLength(0);
     expect(s.players.B.life).toHaveLength(0);
-    expect(s.phase).toBe('mulligan_first');
+    // D24: setup now opens the dice-roll first-player decision before mulligan.
+    expect(s.phase).toBe('dice_roll');
+    expect(s.diceRoll).toEqual({ A: null, B: null, rolls: 0 });
     expect(s.history).toContainEqual({ type: 'GAME_STARTED', firstPlayer: 'A' });
   });
 

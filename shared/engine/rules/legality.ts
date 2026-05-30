@@ -11,6 +11,24 @@ import { RULES } from '../GameState';
 export function getLegalActions(state: GameState, player: PlayerId): Action[] {
   if (state.result) return [];
 
+  // D24 (CR §5-2-1-4): dice-roll window. EITHER player may fire ROLL_DICE —
+  // the engine atomically rolls a d6 for both. No other game actions are legal
+  // here except RESIGN.
+  if (state.phase === 'dice_roll') {
+    return [{ type: 'ROLL_DICE' }, { type: 'RESIGN' }];
+  }
+
+  // D24 (CR §5-2-1-4): only the dice-winner (activePlayer) may declare first
+  // or second. The loser can only RESIGN.
+  if (state.phase === 'first_player_choice') {
+    if (player !== state.activePlayer) return [{ type: 'RESIGN' }];
+    return [
+      { type: 'CHOOSE_FIRST' },
+      { type: 'CHOOSE_SECOND' },
+      { type: 'RESIGN' },
+    ];
+  }
+
   // D10 (CR §5-2-1-6): mulligan window. The relevant player may choose
   // MULLIGAN or KEEP_HAND; everything else is illegal except RESIGN.
   //   mulligan_first  → state.activePlayer (P1) decides.

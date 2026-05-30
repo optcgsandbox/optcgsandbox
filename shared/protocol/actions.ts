@@ -4,6 +4,14 @@
 import { z } from 'zod';
 
 export const ActionSchema = z.discriminatedUnion('type', [
+  // Setup — D24, CR §5-2-1-4: dice-roll first-player decision. Either player
+  // may fire ROLL_DICE during `dice_roll`; the engine rolls a d6 for both
+  // atomically. Ties stay in `dice_roll`; the winner advances to
+  // `first_player_choice` and uses CHOOSE_FIRST / CHOOSE_SECOND to declare.
+  z.object({ type: z.literal('ROLL_DICE') }),
+  z.object({ type: z.literal('CHOOSE_FIRST') }),
+  z.object({ type: z.literal('CHOOSE_SECOND') }),
+
   // Setup — D10, CR §5-2-1-6: mulligan window. Each player may, once, choose
   // to return their opening hand to the deck, reshuffle, and redraw 5. The
   // first player decides first.
