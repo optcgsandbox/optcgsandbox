@@ -272,3 +272,60 @@ describe('D24: attack gating follows firstPlayer (CR §6-5-6-1)', () => {
     expect(actions.find((a) => a.type === 'DECLARE_ATTACK')).toBeUndefined();
   });
 });
+
+// Phase G / D15: at-start-of-game effects (CR §5-2-1-5-1).
+describe('D15: at-start-of-game effects', () => {
+  function makeDrawLeader(id: string): LeaderCard {
+    return {
+      id, name: id, kind: 'leader', colors: ['red'], cost: null, power: 5000,
+      life: 5, counterValue: null, traits: [], keywords: [], effectTags: ['draw'],
+    };
+  }
+  function buildWithLeader(leaderA: LeaderCard, leaderB: LeaderCard, seed = 42): GameState {
+    const cards: Card[] = Array.from({ length: 50 }, (_, i) => makeChar(`C${i}`));
+    return initialState({
+      seed,
+      decks: { A: { leader: leaderA, cards }, B: { leader: leaderB, cards } },
+    });
+  }
+
+  it('leader with [draw] effectTag draws an extra card at game start', () => {
+    let s = setupGame(buildWithLeader(makeDrawLeader('LA_DRAW'), makeLeader('LB')));
+    s = rollUntilWinner(s);
+    const winner = s.activePlayer;
+    // Whichever player wins, make A the chooser AND first so we can assert
+    // A's hand grows. If B won, choose B-as-first so we test the other side too.
+    if (winner === 'A') {
+      s = chooseFirstPlayer(s, 'A', 'A');
+    } else {
+      s = chooseFirstPlayer(s, 'B', 'B');
+    }
+    // A has a draw leader. Whichever player was chooser fires first.
+    expect(s.players.A.hand).toHaveLength(RULES.STARTING_HAND + 1);
+    // B has a vanilla leader, no draw, hand size unchanged.
+    expect(s.players.B.hand).toHaveLength(RULES.STARTING_HAND);
+  });
+
+  it('non-trigger leader: no extra cards at game start', () => {
+    let s = setupGame(buildWithLeader(makeLeader('LA'), makeLeader('LB')));
+    s = rollUntilWinner(s);
+    s = chooseFirstPlayer(s, s.activePlayer, s.activePlayer);
+    expect(s.players.A.hand).toHaveLength(RULES.STARTING_HAND);
+    expect(s.players.B.hand).toHaveLength(RULES.STARTING_HAND);
+  });
+
+  it('both leaders with [draw] each draw once at game start', () => {
+    let s = setupGame(buildWithLeader(makeDrawLeader('LA'), makeDrawLeader('LB')));
+    s = rollUntilWinner(s);
+    const winner = s.activePlayer;
+    s = chooseFirstPlayer(s, winner, winner);
+    // Each player draws once via at_start_of_game.
+    expect(s.players.A.hand).toHaveLength(RULES.STARTING_HAND + 1);
+    expect(s.players.B.hand).toHaveLength(RULES.STARTING_HAND + 1);
+    // CR §5-2-1-5-1 chooser-first ordering is enforced by chooseFirstPlayer
+    // calling fireEffects on the chooser before the other player. Templates
+    // don't currently emit history events on draw, so the ordering is
+    // structural (not log-verifiable). Skipping a history-order assertion
+    // here is intentional.
+  });
+});

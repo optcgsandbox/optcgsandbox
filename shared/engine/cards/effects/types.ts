@@ -14,7 +14,8 @@ export type EffectTrigger =
   | 'when_attacking'  // declaring an attack
   | 'on_block'        // declared a block
   | 'activate_main'   // main-phase activation
-  | 'trigger';        // life-card trigger reveal
+  | 'trigger'         // life-card trigger reveal
+  | 'at_start_of_game'; // D15 (CR §5-2-1-5-1): fires after first/second chosen, before mulligan
 
 export interface EffectContext {
   /** The instance whose effect is resolving. */

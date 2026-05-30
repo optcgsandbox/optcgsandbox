@@ -13,6 +13,7 @@ import type { Card } from '../cards/Card';
 import type { GameState, PlayerId } from '../GameState';
 import { RULES } from '../GameState';
 import { Random } from '../Random';
+import { fireEffects } from '../cards/effects/dispatch';
 
 /** Step 1–4 of CR §5-2-1: shuffle decks, draw opening hands, hand off to the
  *  dice-roll window (D24, CR §5-2-1-4). Life cards are NOT placed yet — that
@@ -130,15 +131,28 @@ export function chooseFirstPlayer(
   chooser: PlayerId,
   goesFirst: PlayerId,
 ): GameState {
-  const next: GameState = structuredClone(state);
+  let next: GameState = structuredClone(state);
   next.activePlayer = goesFirst;
   // D24 / CR §6-3-1 + §6-4-1: persist the first-player decision so the
   // downstream turn-1 rules (no draw, +1 DON, no attacks) follow the actual
   // first player rather than hardcoding A. See turn.ts runDrawPhase /
   // runDonPhase and legality.attackActions / applyAction.declareAttack.
   next.firstPlayer = goesFirst;
-  next.phase = 'mulligan_first';
   next.history.push({ type: 'FIRST_PLAYER_CHOSEN', chooser, goesFirst });
+
+  // D15 (CR §5-2-1-5-1): at-start-of-game effects fire after first/second is
+  // chosen, BEFORE the mulligan window opens. The CHOOSER's effects fire
+  // first (the chooser is the dice-roll winner, not necessarily the first
+  // player). Each side's leader is dispatched once via fireEffects with
+  // trigger='at_start_of_game'; the TAGS_BY_TRIGGER whitelist in dispatch.ts
+  // limits firing to draw / searcher / ramp / lifegain (no field exists yet).
+  const other: PlayerId = chooser === 'A' ? 'B' : 'A';
+  const chooserLeaderId = next.players[chooser].leader.instanceId;
+  const otherLeaderId = next.players[other].leader.instanceId;
+  next = fireEffects(next, chooserLeaderId, 'at_start_of_game', chooser);
+  next = fireEffects(next, otherLeaderId, 'at_start_of_game', other);
+
+  next.phase = 'mulligan_first';
   next.history.push({ type: 'PHASE_CHANGED', phase: 'mulligan_first' });
   return next;
 }

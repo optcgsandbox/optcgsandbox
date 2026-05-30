@@ -20,6 +20,9 @@
 //                      life_to_hand, disruption, power_buff, cost_reduction
 //                      (dispatched from applyAction.resolveTrigger when
 //                      controller activates a flipped life card)
+//   at_start_of_game → searcher, draw, ramp, lifegain
+//                      (dispatched from chooseFirstPlayer once per leader,
+//                       chooser's first per CR §5-2-1-5-1)
 //
 // `blocker`, `rush`, `double_attack`, `counter_event`, `counter_character`,
 // `vanilla` are passive markers — calling their templates is a no-op by
@@ -76,6 +79,17 @@ const TAGS_BY_TRIGGER: Record<EffectTrigger, ReadonlySet<EffectTag>> = {
     'disruption',
     'power_buff',
     'cost_reduction',
+  ]),
+  // D15 (CR §5-2-1-5-1): at-start-of-game effects fire after first/second is
+  // chosen, before the mulligan window opens. No field exists yet so removal /
+  // power_buff / cost_reduction make no sense. Searcher / draw / ramp /
+  // lifegain (the typical "draw N" or "search and add to hand" pattern) are
+  // the v0 surface.
+  at_start_of_game: new Set<EffectTag>([
+    'searcher',
+    'draw',
+    'ramp',
+    'lifegain',
   ]),
   // Phase D / D11 (CR §10-1-5): when a life card with [Trigger] is flipped
   // and the controller activates, fire the same effect-tag surface as on_play.
