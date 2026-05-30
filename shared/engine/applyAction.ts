@@ -745,7 +745,9 @@ function effectivePower(card: Card, inst: CardInstance): number {
   let base = 0;
   if (card.kind === 'leader') base = (card as LeaderCard).power;
   if (card.kind === 'character') base = (card as CharacterCard).power;
-  return base + inst.attachedDon.length * 1000;
+  // D16 (CR §4-12): turn-scoped power delta from `set_power_zero` etc.
+  const modifier = inst.powerModifier ?? 0;
+  return base + inst.attachedDon.length * 1000 + modifier;
 }
 
 function runEndTurnReshim(state: GameState): { state: GameState; events: GameEvent[] } {

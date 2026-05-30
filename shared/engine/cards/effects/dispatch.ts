@@ -58,6 +58,7 @@ const TAGS_BY_TRIGGER: Record<EffectTrigger, ReadonlySet<EffectTag>> = {
     'life_to_hand',
     'disruption',
     'power_buff',
+    'set_power_zero',
     'cost_reduction',
   ]),
   when_attacking: new Set<EffectTag>(['power_buff', 'draw']),
@@ -78,6 +79,7 @@ const TAGS_BY_TRIGGER: Record<EffectTrigger, ReadonlySet<EffectTag>> = {
     'life_to_hand',
     'disruption',
     'power_buff',
+    'set_power_zero',
     'cost_reduction',
   ]),
   // D15 (CR §5-2-1-5-1): at-start-of-game effects fire after first/second is
@@ -108,6 +110,7 @@ const TAGS_BY_TRIGGER: Record<EffectTrigger, ReadonlySet<EffectTag>> = {
     'life_to_hand',
     'disruption',
     'power_buff',
+    'set_power_zero',
     'cost_reduction',
   ]),
 };

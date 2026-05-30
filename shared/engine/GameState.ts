@@ -58,6 +58,11 @@ export interface CardInstance {
   };
   /** True if the instance was played this turn — blocks attack unless Rush. Cleared in Refresh. */
   summoningSick: boolean;
+  /** D16 (CR §4-12): turn-scoped power delta. Added to effectivePower. Set by
+   *  the `set_power_zero` template to `-(currentEffectivePower)` so the card
+   *  reads as 0 power until end-of-turn. Cleared in `endTurn` per CR §4-12
+   *  (effect lasts "the specified duration" — v0 covers turn-scoped only). */
+  powerModifier?: number;
 }
 
 export interface PlayerZones {

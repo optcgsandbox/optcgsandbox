@@ -95,6 +95,45 @@ export const counter_character: EffectFn = (state, _ctx) => state;
 /** +N power to a target this turn. v0: skipped (needs turn-scoped modifier system). */
 export const power_buff: EffectFn = (state, _ctx) => state;
 
+/** D16 (CR §4-12): set a target's effective power to 0 for the rest of the
+ *  turn. Spec: "Reduces target's power by (current power amount). If already
+ *  negative → no effect." Implemented as `inst.powerModifier = -currentEff`
+ *  so subsequent buffs (e.g. new DON attached) still add on top of the 0.
+ *  Cleared in endTurn (phases/turn.ts). Requires `ctx.targetInstanceId`. */
+export const set_power_zero: EffectFn = (state, ctx) => {
+  if (!ctx.targetInstanceId) return state;
+  const inst = state.instances[ctx.targetInstanceId];
+  if (!inst) return state;
+  const card = state.cardLibrary[inst.cardId];
+  if (!card) return state;
+  const currentBase =
+    card.kind === 'leader' ? (card as { power: number }).power :
+    card.kind === 'character' ? (card as { power: number }).power : 0;
+  const currentEff = currentBase + inst.attachedDon.length * 1000 + (inst.powerModifier ?? 0);
+  if (currentEff <= 0) return state; // spec: already-negative → no-op
+  const s: GameState = structuredClone(state);
+  // Apply delta so the card reads as 0. Subsequent +1000 DON would add to 0,
+  // giving 1000 — matches CR §4-12 "reduces by current power".
+  s.instances[ctx.targetInstanceId].powerModifier =
+    (s.instances[ctx.targetInstanceId].powerModifier ?? 0) - currentEff;
+  // Mirror onto per-zone struct(s) since legality / UI read from per-zone.
+  for (const pid of ['A', 'B'] as const) {
+    const pl = s.players[pid];
+    if (pl.leader.instanceId === ctx.targetInstanceId) {
+      pl.leader.powerModifier = s.instances[ctx.targetInstanceId].powerModifier;
+    }
+    for (const f of pl.field) {
+      if (f.instanceId === ctx.targetInstanceId) {
+        f.powerModifier = s.instances[ctx.targetInstanceId].powerModifier;
+      }
+    }
+    if (pl.stage && pl.stage.instanceId === ctx.targetInstanceId) {
+      pl.stage.powerModifier = s.instances[ctx.targetInstanceId].powerModifier;
+    }
+  }
+  return s;
+};
+
 /** Reduce cost of plays this turn. v0: skipped. */
 export const cost_reduction: EffectFn = (state, _ctx) => state;
 
@@ -166,6 +205,7 @@ export const TEMPLATES = {
   counter_event,
   counter_character,
   power_buff,
+  set_power_zero,
   cost_reduction,
   recursion,
   ramp,

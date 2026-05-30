@@ -41,6 +41,9 @@ export type EffectTag =
   | 'counter_event'
   | 'counter_character'
   | 'power_buff'
+  // D16 (CR §4-12): reduce target's effective power by its current effective
+  // power (i.e., set to 0). Turn-scoped — cleared in endTurn.
+  | 'set_power_zero'
   | 'cost_reduction'
   | 'recursion'
   | 'ramp'

@@ -132,6 +132,22 @@ export function endTurn(state: GameState): GameState {
     p.stage.perTurn = { hasAttacked: false, effectsUsed: [] };
   }
 
+  // D16 (CR §4-12): turn-scoped power modifiers from `Set Power to 0` expire
+  // at end of the turn they were applied. Clear on BOTH players' chars/leader/
+  // stage (the modifier could sit on the active player's target via opp
+  // effect, or the inactive player's target — both end at this boundary).
+  // Mirror via state.instances map AND each per-zone struct since other
+  // engine paths read from per-zone.
+  for (const pid of ['A', 'B'] as PlayerId[]) {
+    const pl = next.players[pid];
+    delete pl.leader.powerModifier;
+    for (const f of pl.field) delete f.powerModifier;
+    if (pl.stage) delete pl.stage.powerModifier;
+  }
+  for (const id in next.instances) {
+    delete next.instances[id].powerModifier;
+  }
+
   next.history.push({ type: 'TURN_ENDED', player: next.activePlayer });
   next.activePlayer = OTHER[next.activePlayer];
   next.turn += 1;
