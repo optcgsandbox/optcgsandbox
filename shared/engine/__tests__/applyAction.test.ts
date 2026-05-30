@@ -226,3 +226,85 @@ describe('legality.attackActions: D9 [Rush:Character]', () => {
     expect(targetIds).toContain(s.players.A.leader.instanceId);
   });
 });
+
+// Phase G / D19: [Replacement effects] (CR §8-1-3-4)
+// V0 token implementation — one representative replacement: replace_ko_to_hand.
+// When a character would be K.O.'d in battle, the K.O. is REPLACED with "move
+// to hand"; on_ko effects do NOT fire because the K.O. didn't actually happen.
+function plantOppCharOnA(
+  s: ReturnType<typeof build>,
+  cardId: string,
+  effectTags: import('../cards/Card').EffectTag[],
+  opts: { power?: number } = {},
+): string {
+  const card: CharacterCard = {
+    id: cardId, name: cardId, kind: 'character', colors: ['red'],
+    cost: 2, power: opts.power ?? 1000, counterValue: 0, traits: [], keywords: [], effectTags,
+  };
+  s.cardLibrary[cardId] = card;
+  const instanceId = `${cardId}-inst-A`;
+  s.instances[instanceId] = {
+    instanceId, cardId, controller: 'A', rested: true, summoningSick: false,
+    attachedDon: [], perTurn: { hasAttacked: false, effectsUsed: [] },
+  };
+  s.players.A.field.push(s.instances[instanceId]);
+  return instanceId;
+}
+
+describe('applyAction: D19 replacement effect — replace_ko_to_hand', () => {
+  it('losing-power char with replace_ko_to_hand goes to HAND, not trash; no on_ko draw', () => {
+    let s = advanceToMainPhase(build());
+    s = endTurn(s);
+    s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    s = advanceOneFullCycle(s);
+    // Plant a 1000-power char with replace_ko_to_hand AND draw on A's field.
+    // If on_ko fired, A would draw 1; if replacement applies, no draw.
+    const target = plantOppCharOnA(s, 'REPLACE-CHAR', ['replace_ko_to_hand', 'draw'], { power: 1000 });
+    // B's leader 5000 + 1 DON = 6000 vs A's char 1000 → A's char loses.
+    attachDonCount(s, 'B', s.players.B.leader.instanceId, 1);
+    const trashBefore = s.players.A.trash.length;
+    const handBefore = s.players.A.hand.length;
+    const deckBefore = s.players.A.deck.length;
+
+    let next = applyAction(s, 'B', {
+      type: 'DECLARE_ATTACK', attackerInstanceId: s.players.B.leader.instanceId, targetInstanceId: target,
+    }).state;
+    next = applyAction(next, 'A', { type: 'SKIP_BLOCKER' }).state;
+    next = applyAction(next, 'A', { type: 'SKIP_COUNTER' }).state;
+
+    // Replacement: char went to HAND, NOT trash.
+    expect(next.players.A.trash.length).toBe(trashBefore);
+    expect(next.players.A.hand).toContain(target);
+    expect(next.players.A.hand.length).toBe(handBefore + 1);
+    // No on_ko draw fired (deck unchanged from before attack flow).
+    expect(next.players.A.deck.length).toBe(deckBefore);
+    // CARD_KOED event was still pushed (signal that the K.O.-step ran).
+    const koedEvents = next.history.filter((e) => e.type === 'CARD_KOED');
+    expect(koedEvents.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('control: same char WITHOUT replace_ko_to_hand goes to trash; on_ko draw fires', () => {
+    let s = advanceToMainPhase(build());
+    s = endTurn(s);
+    s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    s = advanceOneFullCycle(s);
+    const target = plantOppCharOnA(s, 'PLAIN-CHAR', ['draw'], { power: 1000 });
+    attachDonCount(s, 'B', s.players.B.leader.instanceId, 1);
+    const trashBefore = s.players.A.trash.length;
+    const handBefore = s.players.A.hand.length;
+    const deckBefore = s.players.A.deck.length;
+
+    let next = applyAction(s, 'B', {
+      type: 'DECLARE_ATTACK', attackerInstanceId: s.players.B.leader.instanceId, targetInstanceId: target,
+    }).state;
+    next = applyAction(next, 'A', { type: 'SKIP_BLOCKER' }).state;
+    next = applyAction(next, 'A', { type: 'SKIP_COUNTER' }).state;
+
+    // No replacement: char is trashed.
+    expect(next.players.A.trash).toContain(target);
+    expect(next.players.A.trash.length).toBe(trashBefore + 1);
+    // on_ko draw fired: hand +1 (the drawn card from deck), deck -1.
+    expect(next.players.A.hand.length).toBe(handBefore + 1);
+    expect(next.players.A.deck.length).toBe(deckBefore - 1);
+  });
+});

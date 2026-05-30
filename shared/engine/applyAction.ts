@@ -569,15 +569,27 @@ function resolveDamage(state: GameState): { state: GameState; events: GameEvent[
         while (removed.attachedDon.length > 0) {
           defenderSide.donRested.push(removed.attachedDon.shift()!);
         }
-        defenderSide.trash.push(removed.instanceId);
-        next.history.push({ type: 'CARD_KOED', instanceId: pa.targetInstanceId });
 
-        // D14 (CR §8): on_ko dispatch. Fires under the KO'd card's FORMER
-        // controller — the player who controlled the dying character. The
-        // instance is now in trash; fireEffects still reads it from
-        // state.instances which is keyed by instanceId, not zone.
-        const after = fireEffects(next, removed.instanceId, 'on_ko', koedController);
-        Object.assign(next, after);
+        // D19 (CR §8-1-3-4): replacement effect. If the card's effect tags
+        // include `replace_ko_to_hand`, the K.O. is REPLACED with "move to
+        // hand". Per CR §8-1-3-4 the original processing (trash + on_ko)
+        // does NOT occur. V0 always-yes; the optional-decline path is
+        // deferred.
+        const hasReplaceKo = targetCard.effectTags.includes('replace_ko_to_hand');
+        if (hasReplaceKo) {
+          defenderSide.hand.push(removed.instanceId);
+          next.history.push({ type: 'CARD_KOED', instanceId: pa.targetInstanceId });
+        } else {
+          defenderSide.trash.push(removed.instanceId);
+          next.history.push({ type: 'CARD_KOED', instanceId: pa.targetInstanceId });
+
+          // D14 (CR §8): on_ko dispatch. Fires under the KO'd card's FORMER
+          // controller — the player who controlled the dying character. The
+          // instance is now in trash; fireEffects still reads it from
+          // state.instances which is keyed by instanceId, not zone.
+          const after = fireEffects(next, removed.instanceId, 'on_ko', koedController);
+          Object.assign(next, after);
+        }
       }
     }
   }

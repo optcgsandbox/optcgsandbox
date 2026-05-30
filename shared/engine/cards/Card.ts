@@ -44,6 +44,11 @@ export type EffectTag =
   // D16 (CR §4-12): reduce target's effective power by its current effective
   // power (i.e., set to 0). Turn-scoped — cleared in endTurn.
   | 'set_power_zero'
+  // D19 (CR §8-1-3-4): one representative replacement effect — when this
+  // character would be K.O.'d, it moves to its controller's hand instead.
+  // The K.O. is replaced, so on_ko triggers do NOT fire. V0 token impl;
+  // generalized replacement registry deferred.
+  | 'replace_ko_to_hand'
   | 'cost_reduction'
   | 'recursion'
   | 'ramp'
