@@ -267,9 +267,15 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
         </span>
       )}
       {totalDon > 0 && (
+        // absolute inset-y-0 anchors the wrapper to the band's true top + bottom
+        // so the abs children's `top: 50% + translateY(-50%)` centers against
+        // the band's actual height. Previously `h-full flex items-center`
+        // shrunk to the children's intrinsic 52px (parent `items-center` +
+        // min-height-only band makes h-full unreliable for percentage children),
+        // so cards visually hugged the top of the band.
         <div
-          className="relative h-full flex items-center"
-          style={{ width: stackWidth, minWidth: 0, overflow: 'visible' }}
+          className="absolute inset-y-0"
+          style={{ left: 8, width: stackWidth, minWidth: 0, overflow: 'visible' }}
         >
           {donCostArea.map((instanceId, i) => (
             <div
