@@ -479,6 +479,74 @@ describe('Effect dispatch (D14) — wiring', () => {
     expect(cur.players.A.deck.length).toBe(deckBefore);
   });
 
+  // Phase G / D18: [Once Per Turn] partial-pay failure rule (CR §10-2-13-5).
+  // The full enforcement model: fireEffects refuses to fire if the source card
+  // has `once_per_turn` keyword AND has already fired this trigger this turn.
+  // Partial-pay failure stays safe via the existing validate-before-mutate
+  // pattern in action handlers (no path into fireEffects on failed cost-pay).
+  it('once_per_turn card: fireEffects on_play fires once; second call no-ops', () => {
+    const optChar = makeChar('opt-1', {
+      cost: 1,
+      effectTags: ['draw'],
+      keywords: ['once_per_turn'],
+    });
+    let s = advanceToMainPhase(build([optChar]));
+    const instId = injectIntoHand(s, 'opt-1');
+    setDonActive(s, 'A', 2);
+
+    let cur = applyAction(s, 'A', { type: 'PLAY_CARD', instanceId: instId, replaceTargetId: null }).state;
+    const handAfterFirst = cur.players.A.hand.length;
+    const deckAfterFirst = cur.players.A.deck.length;
+
+    // Direct fireEffects call to simulate a hypothetical re-trigger of on_play
+    // on the same instance this turn. Per D18 the OPT slot is consumed so no
+    // tag should fire.
+    const after = fireEffects(cur, instId, 'on_play', 'A');
+    expect(after.players.A.hand.length).toBe(handAfterFirst);
+    expect(after.players.A.deck.length).toBe(deckAfterFirst);
+  });
+
+  it('control: card WITHOUT once_per_turn keyword fires every fireEffects call', () => {
+    const plainChar = makeChar('opt-2', {
+      cost: 1,
+      effectTags: ['draw'],
+      // no once_per_turn keyword
+    });
+    let s = advanceToMainPhase(build([plainChar]));
+    const instId = injectIntoHand(s, 'opt-2');
+    setDonActive(s, 'A', 2);
+
+    let cur = applyAction(s, 'A', { type: 'PLAY_CARD', instanceId: instId, replaceTargetId: null }).state;
+    const handAfterFirst = cur.players.A.hand.length;
+    const deckAfterFirst = cur.players.A.deck.length;
+
+    const after = fireEffects(cur, instId, 'on_play', 'A');
+    expect(after.players.A.hand.length).toBe(handAfterFirst + 1);
+    expect(after.players.A.deck.length).toBe(deckAfterFirst - 1);
+  });
+
+  it('once_per_turn slot reopens after endTurn (effectsUsed cleared per D4)', () => {
+    const optChar = makeChar('opt-3', {
+      cost: 1,
+      effectTags: ['draw'],
+      keywords: ['once_per_turn'],
+    });
+    let s = advanceToMainPhase(build([optChar]));
+    const instId = injectIntoHand(s, 'opt-3');
+    setDonActive(s, 'A', 2);
+
+    let cur = applyAction(s, 'A', { type: 'PLAY_CARD', instanceId: instId, replaceTargetId: null }).state;
+    // End A's turn — opp turn — back to A.
+    cur = advanceOneFullCycle(cur);
+    const handBefore = cur.players.A.hand.length;
+    const deckBefore = cur.players.A.deck.length;
+
+    const after = fireEffects(cur, instId, 'on_play', 'A');
+    // OPT slot was reset; effect fires again.
+    expect(after.players.A.hand.length).toBe(handBefore + 1);
+    expect(after.players.A.deck.length).toBe(deckBefore - 1);
+  });
+
   it('ACTIVATE_MAIN is rejected for cards without the activate_main tag', () => {
     const plainChar = makeChar('plain-1', { cost: 1, effectTags: ['draw'] });
     let s = advanceToMainPhase(build([plainChar]));

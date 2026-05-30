@@ -139,14 +139,26 @@ export function fireEffects(
   const card = state.cardLibrary[inst.cardId];
   if (!card) return state;
 
+  // D18 (CR §10-2-13-5): [Once Per Turn] gate. If the source card has the
+  // `once_per_turn` keyword AND this trigger already fired on this card this
+  // turn, skip the entire fire. effectsUsed is cleared in endTurn (per D4),
+  // so the slot reopens next turn. Partial-pay failure is NOT a concern here
+  // — action handlers (activateMain etc.) validate cost BEFORE calling
+  // fireEffects, so a failed cost-pay returns no-op without ever reaching
+  // this function.
+  const isOpt = card.keywords.includes('once_per_turn');
+  if (isOpt && inst.perTurn.effectsUsed.includes(trigger)) return state;
+
   const allowed = TAGS_BY_TRIGGER[trigger];
   if (allowed.size === 0) return state;
 
   let cur = state;
+  let fired = false;
   for (const tag of card.effectTags) {
     if (!allowed.has(tag)) continue;
     const handler = TEMPLATES[tag as keyof typeof TEMPLATES];
     if (!handler) continue;
+    fired = true;
     const ctx: EffectContext = {
       sourceInstanceId: instanceId,
       controller,
@@ -156,5 +168,30 @@ export function fireEffects(
     };
     cur = handler(cur, ctx);
   }
+
+  // D18: mark the OPT slot used. Defensive clone — if every matched template
+  // returned state unchanged (e.g. `vanilla`), `cur === state` and mutating
+  // would corrupt the caller. Cloning here is cheap on the rare OPT path.
+  if (fired && isOpt) {
+    const out = cur === state ? structuredClone(cur) : cur;
+    const after = out.instances[instanceId];
+    if (after && !after.perTurn.effectsUsed.includes(trigger)) {
+      after.perTurn.effectsUsed.push(trigger);
+      const pl = out.players[after.controller];
+      if (pl.leader.instanceId === instanceId && !pl.leader.perTurn.effectsUsed.includes(trigger)) {
+        pl.leader.perTurn.effectsUsed.push(trigger);
+      }
+      for (const f of pl.field) {
+        if (f.instanceId === instanceId && !f.perTurn.effectsUsed.includes(trigger)) {
+          f.perTurn.effectsUsed.push(trigger);
+        }
+      }
+      if (pl.stage && pl.stage.instanceId === instanceId && !pl.stage.perTurn.effectsUsed.includes(trigger)) {
+        pl.stage.perTurn.effectsUsed.push(trigger);
+      }
+    }
+    return out;
+  }
+
   return cur;
 }
