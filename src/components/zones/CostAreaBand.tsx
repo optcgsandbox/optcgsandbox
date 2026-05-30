@@ -230,8 +230,14 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
   const interactive = isYou && activePlayer === playerId && phase === 'main';
 
   useEffect(() => {
-    if (!interactive && armedDonId) disarmDon();
-  }, [interactive, armedDonId, disarmDon]);
+    // Only the owner's CostAreaBand can drive the shared armedDonId state.
+    // Without the isYou guard, the OPP-side instance of this component (where
+    // interactive is always false) would see armedDonId become non-null and
+    // immediately disarm — racing with the owner's arm action and making the
+    // DON appear to never arm. Found 2026-05-29 via Playwright (aria-pressed
+    // stuck at "false" after click).
+    if (isYou && !interactive && armedDonId) disarmDon();
+  }, [isYou, interactive, armedDonId, disarmDon]);
 
   const handleCoinTap = useCallback(
     (instanceId: string) => {

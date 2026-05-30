@@ -643,11 +643,14 @@ export const CardArt = memo(function CardArt({
       onClick={(e) => {
         // Stop bubble to PlayfieldStage root onPlaymatTap (clears armedDonId /
         // selectedAttackerId / inspectedCardId) — that handler is intended for
-        // taps on EMPTY playmat surface only. Without this, clicking a friendly
-        // card after arming a DON disarms it before the modal can render the
-        // ATTACH DON button; same race breaks the SELECT ATTACKER → ATTACK flow.
+        // taps on EMPTY playmat surface only.
+        // Only stop when WE handle the click (onTap defined). If CardArt is
+        // rendered inside a tappable wrapper (e.g. TrashSlot's occupied-state
+        // wrapper opens TrashViewer on click), CardArt has no onTap and the
+        // click must bubble to that wrapper.
+        if (!onTap) return;
         e.stopPropagation();
-        onTap?.();
+        onTap();
       }}
       disabled={!interactive}
       aria-label={a11y}
