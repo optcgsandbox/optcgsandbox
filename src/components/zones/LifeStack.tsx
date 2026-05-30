@@ -50,22 +50,19 @@ export const LifeStack = memo(function LifeStack({
         padding: '6px 0 22px 0',
       }}
     >
-      {/* Card stack — N face-down cards (N = current life count, NOT hardcoded
-          to 5) distributed evenly across the band's full available height.
-          Each card's top is computed as a % of (band height - cardH) so as
-          life is taken / leaders with non-5 life are rendered, the cards
-          spread to fill the available space. Owner direction 2026-05-29:
-          "fit the life cards in this area height" + cards = number of life
-          remaining. CR §3-10-2: secret, face-down (no reveal). */}
+      {/* Card stack — N face-down cards stacked top-to-bottom with a fixed
+          10px stride so adjacent cards overlap by 28px (cardH - stride).
+          Stack reads as a tight "deck" of life cards. Owner direction
+          2026-05-29: variant B fan (stride 10). CR §3-10-2: secret, face-down. */}
       <div
         className="relative w-full grow"
         style={{ minWidth: CARD_W }}
       >
         {lifeInstanceIds.map((instanceId, slotIdx) => {
           const isTop = slotIdx === 0;
-          const denom = Math.max(count - 1, 1);
-          // Distributed top: 0% for first, (100% - cardH) for last.
-          const topCalc = `calc((100% - ${CARD_H}px) * ${slotIdx} / ${denom})`;
+          // Fixed 10px stride. Up to 10 life fits within the column
+          // (bottom of last card = 9 * 10 + 38 = 128px).
+          const topCalc = `${slotIdx * 10}px`;
           const Wrapper = isTop ? motion.div : 'div';
           return (
             <Wrapper
