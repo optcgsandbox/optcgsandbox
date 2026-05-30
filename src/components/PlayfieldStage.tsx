@@ -253,7 +253,9 @@ function LeaderRow({
               inst={zones.leader}
               card={leaderCard}
               size="leader"
-              liveLifeCount={zones.life.length}
+              // No liveLifeCount on the playmat leader — life is already shown
+              // in the LIFE column. Owner direction 2026-05-29. AttackResolution
+              // overlay still passes liveLifeCount so its leader pills show.
               onTap={() => tapRouter(leaderId)}
               selectedAttacker={isSelectedAttacker}
               pendingTarget={isPendingTarget}
