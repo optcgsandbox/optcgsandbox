@@ -130,11 +130,23 @@ interface DonCardProps {
   reduced: boolean;
   interactive: boolean;
   armed: boolean;
+  isOpp: boolean;
   onTap?: () => void;
 }
 
-function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap }: DonCardProps) {
-  const targetRotate = rested ? 90 : 0;
+function DonCard({ instanceId, index, rested, reduced, interactive, armed, isOpp, onTap }: DonCardProps) {
+  // Opp's cost area sits inside a `rotate(180deg)` half-wrapper. If we apply
+  // the same +90° rest rotation we use for the player, the parent flip turns
+  // it into a visual −90° (the "+1000" stamp lands at the bottom from the
+  // viewer's POV — opposite of how the player's own rested DON reads). Mirror
+  // the rotation on the opp side so the rest orientation matches the player's.
+  const restRotation = isOpp ? -90 : 90;
+  const targetRotate = rested ? restRotation : 0;
+  // Match the pivot to the rotation direction so the card stays anchored to
+  // the same visual corner of its slot:
+  //   player rests +90° → pivot bottom-left (0 100%)
+  //   opp    rests −90° → pivot top-right   (100% 0%)
+  const restTransformOrigin = isOpp ? '100% 0%' : '0 100%';
   return (
     // Static wrapper carries data-flip-back so Framer transforms inside the
     // motion.button (animate/whileHover/whileTap) don't override the CSS
@@ -195,8 +207,10 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
         height: DON_CARD_H,
         minWidth: 28,
         minHeight: 28,
-        // Bottom-left pivot keeps the slot footprint anchored when rotating.
-        transformOrigin: rested ? '0 100%' : '50% 50%',
+        // Pivot direction tracks the rotation direction (see restRotation
+        // above) so the rested card stays anchored to its slot footprint
+        // regardless of which half of the playmat it's on.
+        transformOrigin: rested ? restTransformOrigin : '50% 50%',
         pointerEvents: rested ? 'none' : undefined,
       }}
     >
@@ -275,6 +289,7 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
                 reduced={reduced}
                 interactive={interactive}
                 armed={armedDonId === instanceId}
+                isOpp={!isYou}
                 onTap={() => handleCoinTap(instanceId)}
               />
             </div>
@@ -299,6 +314,7 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
                   reduced={reduced}
                   interactive={false}
                   armed={false}
+                  isOpp={!isYou}
                 />
               </div>
             );

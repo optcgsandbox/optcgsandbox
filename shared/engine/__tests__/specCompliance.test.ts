@@ -297,6 +297,81 @@ describe('D4: Per-card per-effect tracking (CR §10-2-13)', () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
+// D5 — Attached DON detaches at next Refresh, NOT at end-of-own-turn (CR §6-2-3)
+// ─────────────────────────────────────────────────────────────────────────────
+describe('D5: Attached DON stays attached until next Refresh (CR §6-2-3)', () => {
+  it("attached DON survives endTurn so opponent sees it during their turn", () => {
+    let s = advanceToMain(build(5001));
+    // A is on main turn 1. Attach 1 DON to A's leader.
+    setDonActive(s, 'A', 1);
+    attachDonCount(s, 'A', s.players.A.leader.instanceId, 1);
+    expect(s.players.A.leader.attachedDon.length).toBe(1);
+    const attachedBefore = [...s.players.A.leader.attachedDon];
+
+    // End A's turn → B's refresh window opens. A's attached DON must remain
+    // ON the leader (visible to the opponent), NOT in A's donRested pool.
+    s = endTurn(s);
+    expect(s.activePlayer).toBe('B');
+    expect(s.phase).toBe('refresh');
+    expect(s.players.A.leader.attachedDon).toEqual(attachedBefore);
+    expect(s.players.A.donRested).toEqual([]);
+
+    // Run B's full Refresh→Draw→DON. B's refresh must NOT touch A's DON.
+    s = runDonPhase(runDrawPhase(runRefreshPhase(s)));
+    expect(s.players.A.leader.attachedDon).toEqual(attachedBefore);
+    expect(s.players.A.donRested).toEqual([]);
+  });
+
+  it("attached DON moves to active cost area at the START of the OWNER's next Refresh", () => {
+    let s = advanceToMain(build(5002));
+    setDonActive(s, 'A', 1);
+    attachDonCount(s, 'A', s.players.A.leader.instanceId, 1);
+    const attachedBefore = [...s.players.A.leader.attachedDon];
+    const totalDonBefore =
+      s.players.A.donCostArea.length +
+      s.players.A.donRested.length +
+      s.players.A.leader.attachedDon.length +
+      s.players.A.field.reduce((n, c) => n + c.attachedDon.length, 0);
+
+    // A ends turn → B's full turn → back to A's refresh.
+    s = endTurn(s);                                          // → B refresh
+    s = runDonPhase(runDrawPhase(runRefreshPhase(s)));       // B main
+    s = endTurn(s);                                          // → A refresh
+    // At A's refresh, the DON must be detached AND active (CR §6-2-3 + §6-2-4).
+    s = runRefreshPhase(s);
+    expect(s.players.A.leader.attachedDon).toEqual([]);
+    expect(s.players.A.donRested).toEqual([]);
+    // DON conservation: every previously attached DON now lives in costArea.
+    for (const id of attachedBefore) {
+      expect(s.players.A.donCostArea).toContain(id);
+    }
+    const totalDonAfter =
+      s.players.A.donCostArea.length +
+      s.players.A.donRested.length +
+      s.players.A.leader.attachedDon.length +
+      s.players.A.field.reduce((n, c) => n + c.attachedDon.length, 0);
+    expect(totalDonAfter).toBe(totalDonBefore);
+  });
+
+  it('DON attached to a field character also detaches at owner’s next Refresh, not endTurn', () => {
+    let s = advanceToMain(build(5003));
+    // Put a character on A's field and attach a DON to it.
+    s.cardLibrary['CHAR_X'] = makeChar('CHAR_X');
+    injectOnField(s, 'A', 'CHAR_X', 'CHAR-X-INST');
+    setDonActive(s, 'A', 1);
+    attachDonCount(s, 'A', 'CHAR-X-INST', 1);
+    expect(s.players.A.field[0].attachedDon.length).toBe(1);
+    const attachedBefore = [...s.players.A.field[0].attachedDon];
+
+    // End A's turn → DON must still be on the character during B's turn.
+    s = endTurn(s);
+    const charDuringOppTurn = s.players.A.field.find((c) => c.instanceId === 'CHAR-X-INST')!;
+    expect(charDuringOppTurn.attachedDon).toEqual(attachedBefore);
+    expect(s.players.A.donRested).toEqual([]);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 // D8 — Unblockable attacker (CR §10-1-7)
 // ─────────────────────────────────────────────────────────────────────────────
 describe('D8: Unblockable attacker (CR §10-1-7)', () => {

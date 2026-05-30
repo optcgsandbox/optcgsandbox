@@ -7,10 +7,36 @@ import { RULES } from '../GameState';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
-/** Active player un-rests their leader, characters, and all DON. */
+/** Active player un-rests their leader, characters, and all DON.
+ *
+ *  D5 fix (CR §6-2-3): Before the rested→active flip, detach all DON attached
+ *  to the active player's leader / characters / stage and move them to the
+ *  rested pool. Per CR §6-2-3 attached DON stays attached until the START of
+ *  the controller's NEXT Refresh, then enters the cost area as RESTED; the
+ *  subsequent §6-2-4 active-flip then turns them face-up alongside the rest
+ *  of the rested DON. Previously this was done at end-of-own-turn, which
+ *  caused the opponent to visually see the leader without its attached DON
+ *  during their turn — a visible (not cosmetic) divergence. */
 export function runRefreshPhase(state: GameState): GameState {
   const next: GameState = structuredClone(state);
   const p = next.players[next.activePlayer];
+
+  // D5 (CR §6-2-3): detach attached DON BEFORE the rest→active flip so the
+  // returning DON itself comes back active this Refresh (consistent with §6-2-4
+  // setting "all rested cards" in the player's areas to active).
+  for (const inst of p.field) {
+    while (inst.attachedDon.length > 0) {
+      p.donRested.push(inst.attachedDon.shift()!);
+    }
+  }
+  while (p.leader.attachedDon.length > 0) {
+    p.donRested.push(p.leader.attachedDon.shift()!);
+  }
+  if (p.stage) {
+    while (p.stage.attachedDon.length > 0) {
+      p.donRested.push(p.stage.attachedDon.shift()!);
+    }
+  }
 
   p.leader.rested = false;
   for (const inst of p.field) {
@@ -85,31 +111,24 @@ export function runDonPhase(state: GameState): GameState {
   return next;
 }
 
-/** Active player ends turn. Per-turn flags reset; turn handoff. */
+/** Active player ends turn. Per-turn flags reset; turn handoff.
+ *
+ *  D5 fix (CR §6-2-3): attached DON is NOT detached here. Per CR §6-2-3
+ *  attached DON stays attached until the START of the controller's next
+ *  Refresh — see `runRefreshPhase` for the detach + move-to-rested step.
+ *  This matters visually: during the opponent's turn the leader still
+ *  displays its attached DON instead of "floating" rested in the cost area. */
 export function endTurn(state: GameState): GameState {
   const next: GameState = structuredClone(state);
   const p = next.players[next.activePlayer];
 
-  // Detach DON used this turn — they return to the rested pool.
-  // (DON-attached-to-characters return at end of opponent's turn; for simplicity
-  // we model "DON returns at end of YOUR turn" — matches Bandai's rule §1.5.)
+  // Per-turn flags reset at end-of-turn (they're per-turn, not per-refresh).
   for (const inst of p.field) {
-    while (inst.attachedDon.length > 0) {
-      p.donRested.push(inst.attachedDon.shift()!);
-    }
     inst.perTurn = { hasAttacked: false, effectsUsed: [] };
   }
-  while (p.leader.attachedDon.length > 0) {
-    p.donRested.push(p.leader.attachedDon.shift()!);
-  }
   p.leader.perTurn = { hasAttacked: false, effectsUsed: [] };
-  // D1 + D4: Stage participates in end-of-turn per-card flag reset; DON can
-  //          be attached to it (it lives on the Field per CR §3-1-2 with
-  //          Leader/Char/Cost).
+  // D1 + D4: Stage participates in end-of-turn per-card flag reset.
   if (p.stage) {
-    while (p.stage.attachedDon.length > 0) {
-      p.donRested.push(p.stage.attachedDon.shift()!);
-    }
     p.stage.perTurn = { hasAttacked: false, effectsUsed: [] };
   }
 
