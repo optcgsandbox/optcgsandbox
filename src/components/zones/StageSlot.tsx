@@ -33,7 +33,10 @@ export const StageSlot = memo(function StageSlot({ playerId, isYou }: StageSlotP
       kind="stage"
       playerId={playerId}
       ariaLabel={label}
-      width={dims.w}
+      // Rested stage rotates 90° → 72 wide. Widen the slot so the rotated
+      // card stays inside; flex row pushes neighbors. Empty stage stays 52.
+      // Owner direction 2026-05-29.
+      width={stage?.rested ? 72 : dims.w}
       height={dims.h}
       emptyLabel="STAGE"
     >

@@ -240,7 +240,11 @@ function LeaderRow({
           kind="leader"
           playerId={playerId}
           ariaLabel={`${leaderCard.name} (leader)`}
-          width={52}
+          // Rested leader rotates 90° → its rotated bbox is 72 wide. Widen
+          // the slot so the rotated card stays inside its own slot and the
+          // flex row pushes neighbors (stage, deck) accordingly. Owner
+          // direction 2026-05-29.
+          width={zones.leader.rested ? 72 : 52}
           height={72}
           emptyLabel={null}
         >

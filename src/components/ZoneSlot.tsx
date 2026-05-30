@@ -95,6 +95,10 @@ export function ZoneSlot({
     height,
     minWidth: 44, // iOS HIG min hit target
     minHeight: 44,
+    // Smooth width animation when slot widens on rest (leader/stage 52 → 72).
+    // Owner direction 2026-05-29: rested slot widens so rotated card fits
+    // inside its own slot and neighbors shift via flex layout.
+    transition: 'width 220ms cubic-bezier(0.4, 0, 0.2, 1)',
     ...style,
   };
 
