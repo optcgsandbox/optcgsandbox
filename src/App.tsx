@@ -10,12 +10,12 @@ import { PlayfieldStage } from './components/PlayfieldStage';
 import type { GameMode } from './store/game';
 
 const MODE_LABEL: Record<GameMode, string> = {
-  'vs-easy': 'vs Easy',
-  'vs-medium': 'vs Medium',
-  'hot-seat': 'Hot-seat',
+  'vs-easy': 'Easy',
+  'vs-medium': 'Medium',
+  'vs-hard': 'Hard',
 };
 
-const MODES: GameMode[] = ['vs-easy', 'vs-medium', 'hot-seat'];
+const MODES: GameMode[] = ['vs-easy', 'vs-medium', 'vs-hard'];
 
 // Phase-reactive End-Turn affordance moved to src/components/EndTurnButton.tsx
 // 2026-05-29 (rendered inline in LeaderRow on YOUR side).

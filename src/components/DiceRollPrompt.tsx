@@ -1,19 +1,15 @@
 // DiceRollPrompt — D24 (CR §5-2-1-4) dice-roll first-player decision.
 //
-// Per-player roll model (2026-05-29 refactor): each player presses their own
-// button. Hot-seat: two humans pass one device — both YOU and OPP buttons
-// are exposed and each human presses their own. vs-AI: human (player A)
-// presses YOU; the AI auto-rolls AFTER the human has rolled, with a 600ms
-// beat to keep the dramatic pacing. Future remote MP: each socket dispatches
-// `{ player: <theirId> }` from their own client; this prompt only ever
-// surfaces a button for the seat whose slot is currently null.
+// V0 is single-player vs AI. Human (player A) presses YOU; the AI auto-rolls
+// AFTER the human has rolled, with a 600ms beat to keep the dramatic pacing.
+// Future remote MP: each socket dispatches `{ player: <theirId> }` from their
+// own client; this prompt only ever surfaces a button for the seat whose
+// slot is currently null.
 //
 // Visibility rules:
 //   - state.phase === 'dice_roll'.
-//   - In hot-seat both YOU and OPP buttons render; each is enabled only when
-//     its player's slot is null.
-//   - In vs-AI only YOU renders; OPP shows "AI is rolling…" once it's the
-//     AI's turn to fire, or stays blank waiting on YOU first.
+//   - Only YOU renders; OPP shows "AI is rolling…" once it's the AI's turn
+//     to fire, or stays blank waiting on YOU first.
 //
 // Animation: the die being rolled spins for 1.2s then settles on its face
 // value. The other die holds its current state. Once both slots are filled,
@@ -104,14 +100,14 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
   const spring = springs(reduced);
 
   const open = phase === 'dice_roll';
-  const isHotSeat = mode === 'hot-seat';
-  const isAiGame = mode === 'vs-easy' || mode === 'vs-medium';
+  // V0 is always a vs-AI game (vs-easy / vs-medium / vs-hard); kept as a
+  // boolean for symmetry + future MP gating.
+  const isAiGame = mode === 'vs-easy' || mode === 'vs-medium' || mode === 'vs-hard';
+  void mode;
 
-  // Theatre flow per side: clicking a YOU/OPP button kicks off a 1.2s spin
-  // for that side only; at the end of the spin the dispatch fires and the
-  // engine populates that slot. Independent per side because in hot-seat
-  // two humans may sequentially press their own buttons; only the pressed
-  // side should spin.
+  // Theatre flow per side: clicking the YOU button kicks off a 1.2s spin;
+  // at the end of the spin the dispatch fires and the engine populates that
+  // slot. The AI's spin is driven independently by the effect below.
   const [spinningSide, setSpinningSide] = useState<PlayerId | null>(null);
   const youButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -125,10 +121,9 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
   const youSpinning = spinningSide === youPlayer;
   const oppSpinning = spinningSide === oppPlayer;
 
-  // Buttons enable on null slot + not already spinning that side. In vs-AI
-  // the OPP button is hidden entirely (the AI rolls itself).
+  // Buttons enable on null slot + not already spinning that side. The OPP
+  // button is hidden entirely — the AI rolls itself.
   const youEnabled = open && youValue === null && !youSpinning;
-  const oppEnabledHotSeat = open && isHotSeat && oppValue === null && !oppSpinning;
 
   // Round-close detection: when both slots are non-null briefly (before the
   // engine transitions to first_player_choice or resets on tie), the modal
@@ -154,7 +149,6 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
   );
 
   const handleRollYou = useCallback(() => rollFor(youPlayer), [rollFor, youPlayer]);
-  const handleRollOpp = useCallback(() => rollFor(oppPlayer), [rollFor, oppPlayer]);
 
   // vs-AI: the AI only rolls AFTER the human has rolled. Trigger condition is
   // strictly local to the engine state — `diceRoll.A !== null && diceRoll.B
@@ -264,39 +258,20 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
                 highlighted={!oppSpinning && oppWon}
                 label="Opp"
               />
-              {isHotSeat ? (
-                <button
-                  type="button"
-                  onClick={handleRollOpp}
-                  disabled={!oppEnabledHotSeat}
-                  aria-busy={oppSpinning}
-                  aria-label={oppSpinning ? 'Rolling opponent die' : 'Roll opponent die'}
-                  className="min-h-[44px] min-w-[120px] rounded-2xl px-5 py-2
-                             font-body font-extrabold uppercase tracking-wider
-                             bg-hull-teal text-paper-cream text-[0.875rem]
-                             shadow-[0_4px_12px_rgba(15,69,73,0.30)]
-                             focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none
-                             disabled:opacity-40 disabled:cursor-not-allowed
-                             disabled:shadow-none"
-                >
-                  {oppSpinning ? 'Rolling…' : oppValue !== null ? 'Rolled' : 'Roll'}
-                </button>
-              ) : (
-                <span
-                  className="min-h-[44px] min-w-[120px] flex items-center justify-center
-                             font-display text-[0.75rem] uppercase tracking-[0.16em]
-                             text-ink-iron px-2 text-center"
-                  role="status"
-                  aria-live="polite"
-                  aria-atomic="true"
-                >
-                  {oppSpinning
-                    ? 'AI is rolling…'
-                    : oppValue !== null
-                      ? 'Rolled'
-                      : 'Waiting…'}
-                </span>
-              )}
+              <span
+                className="min-h-[44px] min-w-[120px] flex items-center justify-center
+                           font-display text-[0.75rem] uppercase tracking-[0.16em]
+                           text-ink-iron px-2 text-center"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {oppSpinning
+                  ? 'AI is rolling…'
+                  : oppValue !== null
+                    ? 'Rolled'
+                    : 'Waiting…'}
+              </span>
             </div>
           </div>
 

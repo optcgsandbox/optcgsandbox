@@ -5,6 +5,7 @@ import { create } from 'zustand';
 import { applyAction } from '@shared/engine/applyAction';
 import { EasyAi } from '@shared/engine/ai/EasyAi';
 import { MediumAi } from '@shared/engine/ai/MediumAi';
+import { HardAi } from '@shared/engine/ai/HardAi';
 import type { AiDriver } from '@shared/engine/ai/AiDriver';
 import { initialState } from '@shared/engine/GameState';
 import { setupGame } from '@shared/engine/phases/setup';
@@ -14,7 +15,7 @@ import type { Action } from '@shared/protocol/actions';
 import type { Card, CharacterCard, EventCard, LeaderCard, StageCard } from '@shared/engine/cards/Card';
 import type { GameState, PlayerId } from '@shared/engine/GameState';
 
-export type GameMode = 'hot-seat' | 'vs-easy' | 'vs-medium';
+export type GameMode = 'vs-easy' | 'vs-medium' | 'vs-hard';
 
 function makeLeader(id: string, color: 'red' | 'blue' = 'red'): LeaderCard {
   return {
@@ -223,7 +224,9 @@ async function runFirstTurnPhases(
 interface GameStore {
   state: GameState;
   mode: GameMode;
-  /** Whose seat we render. In hot-seat = activePlayer; in vs-AI = always 'A'. */
+  /** Whose seat we render. Always 'A' in V0 (single-player vs AI). Retained
+   *  as a field because UI components key off it; future online MP will swap
+   *  it per session. */
   viewAs: PlayerId;
   legalActions: Action[];
   aiThinking: boolean;
@@ -262,9 +265,11 @@ async function runAiTurn(
   set: (partial: Partial<GameStore>) => void,
 ): Promise<void> {
   const mode = get().mode;
-  const ai: AiDriver = mode === 'vs-medium'
-    ? new MediumAi()
-    : new EasyAi((Date.now() & 0xffff) ^ get().state.turn);
+  const ai: AiDriver = mode === 'vs-hard'
+    ? new HardAi()
+    : mode === 'vs-medium'
+      ? new MediumAi()
+      : new EasyAi((Date.now() & 0xffff) ^ get().state.turn);
   set({ aiThinking: true });
   // Loop until AI hits END_TURN or game ends.
   // Cap iterations to avoid runaway in case of a bug.
@@ -364,10 +369,11 @@ export const useGameStore = create<GameStore>((set, get) => {
         next.phase === 'mulligan_first' && next.activePlayer === AI_OPPONENT;
       const aiDeciderInSecond =
         next.phase === 'mulligan_second' && next.activePlayer === AI_HUMAN;
-      if ((aiMode === 'vs-easy' || aiMode === 'vs-medium') && (aiDeciderInFirst || aiDeciderInSecond)) {
+      if (aiDeciderInFirst || aiDeciderInSecond) {
         const aiResult = applyAction(next, AI_OPPONENT, { type: 'KEEP_HAND' });
         next = aiResult.state;
       }
+      void aiMode;
 
       // D10 / D24: if either the human's mulligan close OR the AI's
       // auto-KEEP just transitioned the engine into 'refresh', commit the
@@ -394,7 +400,6 @@ export const useGameStore = create<GameStore>((set, get) => {
           // human. Re-read store state since the pipeline mutated it.
           const post = get().state;
           if (
-            (aiMode === 'vs-easy' || aiMode === 'vs-medium') &&
             post.phase === 'main' &&
             post.activePlayer === AI_OPPONENT &&
             !post.result
@@ -405,49 +410,17 @@ export const useGameStore = create<GameStore>((set, get) => {
         return;
       }
 
-      // D10 (hot-seat): when the mulligan window advances to mulligan_second,
-      // hand the viewer over to player B so the prompt renders for the
-      // correct human. activePlayer stays the FIRST player throughout the
-      // window (per CR §5-2-1-6 "first player decides first"), so we use
-      // phase + mode as the trigger rather than activePlayer change.
-      const isHotSeat = get().mode === 'hot-seat';
-      const viewAsMulliganSecond =
-        isHotSeat && state.phase === 'mulligan_first' && next.phase === 'mulligan_second'
-          ? (next.activePlayer === 'A' ? 'B' as PlayerId : 'A' as PlayerId)
-          : null;
-      // D24 (hot-seat): when ROLL_DICE produces a winner, hand the viewer
-      // over to the winner so they see the FirstPlayerChoicePrompt with the
-      // Go-First / Go-Second buttons. Both players had access to ROLL_DICE
-      // so the prior viewAs may be either; this flip normalizes.
-      const viewAsFirstChoice =
-        isHotSeat && state.phase === 'dice_roll' && next.phase === 'first_player_choice'
-          ? next.activePlayer
-          : null;
-      // D24 (hot-seat): once first-player choice closes into the mulligan
-      // window, the FIRST player (next.activePlayer) is the decider. Snap
-      // viewAs to them so MulliganPrompt renders on the right seat.
-      const viewAsMulliganFirst =
-        isHotSeat && state.phase === 'first_player_choice' && next.phase === 'mulligan_first'
-          ? next.activePlayer
-          : null;
-      // When mulligan finishes in hot-seat, hand the seat back to the active
-      // player (whoever ended up going first).
-      const viewAsAfterMulligan =
-        isHotSeat && next.phase === 'don' && state.phase !== 'don'
-          ? next.activePlayer
-          : null;
+      // V0: single-player vs AI. viewAs stays 'A' throughout. The mulligan
+      // window and dice-roll flips that previously hand off the seat in
+      // hot-seat are no-ops here — the AI handles its own decisions via the
+      // auto-fire branches above.
 
       // UI-D2/D3: any phase or active-player change clears transient UI state.
       const phaseOrPlayerChanged =
         next.phase !== state.phase || next.activePlayer !== state.activePlayer;
-      // viewAs override priority (later wins): mulligan_second flip, dice→
-      // choice flip, choice→mulligan_first flip, mulligan→post flip.
-      const viewAsOverride =
-        viewAsAfterMulligan ?? viewAsMulliganFirst ?? viewAsFirstChoice ?? viewAsMulliganSecond ?? null;
       set({
         state: next,
         legalActions: getLegalActions(next, next.activePlayer),
-        ...(viewAsOverride ? { viewAs: viewAsOverride } : {}),
         ...(phaseOrPlayerChanged
           ? { inspectedCardId: null, cardDetailOpen: false, selectedAttackerId: null }
           : {}),
@@ -477,14 +450,12 @@ export const useGameStore = create<GameStore>((set, get) => {
     async endTurnAndAdvance() {
       // End the active player's turn — engine flips activePlayer + sets
       // phase='refresh' for the new active player. Commit that state THEN
-      // pace through R/D/D so the banner can label each step. Pre-2026-05-29
-      // this ran R/D/D in one tick which felt like a blink.
+      // pace through R/D/D so each step is visible.
       const ended = endTurn(get().state);
-      const newViewAs = get().mode === 'hot-seat' ? ended.activePlayer : AI_HUMAN;
       set({
         state: ended,
         legalActions: getLegalActions(ended, ended.activePlayer),
-        viewAs: newViewAs,
+        viewAs: AI_HUMAN,
         inspectedCardId: null,
         cardDetailOpen: false,
         selectedAttackerId: null,
@@ -492,9 +463,8 @@ export const useGameStore = create<GameStore>((set, get) => {
       await wait(TURN_HANDOFF_DELAY_MS);
       await runPhasePipelineWithDelays(get, set);
 
-      const m = get().mode;
       const post = get().state;
-      if ((m === 'vs-easy' || m === 'vs-medium') && post.activePlayer === AI_OPPONENT && !post.result) {
+      if (post.activePlayer === AI_OPPONENT && !post.result) {
         await runAiTurn(get, set);
       }
     },
