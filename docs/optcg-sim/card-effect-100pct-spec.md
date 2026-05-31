@@ -127,6 +127,46 @@ required before locking schema (Phase A.2 below).
 Total cataloged after expansion: 75 distinct patterns. Schema must
 support all 75 before Phase A.3 lock.
 
+### Phase A.1 audit pass 3 (cards #66-150 by complexity)
+
+| #  | Pattern                                                  | Example card        | Proposed addition |
+|----|----------------------------------------------------------|---------------------|-------------------|
+| 76 | Add to top of own Life FACE-DOWN (vs face-up)            | ST13-005            | Action `add_to_own_life_top` with `faceUp: boolean` |
+| 77 | End-of-turn trash all face-up Life cards                 | ST13-002            | Action `trash_face_up_life`; trigger at_end_of_turn_self |
+| 78 | Self-loss prevention game-rule override                  | OP15-022            | `gameRuleOverride.deckOutGrace: 'until_end_of_turn'` |
+| 79 | Choose-cost + reveal opp deck top conditional            | OP11-066, OP11-073  | New action `choose_cost_reveal_opp_match` |
+| 80 | Next-play cost reduction by card name                    | OP12-061            | `cost_reduction.scope: { cardName: string, costMin?: number }` |
+| 81 | "Cannot play Character cards this turn" restriction      | OP14-020            | Action `restrict_play_self_this_turn` |
+| 82 | DON return-to-match-opp dynamic count                    | OP08-074            | `magnitudeFormula: 'match_opp_don_count'` |
+| 83 | Conditional self-set-active at EoT                       | OP09-037            | Trigger `at_end_of_turn_self` + condition `if_own_rested_chars_min: 3` |
+| 84 | Damage-taken trigger (multi-event)                       | OP13-002            | New trigger `on_damage_taken_or_self_ko` (union of two events) |
+| 85 | Look at opp Life + reorder (no flip)                     | EB01-052            | Action `peek_and_reorder_opp_life` |
+| 86 | Turn ALL own Life cards face-down                        | EB01-052            | Action `turn_all_own_life_face_down` |
+| 87 | Restrict effect-type within turn                         | EB04-016            | `restrict_effect_type` action with effect-source filter |
+| 88 | Reactive on DON-returned-to-deck                         | EB02-035            | New trigger `on_own_don_returned` |
+| 89 | End-of-turn self-trash (Stage)                           | OP05-040            | Action `self_trash_at_end_of_turn` |
+| 90 | Reveal-as-cost (reveal N cards of type from hand)        | OP12-015            | `EffectCost.revealHand: { count: N, kindFilter? }` |
+| 91 | Cost modifier on card while in hand (continuous)         | EB04-061            | `continuous.cost_modifier_in_hand: { condition, delta }` |
+| 92 | Attribute filter on attacker                             | OP11-088            | Condition `if_attacker_has_attribute: '<Slash>' \| ...` |
+| 93 | "Until end of opp's next End Phase" duration             | OP09-093, OP14-119  | Duration enum: `'this_turn' \| 'opp_next_turn' \| 'opp_next_end_phase'` |
+| 94 | Effect with conditional self-power gain by trash size    | OP15-002, OP14-096  | Condition + magnitude reading `state.trash.length` |
+| 95 | Place opp life card to opp hand                           | EB03-053            | Action `add_to_opp_hand_from_opp_life` |
+| 96 | "Reveal 2 events from hand" cost pattern                 | OP12-015            | See #90 |
+| 97 | "Don given to opp char" state marker                     | OP15-008, OP15-023, OP15-026 | See #41, confirmed widespread |
+| 98 | Activate Event from hand triggered                       | OP12-041            | See #47 |
+
+Total after 3 audit passes: ~95 distinct patterns (some duplicates folded
+inline). Diminishing returns past pass 3 — rare cards mostly cluster around
+the existing pattern set. Declaring Phase A.1 complete at this coverage.
+
+Patterns NOT yet inventoried but acknowledged as "long tail" — to be
+added in Phase A.4 (schema patches as encountered):
+  - Stage-card passive continuous effects (e.g. "all of your X gain Y").
+  - At-start-of-game deck composition checks.
+  - Cross-color leader interactions.
+  - Multi-stage stacking choreography.
+  - Self-trash-as-replacement on K.O. (variant of #28 with self target).
+
 ---
 
 ## Phases
