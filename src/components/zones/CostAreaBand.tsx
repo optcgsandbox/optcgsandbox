@@ -141,22 +141,36 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
     // motion.button (animate/whileHover/whileTap) don't override the CSS
     // counter-rotation on the opp side.
     <div data-flip-back style={{ display: 'block', width: DON_CARD_W, height: DON_CARD_H }}>
+    {/* OUTER motion layer — mount-only flight + face-up flip. Pivots from the
+        card's LEFT edge (transformOrigin: 0% 50%) so the card opens like a
+        book from its left-most edge. Opp half's parent rotate(180deg) maps
+        local-left → screen-right (= opp's DON-deck side), so a single
+        animation works for both sides. Verified via mockup v3 2026-05-30. */}
+    <motion.div
+      initial={reduced ? false : { scale: 0.85, opacity: 0, x: -64, rotateY: -90 }}
+      animate={reduced ? false : { scale: 1, opacity: 1, x: 0, rotateY: 0 }}
+      transition={{
+        type: 'spring',
+        stiffness: 220,
+        damping: 24,
+        delay: reduced ? 0 : index * STAGGER_DON,
+      }}
+      style={{
+        width: DON_CARD_W,
+        height: DON_CARD_H,
+        transformOrigin: '0% 50%',
+      }}
+    >
+    {/* INNER motion.button — rest rotateZ + armed pulse + hover + tap.
+        Pivots from card center so the rest swing stays in place. */}
     <motion.button
       type="button"
-      // On mount: the card "flies" from the DON-deck direction (left) and
-      // flips face-up (rotateY: -90 → 0) into its cost-area slot. The
-      // playmat root has perspective: 1200px, so rotateY reads as 3D. We
-      // stop at 0 (never cross 90°) so we never expose a mirrored backface.
-      // Owner direction 2026-05-30.
-      initial={reduced ? false : { scale: 0.8, opacity: 0, x: -100, rotateY: -90 }}
       animate={
         armed && !reduced
           ? {
               scale: [1, 1.08, 1],
               opacity: 1,
               rotate: targetRotate,
-              rotateY: 0,
-              x: 0,
               y: -2,
               boxShadow: [
                 '0 0 0 0px var(--color-sun-brass)',
@@ -168,8 +182,6 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
               scale: 1,
               opacity: rested ? 0.74 : 1,
               rotate: targetRotate,
-              rotateY: 0,
-              x: 0,
               y: 0,
               boxShadow: '0 0 0 0px transparent',
             }
@@ -177,12 +189,7 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
       transition={
         armed
           ? { duration: 1, repeat: Infinity, ease: 'easeInOut' }
-          : {
-              type: 'spring',
-              stiffness: 220,
-              damping: 24,
-              delay: reduced ? 0 : index * STAGGER_DON,
-            }
+          : { type: 'spring', stiffness: 280, damping: 26 }
       }
       onClick={
         interactive && !rested
@@ -220,6 +227,7 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
     >
       <DonCardArt active={!rested} />
     </motion.button>
+    </motion.div>
     </div>
   );
 }
