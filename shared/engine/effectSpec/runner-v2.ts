@@ -5,8 +5,9 @@
 // (target resolver, action handlers, continuous, replacements) land in
 // subsequent commits A.3.2 → A.3.10.
 
-import type { GameState, PlayerId } from '../GameState';
-import type { EffectConditionV2 } from './types-v2';
+import type { CardInstance, GameState, PlayerId } from '../GameState';
+import type { Card } from '../cards/Card';
+import type { EffectConditionV2, EffectTargetV2, TargetFilter } from './types-v2';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
@@ -159,5 +160,152 @@ export function evaluateConditionV2(
     default:
       // Future condition types fall through to false defensively.
       return false;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Target resolver — Sub-phase A.3.2
+// ─────────────────────────────────────────────────────────────────────
+
+/** Compute the effective power of an instance (base + DON × 1000 + mod).
+ *  Used by power-axis filters. */
+function effectivePower(state: GameState, inst: CardInstance): number {
+  const card = state.cardLibrary[inst.cardId];
+  let base = 0;
+  if (card?.kind === 'leader' || card?.kind === 'character') {
+    base = (card as { power: number }).power ?? 0;
+  }
+  const mod = inst.powerModifier ?? 0;
+  return Math.max(0, base + inst.attachedDon.length * 1000 + mod);
+}
+
+/** Compute the effective cost of an instance (base cost + costModifier).
+ *  Used by cost-axis filters. */
+function effectiveCost(card: Card | undefined, inst: CardInstance): number | null {
+  if (!card || card.cost === null || card.cost === undefined) return null;
+  return Math.max(0, card.cost + (inst.costModifier ?? 0));
+}
+
+/** Test whether an instance passes every axis of a TargetFilter. Each
+ *  axis is independent — omitted axes match everything. */
+function matchesFilter(state: GameState, inst: CardInstance, filter: TargetFilter | undefined): boolean {
+  if (!filter) return true;
+  const card = state.cardLibrary[inst.cardId];
+  if (!card) return false;
+
+  if (typeof filter.costMax === 'number') {
+    const c = effectiveCost(card, inst);
+    if (c === null || c > filter.costMax) return false;
+  }
+  if (typeof filter.costMin === 'number') {
+    const c = effectiveCost(card, inst);
+    if (c === null || c < filter.costMin) return false;
+  }
+  if (typeof filter.powerMax === 'number') {
+    if (effectivePower(state, inst) > filter.powerMax) return false;
+  }
+  if (typeof filter.powerMin === 'number') {
+    if (effectivePower(state, inst) < filter.powerMin) return false;
+  }
+  if (filter.trait) {
+    if (!Array.isArray(card.traits) || !card.traits.includes(filter.trait)) return false;
+  }
+  if (filter.typeIncludes) {
+    if (!Array.isArray(card.traits) || !card.traits.some((t) => t.includes(filter.typeIncludes!))) return false;
+  }
+  if (filter.colors && filter.colors.length > 0) {
+    if (!Array.isArray(card.colors) || !card.colors.some((c) => filter.colors!.includes(c))) return false;
+  }
+  if (filter.nameIs) {
+    if (card.name !== filter.nameIs) return false;
+  }
+  if (filter.nameExcludes) {
+    if (card.name === filter.nameExcludes) return false;
+  }
+  if (filter.kind) {
+    if (card.kind !== filter.kind) return false;
+  }
+  if (typeof filter.rested === 'boolean') {
+    if (inst.rested !== filter.rested) return false;
+  }
+  return true;
+}
+
+/** Resolve an EffectTargetV2 descriptor against state. Returns an array
+ *  of instance ids. Single-target kinds return at most 1; mass-target
+ *  kinds (all_your_characters, all_opp_characters) return many.
+ *
+ *  V0 picks deterministically (first match in scan order). The runtime
+ *  will eventually accept a controller-provided pick when ambiguous —
+ *  this resolver gives the default candidate set. */
+export function resolveTargetV2(
+  state: GameState,
+  controller: PlayerId,
+  sourceInstanceId: string,
+  target: EffectTargetV2 | undefined,
+): string[] {
+  if (!target) return [];
+  const me = state.players[controller];
+  const opp = state.players[OTHER[controller]];
+
+  switch (target.kind) {
+    case 'self':
+      return state.instances[sourceInstanceId] ? [sourceInstanceId] : [];
+
+    case 'your_leader':
+      return [me.leader.instanceId];
+
+    case 'opp_leader':
+      return [opp.leader.instanceId];
+
+    case 'your_character': {
+      const hits = me.field.filter((inst) => matchesFilter(state, inst, target.filter));
+      return hits.length > 0 ? [hits[0].instanceId] : [];
+    }
+
+    case 'opp_character': {
+      const hits = opp.field.filter((inst) => matchesFilter(state, inst, target.filter));
+      return hits.length > 0 ? [hits[0].instanceId] : [];
+    }
+
+    case 'opp_hand_card': {
+      const hits = opp.hand
+        .map((id) => state.instances[id])
+        .filter((inst): inst is CardInstance => !!inst && matchesFilter(state, inst, target.filter));
+      return hits.length > 0 ? [hits[0].instanceId] : [];
+    }
+
+    case 'own_trash_card': {
+      const hits = me.trash
+        .map((id) => state.instances[id])
+        .filter((inst): inst is CardInstance => !!inst && matchesFilter(state, inst, target.filter));
+      // Trash picks default to MOST RECENT match (top of trash).
+      return hits.length > 0 ? [hits[hits.length - 1].instanceId] : [];
+    }
+
+    case 'top_of_deck':
+      return me.deck.length > 0 ? [me.deck[0]] : [];
+
+    case 'top_of_opp_deck':
+      return opp.deck.length > 0 ? [opp.deck[0]] : [];
+
+    case 'all_your_characters':
+      return me.field
+        .filter((inst) => matchesFilter(state, inst, target.filter))
+        .map((inst) => inst.instanceId);
+
+    case 'all_opp_characters':
+      return opp.field
+        .filter((inst) => matchesFilter(state, inst, target.filter))
+        .map((inst) => inst.instanceId);
+
+    case 'own_life_top':
+      return me.life.length > 0 ? [me.life[0]] : [];
+
+    case 'opp_life_top':
+      return opp.life.length > 0 ? [opp.life[0]] : [];
+
+    default:
+      return [];
   }
 }
