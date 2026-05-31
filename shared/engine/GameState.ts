@@ -210,6 +210,14 @@ export interface GameState {
    *  so the AI/UI can reason about previously-peeked cards. Cleared per-zone
    *  when that zone is shuffled (deferred V0; no shuffle hook today). */
   knownByViewer: Record<PlayerId, string[]>;
+  /** A.3.8: per-leader game-rule overrides (DON deck size, name aliases,
+   *  deck-out grace, etc.). Initialized lazily — undefined means "all
+   *  default rules". */
+  gameRules?: {
+    deckOutGracePlayer?: PlayerId;
+    nameAliases?: Record<PlayerId, string[]>;
+    bannedEventCostMin?: Record<PlayerId, number>;
+  };
 }
 
 export interface PendingAttack {
