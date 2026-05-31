@@ -139,6 +139,46 @@ for (const r of rows) {
   // Events with [Counter +N] in text — leave counterEventBoost null; D3 covers
   // the boost at play-time via the effect-tag dispatch when authored per-card.
   if (kind === 'event') card.counterEventBoost = null;
+
+  // V3 per-card param binding (regex-extract from effect_text):
+  //   draw N        — "Draw N cards"
+  //   mill N        — "trash N cards from the top of your opponent's deck"
+  //   lifegain N    — "add the top card of your deck to your life"
+  //   power_buff +N — "gains +N power"
+  //   searcher peek — "Look at the top N cards … may add up to M" → {lookCount: N, addCount: M}
+  // Only emit templateParams when the regex hits — defaults stay in effect
+  // otherwise. Multi-effect cards may have partial coverage; that's accepted
+  // V0 fidelity per the engine-v3 roadmap.
+  const text = r.effect_text ?? '';
+  const params = {};
+  if (effectTags.includes('draw')) {
+    const m = text.match(/Draw (\d+) cards?/i);
+    if (m) params.draw = parseInt(m[1], 10);
+  }
+  if (effectTags.includes('mill')) {
+    const m = text.match(/trash (\d+) cards? from the top of your (own )?deck/i)
+      ?? text.match(/Place the top (\d+) cards? of your deck in your trash/i);
+    if (m) params.mill = parseInt(m[1], 10);
+  }
+  if (effectTags.includes('power_buff')) {
+    const m = text.match(/gains? \+(\d+) power/i);
+    if (m) params.power_buff = parseInt(m[1], 10);
+  }
+  if (effectTags.includes('searcher')) {
+    const m = text.match(/Look at the top (\d+) cards? of your deck/i);
+    if (m) {
+      const lookCount = parseInt(m[1], 10);
+      const addMatch = text.match(/(?:reveal|add) (?:up to )?(\d+)/i);
+      const addCount = addMatch ? parseInt(addMatch[1], 10) : 1;
+      params.searcher = { lookCount, addCount };
+    }
+  }
+  if (effectTags.includes('rest_opp_don')) {
+    const m = text.match(/rest (\d+) of your opponent's DON/i);
+    if (m) params.rest_opp_don = parseInt(m[1], 10);
+  }
+  if (Object.keys(params).length > 0) card.templateParams = params;
+
   cards.push(card);
 }
 

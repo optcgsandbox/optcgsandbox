@@ -196,12 +196,17 @@ export function fireEffects(
     const handler = TEMPLATES[tag as keyof typeof TEMPLATES];
     if (!handler) continue;
     fired = true;
+    // V3 per-card param binding: prefer caller-provided param (options.param),
+    // fall back to card.templateParams[tag] when present. Templates default
+    // their magnitude if neither is provided.
+    const tplParam = card.templateParams?.[tag];
+    const param = options.param !== undefined ? options.param : (tplParam as EffectContext['param']);
     const ctx: EffectContext = {
       sourceInstanceId: instanceId,
       controller,
       trigger,
       targetInstanceId: options.targetInstanceId,
-      param: options.param,
+      param,
     };
     cur = handler(cur, ctx);
   }

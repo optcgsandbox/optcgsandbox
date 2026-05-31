@@ -91,6 +91,11 @@ export interface CardBase {
   life?: number;
   /** Effect text — used in UI tooltip and as fallback when no effect handler is wired. */
   effectText?: string;
+  /** V3 per-card param binding. Maps an EffectTag → the numeric or object
+   *  param that template fires with. Without an entry, the template uses its
+   *  default (draw=1, power_buff=+1000, etc.). Object params drive windowed
+   *  flows (searcher {lookCount, addCount}; disruption {reveal: true}). */
+  templateParams?: Partial<Record<EffectTag, number | Record<string, unknown>>>;
 }
 
 export interface LeaderCard extends CardBase {

@@ -36,7 +36,13 @@ function makeLeader(id: string, power = 5000): LeaderCard {
 
 function makeChar(
   id: string,
-  opts: { cost?: number; power?: number; effectTags?: CharacterCard['effectTags']; keywords?: CharacterCard['keywords'] } = {},
+  opts: {
+    cost?: number;
+    power?: number;
+    effectTags?: CharacterCard['effectTags'];
+    keywords?: CharacterCard['keywords'];
+    templateParams?: CharacterCard['templateParams'];
+  } = {},
 ): CharacterCard {
   return {
     id,
@@ -49,6 +55,7 @@ function makeChar(
     traits: [],
     keywords: opts.keywords ?? [],
     effectTags: opts.effectTags ?? ['vanilla'],
+    templateParams: opts.templateParams,
   };
 }
 
@@ -357,6 +364,25 @@ describe('Effect dispatch (D14) — wiring', () => {
     expect(s2.players.B.hand.length).toBe(bHandBefore);
     // But the play itself happened.
     expect(s2.players.A.field.find((i) => i.instanceId === instId)).toBeDefined();
+  });
+
+  it('templateParams.draw overrides the default draw=1 per-card', () => {
+    // A card with templateParams: { draw: 3 } should pull 3 cards on play.
+    const heavyDraw = makeChar('heavy-draw', {
+      effectTags: ['draw'],
+      templateParams: { draw: 3 },
+    });
+    let s = advanceToMainPhase(build([heavyDraw]));
+    const instId = injectIntoHand(s, 'heavy-draw');
+    setDonActive(s, 'A', 2);
+    const deckBefore = s.players.A.deck.length;
+    const { state: s2 } = applyAction(s, 'A', {
+      type: 'PLAY_CARD',
+      instanceId: instId,
+      replaceTargetId: null,
+    });
+    // Deck shrank by 3 (the draw template fired with param=3).
+    expect(deckBefore - s2.players.A.deck.length).toBe(3);
   });
 
   it('TEMPLATES registry remains intact after dispatch wiring', () => {
