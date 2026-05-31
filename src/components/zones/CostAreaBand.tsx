@@ -311,41 +311,34 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
           className="absolute inset-y-0"
           style={{ left: 8, width: stackWidth, minWidth: 0, overflow: 'visible' }}
         >
-          {donCostArea.map((instanceId, i) => (
-            <div
-              key={instanceId}
-              className="absolute"
-              style={{
-                left: i * DON_STRIDE,
-                zIndex: i + 1,
-                top: '50%',
-                transform: 'translateY(-50%)',
-              }}
-            >
-              <DonCard
-                instanceId={instanceId}
-                index={i}
-                rested={false}
-                reduced={reduced}
-                interactive={interactive}
-                armed={armedDonId === instanceId}
-                isYou={isYou}
-                onTap={() => handleCoinTap(instanceId)}
-              />
-            </div>
-          ))}
-          {donRested.map((instanceId, i) => {
-            // Rested group starts AFTER all active DONs + a small gap.
-            const restedLeft =
-              (donCostArea.length > 0 ? donCostArea.length * DON_STRIDE + REST_GAP : 0) +
-              i * DON_STRIDE;
+          {/*
+            Single unified iteration over [active DONs, rested DONs]. Previously
+            this was TWO separate .map() calls. When runRefreshPhase moved an
+            instance from donRested → donCostArea, React's reconciler saw it as
+            UNMOUNT from one map + MOUNT in the other (different parent list),
+            which RE-FIRED the DonCard flight+flip mount animation on every
+            rested DON during refresh. That added a chaotic "DONs replay their
+            entry" beat on top of the per-card un-rest rotation, making REFRESH
+            phase feel slower than DRAW / DON. The unified list lets the same
+            key=instanceId stay mounted across the move; only the `rested` prop
+            changes, and the DonCard's animate-rotate handles the visual.
+            Owner direction 2026-05-30.
+          */}
+          {[
+            ...donCostArea.map((id, i) => ({ id, i, rested: false })),
+            ...donRested.map((id, i) => ({ id, i, rested: true })),
+          ].map(({ id: instanceId, i, rested: itemRested }, flatIdx) => {
+            const left = itemRested
+              ? (donCostArea.length > 0 ? donCostArea.length * DON_STRIDE + REST_GAP : 0) +
+                i * DON_STRIDE
+              : i * DON_STRIDE;
             return (
               <div
                 key={instanceId}
                 className="absolute"
                 style={{
-                  left: restedLeft,
-                  zIndex: donCostArea.length + i + 1,
+                  left,
+                  zIndex: flatIdx + 1,
                   top: '50%',
                   transform: 'translateY(-50%)',
                 }}
@@ -353,11 +346,12 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
                 <DonCard
                   instanceId={instanceId}
                   index={i}
-                  rested
+                  rested={itemRested}
                   reduced={reduced}
-                  interactive={false}
-                  armed={false}
+                  interactive={itemRested ? false : interactive}
+                  armed={!itemRested && armedDonId === instanceId}
                   isYou={isYou}
+                  onTap={itemRested ? undefined : () => handleCoinTap(instanceId)}
                 />
               </div>
             );
