@@ -40,6 +40,7 @@
 import type { GameState, PlayerId } from '../../GameState';
 import type { EffectTag } from '../Card';
 import { TEMPLATES } from './templates';
+import { runEffectSpec } from './runner';
 import type { EffectContext, EffectTrigger } from './types';
 
 /** Tags that should attempt to fire on the given trigger. Anything not
@@ -177,6 +178,36 @@ export function fireEffects(
   // this function.
   const isOpt = card.keywords.includes('once_per_turn');
   if (isOpt && inst.perTurn.effectsUsed.includes(trigger)) return state;
+
+  // Stage 0: prefer structured `effectSpec` when present. The runner resolves
+  // condition + target + action against state and chains. Falls back to the
+  // legacy tag dispatch when the card has no specs (or none matching the
+  // trigger). Hybrid is fine — specs and tags can coexist while the corpus
+  // is being migrated.
+  if (Array.isArray(card.effectSpec) && card.effectSpec.length > 0) {
+    const matches = card.effectSpec.filter((s) => s.trigger === trigger);
+    if (matches.length > 0) {
+      const ran = runEffectSpec(state, { sourceInstanceId: instanceId, controller, trigger }, matches);
+      // V3 OPT enforcement still runs on the spec path so once_per_turn
+      // guards don't get bypassed by switching to specs.
+      if (card.keywords.includes('once_per_turn')) {
+        const after = ran.instances[instanceId];
+        if (after && !after.perTurn.effectsUsed.includes(trigger)) {
+          after.perTurn.effectsUsed.push(trigger);
+          const pl = ran.players[after.controller];
+          if (pl.leader.instanceId === instanceId && !pl.leader.perTurn.effectsUsed.includes(trigger)) {
+            pl.leader.perTurn.effectsUsed.push(trigger);
+          }
+          for (const f of pl.field) {
+            if (f.instanceId === instanceId && !f.perTurn.effectsUsed.includes(trigger)) {
+              f.perTurn.effectsUsed.push(trigger);
+            }
+          }
+        }
+      }
+      return ran;
+    }
+  }
 
   const allowed = TAGS_BY_TRIGGER[trigger];
   if (allowed.size === 0) return state;

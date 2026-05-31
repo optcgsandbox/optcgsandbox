@@ -96,6 +96,62 @@ export interface CardBase {
    *  default (draw=1, power_buff=+1000, etc.). Object params drive windowed
    *  flows (searcher {lookCount, addCount}; disruption {reveal: true}). */
   templateParams?: Partial<Record<EffectTag, number | Record<string, unknown>>>;
+  /** Stage 0 of the effect-extraction method (see
+   *  `docs/optcg-sim/card-effect-extraction-method.md`). Ordered list of
+   *  structured effect clauses; `runEffectSpec` walks them at dispatch time.
+   *  When present, this REPLACES the legacy tag-dispatch path for this card.
+   *  Cards without `effectSpec` keep falling back to `effectTags`. */
+  effectSpec?: EffectSpec[];
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// EffectSpec — structured per-card effect clause (Stage 0 schema).
+// ─────────────────────────────────────────────────────────────────────
+
+export type EffectSpecTrigger =
+  | 'on_play' | 'on_ko' | 'when_attacking' | 'on_block'
+  | 'activate_main' | 'trigger' | 'at_start_of_game';
+
+export type EffectCondition =
+  | { type: 'always' }
+  | { type: 'if_leader_is'; name: string }
+  | { type: 'if_leader_has_trait'; trait: string }
+  | { type: 'if_don_min'; n: number }
+  | { type: 'if_own_life_max'; n: number }
+  | { type: 'if_opp_life_max'; n: number }
+  | { type: 'if_hand_max'; n: number }
+  | { type: 'if_trash_min'; n: number };
+
+export type EffectSpecTarget =
+  | 'self'
+  | 'your_leader'
+  | 'your_character'
+  | 'opp_leader'
+  | 'opp_character'
+  | 'opp_character_cost_max'
+  | 'top_of_deck'
+  | 'top_of_opp_deck'
+  | 'opp_hand'
+  | 'own_trash';
+
+export type EffectSpecAction =
+  | 'draw' | 'mill' | 'lifegain' | 'life_to_hand'
+  | 'power_buff' | 'set_power_zero'
+  | 'cost_reduction' | 'removal_cost_reduce'
+  | 'removal_ko' | 'removal_bounce'
+  | 'exile' | 'rest_target' | 'rest_opp_don' | 'move_to_top'
+  | 'recursion' | 'searcher_peek' | 'reveal_opp_hand'
+  | 'take_from_opp_hand' | 'search_deck' | 'play_for_free' | 'ramp';
+
+export interface EffectSpec {
+  trigger: EffectSpecTrigger;
+  condition?: EffectCondition;
+  action: EffectSpecAction;
+  target?: EffectSpecTarget;
+  magnitude?: number;
+  params?: Record<string, unknown>;
+  /** Provenance — how this spec was authored. */
+  verified: 'ground-truth' | 'auto' | 'flagged';
 }
 
 export interface LeaderCard extends CardBase {
