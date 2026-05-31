@@ -102,6 +102,13 @@ export interface CardBase {
    *  When present, this REPLACES the legacy tag-dispatch path for this card.
    *  Cards without `effectSpec` keep falling back to `effectTags`. */
   effectSpec?: EffectSpec[];
+  /** Phase A.3.10 — full v2 spec block (clauses + continuous + replacements
+   *  + game-rule overrides). Authored by the extraction pipeline (Phases
+   *  B-D) as the corpus is converted. When present AND
+   *  `EFFECT_SPEC_V2_ENABLED` is true, the engine routes through the v2
+   *  runner (runner-v2.ts) instead of the v1 path. Cards without this
+   *  field continue to use v1 `effectSpec` or legacy `effectTags`. */
+  effectSpecV2?: import('../effectSpec/types-v2').EffectSpecV2;
 }
 
 // ─────────────────────────────────────────────────────────────────────

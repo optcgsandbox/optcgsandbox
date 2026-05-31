@@ -42,6 +42,8 @@ import type { EffectTag } from '../Card';
 import { TEMPLATES } from './templates';
 import { runEffectSpec } from './runner';
 import type { EffectContext, EffectTrigger } from './types';
+import { fireV2Effects, shouldUseV2 } from '../../effectSpec/migration-v2';
+import type { EffectTriggerV2 } from '../../effectSpec/types-v2';
 
 /** Tags that should attempt to fire on the given trigger. Anything not
  *  listed is skipped (so passive markers like `vanilla` / `blocker` /
@@ -178,6 +180,18 @@ export function fireEffects(
   // this function.
   const isOpt = card.keywords.includes('once_per_turn');
   if (isOpt && inst.perTurn.effectsUsed.includes(trigger)) return state;
+
+  // A.3.10: prefer the v2 spec when the card carries one AND the migration
+  // flag is enabled. Falls through to v1 effectSpec → tag dispatch when
+  // v2 isn't applicable. Triggers are largely overlapping but use the v2
+  // alias when they match.
+  if (shouldUseV2(card)) {
+    const v2trigger = trigger as EffectTriggerV2;
+    const after = fireV2Effects(state, instanceId, v2trigger, controller);
+    // V2 path doesn't yet handle OPT enforcement — fall through to legacy
+    // post-fire bookkeeping below ONLY if v2 path didn't actually mutate.
+    if (after !== state) return after;
+  }
 
   // Stage 0: prefer structured `effectSpec` when present. The runner resolves
   // condition + target + action against state and chains. Falls back to the
