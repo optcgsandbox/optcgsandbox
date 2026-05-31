@@ -101,7 +101,7 @@ function bootGame(seed: number): GameState {
  */
 const AI_ACTION_DELAY_MS = 2500;
 const BETWEEN_PHASE_DELAY_MS = 900;
-const TURN_HANDOFF_DELAY_MS = 2000;
+const TURN_HANDOFF_DELAY_MS = 800;
 const OPP_VISIBLE_HOLD_MS = 800;
 // Owner direction 2026-05-30: pill→action→pill→action, tight. Pill alone for
 // PILL_BEAT_MS so it's perceivable, then action runs for

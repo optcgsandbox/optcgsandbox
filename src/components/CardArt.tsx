@@ -669,7 +669,10 @@ export const CardArt = memo(function CardArt({
       ].filter(Boolean).join(', ')}
       aria-pressed={selectedAttacker}
       title={card?.name}
-      transition={spring.cardTravel}
+      // Stiffer spring for the rest-rotate animation (owner direction
+       // 2026-05-30: refresh phase was perceived as slow). Settles in ~500ms
+       // vs ~1100ms with the previous cardTravel preset (stiffness 260).
+      transition={{ type: 'spring', stiffness: 380, damping: 28 }}
       whileHover={interactive && !reduced ? { y: -2, transition: { duration: 0.15 } } : undefined}
       whileTap={interactive && !reduced ? { scale: 0.97 } : undefined}
       animate={{
