@@ -1,0 +1,161 @@
+// Continuous effects — Phase A.3.6.
+//
+// Continuous effects modify state on every read, not on a discrete
+// trigger fire. Example: "If you have 10 or more cards in your trash,
+// this Character gains +2000 power" (OP15-092). The interpreter walks
+// every continuous entry on a card, evaluates its condition against the
+// current state, and applies the modifier idempotently.
+//
+// V0 approach: stateless recomputation. Callers invoke
+// `applyContinuousEffectsV2ToInstance(state, sourceId, list)` before
+// reading state in a context that needs continuous effects baked in
+// (e.g. before evaluating attack legality). The engine will eventually
+// fold this into a `applyAllContinuous(state, libraryAccessor)` pass.
+
+import type { CardInstance, GameState, PlayerId } from '../GameState';
+import { evaluateConditionV2 } from './runner-v2';
+import type { ContinuousEffectV2 } from './types-v2';
+
+const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
+
+/** Apply a single continuous-effect entry from `sourceInstanceId` to
+ *  state. Mutates state in place; returns the same reference. */
+export function applyContinuousEffectsV2ToInstance(
+  state: GameState,
+  sourceInstanceId: string,
+  effects: ContinuousEffectV2[],
+): GameState {
+  const source = state.instances[sourceInstanceId];
+  if (!source) return state;
+  const controller = source.controller;
+  const me = state.players[controller];
+  const opp = state.players[OTHER[controller]];
+
+  for (const eff of effects) {
+    if (!evaluateConditionV2(state, controller, eff.condition)) continue;
+
+    switch (eff.action.kind) {
+      case 'self_power_buff': {
+        // Read magnitude (could be a formula).
+        const m = eff.action.magnitude;
+        let delta: number;
+        if (typeof m === 'number') delta = m;
+        else if (m.kind === 'read_state') {
+          switch (m.source) {
+            case 'own_trash_count': delta = me.trash.length; break;
+            case 'opp_trash_count': delta = opp.trash.length; break;
+            case 'own_hand_count': delta = me.hand.length; break;
+            case 'opp_hand_count': delta = opp.hand.length; break;
+            case 'own_life_count': delta = me.life.length; break;
+            case 'opp_life_count': delta = opp.life.length; break;
+            case 'own_don_count': delta = me.donCostArea.length; break;
+            case 'opp_don_count': delta = opp.donCostArea.length; break;
+            default: delta = 0;
+          }
+        } else if (m.kind === 'per_count') {
+          delta = m.perUnit;
+        } else if (m.kind === 'match_opp_don') {
+          delta = opp.donCostArea.length;
+        } else {
+          delta = 0;
+        }
+        source.powerModifier = (source.powerModifier ?? 0) + delta;
+        // Mirror per-zone struct.
+        if (me.leader.instanceId === sourceInstanceId) me.leader.powerModifier = source.powerModifier;
+        for (const f of me.field) if (f.instanceId === sourceInstanceId) f.powerModifier = source.powerModifier;
+        if (me.stage && me.stage.instanceId === sourceInstanceId) me.stage.powerModifier = source.powerModifier;
+        break;
+      }
+      case 'aura_power_buff': {
+        // Apply delta to every friendly field instance matching filter.
+        const delta = eff.action.magnitude;
+        const filter = eff.action.filter;
+        for (const inst of me.field) {
+          if (!matchesFilterMinimal(state, inst, filter)) continue;
+          if (inst.instanceId === sourceInstanceId) continue; // exclude self by convention
+          inst.powerModifier = (inst.powerModifier ?? 0) + delta;
+          // Mirror to instances map.
+          state.instances[inst.instanceId].powerModifier = inst.powerModifier;
+        }
+        break;
+      }
+      case 'aura_cost_modifier': {
+        const delta = eff.action.delta;
+        const filter = eff.action.filter;
+        for (const inst of me.field) {
+          if (!matchesFilterMinimal(state, inst, filter)) continue;
+          if (inst.instanceId === sourceInstanceId) continue;
+          inst.costModifier = (inst.costModifier ?? 0) + delta;
+          state.instances[inst.instanceId].costModifier = inst.costModifier;
+        }
+        break;
+      }
+      case 'self_immune_to_opp_effects': {
+        source.immunity = { against: 'opp_effects' };
+        if (me.leader.instanceId === sourceInstanceId) me.leader.immunity = source.immunity;
+        for (const f of me.field) if (f.instanceId === sourceInstanceId) f.immunity = source.immunity;
+        if (me.stage && me.stage.instanceId === sourceInstanceId) me.stage.immunity = source.immunity;
+        break;
+      }
+      case 'grant_keyword_to_self': {
+        if (!source.grantedKeywords) source.grantedKeywords = [];
+        if (!source.grantedKeywords.includes(eff.action.keyword)) {
+          source.grantedKeywords.push(eff.action.keyword);
+        }
+        if (me.leader.instanceId === sourceInstanceId && !me.leader.grantedKeywords?.includes(eff.action.keyword)) {
+          me.leader.grantedKeywords = source.grantedKeywords;
+        }
+        for (const f of me.field) {
+          if (f.instanceId === sourceInstanceId) f.grantedKeywords = source.grantedKeywords;
+        }
+        if (me.stage && me.stage.instanceId === sourceInstanceId) me.stage.grantedKeywords = source.grantedKeywords;
+        break;
+      }
+      case 'restrict_self_attack': {
+        source.attackLocked = true;
+        if (me.leader.instanceId === sourceInstanceId) me.leader.attackLocked = true;
+        for (const f of me.field) if (f.instanceId === sourceInstanceId) f.attackLocked = true;
+        if (me.stage && me.stage.instanceId === sourceInstanceId) me.stage.attackLocked = true;
+        break;
+      }
+      case 'cost_modifier_in_hand': {
+        // Only applies when source instance is in controller's hand.
+        if (!me.hand.includes(sourceInstanceId)) break;
+        source.costModifier = (source.costModifier ?? 0) + eff.action.delta;
+        break;
+      }
+    }
+  }
+  return state;
+}
+
+/** Lightweight filter used by aura effects. Subset of `matchesFilter`
+ *  from runner-v2 — only checks cost / trait / kind / typeIncludes.
+ *  Continuous aura targeting can't depend on rested/power since those
+ *  are dynamic. */
+function matchesFilterMinimal(
+  state: GameState,
+  inst: CardInstance,
+  filter:
+    | { cost_max?: number; cost_min?: number; trait?: string; typeIncludes?: string; kind?: 'character' | 'event' | 'stage' }
+    | { costMax?: number; costMin?: number; trait?: string; typeIncludes?: string; kind?: 'character' | 'event' | 'stage' }
+    | undefined,
+): boolean {
+  if (!filter) return true;
+  const card = state.cardLibrary[inst.cardId];
+  if (!card) return false;
+  // Both naming conventions accepted (runner uses costMax/costMin).
+  const f = filter as { costMax?: number; costMin?: number; trait?: string; typeIncludes?: string; kind?: string };
+  if (typeof f.costMax === 'number') {
+    const c = typeof card.cost === 'number' ? card.cost + (inst.costModifier ?? 0) : -1;
+    if (c < 0 || c > f.costMax) return false;
+  }
+  if (typeof f.costMin === 'number') {
+    const c = typeof card.cost === 'number' ? card.cost + (inst.costModifier ?? 0) : -1;
+    if (c < 0 || c < f.costMin) return false;
+  }
+  if (f.trait && !card.traits.includes(f.trait)) return false;
+  if (f.typeIncludes && !card.traits.some((t) => t.includes(f.typeIncludes!))) return false;
+  if (f.kind && card.kind !== f.kind) return false;
+  return true;
+}
