@@ -131,11 +131,22 @@ interface DonCardProps {
   reduced: boolean;
   interactive: boolean;
   armed: boolean;
+  /** Side flag — drives mount-animation mirroring. Opp side's `data-flip-back`
+   *  counter-rotates the parent half's 180°, so the outer mount animation sits
+   *  in an upright local frame for both halves. To make opp's card appear to
+   *  fly from THEIR deck (visually screen-right) instead of mirroring owner's
+   *  screen-left start, flip x, rotateY, and transformOrigin on opp. Owner
+   *  values stay untouched. */
+  isYou: boolean;
   onTap?: () => void;
 }
 
-function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap }: DonCardProps) {
+function DonCard({ instanceId, index, rested, reduced, interactive, armed, isYou, onTap }: DonCardProps) {
   const targetRotate = rested ? 90 : 0;
+  // Side-aware mount choreography (owner: flight from left; opp: mirrored).
+  const mountX = isYou ? -64 : 64;
+  const mountRotateY = isYou ? -90 : 90;
+  const mountOrigin = isYou ? '0% 50%' : '100% 50%';
   return (
     // Static wrapper carries data-flip-back so Framer transforms inside the
     // motion.button (animate/whileHover/whileTap) don't override the CSS
@@ -147,7 +158,7 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
         local-left → screen-right (= opp's DON-deck side), so a single
         animation works for both sides. Verified via mockup v3 2026-05-30. */}
     <motion.div
-      initial={reduced ? false : { scale: 0.85, opacity: 0, x: -64, rotateY: -90 }}
+      initial={reduced ? false : { scale: 0.85, opacity: 0, x: mountX, rotateY: mountRotateY }}
       animate={reduced ? false : { scale: 1, opacity: 1, x: 0, rotateY: 0 }}
       transition={{
         type: 'spring',
@@ -158,7 +169,7 @@ function DonCard({ instanceId, index, rested, reduced, interactive, armed, onTap
       style={{
         width: DON_CARD_W,
         height: DON_CARD_H,
-        transformOrigin: '0% 50%',
+        transformOrigin: mountOrigin,
       }}
     >
     {/* INNER motion.button — rest rotateZ + armed pulse + hover + tap.
@@ -318,6 +329,7 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
                 reduced={reduced}
                 interactive={interactive}
                 armed={armedDonId === instanceId}
+                isYou={isYou}
                 onTap={() => handleCoinTap(instanceId)}
               />
             </div>
@@ -345,6 +357,7 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
                   reduced={reduced}
                   interactive={false}
                   armed={false}
+                  isYou={isYou}
                 />
               </div>
             );
