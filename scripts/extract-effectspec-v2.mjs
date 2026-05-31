@@ -179,14 +179,139 @@ const matchers = [
       clauses: [{ trigger: 'on_play', action: { kind: 'add_to_own_life_top', faceUp: false, from: 'top_of_deck' }, magnitude: parseInt(m[1], 10), verified: 'auto' } ],
     }),
   },
+  // ── B.3 patterns ────────────────────────────────────────────────
+  // Orphan flavor parentheticals — these appear as their own clauses on
+  // compound cards because Bandai's <br> separators split them out. They
+  // describe the keyword behavior, not a new effect.
+  {
+    name: 'flavorParen',
+    rx: /^\((?:After your opponent declares an attack[^)]+|This card can attack on the turn in which it is played\.|This card deals \d+ damage\.|When this card deals damage, the target card is trashed without activating its Trigger\.)\)\.?\s*$/,
+    emit: () => ({}), // no-op match — swallow the clause
+  },
+  // [On Play] Trash N cards from the top of your deck — self mill.
+  {
+    name: 'onPlaySelfMill',
+    rx: /^\[On Play\] Trash (\d+) cards? from the top of your deck\.\s*$/,
+    emit: (m) => ({
+      clauses: [{ trigger: 'on_play', action: { kind: 'mill_self', magnitude: parseInt(m[1], 10) }, verified: 'auto' }],
+    }),
+  },
+  // "This Leader cannot attack." continuous restriction.
+  {
+    name: 'leaderCannotAttack',
+    rx: /^This Leader cannot attack\.\s*$/,
+    emit: () => ({
+      continuous: [{ action: { kind: 'restrict_self_attack' } }],
+    }),
+  },
+  // K.O. by base power filter — `with N power or less`.
+  {
+    name: 'onPlayKoByPower',
+    rx: /^\[On Play\] K\.O\. up to (\d+) of your opponent's Characters with (\d+) (?:base )?power or less\.\s*$/,
+    emit: (m) => ({
+      clauses: [{ trigger: 'on_play', action: { kind: 'removal_ko' }, target: { kind: 'opp_character', filter: { powerMax: parseInt(m[2], 10) } }, verified: 'auto' }],
+    }),
+  },
+  // K.O. of RESTED opp character with cost cap.
+  {
+    name: 'onPlayKoRestedByCost',
+    rx: /^\[On Play\] K\.O\. up to (\d+) of your opponent's rested Characters with a cost of (\d+) or less\.\s*$/,
+    emit: (m) => ({
+      clauses: [{ trigger: 'on_play', action: { kind: 'removal_ko' }, target: { kind: 'opp_character', filter: { costMax: parseInt(m[2], 10), rested: true } }, verified: 'auto' }],
+    }),
+  },
+  // Discard-cost KO: `[On Play] You may trash 1 card from your hand: K.O. ...`
+  {
+    name: 'onPlayDiscardCostKo',
+    rx: /^\[On Play\] You may trash (\d+) cards? from your hand: K\.O\. up to (\d+) of your opponent's Characters with a cost of (\d+) or less\.\s*$/,
+    emit: (m) => ({
+      clauses: [{
+        trigger: 'on_play',
+        cost: { discardHand: parseInt(m[1], 10) },
+        action: { kind: 'removal_ko' },
+        target: { kind: 'opp_character', filter: { costMax: parseInt(m[3], 10) } },
+        verified: 'auto',
+      }],
+    }),
+  },
+  // Counter buff w/ conditional bonus on low life — "Then, if you have N or less Life cards, that card gains an additional +M power."
+  // We capture only the base buff in V0; the conditional bonus is dropped.
+  {
+    name: 'counterBuffWithLifeBonus',
+    rx: /^\[Counter\] Up to (\d+) of your Leader or Character cards gains \+(\d+) power during this battle\. Then, if you have (\d+) or less Life cards, that card gains an additional \+(\d+) power\.\s*$/,
+    emit: (m) => ({
+      clauses: [{
+        trigger: 'on_play',
+        action: { kind: 'power_buff', magnitude: parseInt(m[2], 10), duration: 'this_battle' },
+        target: { kind: 'your_leader' },
+        verified: 'flagged', // conditional bonus dropped — flag for review
+      }],
+    }),
+  },
+  // [Main] Choose one: — V0 detect-only stub. Drop a flagged clause so the
+  // card isn't silently dropped from the corpus.
+  {
+    name: 'mainChooseOneStub',
+    rx: /^\[Main\] Choose one:\s*$/,
+    emit: () => ({
+      clauses: [{
+        trigger: 'on_play',
+        action: { kind: 'choose_one', options: [] }, // V0 stub — options inlined later
+        verified: 'flagged',
+      }],
+    }),
+  },
+  // Conditional self cost-up: "If your Leader has the {X} type, this Character gains +N cost."
+  {
+    name: 'leaderTraitCostUp',
+    rx: /^If your Leader has the \{([^}]+)\} type, this Character gains \+(\d+) cost\.\s*$/,
+    emit: (m) => ({
+      continuous: [{
+        condition: { type: 'if_leader_has_trait', trait: m[1] },
+        action: { kind: 'cost_modifier_in_hand', delta: parseInt(m[2], 10) },
+      }],
+    }),
+  },
 ];
+
+/** Pre-process a clause: if it starts with `[<trigger>] DON!! −N (...): <rest>`,
+ *  extract the cost and return both `{ trigger, cost, restClause }`. Returns
+ *  null when no DON-cost prefix present. */
+function stripDonCostPrefix(clauseText) {
+  const m = clauseText.match(/^(\[(?:On Play|Main|When Attacking|Activate: Main\] \[Once Per Turn|Activate: Main|Counter|On Your Opponent's Attack|On K\.O\.)\]) DON!! −(\d+) \(You may return the specified number of DON!! cards from your field to your DON!! deck\.\): (.+)$/);
+  if (!m) return null;
+  return {
+    triggerPrefix: m[1],
+    donCost: parseInt(m[2], 10),
+    restClause: `${m[1]} ${m[3]}`,
+  };
+}
 
 function matchClause(clauseText) {
   const t = clauseText.trim();
   if (!t) return null;
+  // First try direct match.
   for (const m of matchers) {
     const r = t.match(m.rx);
     if (r) return { ...m.emit(r), _patternName: m.name };
+  }
+  // Then try after stripping a DON-cost prefix.
+  const stripped = stripDonCostPrefix(t);
+  if (stripped) {
+    for (const m of matchers) {
+      const r = stripped.restClause.match(m.rx);
+      if (r) {
+        const frag = m.emit(r);
+        // Attach donCost to each emitted clause.
+        if (frag.clauses) {
+          frag.clauses = frag.clauses.map((c) => ({
+            ...c,
+            cost: { ...(c.cost ?? {}), donCost: stripped.donCost },
+          }));
+        }
+        return { ...frag, _patternName: `${m.name}+donCost` };
+      }
+    }
   }
   return null;
 }
