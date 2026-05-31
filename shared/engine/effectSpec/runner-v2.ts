@@ -551,6 +551,171 @@ export function applyActionV2(
       }
       return state;
     }
+    // ── Action group 2 — Sub-phase A.3.4 ──────────────────────────
+    case 'power_buff': {
+      const delta = resolveMagnitude(state, ctx.controller, action.magnitude, 1000);
+      for (const tid of targets) {
+        const inst = state.instances[tid];
+        if (!inst) continue;
+        inst.powerModifier = (inst.powerModifier ?? 0) + delta;
+        // Mirror on per-zone struct so legality reads see the delta.
+        for (const pid of ['A', 'B'] as PlayerId[]) {
+          const pl = state.players[pid];
+          if (pl.leader.instanceId === tid) pl.leader.powerModifier = inst.powerModifier;
+          for (const f of pl.field) if (f.instanceId === tid) f.powerModifier = inst.powerModifier;
+          if (pl.stage && pl.stage.instanceId === tid) pl.stage.powerModifier = inst.powerModifier;
+        }
+      }
+      return state;
+    }
+    case 'set_power_zero': {
+      for (const tid of targets) {
+        const inst = state.instances[tid];
+        if (!inst) continue;
+        const card = state.cardLibrary[inst.cardId];
+        if (!card) continue;
+        const base = card.kind === 'character' || card.kind === 'leader' ? (card as { power: number }).power : 0;
+        const curr = base + inst.attachedDon.length * 1000 + (inst.powerModifier ?? 0);
+        if (curr <= 0) continue;
+        inst.powerModifier = (inst.powerModifier ?? 0) - curr;
+        for (const pid of ['A', 'B'] as PlayerId[]) {
+          const pl = state.players[pid];
+          if (pl.leader.instanceId === tid) pl.leader.powerModifier = inst.powerModifier;
+          for (const f of pl.field) if (f.instanceId === tid) f.powerModifier = inst.powerModifier;
+          if (pl.stage && pl.stage.instanceId === tid) pl.stage.powerModifier = inst.powerModifier;
+        }
+      }
+      return state;
+    }
+    case 'set_base_power': {
+      const newBase = action.magnitude;
+      for (const tid of targets) {
+        const inst = state.instances[tid];
+        if (!inst) continue;
+        inst.basePowerOverride = newBase;
+        for (const pid of ['A', 'B'] as PlayerId[]) {
+          const pl = state.players[pid];
+          if (pl.leader.instanceId === tid) pl.leader.basePowerOverride = newBase;
+          for (const f of pl.field) if (f.instanceId === tid) f.basePowerOverride = newBase;
+          if (pl.stage && pl.stage.instanceId === tid) pl.stage.basePowerOverride = newBase;
+        }
+      }
+      return state;
+    }
+    case 'set_base_power_copy_from': {
+      // Read source power; set targets' base to that.
+      const sourceInst = action.source === 'opp_leader'
+        ? opp.leader
+        : (action.source === 'opp_character' ? opp.field[0] : undefined);
+      if (!sourceInst) return state;
+      const sourceCard = state.cardLibrary[sourceInst.cardId];
+      const sourceBase = sourceCard && (sourceCard.kind === 'leader' || sourceCard.kind === 'character')
+        ? (sourceCard as { power: number }).power
+        : 0;
+      for (const tid of targets) {
+        const inst = state.instances[tid];
+        if (!inst) continue;
+        inst.basePowerOverride = sourceBase;
+      }
+      return state;
+    }
+    case 'cost_reduction': {
+      // Player-level one-shot reduction. Scope filter is V0-ignored.
+      me.nextPlayCostModifier = (me.nextPlayCostModifier ?? 0) - action.magnitude;
+      return state;
+    }
+    case 'removal_cost_reduce': {
+      for (const tid of targets) {
+        const inst = state.instances[tid];
+        if (!inst) continue;
+        inst.costModifier = (inst.costModifier ?? 0) - action.magnitude;
+        for (const pid of ['A', 'B'] as PlayerId[]) {
+          const pl = state.players[pid];
+          if (pl.leader.instanceId === tid) pl.leader.costModifier = inst.costModifier;
+          for (const f of pl.field) if (f.instanceId === tid) f.costModifier = inst.costModifier;
+          if (pl.stage && pl.stage.instanceId === tid) pl.stage.costModifier = inst.costModifier;
+        }
+      }
+      return state;
+    }
+    case 'rest_target': {
+      for (const tid of targets) {
+        const inst = state.instances[tid];
+        if (!inst) continue;
+        inst.rested = true;
+        for (const pid of ['A', 'B'] as PlayerId[]) {
+          const pl = state.players[pid];
+          if (pl.leader.instanceId === tid) pl.leader.rested = true;
+          for (const f of pl.field) if (f.instanceId === tid) f.rested = true;
+          if (pl.stage && pl.stage.instanceId === tid) pl.stage.rested = true;
+        }
+      }
+      return state;
+    }
+    case 'set_active': {
+      for (const tid of targets) {
+        const inst = state.instances[tid];
+        if (!inst) continue;
+        inst.rested = false;
+        for (const pid of ['A', 'B'] as PlayerId[]) {
+          const pl = state.players[pid];
+          if (pl.leader.instanceId === tid) pl.leader.rested = false;
+          for (const f of pl.field) if (f.instanceId === tid) f.rested = false;
+          if (pl.stage && pl.stage.instanceId === tid) pl.stage.rested = false;
+        }
+      }
+      return state;
+    }
+    case 'rest_opp_don': {
+      const n = action.magnitude;
+      for (let i = 0; i < n && opp.donCostArea.length > 0; i++) {
+        opp.donRested.push(opp.donCostArea.shift()!);
+      }
+      return state;
+    }
+    case 'attack_lock_until_phase': {
+      for (const tid of targets) {
+        const inst = state.instances[tid];
+        if (!inst) continue;
+        inst.attackLocked = true;
+        for (const pid of ['A', 'B'] as PlayerId[]) {
+          const pl = state.players[pid];
+          if (pl.leader.instanceId === tid) pl.leader.attackLocked = true;
+          for (const f of pl.field) if (f.instanceId === tid) f.attackLocked = true;
+          if (pl.stage && pl.stage.instanceId === tid) pl.stage.attackLocked = true;
+        }
+      }
+      return state;
+    }
+    case 'rest_lock_until_phase': {
+      for (const tid of targets) {
+        const inst = state.instances[tid];
+        if (!inst) continue;
+        inst.restLocked = true;
+        for (const pid of ['A', 'B'] as PlayerId[]) {
+          const pl = state.players[pid];
+          if (pl.leader.instanceId === tid) pl.leader.restLocked = true;
+          for (const f of pl.field) if (f.instanceId === tid) f.restLocked = true;
+          if (pl.stage && pl.stage.instanceId === tid) pl.stage.restLocked = true;
+        }
+      }
+      return state;
+    }
+    case 'restrict_opp_attack': {
+      if (!opp.restrictions) opp.restrictions = {};
+      opp.restrictions.oppAttackUnlessDiscard = action.unless?.discardN ?? 0;
+      return state;
+    }
+    case 'restrict_play_self_this_turn': {
+      if (!me.restrictions) me.restrictions = {};
+      me.restrictions.cantPlayKind = action.kind_filter;
+      return state;
+    }
+    case 'restrict_effect_type': {
+      if (!me.restrictions) me.restrictions = {};
+      me.restrictions.cantUseEffectType = action.effectKind;
+      return state;
+    }
     // Composite actions deferred to later sub-phases.
     case 'reveal_top_and_conditional_play':
     case 'choose_cost_reveal_opp_match':
@@ -558,8 +723,7 @@ export function applyActionV2(
       // V0 stub — no-op until A.3.5 (composite handlers) lands.
       return state;
     default:
-      // Cross-group action kinds (power_buff, removal_ko, etc.) are
-      // handled by A.3.4 / A.3.5 — fall through as no-op for now.
+      // Action kinds handled by later sub-phases (A.3.5+) fall through.
       return state;
   }
 }

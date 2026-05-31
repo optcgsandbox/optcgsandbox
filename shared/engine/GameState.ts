@@ -76,6 +76,19 @@ export interface CardInstance {
    *  Set by `removal_cost_reduce` to a negative number. Cleared in `endTurn`
    *  alongside `powerModifier`. */
   costModifier?: number;
+  /** A.3.4: turn-scoped lock — when true, attack-eligibility code should
+   *  reject this attacker. Set by `attack_lock_until_phase`. Consumed by
+   *  legality / declareAttack once A.3.9 wires the runner into the engine.
+   *  Cleared in `endTurn`. */
+  attackLocked?: boolean;
+  /** A.3.4: turn-scoped lock — when true, this instance does not become
+   *  active in the next refresh. Set by `rest_lock_until_phase`. Consumed
+   *  by `runRefreshPhase` once A.3.9 wires this in. Cleared in `endTurn`. */
+  restLocked?: boolean;
+  /** A.3.4: turn-scoped base-power override. Engine reads this in place of
+   *  printed power when present. Set by `set_base_power` /
+   *  `set_base_power_copy_from`. Cleared in `endTurn`. */
+  basePowerOverride?: number;
 }
 
 export interface PlayerZones {
@@ -111,6 +124,16 @@ export interface PlayerZones {
    *  be recursed back. Distinct from `trash`. Initialized empty; populated by
    *  the `exile` effect template. */
   exile: string[];
+  /** A.3.4: turn-scoped restriction flags. Cleared in `endTurn`. */
+  restrictions?: {
+    /** Opp can't attack unless they pay this discard cost. */
+    oppAttackUnlessDiscard?: number;
+    /** Player can't play cards of this kind this turn. */
+    cantPlayKind?: 'character' | 'event' | 'stage';
+    /** Player can't trigger this effect-type this turn (e.g. "set DON
+     *  active via Character effects"). */
+    cantUseEffectType?: string;
+  };
 }
 
 export interface GameState {
