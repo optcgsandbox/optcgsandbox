@@ -58,7 +58,7 @@ Numbering is V3-1 onward to keep clear of the D-series.
 - **Unblocks:** Cards like Hatchan "(Activate:Main) If you have less life
   than your opp, reduce cost of next play by 2."
 
-## V3-3 — Real `searcher` (MEDIUM) — OPEN (needs new phase + UI)
+## V3-3 — ✅ Real `searcher` (MEDIUM) — SHIPPED 2026-05-30
 
 - **Today:** `templates.ts:29` just takes top 1 of deck → hand. No peek
   surface, no choice.
@@ -82,7 +82,7 @@ Numbering is V3-1 onward to keep clear of the D-series.
     skips non-matching; AI picks highest-power candidate).
 - **Unblocks:** Nami OP01-016, Robin OP01-025, every "look at top N" card.
 
-## V3-4 — Real `disruption` (MEDIUM) — OPEN (needs new phase + UI)
+## V3-4 — ✅ Real `disruption` (MEDIUM) — SHIPPED 2026-05-30
 
 - **Today:** `templates.ts:183` discards `opp.hand[0]` blindly.
 - **Scope:**

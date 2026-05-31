@@ -76,6 +76,27 @@ export const ActionSchema = z.discriminatedUnion('type', [
     activate: z.boolean(),
   }),
 
+  // V3-3 (CR §10-1-3-1 "look at top N"): controller of a searcher whose
+  // param specifies `{ lookCount, addCount }` picks up to `addCount` of the
+  // peeked cards to add to hand; the rest are shuffled back into the deck.
+  z.object({
+    type: z.literal('RESOLVE_PEEK'),
+    /** Subset of `pendingPeek.peekedIds` to add to hand; remaining go back to deck (shuffled). */
+    instanceIds: z.array(z.string()),
+  }),
+  z.object({
+    /** Controller adds nothing — all peeked cards go back into the deck (shuffled). */
+    type: z.literal('SKIP_PEEK'),
+  }),
+
+  // V3-4 (CR "Discard 1 from opp's hand"): when disruption fires with an
+  // object param, the controller is shown opp's hand and picks which card to
+  // discard. The chosen instance goes to opp's trash.
+  z.object({
+    type: z.literal('RESOLVE_DISCARD'),
+    instanceId: z.string(),
+  }),
+
   // Turn end
   z.object({ type: z.literal('END_TURN') }),
 

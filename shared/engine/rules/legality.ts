@@ -66,6 +66,35 @@ export function getLegalActions(state: GameState, player: PlayerId): Action[] {
     ];
   }
 
+  // V3-3 peek_choice window: only the controller may pick. RESOLVE_PEEK is
+  // enumerated as one option per peeked-card subset of size <= addCount; we
+  // emit just the singleton picks (most common case, addCount = 1) + a
+  // SKIP_PEEK escape. UI / AI can construct multi-card picks directly.
+  if (state.phase === 'peek_choice') {
+    if (!state.pendingPeek || state.pendingPeek.controller !== player) {
+      return [{ type: 'RESIGN' }];
+    }
+    const out: Action[] = [{ type: 'SKIP_PEEK' }];
+    for (const id of state.pendingPeek.peekedIds) {
+      out.push({ type: 'RESOLVE_PEEK', instanceIds: [id] });
+    }
+    out.push({ type: 'RESIGN' });
+    return out;
+  }
+
+  // V3-4 discard_choice window: only the controller may pick. Emit one
+  // RESOLVE_DISCARD per opp hand instance.
+  if (state.phase === 'discard_choice') {
+    if (!state.pendingDiscard || state.pendingDiscard.controller !== player) {
+      return [{ type: 'RESIGN' }];
+    }
+    const oppHand = state.players[state.pendingDiscard.revealedFrom].hand;
+    const out: Action[] = [];
+    for (const id of oppHand) out.push({ type: 'RESOLVE_DISCARD', instanceId: id });
+    out.push({ type: 'RESIGN' });
+    return out;
+  }
+
   if (state.activePlayer !== player) {
     // Only the inactive player has the limited set of reactive actions
     // (counter, blocker). Those are gated by phase.

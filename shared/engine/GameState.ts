@@ -33,6 +33,14 @@ export type Phase =
   | 'counter_window'
   | 'damage_resolution'
   | 'trigger_window'
+  // V3-3 (CR §10-1-3-1): paused mid-effect awaiting the controller's pick
+  // of which peeked card(s) to add to hand. Resumed via RESOLVE_PEEK or
+  // SKIP_PEEK; the engine restores `pendingPeek.resumePhase` once resolved.
+  | 'peek_choice'
+  // V3-4: paused mid-effect awaiting the controller's pick of which opp
+  // hand card to discard. Resumed via RESOLVE_DISCARD; the engine restores
+  // `pendingDiscard.resumePhase`.
+  | 'discard_choice'
   | 'end';
 
 /** State of a card on the field. */
@@ -126,6 +134,14 @@ export interface GameState {
   /** When non-null, a life card with [Trigger] was just flipped and is awaiting
    *  the controller's choice (activate vs decline). See rules-reference.md §1.7. */
   pendingTrigger: PendingTrigger | null;
+  /** V3-3: searcher with `{lookCount, addCount}` param has peeked the top N
+   *  of the controller's deck and is awaiting the controller's add-to-hand
+   *  pick. Phase is `peek_choice` until resolved. */
+  pendingPeek: PendingPeek | null;
+  /** V3-4: disruption with object param has revealed opp's hand and is
+   *  awaiting the controller's pick of which card to discard. Phase is
+   *  `discard_choice` until resolved. */
+  pendingDiscard: PendingDiscard | null;
   /** D10 (CR §5-2-1-6-1): per-player flag tracking whether the player has
    *  already exhausted their one-time mulligan during the setup window.
    *  Initially false for both. Set true the moment MULLIGAN resolves
@@ -164,6 +180,27 @@ export interface PendingAttack {
   targetInstanceId: string;
   /** Sum of counter boosts played by defender so far (in points; e.g. 1000, 2000). */
   counterBoost: number;
+}
+
+export interface PendingPeek {
+  controller: PlayerId;
+  sourceInstanceId: string;
+  /** Cards moved out of the deck for the controller to choose from. Order
+   *  preserved as they came off the top so the UI can show them top-down. */
+  peekedIds: string[];
+  /** Max number the controller may add to hand. */
+  addCount: number;
+  /** Phase to restore once RESOLVE_PEEK / SKIP_PEEK resolves. */
+  resumePhase: Phase;
+}
+
+export interface PendingDiscard {
+  controller: PlayerId;
+  sourceInstanceId: string;
+  /** Player whose hand is exposed (always opp of controller in V3-4). */
+  revealedFrom: PlayerId;
+  /** Phase to restore once RESOLVE_DISCARD resolves. */
+  resumePhase: Phase;
 }
 
 export interface PendingTrigger {
@@ -307,6 +344,8 @@ export function initialState(args: {
     result: null,
     pendingAttack: null,
     pendingTrigger: null,
+    pendingPeek: null,
+    pendingDiscard: null,
     mulliganUsed: { A: false, B: false },
     diceRoll: null,
     firstPlayer: null,

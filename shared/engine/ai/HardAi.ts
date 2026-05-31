@@ -78,6 +78,46 @@ function simulateAction(state: GameState, player: PlayerId, action: Action): Gam
       s = applyAction(s, opp, { type: 'SKIP_COUNTER' }).state;
       continue;
     }
+    // V3-3: auto-resolve peek_choice window. Greedy pick of the highest-cost
+    // peeked card up to pendingPeek.addCount; SKIP_PEEK if none worth keeping.
+    if (s.phase === 'peek_choice' && s.pendingPeek) {
+      const pp = s.pendingPeek;
+      const owner = pp.controller;
+      // Score each peeked id by card cost (proxy for value); pick top addCount.
+      const ranked = pp.peekedIds
+        .map((id) => {
+          const inst = s.instances[id];
+          const card = inst ? s.cardLibrary[inst.cardId] : undefined;
+          const cost = card && typeof card.cost === 'number' ? card.cost : 0;
+          return { id, cost };
+        })
+        .sort((a, b) => b.cost - a.cost);
+      const pick = ranked.slice(0, pp.addCount).map((r) => r.id);
+      s = applyAction(s, owner, { type: 'RESOLVE_PEEK', instanceIds: pick }).state;
+      continue;
+    }
+    // V3-4: auto-resolve discard_choice window. Pick the opp's highest-cost
+    // hand card to discard — proxy for "biggest threat".
+    if (s.phase === 'discard_choice' && s.pendingDiscard) {
+      const pd = s.pendingDiscard;
+      const owner = pd.controller;
+      const oppHand = s.players[pd.revealedFrom].hand;
+      let bestId = oppHand[0];
+      let bestCost = -1;
+      for (const id of oppHand) {
+        const inst = s.instances[id];
+        const card = inst ? s.cardLibrary[inst.cardId] : undefined;
+        const cost = card && typeof card.cost === 'number' ? card.cost : 0;
+        if (cost > bestCost) {
+          bestCost = cost;
+          bestId = id;
+        }
+      }
+      if (bestId) {
+        s = applyAction(s, owner, { type: 'RESOLVE_DISCARD', instanceId: bestId }).state;
+      }
+      continue;
+    }
     if (s.phase === 'trigger_window' && s.pendingTrigger) {
       const owner = s.pendingTrigger.controller;
       // V3-8: simulate both branches (activate vs decline) and pick the one

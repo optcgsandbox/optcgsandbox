@@ -19,6 +19,7 @@ import { fireEffects } from './cards/effects/dispatch';
 import type { CardInstance, GameEvent, GameState, PlayerId, PendingAttack } from './GameState';
 import { applyMulligan, chooseFirstPlayer, dealLifeCards, rollDice } from './phases/setup';
 import { endTurn as runEndTurn } from './phases/turn';
+import { Random } from './Random';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
@@ -64,7 +65,76 @@ export function applyAction(
       return resolveFirstPlayerChoice(state, player, /* goesFirst === chooser */ false);
     case 'ACTIVATE_MAIN':
       return activateMain(state, player, action.instanceId);
+    case 'RESOLVE_PEEK':
+      return resolvePeek(state, player, action.instanceIds);
+    case 'SKIP_PEEK':
+      return resolvePeek(state, player, []);
+    case 'RESOLVE_DISCARD':
+      return resolveDiscard(state, player, action.instanceId);
   }
+}
+
+// === V3-3 RESOLVE_PEEK / SKIP_PEEK ===
+// Resolve the peek window: add picked instances to controller's hand, shuffle
+// the rest back into the deck via the seeded RNG, restore the resumePhase.
+function resolvePeek(
+  state: GameState,
+  player: PlayerId,
+  pickedIds: string[],
+): { state: GameState; events: GameEvent[] } {
+  const pp = state.pendingPeek;
+  if (!pp) return { state, events: [] };
+  if (player !== pp.controller) return { state, events: [] };
+  if (state.phase !== 'peek_choice') return { state, events: [] };
+  if (pickedIds.length > pp.addCount) return { state, events: [] };
+  for (const id of pickedIds) {
+    if (!pp.peekedIds.includes(id)) return { state, events: [] };
+  }
+
+  const next: GameState = structuredClone(state);
+  const start = next.history.length;
+  const p = next.players[player];
+
+  // Picked → controller's hand.
+  for (const id of pickedIds) p.hand.push(id);
+
+  // Remaining → back into deck, shuffled.
+  const remaining = pp.peekedIds.filter((id) => !pickedIds.includes(id));
+  if (remaining.length > 0) {
+    // Insert into deck and shuffle the deck via the engine's seeded RNG.
+    p.deck.push(...remaining);
+    const rng = new Random(next.seed ^ next.turn ^ 0x91a3f7);
+    p.deck = rng.shuffle(p.deck);
+  }
+
+  next.pendingPeek = null;
+  next.phase = pp.resumePhase;
+  return { state: next, events: next.history.slice(start) };
+}
+
+// === V3-4 RESOLVE_DISCARD ===
+// Controller picks one instance from opp's hand to discard.
+function resolveDiscard(
+  state: GameState,
+  player: PlayerId,
+  instanceId: string,
+): { state: GameState; events: GameEvent[] } {
+  const pd = state.pendingDiscard;
+  if (!pd) return { state, events: [] };
+  if (player !== pd.controller) return { state, events: [] };
+  if (state.phase !== 'discard_choice') return { state, events: [] };
+
+  const next: GameState = structuredClone(state);
+  const start = next.history.length;
+  const oppZones = next.players[pd.revealedFrom];
+  const idx = oppZones.hand.indexOf(instanceId);
+  if (idx === -1) return { state, events: [] };
+  oppZones.hand.splice(idx, 1);
+  oppZones.trash.push(instanceId);
+
+  next.pendingDiscard = null;
+  next.phase = pd.resumePhase;
+  return { state: next, events: next.history.slice(start) };
 }
 
 // === Phase C / D12: ACTIVATE_MAIN ===

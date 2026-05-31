@@ -40,6 +40,8 @@ import { TriggerPrompt } from './TriggerPrompt';
 import { MulliganPrompt } from './MulliganPrompt';
 import { DiceRollPrompt } from './DiceRollPrompt';
 import { FirstPlayerChoicePrompt } from './FirstPlayerChoicePrompt';
+import { PeekChoicePrompt } from './PeekChoicePrompt';
+import { DiscardChoicePrompt } from './DiscardChoicePrompt';
 import { LifeRevealOverlay } from './LifeRevealOverlay';
 import { EventCardOverlay } from './EventCardOverlay';
 import { LifeStack } from './zones/LifeStack';
@@ -527,6 +529,8 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
         <DiceRollPrompt />
         <FirstPlayerChoicePrompt />
         <MulliganPrompt />
+        <PeekChoicePrompt />
+        <DiscardChoicePrompt />
       </div>
     </LayoutGroup>
   );

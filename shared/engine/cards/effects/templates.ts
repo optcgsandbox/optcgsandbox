@@ -21,22 +21,62 @@
 // pre-fire state.
 
 import type { PlayerId } from '../../GameState';
-import type { EffectFn } from './types';
+import type { EffectContext, EffectFn } from './types';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
-/** Look at top N, add 1 to hand, shuffle the rest back. v0 = take top card. */
+/** V3-3/V3-4: `ctx.param` is now `number | object | undefined`. Templates
+ *  that only consume a numeric magnitude (draw N, mill N, power_buff +N, …)
+ *  call this helper to safely narrow. Returns the default when param is
+ *  undefined or an object form. */
+function numParam(ctx: EffectContext, fallback: number): number {
+  return typeof ctx.param === 'number' ? ctx.param : fallback;
+}
+
+/** V3-3 (CR §10-1-3-1 "look at top N, may add M"):
+ *    - Legacy path (param undefined / numeric): take top 1 → hand (V0 shortcut).
+ *    - Peek path (param is `{lookCount, addCount}`): pop top N to
+ *      `state.pendingPeek.peekedIds`, set phase to `'peek_choice'`. Resolution
+ *      is via the RESOLVE_PEEK / SKIP_PEEK action handlers in applyAction.
+ *      Peeked cards are added to the controller's knownByViewer overlay so
+ *      the AI can remember what it saw even if it shuffles back.
+ */
 export const searcher: EffectFn = (state, ctx) => {
   const p = state.players[ctx.controller];
-  const top = p.deck.shift();
-  if (top) p.hand.push(top);
+  // Legacy shortcut: no param or numeric param.
+  if (!ctx.param || typeof ctx.param === 'number') {
+    const top = p.deck.shift();
+    if (top) p.hand.push(top);
+    return state;
+  }
+  // V3-3 peek window. Object param must carry `lookCount` + `addCount`.
+  const obj = ctx.param as { lookCount?: number; addCount?: number };
+  if (typeof obj.lookCount !== 'number' || typeof obj.addCount !== 'number') {
+    return state;
+  }
+  const peekedIds: string[] = [];
+  for (let i = 0; i < obj.lookCount && p.deck.length > 0; i++) {
+    peekedIds.push(p.deck.shift()!);
+  }
+  if (peekedIds.length === 0) return state;
+  state.pendingPeek = {
+    controller: ctx.controller,
+    sourceInstanceId: ctx.sourceInstanceId,
+    peekedIds,
+    addCount: obj.addCount,
+    resumePhase: state.phase,
+  };
+  state.phase = 'peek_choice';
+  // V3-9: controller has legitimately seen these cards.
+  const known = state.knownByViewer[ctx.controller];
+  for (const id of peekedIds) if (!known.includes(id)) known.push(id);
   return state;
 };
 
 /** Draw N cards. Default 1. */
 export const draw: EffectFn = (state, ctx) => {
   const p = state.players[ctx.controller];
-  const n = ctx.param ?? 1;
+  const n = numParam(ctx, 1);
   for (let i = 0; i < n && p.deck.length > 0; i++) {
     p.hand.push(p.deck.shift()!);
   }
@@ -85,7 +125,7 @@ export const removal_cost_reduce: EffectFn = (state, ctx) => {
   if (!ctx.targetInstanceId) return state;
   const inst = state.instances[ctx.targetInstanceId];
   if (!inst) return state;
-  const delta = -(ctx.param ?? 1);
+  const delta = -numParam(ctx, 1);
   const next = (inst.costModifier ?? 0) + delta;
   state.instances[ctx.targetInstanceId].costModifier = next;
   for (const pid of ['A', 'B'] as const) {
@@ -120,7 +160,7 @@ export const power_buff: EffectFn = (state, ctx) => {
   if (!ctx.targetInstanceId) return state;
   const inst = state.instances[ctx.targetInstanceId];
   if (!inst) return state;
-  const delta = ctx.param ?? 1000;
+  const delta = numParam(ctx, 1000);
   const next = (inst.powerModifier ?? 0) + delta;
   state.instances[ctx.targetInstanceId].powerModifier = next;
   for (const pid of ['A', 'B'] as const) {
@@ -175,7 +215,7 @@ export const set_power_zero: EffectFn = (state, ctx) => {
  *  by `applyAction.playCard` after the next play OR cleared in `endTurn`. */
 export const cost_reduction: EffectFn = (state, ctx) => {
   const p = state.players[ctx.controller];
-  const delta = -(ctx.param ?? 1);
+  const delta = -numParam(ctx, 1);
   p.nextPlayCostModifier = (p.nextPlayCostModifier ?? 0) + delta;
   return state;
 };
@@ -217,13 +257,38 @@ export const life_to_hand: EffectFn = (state, ctx) => {
   return state;
 };
 
-/** Disrupt opponent: discard 1 from hand (random for v0). */
+/** V3-4: Discard 1 from opp's hand.
+ *    - Legacy path (param undefined / numeric): discard first card blindly (V0).
+ *    - Reveal path (`param.reveal === true`): expose opp hand to controller
+ *      via knownByViewer, open `discard_choice` window. Resolution via
+ *      RESOLVE_DISCARD in applyAction picks which specific card to trash.
+ */
 export const disruption: EffectFn = (state, ctx) => {
   const opp = state.players[OTHER[ctx.controller]];
   if (opp.hand.length === 0) return state;
-  const idx = 0; // v0: discard first card; engine doesn't expose RNG mid-effect yet.
-  const dropped = opp.hand.splice(idx, 1)[0];
-  opp.trash.push(dropped);
+  // Legacy shortcut.
+  if (!ctx.param || typeof ctx.param === 'number') {
+    const dropped = opp.hand.splice(0, 1)[0];
+    opp.trash.push(dropped);
+    return state;
+  }
+  // V3-4 reveal window.
+  const obj = ctx.param as { reveal?: boolean };
+  if (!obj.reveal) {
+    const dropped = opp.hand.splice(0, 1)[0];
+    opp.trash.push(dropped);
+    return state;
+  }
+  state.pendingDiscard = {
+    controller: ctx.controller,
+    sourceInstanceId: ctx.sourceInstanceId,
+    revealedFrom: OTHER[ctx.controller],
+    resumePhase: state.phase,
+  };
+  state.phase = 'discard_choice';
+  // V3-9: controller now sees opp's full hand for the choice.
+  const known = state.knownByViewer[ctx.controller];
+  for (const id of opp.hand) if (!known.includes(id)) known.push(id);
   return state;
 };
 
@@ -238,7 +303,7 @@ export const vanilla: EffectFn = (state, _ctx) => state;
  *  param = N (default 1). Common Yellow tempo effect. */
 export const rest_opp_don: EffectFn = (state, ctx) => {
   const opp = state.players[OTHER[ctx.controller]];
-  const n = ctx.param ?? 1;
+  const n = numParam(ctx, 1);
   for (let i = 0; i < n && opp.donCostArea.length > 0; i++) {
     opp.donRested.push(opp.donCostArea.shift()!);
   }
@@ -249,7 +314,7 @@ export const rest_opp_don: EffectFn = (state, ctx) => {
  *  v0: always self-mill; for opp-mill ship a separate tag if needed. */
 export const mill: EffectFn = (state, ctx) => {
   const p = state.players[ctx.controller];
-  const n = ctx.param ?? 1;
+  const n = numParam(ctx, 1);
   for (let i = 0; i < n && p.deck.length > 0; i++) {
     p.trash.push(p.deck.shift()!);
   }

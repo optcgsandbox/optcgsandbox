@@ -26,8 +26,21 @@ export interface EffectContext {
   trigger: EffectTrigger;
   /** Optional target chosen by the controller. */
   targetInstanceId?: string;
-  /** Optional further parameter (e.g. number for searches). */
-  param?: number;
+  /** Optional further parameter. Numeric for legacy templates (draw N, mill N,
+   *  power_buff +N). Object form for V3-3 / V3-4 windowed effects:
+   *    - searcher: { lookCount: N, addCount: M } opens `peek_choice`.
+   *    - disruption: { reveal: true } opens `discard_choice`.
+   *  Undefined / number keeps the legacy shortcut behaviour. */
+  param?: number | SearcherPeekParam | DisruptionRevealParam;
+}
+
+export interface SearcherPeekParam {
+  lookCount: number;
+  addCount: number;
+}
+
+export interface DisruptionRevealParam {
+  reveal: true;
 }
 
 export type EffectFn = (state: GameState, ctx: EffectContext) => GameState;
