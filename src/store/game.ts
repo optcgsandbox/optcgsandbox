@@ -103,6 +103,12 @@ const AI_ACTION_DELAY_MS = 2500;
 const BETWEEN_PHASE_DELAY_MS = 1500;
 const TURN_HANDOFF_DELAY_MS = 2000;
 const OPP_VISIBLE_HOLD_MS = 800;
+// Owner direction 2026-05-30: phase pill highlights for ~600ms BEFORE the
+// phase's action runs, so the indicator change is visible on its own (no
+// simultaneous motion). After the action's BETWEEN_PHASE_DELAY_MS hold,
+// pause briefly before the next pill change.
+const PILL_BEAT_MS = 600;
+const POST_ACTION_PAUSE_MS = 500;
 
 function wait(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
@@ -128,8 +134,21 @@ async function runPhasePipelineWithDelays(
 ): Promise<void> {
   if (get().state.phase !== 'refresh') return;
 
-  // Refresh — clone the engine result and prepend a synthetic refresh marker
-  // before the engine's own PHASE_CHANGED→draw event (last entry in history).
+  // Sequential pacing (owner direction 2026-05-30): each phase shows its pill
+  // FIRST for PILL_BEAT_MS, then runs its action while the pill is still
+  // highlighted (BETWEEN_PHASE_DELAY_MS), then pauses before advancing the
+  // pill. The engine's phase-functions auto-advance state.phase to the NEXT
+  // phase as a side-effect; we override that back to the CURRENT phase so the
+  // pill stays aligned with the visible action, then explicitly transition
+  // between actions.
+
+  // === REFRESH ===
+  // Entry: state.phase === 'refresh' already (set by endTurn / mulligan close).
+  // Pill highlights REFRESH alone for a beat before any motion.
+  await wait(PILL_BEAT_MS);
+  // Run engine refresh; it sets phase='draw'. Override back to 'refresh' so
+  // the pill stays on REFRESH while the un-rest animation plays out. Splice a
+  // synthetic refresh marker into history for any history-driven UI.
   let s = runRefreshPhase(get().state);
   const last = s.history.length - 1;
   if (last >= 0 && s.history[last].type === 'PHASE_CHANGED') {
@@ -137,17 +156,35 @@ async function runPhasePipelineWithDelays(
   } else {
     s.history.push({ type: 'PHASE_CHANGED', phase: 'refresh' });
   }
+  s = { ...s, phase: 'refresh' };
   set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });
   await wait(BETWEEN_PHASE_DELAY_MS);
+  await wait(POST_ACTION_PAUSE_MS);
 
-  // Draw
+  // === DRAW ===
+  // Advance pill to DRAW alone first.
+  set({ state: { ...get().state, phase: 'draw' } });
+  await wait(PILL_BEAT_MS);
+  // Run engine draw; engine sets phase='don'. Override back to 'draw'.
   s = runDrawPhase(get().state);
+  s = { ...s, phase: 'draw' };
   set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });
   await wait(BETWEEN_PHASE_DELAY_MS);
+  await wait(POST_ACTION_PAUSE_MS);
 
-  // DON
+  // === DON ===
+  set({ state: { ...get().state, phase: 'don' } });
+  await wait(PILL_BEAT_MS);
   s = runDonPhase(get().state);
+  s = { ...s, phase: 'don' };
   set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });
+  await wait(BETWEEN_PHASE_DELAY_MS);
+  await wait(POST_ACTION_PAUSE_MS);
+
+  // === MAIN ===
+  // Final transition — legalActions recomputed under 'main' so the player can act.
+  const mainState: GameState = { ...get().state, phase: 'main' };
+  set({ state: mainState, legalActions: getLegalActions(mainState, mainState.activePlayer) });
 }
 
 /** Run the first player's first turn pipeline (refresh → draw → don) after
