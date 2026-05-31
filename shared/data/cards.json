@@ -7674,7 +7674,25 @@
       "ramp",
       "rush"
     ],
-    "effectText": "[DON!! x1] This Character can also attack your opponent's active Characters."
+    "effectText": "[DON!! x1] This Character can also attack your opponent's active Characters.",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "attack_active"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP01-022",
@@ -8700,7 +8718,29 @@
       "removal_ko"
     ],
     "effectText": "[Main] K.O. up to 2 of your opponent's rested Characters with a cost of 5 or less.",
-    "counterEventBoost": null
+    "counterEventBoost": null,
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 5,
+              "rested": true
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP01-057",
@@ -9791,7 +9831,27 @@
     "effectTags": [
       "ramp"
     ],
-    "effectText": "[On Play] ① (You may rest the specified number of DON!! cards in your cost area.): Add up to 1 DON!! card from your DON!! deck and rest it."
+    "effectText": "[On Play] ① (You may rest the specified number of DON!! cards in your cost area.): Add up to 1 DON!! card from your DON!! deck and rest it.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1,
+            "rested": true
+          },
+          "verified": "auto",
+          "cost": {
+            "donCost": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP01-094",
@@ -10096,7 +10156,24 @@
     "effectTags": [
       "ramp"
     ],
-    "effectText": "[On Play] Add up to 1 DON!! card from your DON!! deck and rest it."
+    "effectText": "[On Play] Add up to 1 DON!! card from your DON!! deck and rest it.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1,
+            "rested": true
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP01-107",
@@ -10961,7 +11038,25 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "[DON!! x1] This Character can also attack your opponent's active Characters."
+    "effectText": "[DON!! x1] This Character can also attack your opponent's active Characters.",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "attack_active"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP02-015",
@@ -11840,7 +11935,29 @@
       "removal_ko"
     ],
     "effectText": "[Main] K.O. up to 1 of your opponent's rested Characters with a cost of 4 or less.<br>",
-    "counterEventBoost": null
+    "counterEventBoost": null,
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 4,
+              "rested": true
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP02-047",
@@ -16158,7 +16275,26 @@
       "removal_cost_reduce",
       "disruption"
     ],
-    "effectText": "[DON!! x1] [Your Turn] Give all of your opponent's Characters −3 cost.<br>[On Play] If your opponent has 6 or more cards in their hand, trash 2 cards from your opponent's hand."
+    "effectText": "[DON!! x1] [Your Turn] Give all of your opponent's Characters −3 cost.<br>[On Play] If your opponent has 6 or more cards in their hand, trash 2 cards from your opponent's hand.",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "aura_cost_modifier",
+            "filter": {},
+            "delta": 3
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "OP03-079",
@@ -17936,7 +18072,26 @@
       "cost_reduction"
     ],
     "life": 5,
-    "effectText": "[DON!! x1] [Your Turn] Give all of your opponent's Characters −1 cost.<br>[End of Your Turn] ➀ (You may rest the specified number of DON!! cards in your cost area.): Set up to 1 of your Characters with a cost of 5 or less as active."
+    "effectText": "[DON!! x1] [Your Turn] Give all of your opponent's Characters −1 cost.<br>[End of Your Turn] ➀ (You may rest the specified number of DON!! cards in your cost area.): Set up to 1 of your Characters with a cost of 5 or less as active.",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "aura_cost_modifier",
+            "filter": {},
+            "delta": 1
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "OP04-021",
@@ -18865,6 +19020,26 @@
     "effectText": "[Activate: Main] ➁ (You may rest the specified number of DON!! cards in your cost area.) You may rest this Character: Draw 1 card.",
     "templateParams": {
       "draw": 1
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "auto",
+          "cost": {
+            "restSelf": true,
+            "donCost": 2
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -21578,7 +21753,27 @@
       "searcher",
       "cost_reduction"
     ],
-    "effectText": "[Activate: Main] ➀ (You may rest the specified number of DON!! cards in your cost area.) You may rest this Character: Play up to 1 {Donquixote Pirates} type Character card with a cost of 2 or less from your hand."
+    "effectText": "[Activate: Main] ➀ (You may rest the specified number of DON!! cards in your cost area.) You may rest this Character: Play up to 1 {Donquixote Pirates} type Character card with a cost of 2 or less from your hand.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true,
+            "donCost": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP05-034",
@@ -21600,7 +21795,27 @@
     "effectTags": [
       "searcher"
     ],
-    "effectText": "[Activate: Main] ➀ (You may rest the specified number of DON!! cards in your cost area.) You may rest this Character: Look at 5 cards from the top of your deck; reveal up to 1 {Donquixote Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+    "effectText": "[Activate: Main] ➀ (You may rest the specified number of DON!! cards in your cost area.) You may rest this Character: Look at 5 cards from the top of your deck; reveal up to 1 {Donquixote Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true,
+            "donCost": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP05-035",
@@ -21843,6 +22058,37 @@
     "effectText": "[Activate: Main] [Once Per Turn] You may trash 1 card from your hand: Draw 1 card.<br>[When Attacking] Give up to 1 of your opponent's Characters −1 cost during this turn.",
     "templateParams": {
       "draw": 1
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "auto",
+          "cost": {
+            "discardHand": 1
+          }
+        },
+        {
+          "trigger": "when_attacking",
+          "action": {
+            "kind": "removal_cost_reduce",
+            "magnitude": 1,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -22684,7 +22930,27 @@
     "effectTags": [
       "ramp"
     ],
-    "effectText": "[On Play] You may trash 1 card from your hand: Add up to 1 DON!! card from your DON!! deck and rest it."
+    "effectText": "[On Play] You may trash 1 card from your hand: Add up to 1 DON!! card from your DON!! deck and rest it.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1,
+            "rested": true
+          },
+          "verified": "auto",
+          "cost": {
+            "discardHand": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP05-074",
@@ -25069,7 +25335,29 @@
       "removal_ko"
     ],
     "effectText": "[Main] K.O. up to 2 of your opponent's rested Characters with a cost of 3 or less.",
-    "counterEventBoost": null
+    "counterEventBoost": null,
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 3,
+              "rested": true
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP06-041",
@@ -26833,7 +27121,25 @@
       "ramp",
       "counter_character"
     ],
-    "effectText": "[DON!! x2] This Character can also attack your opponent's active Characters."
+    "effectText": "[DON!! x2] This Character can also attack your opponent's active Characters.",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "attack_active"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP06-111",
@@ -28258,7 +28564,31 @@
       "ramp",
       "removal_bounce"
     ],
-    "effectText": "[On Play] ① (You may rest the specified number of DON!! cards in your cost area.): Return up to 1 Character with a cost of 2 or less to the owner's hand."
+    "effectText": "[On Play] ① (You may rest the specified number of DON!! cards in your cost area.): Return up to 1 Character with a cost of 2 or less to the owner's hand.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 2
+            }
+          },
+          "verified": "flagged",
+          "cost": {
+            "donCost": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP07-041",
@@ -29355,7 +29685,26 @@
     "effectTags": [
       "removal_cost_reduce"
     ],
-    "effectText": "[DON!! x1] [Your Turn] Give all of your opponent's Characters −1 cost."
+    "effectText": "[DON!! x1] [Your Turn] Give all of your opponent's Characters −1 cost.",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "aura_cost_modifier",
+            "filter": {},
+            "delta": 1
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP07-082",
@@ -32502,7 +32851,26 @@
     "effectTags": [
       "cost_reduction"
     ],
-    "effectText": "[DON!! x1] [Your Turn] Give all of your opponent's Characters −1 cost."
+    "effectText": "[DON!! x1] [Your Turn] Give all of your opponent's Characters −1 cost.",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "aura_cost_modifier",
+            "filter": {},
+            "delta": 1
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP08-084",
@@ -33522,7 +33890,27 @@
     "effectTags": [
       "removal_cost_reduce"
     ],
-    "effectText": "[When Attacking] Give up to 1 of your opponent's Characters −2000 power during this turn."
+    "effectText": "[When Attacking] Give up to 1 of your opponent's Characters −2000 power during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -2000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP09-004",
@@ -51711,7 +52099,30 @@
       "ramp",
       "removal_bounce"
     ],
-    "effectText": "[Once Per Turn] If your {Donquixote Pirates} type Character would be removed from the field by your opponent's effect, you may return 1 DON!! card from your field to your DON!! deck instead.<br>[When Attacking] DON!! −1: Give up to 1 of your opponent's Characters −2000 power during this turn."
+    "effectText": "[Once Per Turn] If your {Donquixote Pirates} type Character would be removed from the field by your opponent's effect, you may return 1 DON!! card from your field to your DON!! deck instead.<br>[When Attacking] DON!! −1: Give up to 1 of your opponent's Characters −2000 power during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -2000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto",
+          "cost": {
+            "donCost": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "OP14-062",
@@ -57474,7 +57885,27 @@
     "effectTags": [
       "removal_cost_reduce"
     ],
-    "effectText": "[When Attacking] Give up to 1 of your opponent's Characters −3 cost during this turn."
+    "effectText": "[When Attacking] Give up to 1 of your opponent's Characters −3 cost during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "action": {
+            "kind": "removal_cost_reduce",
+            "magnitude": 3,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "P-027",
@@ -57601,7 +58032,24 @@
     "effectTags": [
       "ramp"
     ],
-    "effectText": "[On Play] Add up to 1 DON!! card from your DON!! deck and rest it."
+    "effectText": "[On Play] Add up to 1 DON!! card from your DON!! deck and rest it.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1,
+            "rested": true
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "P-032",
@@ -57623,7 +58071,26 @@
       "cost_reduction",
       "disruption"
     ],
-    "effectText": "[DON!! x1] [Your Turn] Give all of your opponent's Characters −2 cost."
+    "effectText": "[DON!! x1] [Your Turn] Give all of your opponent's Characters −2 cost.",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "aura_cost_modifier",
+            "filter": {},
+            "delta": 2
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "P-033",
@@ -58187,7 +58654,31 @@
     "effectTags": [
       "removal_bounce"
     ],
-    "effectText": "[On Play] ➁ (You may rest the specified number of DON!! cards in your cost area.): Return up to 1 Character with a cost of 5 or less to the owner's hand."
+    "effectText": "[On Play] ➁ (You may rest the specified number of DON!! cards in your cost area.): Return up to 1 Character with a cost of 5 or less to the owner's hand.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 5
+            }
+          },
+          "verified": "flagged",
+          "cost": {
+            "donCost": 2
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "P-057",
@@ -59373,7 +59864,27 @@
       "power_buff",
       "removal_cost_reduce"
     ],
-    "effectText": "[Once Per Turn] If this Character would be removed from the field by your opponent's effect, you may give this Character −2000 power during this turn instead.<br>[When Attacking] Give up to 1 of your opponent's Characters −2000 power during this turn."
+    "effectText": "[Once Per Turn] If this Character would be removed from the field by your opponent's effect, you may give this Character −2000 power during this turn instead.<br>[When Attacking] Give up to 1 of your opponent's Characters −2000 power during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -2000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "PRB02-003",
@@ -60574,7 +61085,27 @@
     "effectTags": [
       "searcher"
     ],
-    "effectText": "[Activate: Main] ➀ (You may rest the specified number of DON!! cards in your cost area.) You may rest this Character: Look at 5 cards from the top of your deck; reveal up to 1 {Supernovas} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+    "effectText": "[Activate: Main] ➀ (You may rest the specified number of DON!! cards in your cost area.) You may rest this Character: Look at 5 cards from the top of your deck; reveal up to 1 {Supernovas} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true,
+            "donCost": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST02-008",
@@ -61918,7 +62449,24 @@
     "effectTags": [
       "ramp"
     ],
-    "effectText": "[On Play] Add up to 1 DON!! card from your DON!! deck and rest it."
+    "effectText": "[On Play] Add up to 1 DON!! card from your DON!! deck and rest it.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1,
+            "rested": true
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST05-003",
@@ -62039,6 +62587,25 @@
     "effectText": "[When Attacking] DON!! −2 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Draw 2 cards.",
     "templateParams": {
       "draw": 2
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "action": {
+            "kind": "draw",
+            "magnitude": 2
+          },
+          "verified": "auto",
+          "cost": {
+            "donCost": 2
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -62447,7 +63014,27 @@
     "effectTags": [
       "removal_cost_reduce"
     ],
-    "effectText": "[When Attacking] Give up to 1 of your opponent's Characters −4 cost during this turn."
+    "effectText": "[When Attacking] Give up to 1 of your opponent's Characters −4 cost during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "action": {
+            "kind": "removal_cost_reduce",
+            "magnitude": 4,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST06-006",
@@ -64356,7 +64943,26 @@
     "effectTags": [
       "ramp"
     ],
-    "effectText": "[On Play] ➀ (You may rest the specified number of DON!! cards in your cost area.): Add up to 1 DON!! card from your DON!! deck and set it as active."
+    "effectText": "[On Play] ➀ (You may rest the specified number of DON!! cards in your cost area.): Add up to 1 DON!! card from your DON!! deck and set it as active.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1
+          },
+          "verified": "auto",
+          "cost": {
+            "donCost": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST10-010",

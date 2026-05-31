@@ -572,6 +572,75 @@ const matchers = [
       clauses: [{ trigger: 'on_play', action: { kind: 'power_buff', magnitude: parseInt(m[3], 10), duration: 'this_battle' }, target: { kind: 'your_leader' }, verified: 'flagged' }],
     }),
   },
+  // B.7 patterns
+  // [When Attacking] simple actions
+  {
+    name: 'whenAttackingDebuff',
+    rx: /^\[When Attacking\] Give up to (\d+) of your opponent's Characters? −(\d+) power during this turn\.\s*$/,
+    emit: (m) => ({
+      clauses: [{ trigger: 'when_attacking', action: { kind: 'power_buff', magnitude: -parseInt(m[2], 10), duration: 'this_turn' }, target: { kind: 'opp_character' }, verified: 'auto' }],
+    }),
+  },
+  {
+    name: 'whenAttackingCostDebuff',
+    rx: /^\[When Attacking\] Give up to (\d+) of your opponent's Characters? −(\d+) cost during this turn\.\s*$/,
+    emit: (m) => ({
+      clauses: [{ trigger: 'when_attacking', action: { kind: 'removal_cost_reduce', magnitude: parseInt(m[2], 10), duration: 'this_turn' }, target: { kind: 'opp_character' }, verified: 'auto' }],
+    }),
+  },
+  {
+    name: 'whenAttackingDraw',
+    rx: /^\[When Attacking\] Draw (\d+) cards?\.\s*$/,
+    emit: (m) => ({
+      clauses: [{ trigger: 'when_attacking', action: { kind: 'draw', magnitude: parseInt(m[1], 10) }, verified: 'auto' }],
+    }),
+  },
+  // [Activate: Main] [Once Per Turn] simple effects
+  {
+    name: 'activateMainDraw',
+    rx: /^\[Activate: Main\] \[Once Per Turn\] Draw (\d+) cards?\.\s*$/,
+    emit: (m) => ({
+      clauses: [{ trigger: 'activate_main', action: { kind: 'draw', magnitude: parseInt(m[1], 10) }, verified: 'auto' }],
+    }),
+  },
+  // [DON!! xN] [Your Turn] Give all of your opponent's Characters −N cost.
+  {
+    name: 'donXYourTurnMassCostDebuff',
+    rx: /^\[DON!! x(\d+)\] \[Your Turn\] Give all of your opponent's Characters −(\d+) cost\.\s*$/,
+    emit: (m) => ({
+      continuous: [{
+        condition: { type: 'if_have_given_don_min', n: parseInt(m[1], 10) },
+        action: { kind: 'aura_cost_modifier', filter: {}, delta: parseInt(m[2], 10) },
+      }],
+    }),
+  },
+  // [DON!! xN] This Character can also attack your opponent's active Characters.
+  {
+    name: 'donXAlsoAttackActive',
+    rx: /^\[DON!! x(\d+)\] This Character can also attack your opponent's active Characters\.\s*$/,
+    emit: (m) => ({
+      continuous: [{
+        condition: { type: 'if_have_given_don_min', n: parseInt(m[1], 10) },
+        action: { kind: 'grant_keyword_to_self', keyword: 'attack_active' },
+      }],
+    }),
+  },
+  // [On Play] Add up to N DON!! cards and rest it (ramp variant — set rested, not active)
+  {
+    name: 'onPlayRampRested',
+    rx: /^\[On Play\] Add up to (\d+) DON!! cards? from your DON!! deck and rest it\.\s*$/,
+    emit: (m) => ({
+      clauses: [{ trigger: 'on_play', action: { kind: 'ramp', magnitude: parseInt(m[1], 10), rested: true }, verified: 'auto' }],
+    }),
+  },
+  // [Main] K.O. up to N opp rested cost ≤ M.
+  {
+    name: 'mainKoRestedByCost',
+    rx: /^\[Main\] K\.O\. up to (\d+) of your opponent's rested Characters with a cost of (\d+) or less\.\s*$/,
+    emit: (m) => ({
+      clauses: [{ trigger: 'on_play', action: { kind: 'removal_ko' }, target: { kind: 'opp_character', filter: { costMax: parseInt(m[2], 10), rested: true } }, verified: 'auto' }],
+    }),
+  },
 ];
 
 /** Pre-process a clause: if it starts with `[<trigger>] DON!! −N (...): <rest>`,
@@ -598,6 +667,16 @@ function stripDiscardCostPrefix(clauseText) {
   const m = clauseText.match(/^(\[(?:On Play|Main|When Attacking|Activate: Main\] \[Once Per Turn|Activate: Main|Counter|On Your Opponent's Attack|On K\.O\.)\]) You may trash (\d+) cards? from your hand: (.+)$/);
   if (!m) return null;
   return { triggerPrefix: m[1], discardHand: parseInt(m[2], 10), restClause: `${m[1]} ${m[3]}` };
+}
+
+/** Pre-process: strip the ➀ / ➁ / ➂ etc. DON-rest-cost prefix used on
+ *  [Activate: Main] clauses. Returns `{ donCost, restClause }`. */
+const CIRCLE_NUMS = { '➀': 1, '➁': 2, '➂': 3, '➃': 4, '➄': 5, '①': 1, '②': 2, '③': 3, '④': 4, '⑤': 5 };
+function stripCircleDonCostPrefix(clauseText) {
+  const m = clauseText.match(/^(\[(?:Activate: Main\] \[Once Per Turn|Activate: Main|On Play|Main|When Attacking|Counter|On K\.O\.)\]) ([➀➁➂➃➄①②③④⑤])(?: \(You may rest the specified number of DON!! cards in your cost area\.\))?:?\s*(.+)$/);
+  if (!m) return null;
+  const cost = CIRCLE_NUMS[m[2]] ?? 1;
+  return { triggerPrefix: m[1], donCost: cost, restClause: `${m[1]} ${m[3]}` };
 }
 
 function matchClause(clauseText) {
@@ -639,6 +718,23 @@ function matchClause(clauseText) {
           }));
         }
         return { ...frag, _patternName: `${m.name}+discard` };
+      }
+    }
+  }
+  // Try after stripping a circle-DON cost prefix.
+  const circle = stripCircleDonCostPrefix(t);
+  if (circle) {
+    for (const m of matchers) {
+      const r = circle.restClause.match(m.rx);
+      if (r) {
+        const frag = m.emit(r);
+        if (frag.clauses) {
+          frag.clauses = frag.clauses.map((c) => ({
+            ...c,
+            cost: { ...(c.cost ?? {}), donCost: circle.donCost },
+          }));
+        }
+        return { ...frag, _patternName: `${m.name}+circleDon` };
       }
     }
   }
