@@ -266,14 +266,16 @@ function LeaderRow({
         </ZoneSlot>
         <StageSlot playerId={playerId} isYou={isYou} />
         <DeckSlot playerId={playerId} isYou={isYou} />
-        {/* End Turn button fills the empty space to the right of the deck.
-            Only renders on YOUR side — opp side stays empty. Owner direction
-            2026-05-29: pack leader/stage/deck left + End Turn next to them. */}
-        {isYou && (
-          <div className="flex h-full items-center">
-            <EndTurnButton />
-          </div>
-        )}
+        {/* End Turn slot — always-rendered 52px wrapper for layout symmetry
+            (owner direction 2026-05-30). Only the BUTTON itself mounts on the
+            owner side; opp side leaves the same width empty so leader/stage/
+            deck land at identical x positions on both halves. */}
+        <div
+          className="flex h-full items-center"
+          style={{ width: 'var(--zone-trash-w, 52px)' }}
+        >
+          {isYou && <EndTurnButton />}
+        </div>
       </div>
     </div>
   );

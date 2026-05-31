@@ -36,7 +36,7 @@ function computeAffordance(
     if (phase === 'trigger_window') {
       return { label: 'TRIGGER…', enabled: false, action: null, isEndTurn: false };
     }
-    return { label: 'OPPONENT’S TURN', enabled: false, action: null, isEndTurn: false };
+    return { label: 'OPP TURN', enabled: false, action: null, isEndTurn: false };
   }
   if (phase === 'block_window') {
     return {
@@ -57,7 +57,7 @@ function computeAffordance(
   if (phase === 'trigger_window') {
     return { label: 'TRIGGER…', enabled: false, action: null, isEndTurn: false };
   }
-  return { label: 'OPPONENT’S TURN', enabled: false, action: null, isEndTurn: false };
+  return { label: 'OPP TURN', enabled: false, action: null, isEndTurn: false };
 }
 
 export const EndTurnButton = memo(function EndTurnButton() {
