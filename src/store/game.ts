@@ -12,63 +12,40 @@ import { setupGame } from '@shared/engine/phases/setup';
 import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '@shared/engine/phases/turn';
 import { getLegalActions } from '@shared/engine/rules/legality';
 import type { Action } from '@shared/protocol/actions';
-import type { Card, CharacterCard, EventCard, LeaderCard, StageCard } from '@shared/engine/cards/Card';
+import type { Card, LeaderCard } from '@shared/engine/cards/Card';
 import type { GameState, PlayerId } from '@shared/engine/GameState';
+import cardsDataRaw from '@shared/data/cards.json';
+
+/** Imported OPTCG corpus from Crew Builder (synced via
+ *  scripts/sync-from-crewbuilder.mjs). 2489 cards across leader/character/
+ *  event/stage. Used to build per-color decks for the demo. */
+const ALL_CARDS = cardsDataRaw as unknown as Card[];
 
 export type GameMode = 'vs-easy' | 'vs-medium' | 'vs-hard';
 
-function makeLeader(id: string, color: 'red' | 'blue' = 'red'): LeaderCard {
-  return {
-    id, name: id, kind: 'leader', colors: [color], cost: null, power: 5000,
-    life: 5, counterValue: null, traits: ['Straw Hat Crew'], keywords: [], effectTags: [],
-  };
-}
-function makeChar(id: string, cost: number, power: number, color: 'red' | 'blue' = 'red'): CharacterCard {
-  return {
-    id, name: id, kind: 'character', colors: [color], cost, power,
-    counterValue: 1000, traits: [], keywords: [], effectTags: ['vanilla'],
-  };
-}
-function makeEvent(id: string, cost: number, color: 'red' | 'blue' = 'red'): EventCard {
-  return {
-    id, name: id, kind: 'event', colors: [color], cost, power: null,
-    counterValue: null, counterEventBoost: null,
-    traits: [], keywords: [], effectTags: ['vanilla'],
-    effectText: 'No effect yet — placeholder event.',
-  };
-}
-function makeStage(id: string, cost: number, color: 'red' | 'blue' = 'red'): StageCard {
-  return {
-    id, name: id, kind: 'stage', colors: [color], cost, power: null,
-    counterValue: null, traits: [], keywords: [], effectTags: ['vanilla'],
-    effectText: 'No effect yet — placeholder stage.',
-  };
+type DeckColor = 'red' | 'green' | 'blue' | 'purple' | 'black' | 'yellow';
+
+/** Pick the first single-color leader matching `color` from the corpus.
+ *  Falls back to throwing if none exists (would mean the import broke). */
+function pickLeader(color: DeckColor): LeaderCard {
+  const match = ALL_CARDS.find(
+    (c) => c.kind === 'leader' && c.colors.length === 1 && c.colors[0] === color,
+  );
+  if (!match) throw new Error(`No single-color ${color} leader in corpus`);
+  return match as LeaderCard;
 }
 
-/** Quick test deck: 50 cards mixing all kinds so the modal + zones can be
- *  visually exercised. ~35 characters + ~10 events + ~5 stages. */
-function quickDeck(color: 'red' | 'blue'): Card[] {
-  const deck: Card[] = [];
-  // Characters — 4× each at cost 1-8 + filler to ~35 total.
-  for (let cost = 1; cost <= 8; cost++) {
-    for (let copy = 0; copy < 4; copy++) {
-      deck.push(makeChar(`${color}-c-${cost}-${copy}`, cost, cost * 1000 + 1000, color));
-    }
-  }
-  while (deck.length < 35) {
-    deck.push(makeChar(`${color}-c-x-${deck.length}`, 4, 5000, color));
-  }
-  // Events — 2× each at cost 1-5 = 10.
-  for (let cost = 1; cost <= 5; cost++) {
-    for (let copy = 0; copy < 2; copy++) {
-      deck.push(makeEvent(`${color}-e-${cost}-${copy}`, cost, color));
-    }
-  }
-  // Stages — 1× each at cost 1-5 = 5.
-  for (let cost = 1; cost <= 5; cost++) {
-    deck.push(makeStage(`${color}-s-${cost}`, cost, color));
-  }
-  return deck.slice(0, 50);
+/** Build a 50-card deck from the corpus filtered to cards sharing the
+ *  leader's color. Per OPTCG rules a card is legal in a deck if any of its
+ *  colors matches the leader's color set (CR §5-1). For V0 we take the first
+ *  50 unique non-leader cards that include `color` — engine shuffles on
+ *  setup. Mixes characters, events, and stages so the demo exercises every
+ *  zone. */
+function buildDeck(color: DeckColor): Card[] {
+  const pool = ALL_CARDS.filter(
+    (c) => c.kind !== 'leader' && c.colors.includes(color),
+  );
+  return pool.slice(0, 50);
 }
 
 /** D24 (CR §5-2-1-4) + D10 (CR §5-2-1-6): `setupGame` leaves the engine in
@@ -81,8 +58,8 @@ function bootGame(seed: number): GameState {
   let s = initialState({
     seed,
     decks: {
-      A: { leader: makeLeader('LA', 'red'), cards: quickDeck('red') },
-      B: { leader: makeLeader('LB', 'blue'), cards: quickDeck('blue') },
+      A: { leader: pickLeader('red'), cards: buildDeck('red') },
+      B: { leader: pickLeader('blue'), cards: buildDeck('blue') },
     },
   });
   s = setupGame(s);
