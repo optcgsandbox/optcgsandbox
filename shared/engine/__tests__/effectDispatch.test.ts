@@ -322,6 +322,18 @@ describe('Effect dispatch (D14) — wiring', () => {
     // (newcomer left hand).
     expect(s2.players.A.hand.length).toBe(aHandBefore - 1);
     expect(s2.players.A.deck.length).toBe(deckBefore);
+    // V3-7 (D6, CR §3-7-6-1-1): slot-6 trash emits CARD_TRASHED_BY_RULE,
+    // never CARD_KOED, so [On K.O.] dispatch downstream sees rule processing.
+    const koEvents = s2.history.filter(
+      (e) => e.type === 'CARD_KOED' && (e as { instanceId: string }).instanceId === tgtId,
+    );
+    const ruleEvents = s2.history.filter(
+      (e) =>
+        e.type === 'CARD_TRASHED_BY_RULE' &&
+        (e as { instanceId: string }).instanceId === tgtId,
+    );
+    expect(koEvents.length).toBe(0);
+    expect(ruleEvents.length).toBe(1);
   });
 
   it('vanilla on_play is a no-op (engine state otherwise unchanged)', () => {

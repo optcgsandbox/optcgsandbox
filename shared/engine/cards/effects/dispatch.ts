@@ -60,6 +60,16 @@ const TAGS_BY_TRIGGER: Record<EffectTrigger, ReadonlySet<EffectTag>> = {
     'power_buff',
     'set_power_zero',
     'cost_reduction',
+    // V3-5:
+    'rest_opp_don',
+    'mill',
+    'reveal_opp_hand',
+    'take_from_opp_hand',
+    'search_deck',
+    'exile',
+    'play_for_free',
+    'rest_target',
+    'move_to_top',
   ]),
   when_attacking: new Set<EffectTag>(['power_buff', 'draw']),
   on_block: new Set<EffectTag>(['draw', 'lifegain']),
@@ -81,6 +91,15 @@ const TAGS_BY_TRIGGER: Record<EffectTrigger, ReadonlySet<EffectTag>> = {
     'power_buff',
     'set_power_zero',
     'cost_reduction',
+    // V3-5:
+    'rest_opp_don',
+    'mill',
+    'reveal_opp_hand',
+    'take_from_opp_hand',
+    'search_deck',
+    'exile',
+    'rest_target',
+    'move_to_top',
   ]),
   // D15 (CR §5-2-1-5-1): at-start-of-game effects fire after first/second is
   // chosen, before the mulligan window opens. No field exists yet so removal /
@@ -112,6 +131,16 @@ const TAGS_BY_TRIGGER: Record<EffectTrigger, ReadonlySet<EffectTag>> = {
     'power_buff',
     'set_power_zero',
     'cost_reduction',
+    // V3-5: triggers can fire pretty much anything; include the new tags.
+    'rest_opp_don',
+    'mill',
+    'reveal_opp_hand',
+    'take_from_opp_hand',
+    'search_deck',
+    'exile',
+    'play_for_free',
+    'rest_target',
+    'move_to_top',
   ]),
 };
 

@@ -56,7 +56,17 @@ export type EffectTag =
   | 'life_to_hand'
   | 'disruption'
   | 'vanilla'
-  | 'trigger';
+  | 'trigger'
+  // V3-5: new effect surface to cover real card text outside the v0 spine.
+  | 'rest_opp_don'        // Move N of opp's active DON → opp's rested DON.
+  | 'mill'                // Top N of deck → trash. param = N, default 1.
+  | 'reveal_opp_hand'     // Expose opp hand to controller for this resolution.
+  | 'take_from_opp_hand'  // Move 1 from opp hand → controller hand. v0 random.
+  | 'search_deck'         // Take first matching card from deck → hand, shuffle.
+  | 'exile'               // Send target to controller's exile zone (no recur).
+  | 'play_for_free'       // Place target hand card on field without paying cost.
+  | 'rest_target'         // Set target instance to rested.
+  | 'move_to_top';        // Move target from hand/trash → top of own deck.
 
 /** Base card definition. Card-specific effect functions are attached separately
  *  by the effects/ modules; this type is just the printed data. */

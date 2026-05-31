@@ -241,12 +241,18 @@ function playCard(
   if (handIdx === -1) return { state, events: [] };
 
   const card = next.cardLibrary[inst.cardId];
-  if (card.cost === null || card.cost > p.donCostArea.length) return { state, events: [] };
+  if (card.cost === null) return { state, events: [] };
+  // V3-2: cost_reduction modifier reduces the cost paid for THIS play, then
+  // is consumed. Negative modifier → less DON spent.
+  const playCost = Math.max(0, card.cost + (p.nextPlayCostModifier ?? 0));
+  if (playCost > p.donCostArea.length) return { state, events: [] };
 
-  // Pay cost: rest `card.cost` DON from the cost area.
-  for (let i = 0; i < card.cost; i++) {
+  // Pay cost: rest `playCost` DON from the cost area.
+  for (let i = 0; i < playCost; i++) {
     p.donRested.push(p.donCostArea.shift()!);
   }
+  // V3-2: one-shot — consume the modifier so subsequent plays pay full cost.
+  if (p.nextPlayCostModifier !== undefined) delete p.nextPlayCostModifier;
   p.hand.splice(handIdx, 1);
 
   if (card.kind === 'character') {
@@ -259,10 +265,10 @@ function playCard(
           p.donRested.push(removed.attachedDon.shift()!);
         }
         p.trash.push(removed.instanceId);
-        next.history.push({ type: 'CARD_KOED', instanceId: removed.instanceId });
-        // D6 (CR §3-7-6-1-1): trashing-for-slot-6 is RULE PROCESSING, not a
-        // K.O. — no [On K.O.] effects fire. The CARD_KOED event above is
-        // cosmetic (tracked in §15.2 D6).
+        // V3-7 (D6, CR §3-7-6-1-1): rule processing, not K.O. — no [On K.O.]
+        // cascade. Distinct event type signals downstream consumers (UI log /
+        // future on_ko handlers) that this is NOT a K.O.
+        next.history.push({ type: 'CARD_TRASHED_BY_RULE', instanceId: removed.instanceId });
       }
     }
     inst.summoningSick = true;

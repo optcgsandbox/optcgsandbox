@@ -141,11 +141,21 @@ export function endTurn(state: GameState): GameState {
   for (const pid of ['A', 'B'] as PlayerId[]) {
     const pl = next.players[pid];
     delete pl.leader.powerModifier;
-    for (const f of pl.field) delete f.powerModifier;
-    if (pl.stage) delete pl.stage.powerModifier;
+    delete pl.leader.costModifier;
+    for (const f of pl.field) {
+      delete f.powerModifier;
+      delete f.costModifier;
+    }
+    if (pl.stage) {
+      delete pl.stage.powerModifier;
+      delete pl.stage.costModifier;
+    }
+    // V3-2: nextPlayCostModifier expires at end of turn if not consumed by a play.
+    delete pl.nextPlayCostModifier;
   }
   for (const id in next.instances) {
     delete next.instances[id].powerModifier;
+    delete next.instances[id].costModifier;
   }
 
   next.history.push({ type: 'TURN_ENDED', player: next.activePlayer });

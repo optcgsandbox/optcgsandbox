@@ -44,6 +44,8 @@ function format(event: GameEvent, lookup: (id: string) => string): string | null
       return `Counter played, +${event.boost} power.`;
     case 'CARD_KOED':
       return `${lookup(event.instanceId)} knocked out.`;
+    case 'CARD_TRASHED_BY_RULE':
+      return `${lookup(event.instanceId)} trashed by rule.`;
     case 'LIFE_TAKEN':
       return `${event.player} took a life card.`;
     case 'DON_DEALT':

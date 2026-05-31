@@ -63,6 +63,11 @@ export interface CardInstance {
    *  reads as 0 power until end-of-turn. Cleared in `endTurn` per CR §4-12
    *  (effect lasts "the specified duration" — v0 covers turn-scoped only). */
   powerModifier?: number;
+  /** V3-2: turn-scoped cost delta. Added to `card.cost` whenever a consumer
+   *  checks this instance's effective cost (e.g. "KO a char of cost ≤ 3").
+   *  Set by `removal_cost_reduce` to a negative number. Cleared in `endTurn`
+   *  alongside `powerModifier`. */
+  costModifier?: number;
 }
 
 export interface PlayerZones {
@@ -89,6 +94,15 @@ export interface PlayerZones {
   donCostArea: string[];
   /** Rested (used) DON in the cost area, to be refreshed next refresh phase. */
   donRested: string[];
+  /** V3-2: one-shot cost modifier consumed by the next PLAY_CARD. Negative
+   *  values reduce the cost paid. Set by the `cost_reduction` template.
+   *  Cleared on play OR at end of turn (whichever first) per CR's "this turn"
+   *  duration. */
+  nextPlayCostModifier?: number;
+  /** V3-5: exile zone — cards sent here are removed from the game and cannot
+   *  be recursed back. Distinct from `trash`. Initialized empty; populated by
+   *  the `exile` effect template. */
+  exile: string[];
 }
 
 export interface GameState {
@@ -135,6 +149,13 @@ export interface GameState {
    *  Tests that bypass dice/mulligan via `closeMulliganKeepBoth` get
    *  `firstPlayer = 'A'` so their pre-D24 assumptions hold. */
   firstPlayer: PlayerId | null;
+  /** V3-9: per-viewer "I have legitimately seen these instance identities"
+   *  set. Populated when an effect reveals a card to a viewer (e.g.
+   *  reveal_opp_hand, take_from_opp_hand, or a future "look at top N"). The
+   *  viewForPlayer helper consults this overlay before redacting hidden zones
+   *  so the AI/UI can reason about previously-peeked cards. Cleared per-zone
+   *  when that zone is shuffled (deferred V0; no shuffle hook today). */
+  knownByViewer: Record<PlayerId, string[]>;
 }
 
 export interface PendingAttack {
@@ -192,6 +213,10 @@ export type GameEvent =
   | { type: 'BLOCKER_ACTIVATED'; blocker: string }
   | { type: 'COUNTER_PLAYED'; instanceId: string; boost: number }
   | { type: 'CARD_KOED'; instanceId: string }
+  /** V3-7 (D6, CR §3-7-6-1-1): emitted when a character is trashed by rule
+   *  processing (e.g. the 6th-character slot rule) rather than as a K.O.
+   *  Distinct from CARD_KOED so [On K.O.] cascades do not fire on this path. */
+  | { type: 'CARD_TRASHED_BY_RULE'; instanceId: string }
   | { type: 'LIFE_TAKEN'; player: PlayerId; instanceId: string }
   | { type: 'DON_DEALT'; player: PlayerId; count: number }
   | { type: 'DON_ATTACHED'; targetInstanceId: string; count: number }
@@ -266,6 +291,7 @@ export function initialState(args: {
       donDeck,
       donCostArea: [],
       donRested: [],
+      exile: [],
     };
   }
 
@@ -284,5 +310,6 @@ export function initialState(args: {
     mulliganUsed: { A: false, B: false },
     diceRoll: null,
     firstPlayer: null,
+    knownByViewer: { A: [], B: [] },
   };
 }

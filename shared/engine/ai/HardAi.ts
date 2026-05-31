@@ -80,7 +80,16 @@ function simulateAction(state: GameState, player: PlayerId, action: Action): Gam
     }
     if (s.phase === 'trigger_window' && s.pendingTrigger) {
       const owner = s.pendingTrigger.controller;
-      s = applyAction(s, owner, { type: 'RESOLVE_TRIGGER', activate: false, targetInstanceId: null }).state;
+      // V3-8: simulate both branches (activate vs decline) and pick the one
+      // that produces a higher position score from the original `player`'s
+      // perspective. Owner is whoever's life flipped, NOT necessarily `player`.
+      const decline = applyAction(s, owner, { type: 'RESOLVE_TRIGGER', activate: false, targetInstanceId: null }).state;
+      const activate = applyAction(s, owner, { type: 'RESOLVE_TRIGGER', activate: true, targetInstanceId: null }).state;
+      // If owner === player we want to maximize player's score; if owner is opp,
+      // we still pick from player's perspective (worst-case modelling).
+      const declineScore = evaluateForPlayer(decline, player);
+      const activateScore = evaluateForPlayer(activate, player);
+      s = activateScore > declineScore ? activate : decline;
       continue;
     }
     break;

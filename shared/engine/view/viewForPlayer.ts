@@ -59,6 +59,12 @@ export function viewForPlayer(state: GameState, viewer: PlayerId): GameState {
   for (const id of state.players[opp].deck) hiddenIds.add(id);
   for (const id of state.players[opp].life) hiddenIds.add(id);
 
+  // V3-9: lift redaction for any instance the viewer has legitimately seen
+  // via a past effect (peek / reveal / take). state.knownByViewer is the
+  // canonical overlay; we read it defensively to support older state shapes.
+  const knownIds = state.knownByViewer?.[viewer] ?? [];
+  for (const id of knownIds) hiddenIds.delete(id);
+
   const instances: Record<string, CardInstance> = {};
   for (const [id, inst] of Object.entries(state.instances)) {
     if (hiddenIds.has(id)) {

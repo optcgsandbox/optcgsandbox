@@ -97,7 +97,10 @@ function playCardActions(state: GameState, player: PlayerId): Action[] {
   for (const instanceId of p.hand) {
     const inst = state.instances[instanceId];
     const card = state.cardLibrary[inst.cardId];
-    if (card.cost === null || card.cost > p.donCostArea.length) continue;
+    if (card.cost === null) continue;
+    // V3-2: nextPlayCostModifier reduces the cost paid for the next play.
+    const effCost = Math.max(0, card.cost + (p.nextPlayCostModifier ?? 0));
+    if (effCost > p.donCostArea.length) continue;
     if (!sharesColorWithLeader(card, leaderCard)) continue;
 
     if (card.kind === 'character') {

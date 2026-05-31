@@ -69,6 +69,19 @@ describe('viewForPlayer', () => {
     expect(view.players.B.leader.cardId).toBe(s.players.B.leader.cardId);
   });
 
+  it('respects knownByViewer overlay — listed instances are un-redacted (V3-9)', () => {
+    const s = bootMainPhase();
+    const oppHandId = s.players.A.hand[0];
+    expect(oppHandId).toBeDefined();
+    // Default view: opp hand redacted for viewer B.
+    const v1 = viewForPlayer(s, 'B');
+    expect(v1.instances[oppHandId].cardId).toBe(UNKNOWN_CARD.id);
+    // Lift via overlay.
+    s.knownByViewer.B.push(oppHandId);
+    const v2 = viewForPlayer(s, 'B');
+    expect(v2.instances[oppHandId].cardId).toBe(s.instances[oppHandId].cardId);
+  });
+
   it('does NOT mutate the source state', () => {
     const s = bootMainPhase();
     const before = JSON.stringify(s);
