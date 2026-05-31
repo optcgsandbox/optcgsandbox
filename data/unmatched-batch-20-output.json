@@ -1,0 +1,1743 @@
+[
+  {
+    "id": "ST13-001",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "donCost": 1 },
+          "action": {
+            "kind": "add_to_own_life_top",
+            "faceUp": true,
+            "from": "hand"
+          },
+          "target": { "kind": "your_character", "filter": { "costMin": 3, "powerMin": 7000 } },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": { "donCost": 1 },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "opp_next_turn"
+          },
+          "target": { "kind": "your_character" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST13-002",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "donCost": 2 },
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 1,
+            "filter": { "kind": "character", "costMin": 5, "costMax": 5 }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "at_end_of_turn_self",
+          "action": { "kind": "trash_face_up_life" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST13-003",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "condition": { "type": "if_own_life_max", "n": 0 },
+          "cost": { "donCost": 2, "discardHand": 1 },
+          "action": {
+            "kind": "add_to_own_life_top",
+            "faceUp": true,
+            "from": "hand"
+          },
+          "target": { "kind": "your_character", "filter": { "costMin": 5, "costMax": 5, "kind": "character" } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST13-004",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "add_to_own_life_top",
+            "faceUp": false,
+            "from": "top_of_deck"
+          },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "peek_and_reorder_own_life", "count": 99 },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST13-007",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "trashSelf": true },
+          "action": {
+            "kind": "reveal_top_and_conditional_play",
+            "filter": { "nameIs": "Sabo", "costMin": 5, "costMax": 5 }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": { "trashSelf": true },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "opp_next_turn"
+          },
+          "target": { "kind": "your_leader" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST13-008",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "flipLife": 1 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 5 } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST13-009",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_opp_hand_min", "n": 7 },
+          "cost": { "flipLife": 1 },
+          "action": { "kind": "trash_face_up_life" },
+          "target": { "kind": "opp_life_top" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST13-010",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "trashSelf": true },
+          "action": {
+            "kind": "reveal_top_and_conditional_play",
+            "filter": { "nameIs": "Portgas.D.Ace", "costMin": 5, "costMax": 5 }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": { "trashSelf": true },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "opp_next_turn"
+          },
+          "target": { "kind": "your_leader" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST13-011",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_own_life_max", "n": 2 },
+          "action": { "kind": "give_keyword", "keyword": "Rush", "duration": "this_turn" },
+          "target": { "kind": "self" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST13-012",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "flipLife": 1 },
+          "action": { "kind": "life_to_hand", "magnitude": 1 },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "peek_and_reorder_own_life", "count": 99 },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST13-013",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 1,
+            "filter": { "costMax": 5 }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST13-014",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "trashSelf": true },
+          "action": {
+            "kind": "reveal_top_and_conditional_play",
+            "filter": { "nameIs": "Monkey.D.Luffy", "costMin": 5, "costMax": 5 }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": { "trashSelf": true },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "opp_next_turn"
+          },
+          "target": { "kind": "your_leader" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST13-015",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "opp_next_turn"
+          },
+          "target": { "kind": "self" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "activate_main",
+          "condition": { "type": "if_own_life_min", "n": 1 },
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "auto"
+        },
+        {
+          "trigger": "activate_main",
+          "condition": { "type": "if_own_life_min", "n": 1 },
+          "action": { "kind": "trash_face_up_life" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST13-019",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 1,
+            "filter": { "costMax": 5 }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST14-001",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "aura_cost_modifier",
+            "filter": { "kind": "character" },
+            "delta": 1
+          }
+        },
+        {
+          "condition": { "type": "if_own_chars_min_cost", "n": 1, "minCost": 8 },
+          "action": { "kind": "self_power_buff", "magnitude": 1000 }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST14-002",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "if_own_chars_min_cost", "n": 1, "minCost": 8 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 4 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST14-003",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_own_chars_min_cost", "n": 1, "minCost": 6 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 5 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST14-004",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "opp_next_turn"
+          },
+          "target": { "kind": "your_character", "filter": { "typeIncludes": "Straw Hat Crew", "colors": ["black"] } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST14-007",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_own_chars_min_cost", "n": 1, "minCost": 8 },
+          "action": { "kind": "removal_cost_reduce", "magnitude": 5, "duration": "this_turn" },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "if_own_chars_min_cost", "n": 1, "minCost": 8 },
+          "action": { "kind": "removal_cost_reduce", "magnitude": 5, "duration": "this_turn" },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST14-009",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "and",
+            "conditions": [
+              { "type": "during_opp_turn" },
+              { "type": "if_own_chars_min_cost", "n": 1, "minCost": 6 }
+            ]
+          },
+          "action": { "kind": "self_power_buff", "magnitude": 2000 }
+        },
+        {
+          "condition": { "type": "if_own_chars_min_cost", "n": 1, "minCost": 6 },
+          "action": { "kind": "self_immune_to_opp_effects" }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST14-012",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": { "type": "if_own_chars_min_cost", "n": 1, "minCost": 10 },
+          "action": { "kind": "grant_keyword_to_self", "keyword": "Rush" }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST14-014",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_own_chars_min_cost", "n": 1, "minCost": 8 },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": { "kind": "your_character" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST14-015",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_turn"
+          },
+          "target": { "kind": "your_character" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_own_chars_min_cost", "n": 1, "minCost": 8 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 2 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST14-016",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 0,
+            "duration": "opp_next_turn"
+          },
+          "target": { "kind": "your_character" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST14-017",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_type", "typeString": "Straw Hat Crew" },
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [
+        {
+          "action": {
+            "kind": "aura_cost_modifier",
+            "filter": { "kind": "character", "typeIncludes": "Straw Hat Crew", "colors": ["black"] },
+            "delta": 1
+          }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST15-001",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "if_leader_is", "name": "Edward.Newgate" },
+          "action": { "kind": "restrict_effect_type", "effectKind": "character_set_active" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST15-004",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_type", "typeString": "Whitebeard Pirates" },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -2000,
+            "duration": "this_turn"
+          },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_type", "typeString": "Whitebeard Pirates" },
+          "action": { "kind": "life_to_hand", "magnitude": 1 },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST15-005",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": { "type": "if_leader_has_type", "typeString": "Whitebeard Pirates" },
+          "action": { "kind": "grant_keyword_to_self", "keyword": "Rush" }
+        }
+      ],
+      "replacements": [
+        {
+          "trigger": "would_be_removed",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -2000,
+            "duration": "this_turn"
+          },
+          "target": { "kind": "self" },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ST16-003",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": { "type": "if_leader_has_type", "typeString": "FILM" },
+          "action": { "kind": "self_power_buff", "magnitude": 2000 }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST16-004",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "rested": true } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST16-005",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": { "type": "if_owned_other_with_name", "name": "Uta" },
+          "action": { "kind": "self_power_buff", "magnitude": 1000 }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST17-001",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "reveal_top_and_conditional_play",
+            "filter": { "typeIncludes": "The Seven Warlords of the Sea" }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "draw", "magnitude": 2 },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST17-002",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_type", "typeString": "The Seven Warlords of the Sea" },
+          "cost": { "returnSelfChar": {} },
+          "action": { "kind": "removal_bounce" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 4 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST17-003",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "peek_and_reorder_own_deck", "count": 3 },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST17-005",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "discardHand": 1 },
+          "action": { "kind": "give_don_to_target", "magnitude": 2, "rested": true },
+          "target": { "kind": "your_leader" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST18-001",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_don_min", "n": 8 },
+          "action": { "kind": "rest_target" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 5 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST18-003",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "if_don_min", "n": 8 },
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST18-004",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 1,
+            "filter": { "typeIncludes": "Straw Hat Crew", "colors": ["purple"] }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST18-005",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "donCostReturnToDeck": 1 },
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": { "typeIncludes": "Straw Hat Crew", "colors": ["purple"], "kind": "character", "costMax": 5 }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST19-001",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "discardHand": 1 },
+          "action": { "kind": "attack_lock_until_phase", "until": "opp_next_turn" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 4 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST19-002",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_type", "typeString": "Navy" },
+          "cost": { "discardHand": 2 },
+          "action": { "kind": "draw", "magnitude": 3 },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST19-003",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_is", "name": "Smoker" },
+          "action": { "kind": "removal_cost_reduce", "magnitude": 4, "duration": "this_turn" },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "activate_main",
+          "condition": { "type": "if_played_this_turn" },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 0, "costMin": 0 } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST19-004",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "bottomOfDeckFromTrash": 1 },
+          "action": { "kind": "give_don_to_target", "magnitude": 1, "rested": true },
+          "target": { "kind": "your_leader" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [
+        {
+          "condition": { "type": "during_opp_turn" },
+          "action": { "kind": "self_power_buff", "magnitude": 0 }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST20-002",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [],
+      "continuous": [],
+      "replacements": [
+        {
+          "trigger": "would_be_ko",
+          "cost": { "trashSelf": false },
+          "action": { "kind": "trash_face_up_life" },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ST20-004",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "flipLife": 1 },
+          "action": { "kind": "set_active" },
+          "target": { "kind": "your_character", "filter": { "typeIncludes": "Big Mom Pirates", "costMax": 3 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST20-005",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "discardHand": 1 },
+          "action": {
+            "kind": "choose_one",
+            "options": [
+              {
+                "trigger": "on_play",
+                "action": { "kind": "mill_opp", "magnitude": 2 },
+                "verified": "flagged"
+              },
+              {
+                "trigger": "on_play",
+                "action": { "kind": "trash_face_up_life" },
+                "target": { "kind": "opp_life_top" },
+                "verified": "flagged"
+              }
+            ]
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST21-001",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "donCost": 1 },
+          "action": { "kind": "give_don_to_target", "magnitude": 2, "rested": true },
+          "target": { "kind": "your_character" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST21-002",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": { "type": "during_opp_turn" },
+          "action": { "kind": "self_power_buff", "magnitude": 2000 }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST21-003",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "give_keyword", "keyword": "Blocker-Off", "duration": "this_turn" },
+          "target": { "kind": "your_character", "filter": { "typeIncludes": "Straw Hat Crew", "powerMin": 6000 } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST21-004",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST21-009",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": { "kind": "give_don_to_target", "magnitude": 2, "rested": true },
+          "target": { "kind": "your_character", "filter": { "typeIncludes": "Straw Hat Crew" } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST21-011",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": { "type": "during_opp_turn" },
+          "action": {
+            "kind": "aura_power_buff",
+            "filter": { "typeIncludes": "Straw Hat Crew", "powerMax": 4000 },
+            "magnitude": 1000
+          }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST21-012",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "action": { "kind": "give_don_to_target", "magnitude": 2, "rested": true },
+          "target": { "kind": "your_leader" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST21-016",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 1000,
+            "duration": "this_turn"
+          },
+          "target": { "kind": "your_character" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "give_keyword", "keyword": "Blocker-Off", "duration": "this_turn" },
+          "target": { "kind": "opp_character", "filter": { "powerMax": 4000 } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST21-017",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -5000,
+            "duration": "this_turn"
+          },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_own_chars_min", "n": 1 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "powerMax": 2000 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST22-001",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "revealHand": { "count": 1, "filter": { "typeIncludes": "Whitebeard Pirates" } } },
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "auto"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": { "revealHand": { "count": 1, "filter": { "typeIncludes": "Whitebeard Pirates" } } },
+          "action": { "kind": "move_to_top" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST22-002",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 1,
+            "filter": { "typeIncludes": "Whitebeard Pirates", "nameExcludes": "Izo" }
+          },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_opp_attack",
+          "cost": { "trashSelf": true },
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST22-005",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "donCost": 3, "returnSelfChar": {} },
+          "action": { "kind": "set_active" },
+          "target": { "kind": "self" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [
+        {
+          "trigger": "would_be_removed",
+          "cost": { "discardHand": 2 },
+          "action": { "kind": "grant_immunity", "against": "opp_effects", "duration": "this_turn" },
+          "target": { "kind": "self" },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ST22-006",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "reveal_top_and_conditional_play",
+            "filter": { "typeIncludes": "Whitebeard Pirates" }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "draw", "magnitude": 2 },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST22-007",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": {
+            "kind": "reveal_top_and_conditional_play",
+            "filter": { "typeIncludes": "Whitebeard Pirates" }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "activate_main",
+          "action": { "kind": "give_don_to_target", "magnitude": 1, "rested": true },
+          "target": { "kind": "your_leader" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST22-011",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "revealHand": { "count": 2, "filter": { "typeIncludes": "Whitebeard Pirates" } } },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_turn"
+          },
+          "target": { "kind": "your_leader", "filter": { "typeIncludes": "Whitebeard Pirates" } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST22-012",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "action": {
+            "kind": "reveal_top_and_conditional_play",
+            "filter": { "typeIncludes": "Whitebeard Pirates" }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "when_attacking",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 1000,
+            "duration": "opp_next_turn"
+          },
+          "target": { "kind": "self" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [
+        {
+          "trigger": "would_be_ko",
+          "cost": { "discardHand": 1 },
+          "action": { "kind": "grant_immunity", "against": "opp_effects", "duration": "this_turn" },
+          "target": { "kind": "self" },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ST22-015",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_type", "typeString": "Whitebeard Pirates" },
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": { "nameIs": "Edward.Newgate", "kind": "character" }
+          },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_type", "typeString": "Whitebeard Pirates" },
+          "action": { "kind": "life_to_hand", "magnitude": 1 },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_type", "typeString": "Whitebeard Pirates" },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "opp_next_turn"
+          },
+          "target": { "kind": "your_leader" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST22-016",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "reveal_top_and_conditional_play",
+            "filter": { "typeIncludes": "Whitebeard Pirates" }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": { "kind": "your_character" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST22-017",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "revealHand": { "count": 2, "filter": { "typeIncludes": "Whitebeard Pirates" } } },
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "cost": { "revealHand": { "count": 2, "filter": { "typeIncludes": "Whitebeard Pirates" } } },
+          "action": { "kind": "bottom_of_deck_from_trash", "magnitude": 1 },
+          "target": { "kind": "opp_character", "filter": { "costMax": 5 } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST23-002",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "or",
+            "conditions": [
+              { "type": "if_leader_has_type", "typeString": "Red-Haired Pirates" },
+              { "type": "if_leader_is", "name": "Uta" }
+            ]
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "opp_next_end_phase"
+          },
+          "target": { "kind": "your_leader" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [
+        {
+          "condition": { "type": "if_attacker_has_attribute", "attribute": "power_min_8000_base" },
+          "action": { "kind": "cost_modifier_in_hand", "delta": -3 }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST23-003",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_type", "typeString": "Red-Haired Pirates" },
+          "cost": { "discardHand": 1 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "powerMax": 4000 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST23-004",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "donCost": 1, "restSelf": true },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -1000,
+            "duration": "this_turn"
+          },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST24-004",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "rest_lock_until_phase", "until": "opp_next_turn" },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_own_chars_min", "n": 2 },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "opp_next_end_phase"
+          },
+          "target": { "kind": "your_leader" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST24-005",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_type", "typeString": "Supernovas" },
+          "action": { "kind": "rest_target" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 5 } },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_type", "typeString": "Supernovas" },
+          "action": { "kind": "set_active" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST25-001",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_is", "name": "Buggy" },
+          "action": { "kind": "draw", "magnitude": 3 },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_is", "name": "Buggy" },
+          "cost": { "discardHand": 2 },
+          "action": { "kind": "draw", "magnitude": 0 },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [
+        {
+          "condition": { "type": "if_own_chars_min_cost", "n": 2, "minCost": 5 },
+          "action": { "kind": "cost_modifier_in_hand", "delta": 1 }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST25-002",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": { "type": "if_own_chars_min_cost", "n": 2, "minCost": 5 },
+          "action": { "kind": "grant_keyword_to_self", "keyword": "Blocker" }
+        },
+        {
+          "condition": { "type": "if_own_chars_min_cost", "n": 2, "minCost": 5 },
+          "action": { "kind": "cost_modifier_in_hand", "delta": 1 }
+        },
+        {
+          "condition": { "type": "during_opp_turn" },
+          "action": { "kind": "self_power_buff", "magnitude": 5000 }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST25-003",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "draw", "magnitude": 2 },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "cost": { "discardHand": 1 },
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": { "typeIncludes": "Cross Guild", "kind": "character", "costMax": 4 }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [
+        {
+          "trigger": "would_be_removed",
+          "cost": { "discardHand": 1 },
+          "action": { "kind": "grant_immunity", "against": "opp_effects", "duration": "this_turn" },
+          "target": { "kind": "your_character", "filter": { "typeIncludes": "Cross Guild" } },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ST25-004",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "condition": { "type": "if_leader_is", "name": "Buggy" },
+          "cost": { "discardHand": 1, "trashSelf": true },
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": { "typeIncludes": "Cross Guild", "kind": "character", "costMax": 6 }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST25-005",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "condition": {
+            "type": "and",
+            "conditions": [
+              { "type": "if_leader_is", "name": "Buggy" },
+              { "type": "if_hand_max", "n": 3 }
+            ]
+          },
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [
+        {
+          "condition": { "type": "if_own_chars_min_cost", "n": 2, "minCost": 5 },
+          "action": { "kind": "grant_keyword_to_self", "keyword": "Blocker" }
+        },
+        {
+          "condition": { "type": "if_own_chars_min_cost", "n": 2, "minCost": 5 },
+          "action": { "kind": "cost_modifier_in_hand", "delta": 1 }
+        }
+      ],
+      "replacements": []
+    }
+  }
+]

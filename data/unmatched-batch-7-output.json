@@ -1,0 +1,1264 @@
+[
+  {
+    "id": "OP05-042",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "attack_lock_until_phase", "until": "this_turn" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 7 } },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-043",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_multicolored" },
+          "action": { "kind": "searcher_peek", "lookCount": 3, "addCount": 1 },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-045",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "discardHand": 1, "restSelf": true },
+          "action": { "kind": "removal_bounce" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 2 } },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-046",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_ko",
+          "action": { "kind": "bottom_of_deck_from_trash", "magnitude": 1 },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-048",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "if_don_min", "n": 1 },
+          "action": { "kind": "removal_bounce" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 2 } },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-049",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "if_don_min", "n": 1 },
+          "action": { "kind": "removal_bounce" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 3 } },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-050",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_hand_max", "n": 5 },
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-053",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": { "kind": "self_power_buff", "magnitude": 2000 }
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-054",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "draw", "magnitude": 2 },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "bottom_of_deck_from_trash", "magnitude": 2 },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-056",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "returnSelfChar": { "filter": { "nameExcludes": "X.Barrels" } } },
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-057",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "power_buff", "magnitude": 3000, "duration": "this_turn" },
+          "target": { "kind": "your_character" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "removal_bounce" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 2 } },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-058",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "removal_bounce" },
+          "target": { "kind": "all_opp_characters", "filter": { "costMax": 3 } },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-059",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_multicolored" },
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "removal_bounce" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 5 } },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-060",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "flipLife": 1 },
+          "condition": { "type": "or", "conditions": [ { "type": "if_don_max", "n": 0 }, { "type": "if_don_min", "n": 3 } ] },
+          "action": { "kind": "ramp", "magnitude": 1 },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-061",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "and", "conditions": [ { "type": "if_don_min", "n": 1 }, { "type": "if_don_min", "n": 8 } ] },
+          "action": { "kind": "rest_target" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 4 } },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-062",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": { "type": "if_don_min", "n": 10 },
+          "action": { "kind": "grant_keyword_to_self", "keyword": "Blocker" }
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-063",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_don_min", "n": 8 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 3 } },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-067",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "if_own_life_max", "n": 3 },
+          "action": { "kind": "ramp", "magnitude": 1 },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-068",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_don_min", "n": 8 },
+          "action": { "kind": "set_active" },
+          "target": { "kind": "your_character", "filter": { "colors": ["purple"], "typeIncludes": "Straw Hat Crew", "powerMax": 6000 } },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-069",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "if_own_don_le_opp" },
+          "action": { "kind": "searcher_peek", "lookCount": 5, "addCount": 1, "filter": { "typeIncludes": "Heart Pirates" } },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-070",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": { "type": "and", "conditions": [ { "type": "if_don_min", "n": 1 }, { "type": "if_don_min", "n": 8 } ] },
+          "action": { "kind": "grant_keyword_to_self", "keyword": "Rush" }
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-071",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "if_own_don_le_opp" },
+          "action": { "kind": "power_buff", "magnitude": -2000, "duration": "this_turn" },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-072",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_don_min", "n": 8 },
+          "action": { "kind": "power_buff", "magnitude": -2000, "duration": "this_turn" },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-075",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_opp_attack",
+          "cost": { "donCostReturnToDeck": 1 },
+          "action": { "kind": "play_for_free", "from": "hand", "filter": { "typeIncludes": "Baroque Works", "costMax": 3, "kind": "character" } },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-076",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "searcher_peek", "lookCount": 3, "addCount": 1 },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-078",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "donCostReturnToDeck": 1 },
+          "action": { "kind": "power_buff", "magnitude": 5000, "duration": "this_turn" },
+          "target": { "kind": "your_character", "filter": { "typeIncludes": "Kid Pirates" } },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-079",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "bottom_of_deck_from_trash", "magnitude": 3 },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-080",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "cost": { "bottomOfDeckFromTrash": 20 },
+          "action": { "kind": "give_keyword", "keyword": "Double Attack", "duration": "this_battle" },
+          "target": { "kind": "self" },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "when_attacking",
+          "cost": { "bottomOfDeckFromTrash": 20 },
+          "action": { "kind": "power_buff", "magnitude": 10000, "duration": "this_battle" },
+          "target": { "kind": "self" },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-081",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "trashSelf": true },
+          "action": { "kind": "cost_reduction", "magnitude": 3 },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-082",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "restSelf": true, "bottomOfDeckFromTrash": 2 },
+          "condition": { "type": "if_opp_hand_min", "n": 6 },
+          "action": { "kind": "mill_opp", "magnitude": 1 },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-084",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": { "kind": "aura_cost_modifier", "filter": {}, "delta": -4 }
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-086",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": { "type": "if_trash_min", "n": 10 },
+          "action": { "kind": "grant_keyword_to_self", "keyword": "Blocker" }
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-087",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "if_don_min", "n": 1 },
+          "cost": { "koSelfCharacter": { "filter": { "nameExcludes": "Hakuba" } } },
+          "action": { "kind": "cost_reduction", "magnitude": 5 },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-088",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "donCost": 1, "restSelf": true, "bottomOfDeckFromTrash": 2 },
+          "action": { "kind": "recursion", "filter": { "colors": ["black"], "kind": "character", "costMin": 3, "costMax": 5 } },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-089",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "donCost": 1, "restSelf": true, "koSelfCharacter": {} },
+          "action": { "kind": "recursion", "filter": { "colors": ["black"], "kind": "character", "costMax": 1, "costMin": 1 } },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-092",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": { "kind": "aura_cost_modifier", "filter": {}, "delta": -6 }
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-093",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "bottomOfDeckFromTrash": 3 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 2 } },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "cost": { "bottomOfDeckFromTrash": 3 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 1 } },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-094",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "cost_reduction", "magnitude": 3 },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "rest_lock_until_phase", "until": "opp_next_end_phase" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 0 } },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-097",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": { "kind": "cost_modifier_in_hand", "delta": -1 }
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-098",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_life_changed",
+          "condition": { "type": "if_own_life_max", "n": 0 },
+          "action": { "kind": "add_to_own_life_top", "faceUp": false, "from": "top_of_deck" },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_life_changed",
+          "condition": { "type": "if_own_life_max", "n": 0 },
+          "action": { "kind": "mill_self", "magnitude": 1 },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-099",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_opp_attack",
+          "cost": { "restSelf": true },
+          "action": { "kind": "power_buff", "magnitude": -2000, "duration": "this_turn" },
+          "target": { "kind": "opp_character" },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-101",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "searcher_peek", "lookCount": 5, "addCount": 1, "filter": { "nameIs": "Holly" } },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "play_for_free", "from": "hand", "filter": { "nameIs": "Holly" } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [
+        {
+          "condition": { "type": "if_own_life_max", "n": 2 },
+          "action": { "kind": "self_power_buff", "magnitude": 1000 }
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-102",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character" },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-103",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_owned_other_with_name", "name": "Hotori" },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character" },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-104",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "returnSelfChar": { "filter": { "kind": "stage" } } },
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "cost": { "returnSelfChar": { "filter": { "kind": "stage" } } },
+          "action": { "kind": "mill_self", "magnitude": 1 },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-107",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": { "kind": "self_power_buff", "magnitude": 2000 }
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-109",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "trigger",
+          "action": { "kind": "draw", "magnitude": 2 },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "trigger",
+          "action": { "kind": "mill_self", "magnitude": 2 },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-111",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "discardHand": 1 },
+          "action": { "kind": "add_to_opp_life_top", "faceUp": true },
+          "target": { "kind": "opp_character", "filter": { "costMax": 3 } },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-115",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "power_buff", "magnitude": 3000, "duration": "this_turn" },
+          "target": { "kind": "your_character" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_own_life_max", "n": 1 },
+          "action": { "kind": "rest_target" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 4 } },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-116",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character" },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP05-118",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_opp_life_max", "n": 3 },
+          "action": { "kind": "draw", "magnitude": 4 },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP05-119",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "donCost": 10 },
+          "action": { "kind": "removal_bounce" },
+          "target": { "kind": "all_your_characters", "filter": { "nameExcludes": "Monkey.D.Luffy" } },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": { "donCost": 1 },
+          "action": { "kind": "ramp", "magnitude": 1 },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP06-001",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "cost": { "discardHand": 1 },
+          "action": { "kind": "power_buff", "magnitude": -2000, "duration": "this_turn" },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "when_attacking",
+          "cost": { "discardHand": 1 },
+          "action": { "kind": "ramp", "magnitude": 1, "rested": true },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP06-002",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": { "type": "if_leader_power_max", "n": 7000 },
+          "action": { "kind": "grant_keyword_to_self", "keyword": "Banish" }
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP06-003",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "reveal_top_and_conditional_play", "filter": { "typeIncludes": "Revolutionary Army", "powerMax": 5000, "kind": "character" } },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP06-004",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "play_for_free", "from": "hand", "filter": { "nameIs": "Lily Carnation" } },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP06-006",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "if_don_min", "n": 1 },
+          "action": { "kind": "power_buff", "magnitude": 1000, "duration": "this_turn" },
+          "target": { "kind": "self" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "if_don_min", "n": 1 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "your_character", "filter": { "typeIncludes": "FILM" } },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP06-010",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": { "type": "if_leader_has_type", "typeString": "FILM" },
+          "action": { "kind": "grant_keyword_to_self", "keyword": "Blocker" }
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP06-011",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "koSelfCharacter": { "filter": { "nameIs": "Uta" } } },
+          "action": { "kind": "power_buff", "magnitude": 5000, "duration": "this_turn" },
+          "target": { "kind": "self" },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP06-012",
+    "effectSpecV2": {
+      "clauses": [],
+      "replacements": [
+        {
+          "trigger": "would_be_ko",
+          "condition": { "type": "always" },
+          "action": { "kind": "negate_target_effects", "duration": "this_battle" },
+          "conditional": false,
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP06-014",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_opp_attack",
+          "cost": { "discardHand": 1 },
+          "action": { "kind": "power_buff", "magnitude": { "kind": "per_count", "countSource": "cards_trashed_this_resolution", "divisor": 1, "perUnit": 1000 }, "duration": "this_battle" },
+          "target": { "kind": "your_character" },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP06-015",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "koSelfCharacter": { "filter": { "powerMin": 6000 } } },
+          "action": { "kind": "play_for_free", "from": "trash", "filter": { "typeIncludes": "FILM", "powerMin": 2000, "powerMax": 5000, "kind": "character" } },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP06-016",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "returnSelfChar": {} },
+          "action": { "kind": "power_buff", "magnitude": -3000, "duration": "this_turn" },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP06-017",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "flipLife": 1 },
+          "action": { "kind": "power_buff", "magnitude": 3000, "duration": "this_turn" },
+          "target": { "kind": "your_character" },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP06-018",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "power_buff", "magnitude": 3000, "duration": "this_turn" },
+          "target": { "kind": "your_character" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "condition": { "type": "always" },
+          "action": { "kind": "power_buff", "magnitude": 1000, "duration": "this_turn" },
+          "target": { "kind": "your_character" },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP06-019",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "powerMax": 5000 } },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP06-020",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "restSelf": true },
+          "action": { "kind": "rest_target" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 3 } },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP06-021",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": { "kind": "choose_one", "options": [
+            { "trigger": "activate_main", "action": { "kind": "rest_target" }, "target": { "kind": "opp_character", "filter": { "costMax": 4 } }, "verified": "auto" },
+            { "trigger": "activate_main", "action": { "kind": "cost_reduction", "magnitude": 1 }, "target": { "kind": "opp_character" }, "verified": "auto" }
+          ] },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP06-023",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "discardHand": 1 },
+          "action": { "kind": "attack_lock_until_phase", "until": "opp_next_end_phase" },
+          "target": { "kind": "opp_leader", "filter": { "rested": true } },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP06-024",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_type", "typeString": "New Fish-Man Pirates" },
+          "action": { "kind": "play_for_free", "from": "hand", "filter": { "typeIncludes": "Fish-Man", "costMax": 4, "kind": "character" } },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_type", "typeString": "New Fish-Man Pirates" },
+          "action": { "kind": "life_to_hand", "magnitude": 1 },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP06-025",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "searcher_peek", "lookCount": 4, "addCount": 1, "filter": { "typeIncludes": "Fish-Man", "nameExcludes": "Camie" } },
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP06-026",
+    "effectSpecV2": {
+      "clauses": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP06-027",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "action": { "kind": "rest_target" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 3 } },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP06-028",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "and", "conditions": [ { "type": "if_don_min", "n": 1 }, { "type": "if_leader_has_type", "typeString": "New Fish-Man Pirates" } ] },
+          "action": { "kind": "ramp", "magnitude": 1 },
+          "verified": "auto"
+        },
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "and", "conditions": [ { "type": "if_don_min", "n": 1 }, { "type": "if_leader_has_type", "typeString": "New Fish-Man Pirates" } ] },
+          "action": { "kind": "power_buff", "magnitude": 1000, "duration": "this_turn" },
+          "target": { "kind": "self" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "and", "conditions": [ { "type": "if_don_min", "n": 1 }, { "type": "if_leader_has_type", "typeString": "New Fish-Man Pirates" } ] },
+          "action": { "kind": "life_to_hand", "magnitude": 1 },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP06-029",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "and", "conditions": [ { "type": "if_don_min", "n": 1 }, { "type": "if_leader_has_type", "typeString": "New Fish-Man Pirates" } ] },
+          "action": { "kind": "set_active" },
+          "target": { "kind": "self" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "and", "conditions": [ { "type": "if_don_min", "n": 1 }, { "type": "if_leader_has_type", "typeString": "New Fish-Man Pirates" } ] },
+          "action": { "kind": "power_buff", "magnitude": 1000, "duration": "this_turn" },
+          "target": { "kind": "self" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "when_attacking",
+          "condition": { "type": "and", "conditions": [ { "type": "if_don_min", "n": 1 }, { "type": "if_leader_has_type", "typeString": "New Fish-Man Pirates" } ] },
+          "action": { "kind": "life_to_hand", "magnitude": 1 },
+          "verified": "auto"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  }
+]

@@ -1,0 +1,1426 @@
+[
+  {
+    "id": "OP08-007",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "reveal_top_and_conditional_play", "filter": { "kind": "character", "trait": "Animal", "powerMax": 4000 }, "rested": true },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "when_attacking",
+          "action": { "kind": "reveal_top_and_conditional_play", "filter": { "kind": "character", "trait": "Animal", "powerMax": 4000 }, "rested": true },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-010",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "donCost": 1 },
+          "action": { "kind": "power_buff", "magnitude": 1000, "duration": "this_turn" },
+          "target": { "kind": "your_character", "filter": { "trait": "Animal", "nameExcludes": "Hiking Bear" } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-012",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "cost": { "donCost": 2 },
+          "condition": { "type": "if_leader_has_trait", "trait": "Drum Kingdom" },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "powerMax": 4000 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-014",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "cost": { "donCost": 1 },
+          "action": { "kind": "power_buff", "magnitude": -2000, "duration": "this_turn" },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "when_attacking",
+          "cost": { "donCost": 1 },
+          "action": { "kind": "power_buff", "magnitude": 2000, "duration": "opp_next_turn" },
+          "target": { "kind": "self" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-015",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "searcher_peek", "lookCount": 4, "addCount": 1, "filter": { "nameIs": "Tony Tony.Chopper", "nameExcludes": "Dr.Kureha" } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-018",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "power_buff", "magnitude": 1000, "duration": "this_turn" },
+          "target": { "kind": "your_character" },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "power_buff", "magnitude": -2000, "duration": "this_turn" },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-019",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "power_buff", "magnitude": -3000, "duration": "this_turn" },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "power_buff", "magnitude": 3000, "duration": "this_turn" },
+          "target": { "kind": "your_character" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-020",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": { "type": "during_opp_turn" },
+          "action": { "kind": "aura_power_buff", "filter": { "trait": "Drum Kingdom" }, "magnitude": 1000 }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-021",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "condition": { "type": "if_owned_other_with_name", "name": "Minks" },
+          "action": { "kind": "rest_target" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 5 } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-022",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_trait", "trait": "Minks" },
+          "action": { "kind": "rest_lock_until_phase", "until": "opp_next_end_phase" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 5, "rested": true } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-023",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "rest_lock_until_phase", "until": "opp_next_end_phase" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 7, "rested": true } },
+          "verified": "auto"
+        },
+        {
+          "trigger": "when_attacking",
+          "action": { "kind": "rest_lock_until_phase", "until": "opp_next_end_phase" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 7, "rested": true } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-024",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "action": { "kind": "rest_lock_until_phase", "until": "opp_next_end_phase" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 4, "rested": true } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-025",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "rest_lock_until_phase", "until": "opp_next_end_phase" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 3, "rested": true } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-026",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "cost": { "donCost": 1 },
+          "action": { "kind": "rest_lock_until_phase", "until": "opp_next_end_phase" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 1, "rested": true } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-028",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_opp_hand_min", "n": 7 },
+          "action": { "kind": "give_keyword", "keyword": "rush", "duration": "this_turn" },
+          "target": { "kind": "self" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-029",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": { "kind": "aura_power_buff", "filter": { "trait": "Minks", "costMax": 3, "nameExcludes": "Pekoms" }, "magnitude": 0 }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-031",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "set_active" },
+          "target": { "kind": "your_character", "filter": { "trait": "Minks", "costMax": 2 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-033",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "and", "conditions": [{ "type": "if_leader_has_trait", "trait": "Minks" }, { "type": "if_opp_hand_min", "n": 7 }] },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 2, "rested": true } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-036",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "rest_lock_until_phase", "until": "opp_next_end_phase" },
+          "target": { "kind": "all_opp_characters", "filter": { "costMax": 7, "rested": true } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-037",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "koSelfCharacter": { "filter": { "trait": "Minks" } } },
+          "action": { "kind": "rest_target" },
+          "target": { "kind": "opp_character" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-038",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "koSelfCharacter": { } },
+          "action": { "kind": "grant_immunity", "against": "opp_effects", "duration": "opp_next_turn" },
+          "target": { "kind": "all_your_characters" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-039",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "restSelf": true },
+          "condition": { "type": "if_leader_has_trait", "trait": "Minks" },
+          "action": { "kind": "set_active" },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "at_end_of_turn_self",
+          "action": { "kind": "set_active" },
+          "target": { "kind": "your_character", "filter": { "trait": "Minks" } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-040",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "revealHand": { "count": 2, "filter": { "typeIncludes": "Whitebeard Pirates" } } },
+          "condition": { "type": "if_leader_has_type", "typeString": "Whitebeard Pirates" },
+          "action": { "kind": "removal_bounce" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 4 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-041",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "returnSelfChar": { } },
+          "condition": { "type": "if_leader_has_trait", "trait": "Kuja Pirates" },
+          "action": { "kind": "bottom_of_deck_from_trash", "magnitude": 1 },
+          "target": { "kind": "opp_character", "filter": { "costMax": 1 } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-042",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "cost": { "donCost": 1 },
+          "action": { "kind": "removal_bounce" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 3 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-043",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "and", "conditions": [{ "type": "if_leader_has_type", "typeString": "Whitebeard Pirates" }, { "type": "if_own_life_max", "n": 2 }] },
+          "action": { "kind": "restrict_opp_attack", "unless": { "discardN": 2 } },
+          "target": { "kind": "all_opp_characters" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-044",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "revealHand": { "count": 2, "filter": { "typeIncludes": "Whitebeard Pirates" } } },
+          "action": { "kind": "power_buff", "magnitude": 2000, "duration": "this_turn" },
+          "target": { "kind": "self" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-045",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [
+        {
+          "trigger": "would_be_removed",
+          "action": { "kind": "draw", "magnitude": 1 },
+          "conditional": false,
+          "verified": "flagged"
+        },
+        {
+          "trigger": "would_be_ko",
+          "action": { "kind": "draw", "magnitude": 1 },
+          "conditional": false,
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-046",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "at_end_of_turn_self",
+          "condition": { "type": "if_opp_hand_min", "n": 5 },
+          "action": { "kind": "bottom_of_deck_from_trash", "magnitude": 1 },
+          "target": { "kind": "opp_hand_card" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-047",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "returnSelfChar": { "filter": { "nameExcludes": "Jozu" } } },
+          "action": { "kind": "removal_bounce" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 6 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-049",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "peek_and_reorder_own_deck", "count": 1 },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "give_keyword", "keyword": "rush", "duration": "this_turn" },
+          "target": { "kind": "self" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-051",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "power_buff", "magnitude": 2000, "duration": "this_turn" },
+          "target": { "kind": "your_character", "filter": { "nameIs": "Edward Weevil" } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-052",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "reveal_top_and_conditional_play", "filter": { "kind": "character", "typeIncludes": "Whitebeard Pirates", "costMax": 4 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-053",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_type", "typeString": "Whitebeard Pirates" },
+          "action": { "kind": "searcher_peek", "lookCount": 3, "addCount": 1, "filter": { "typeIncludes": "Whitebeard Pirates" } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-055",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "revealHand": { "count": 2, "filter": { "typeIncludes": "Whitebeard Pirates" } } },
+          "action": { "kind": "bottom_of_deck_from_trash", "magnitude": 1 },
+          "target": { "kind": "opp_character", "filter": { "costMax": 6 } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-056",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_own_char_removed_by_opp_effect",
+          "condition": { "type": "if_leader_has_type", "typeString": "Whitebeard Pirates" },
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-057",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "donCostReturnToDeck": 2 },
+          "action": { "kind": "choose_one", "options": [
+            { "trigger": "activate_main", "condition": { "type": "if_hand_max", "n": 5 }, "action": { "kind": "draw", "magnitude": 1 }, "verified": "auto" },
+            { "trigger": "activate_main", "action": { "kind": "cost_reduction", "magnitude": 2 }, "target": { "kind": "opp_character" }, "verified": "auto" }
+          ] },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-058",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "cost": { "flipLife": 2 },
+          "action": { "kind": "ramp", "magnitude": 1, "rested": true },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-059",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "trashSelf": true },
+          "condition": { "type": "and", "conditions": [{ "type": "if_leader_has_trait", "trait": "Animal Kingdom Pirates" }, { "type": "if_don_min", "n": 10 }] },
+          "action": { "kind": "play_for_free", "from": "hand", "filter": { "kind": "character", "nameIs": "King", "costMax": 7 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-060",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "donCostReturnToDeck": 1 },
+          "condition": { "type": "if_opp_hand_min", "n": 5 },
+          "action": { "kind": "give_keyword", "keyword": "rush", "duration": "this_turn" },
+          "target": { "kind": "self" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-061",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "cost": { "donCostReturnToDeck": 1 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 3 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-062",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "trashSelf": true },
+          "condition": { "type": "if_leader_has_trait", "trait": "Big Mom Pirates" },
+          "action": { "kind": "play_for_free", "from": "hand", "filter": { "kind": "character", "nameIs": "Charlotte Katakuri", "costMin": 3 } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-063",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "flipLife": 1 },
+          "action": { "kind": "ramp", "magnitude": 1, "rested": false },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-064",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "donCostReturnToDeck": 1 },
+          "action": { "kind": "play_for_free", "from": "hand", "filter": { "kind": "character", "nameIs": "Biscuit Warrior" } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-067",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_own_don_returned",
+          "action": { "kind": "ramp", "magnitude": 1, "rested": true },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-068",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "action": { "kind": "ramp", "magnitude": 1, "rested": true },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-069",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "donCostReturnToDeck": 1, "discardHand": 1 },
+          "action": { "kind": "add_to_own_life_top", "faceUp": false, "from": "top_of_deck" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "cost": { "donCostReturnToDeck": 1, "discardHand": 1 },
+          "action": { "kind": "add_to_opp_life_top", "faceUp": true },
+          "target": { "kind": "opp_character", "filter": { "costMax": 6 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-071",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "cost": { "donCostReturnToDeck": 1 },
+          "action": { "kind": "play_for_free", "from": "trash", "filter": { "kind": "character", "nameIs": "Baron Tamago", "costMax": 4 } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-073",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "cost": { "donCostReturnToDeck": 1 },
+          "action": { "kind": "play_for_free", "from": "trash", "filter": { "kind": "character", "nameIs": "Count Niwatori", "costMax": 6 } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-074",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "condition": { "type": "if_no_other_with_name", "name": "Black Maria" },
+          "action": { "kind": "ramp", "magnitude": 5, "rested": true },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-075",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "donCostReturnToDeck": 1 },
+          "action": { "kind": "rest_target" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 2 } },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "cost": { "donCostReturnToDeck": 1 },
+          "action": { "kind": "turn_all_own_life_face_down" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-076",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "ramp", "magnitude": 1, "rested": false },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "condition": { "type": "always" },
+          "action": { "kind": "ramp", "magnitude": 1, "rested": false },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-077",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "donCostReturnToDeck": 2 },
+          "condition": { "type": "or", "conditions": [{ "type": "if_leader_has_trait", "trait": "Animal Kingdom Pirates" }, { "type": "if_leader_has_trait", "trait": "Big Mom Pirates" }] },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 6 } },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "cost": { "donCostReturnToDeck": 2 },
+          "condition": { "type": "or", "conditions": [{ "type": "if_leader_has_trait", "trait": "Animal Kingdom Pirates" }, { "type": "if_leader_has_trait", "trait": "Big Mom Pirates" }] },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 6 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-079",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "discardHand": 1 },
+          "condition": { "type": "if_played_this_turn" },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 7 } },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": { "discardHand": 1 },
+          "condition": { "type": "if_played_this_turn" },
+          "action": { "kind": "bottom_of_deck_from_trash", "magnitude": 1 },
+          "target": { "kind": "opp_hand_card" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-081",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "cost": { "bottomOfDeckFromTrash": 3 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 0 } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-082",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "restSelf": true },
+          "action": { "kind": "cost_reduction", "magnitude": 2 },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-085",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "cost": { "donCost": 1 },
+          "condition": { "type": "if_own_chars_min_cost", "n": 1, "minCost": 8 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 4 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-086",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "draw", "magnitude": 2 },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "mill_self", "magnitude": 2 },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-088",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "cost_reduction", "magnitude": -1 },
+          "target": { "kind": "your_character" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-090",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "play_for_free", "from": "trash", "filter": { "kind": "character", "trait": "SMILE", "costMax": 2 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-092",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "play_for_free", "from": "trash", "filter": { "kind": "character", "nameIs": "Ulti", "costMax": 4 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-093",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": { "type": "if_have_given_don_min", "n": 1 },
+          "action": { "kind": "self_power_buff", "magnitude": 0 }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-094",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "bottomOfDeckFromTrash": 3 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 2 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-095",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_trash_min", "n": 10 },
+          "action": { "kind": "power_buff", "magnitude": 2000, "duration": "opp_next_turn" },
+          "target": { "kind": "your_character" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-096",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "mill_self", "magnitude": 1 },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "power_buff", "magnitude": 5000, "duration": "this_battle" },
+          "target": { "kind": "your_character" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-097",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_trait", "trait": "Animal Kingdom Pirates" },
+          "action": { "kind": "cost_reduction", "magnitude": 2 },
+          "target": { "kind": "opp_character" },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "condition": { "type": "if_leader_has_trait", "trait": "Animal Kingdom Pirates" },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 0 } },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-098",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "cost": { "donCost": 1 },
+          "action": { "kind": "play_for_free", "from": "hand", "filter": { "kind": "character", "trait": "Shandian Warrior" } },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "when_attacking",
+          "cost": { "donCost": 1 },
+          "action": { "kind": "life_to_hand", "magnitude": 1 },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-100",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "reveal_top_and_conditional_play", "filter": { "kind": "stage", "nameIs": "Upper Yard" } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-101",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "flipLife": 1 },
+          "condition": { "type": "if_leader_has_trait", "trait": "Big Mom Pirates" },
+          "action": { "kind": "add_to_own_life_top", "faceUp": false, "from": "top_of_deck" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-102",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "discardHand": 1 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character" },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-103",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": { "flipLife": 1 },
+          "action": { "kind": "power_buff", "magnitude": 1000, "duration": "opp_next_turn" },
+          "target": { "kind": "your_character" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-105",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_life_changed",
+          "action": { "kind": "draw", "magnitude": 2 },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_life_changed",
+          "action": { "kind": "mill_self", "magnitude": 1 },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  },
+  {
+    "id": "OP08-106",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": { "discardHand": 1 },
+          "action": { "kind": "removal_ko" },
+          "target": { "kind": "opp_character", "filter": { "costMax": 5 } },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "cost": { "discardHand": 1 },
+          "condition": { "type": "if_hand_max", "n": 3 },
+          "action": { "kind": "draw", "magnitude": 1 },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-109",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": { "type": "and", "conditions": [{ "type": "if_leader_has_trait", "trait": "Shandian Warrior" }, { "type": "if_owned_other_with_name", "name": "Kalgara" }] },
+          "action": { "kind": "add_to_own_life_top", "faceUp": false, "from": "top_of_deck" },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
+  },
+  {
+    "id": "OP08-110",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": { "kind": "searcher_peek", "lookCount": 5, "addCount": 1, "filter": { "nameIs": "Upper Yard" } },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "action": { "kind": "play_for_free", "from": "hand", "filter": { "kind": "stage", "nameIs": "Upper Yard" } },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
+  }
+]

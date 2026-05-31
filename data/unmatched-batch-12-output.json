@@ -1,0 +1,2254 @@
+[
+  {
+    "id": "OP09-104",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "add_to_own_life_top",
+            "faceUp": true,
+            "from": "hand"
+          },
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "trait": "Revolutionary Army"
+            }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_life_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "life_to_hand",
+            "magnitude": 1
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP09-106",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP09-107",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_opp_life_min",
+            "n": 3
+          },
+          "action": {
+            "kind": "trash_face_up_life"
+          },
+          "target": {
+            "kind": "opp_life_top"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP09-112",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_life_max",
+            "n": 2
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP09-114",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "powerMax": 2000
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP09-115",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 3
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP09-117",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 2,
+            "filter": {
+              "nameExcludes": "Dereshi!"
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP09-119",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "donCostReturnToDeck": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "cost": {
+            "donCostReturnToDeck": 1
+          },
+          "action": {
+            "kind": "give_keyword",
+            "keyword": "rush",
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-001",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "condition": {
+            "type": "if_own_chars_min_cost",
+            "n": 1,
+            "minCost": 0
+          },
+          "action": {
+            "kind": "set_active"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [
+        {
+          "action": {
+            "kind": "aura_power_buff",
+            "filter": {
+              "trait": "Navy"
+            },
+            "magnitude": 1000
+          }
+        },
+        {
+          "action": {
+            "kind": "aura_power_buff",
+            "filter": {
+              "trait": "Punk Hazard"
+            },
+            "magnitude": 1000
+          }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-002",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_don_min",
+            "n": 2
+          },
+          "cost": {
+            "returnSelfChar": {
+              "filter": {
+                "trait": "Punk Hazard",
+                "costMin": 2
+              }
+            }
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "powerMax": 4000
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-003",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "at_end_of_turn_self",
+          "condition": {
+            "type": "if_own_chars_min_cost",
+            "n": 1,
+            "minCost": 0
+          },
+          "action": {
+            "kind": "set_active"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-006",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 1,
+            "filter": {
+              "nameIs": "Smiley"
+            }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "nameIs": "Smiley",
+              "kind": "character"
+            },
+            "count": 1
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-007",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "trait": "Punk Hazard",
+              "costMax": 2,
+              "kind": "character"
+            },
+            "count": 1
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-009",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_leader_has_trait",
+            "trait": "Punk Hazard"
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -3000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-010",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_own_chars_min_cost",
+            "n": 1,
+            "minCost": 0
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 1000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-017",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_no_other_with_name",
+            "name": "Scotch"
+          },
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "nameIs": "Scotch",
+              "kind": "character"
+            },
+            "count": 1
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-020",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -4000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_life_max",
+            "n": 2
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 1000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-021",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "condition": {
+            "type": "if_leader_is",
+            "name": "Caesar Clown"
+          },
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "give_don_to_target",
+            "magnitude": 1,
+            "rested": true
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-022",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_don_min",
+                "n": 1
+              },
+              {
+                "type": "if_field_total_cost_min",
+                "n": 5
+              }
+            ]
+          },
+          "cost": {
+            "returnSelfChar": {}
+          },
+          "action": {
+            "kind": "reveal_top_and_conditional_play",
+            "filter": {
+              "trait": "Supernovas",
+              "costMax": 5,
+              "kind": "character"
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-023",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_leader_has_trait",
+            "trait": "Navy"
+          },
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 5
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-024",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_chars_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 5
+            }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_chars_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 3,
+              "rested": true
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-025",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_chars_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 3
+          },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_chars_min",
+            "n": 2
+          },
+          "cost": {
+            "discardHand": 2
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-026",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "trashSelf": true,
+            "bottomOfDeckFromTrash": 1
+          },
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "nameIs": "Kin'emon",
+              "kind": "character"
+            },
+            "count": 1
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-027",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "trashSelf": true,
+            "bottomOfDeckFromTrash": 1
+          },
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "nameIs": "Kin'emon",
+              "kind": "character"
+            },
+            "count": 1
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-028",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "donCost": 2,
+            "trashSelf": true
+          },
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 2,
+            "filter": {
+              "trait": "The Akazaya Nine"
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-029",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_chars_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "set_active"
+          },
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "trait": "ODYSSEY",
+              "costMax": 5,
+              "rested": true
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-032",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [],
+      "continuous": [],
+      "replacements": [
+        {
+          "trigger": "would_be_removed",
+          "condition": {
+            "type": "if_owned_other_with_name",
+            "name": "Tashigi"
+          },
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "grant_immunity",
+            "against": "opp_removal",
+            "duration": "this_turn"
+          },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ]
+    }
+  },
+  {
+    "id": "OP10-033",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_chars_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "rest_lock_until_phase",
+            "until": "opp_next_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-034",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [],
+      "continuous": [],
+      "replacements": [
+        {
+          "trigger": "would_be_ko",
+          "action": {
+            "kind": "life_to_hand",
+            "magnitude": 1
+          },
+          "conditional": false,
+          "verified": "flagged"
+        }
+      ]
+    }
+  },
+  {
+    "id": "OP10-035",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 5
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-036",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "set_active"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-037",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "at_end_of_turn_self",
+          "action": {
+            "kind": "set_active"
+          },
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "trait": "ODYSSEY"
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [
+        {
+          "trigger": "would_be_removed",
+          "action": {
+            "kind": "rest_target"
+          },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ]
+    }
+  },
+  {
+    "id": "OP10-038",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_own_chars_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "self_power_buff",
+            "magnitude": 2000
+          }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-039",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_leader_has_trait",
+            "trait": "ODYSSEY"
+          },
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 2,
+            "filter": {
+              "trait": "ODYSSEY",
+              "kind": "character"
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-040",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 7,
+              "rested": true
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-041",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 6
+            }
+          },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 5,
+              "rested": true
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-042",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_own_char_removed_by_opp_effect",
+          "condition": {
+            "type": "if_hand_max",
+            "n": 5
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [
+        {
+          "action": {
+            "kind": "aura_cost_modifier",
+            "filter": {
+              "trait": "Dressrosa",
+              "costMin": 2
+            },
+            "delta": 1
+          }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-043",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "give_keyword",
+            "keyword": "banish",
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "nameIs": "Monkey.D.Luffy"
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-044",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 1
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-045",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "action": {
+            "kind": "draw",
+            "magnitude": 2
+          },
+          "verified": "auto"
+        },
+        {
+          "trigger": "when_attacking",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-047",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "cost": {
+            "returnSelfChar": {
+              "filter": {
+                "trait": "Revolutionary Army",
+                "costMin": 3
+              }
+            }
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-048",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 1
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-049",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [],
+      "continuous": [],
+      "replacements": [
+        {
+          "trigger": "would_be_removed",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ]
+    }
+  },
+  {
+    "id": "OP10-051",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 3,
+            "addCount": 1,
+            "filter": {
+              "trait": "Revolutionary Army",
+              "kind": "character"
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-053",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_owned_other_with_name",
+            "name": "Bian"
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-056",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "restSelf": true,
+            "returnSelfChar": {
+              "filter": {
+                "trait": "Dressrosa",
+                "costMin": 4
+              }
+            }
+          },
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 4
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-057",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_leader_is",
+            "name": "Usopp"
+          },
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 2,
+            "filter": {
+              "trait": "Dressrosa",
+              "nameExcludes": "Leo"
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-058",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_chars_min_cost",
+            "n": 1,
+            "minCost": 8
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "trait": "Dressrosa",
+              "costMax": 7,
+              "nameExcludes": "Rebecca",
+              "kind": "character"
+            },
+            "count": 2
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-059",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 1,
+            "filter": {
+              "trait": "Dressrosa",
+              "kind": "character"
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-060",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "powerMax": 6000
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-061",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 2
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-063",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_leader_has_type",
+            "typeString": "GERMA"
+          },
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 1,
+            "filter": {
+              "trait": "GERMA"
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-065",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "donCost": 1,
+            "restSelf": true
+          },
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 1,
+            "filter": {
+              "trait": "Donquixote Pirates"
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-066",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_opp_attack",
+          "cost": {
+            "donCost": 2
+          },
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 4
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-067",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "donCostReturnToDeck": 1
+          },
+          "action": {
+            "kind": "recursion",
+            "magnitude": 1,
+            "filter": {
+              "kind": "event",
+              "colors": ["purple"],
+              "costMax": 5
+            }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "cost": {
+            "donCostReturnToDeck": 1
+          },
+          "action": {
+            "kind": "set_active"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-069",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_don_min",
+            "n": 1
+          },
+          "cost": {
+            "donCostReturnToDeck": 1
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 1
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-071",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "donCostReturnToDeck": 1
+          },
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "trait": "Donquixote Pirates",
+              "costMax": 5,
+              "kind": "character"
+            },
+            "count": 1
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_opp_attack",
+          "cost": {
+            "donCost": 1
+          },
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1,
+            "rested": false
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-072",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 2
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "at_end_of_turn_self",
+          "condition": {
+            "type": "if_don_min",
+            "n": 7
+          },
+          "action": {
+            "kind": "set_active"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-074",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [],
+      "continuous": [],
+      "replacements": [
+        {
+          "trigger": "would_be_ko",
+          "cost": {
+            "donCost": 2
+          },
+          "action": {
+            "kind": "grant_immunity",
+            "against": "opp_effects",
+            "duration": "this_turn"
+          },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ]
+    }
+  },
+  {
+    "id": "OP10-075",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "condition": {
+            "type": "if_own_don_le_opp"
+          },
+          "cost": {
+            "trashSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-076",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_leader_has_trait",
+            "trait": "Donquixote Pirates"
+          },
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1,
+            "rested": false
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-078",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 3,
+            "addCount": 1,
+            "filter": {
+              "trait": "Donquixote Pirates",
+              "nameExcludes": "I Do Not Forgive Those Who Laugh at My Family!!!"
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-079",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 5
+            }
+          },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1,
+            "rested": false
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-081",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 2
+            }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "mill_self",
+            "magnitude": 2
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-082",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "trashSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "auto"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "trashSelf": true
+          },
+          "action": {
+            "kind": "play_for_free",
+            "from": "trash",
+            "filter": {
+              "trait": "Blackbeard Pirates",
+              "costMax": 5,
+              "nameExcludes": "Kuzan",
+              "kind": "character"
+            },
+            "count": 1
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [
+        {
+          "action": {
+            "kind": "self_immune_to_opp_effects"
+          }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-083",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "removal_cost_reduce",
+            "magnitude": 2,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-085",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_don_min",
+                "n": 1
+              },
+              {
+                "type": "if_trash_min",
+                "n": 8
+              }
+            ]
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "rush"
+          }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-086",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_leader_has_trait",
+                "trait": "Blackbeard Pirates"
+              },
+              {
+                "type": "if_played_this_turn"
+              }
+            ]
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 3
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [
+        {
+          "action": {
+            "kind": "self_power_buff",
+            "magnitude": 2000
+          }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-087",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "condition": {
+            "type": "if_opp_hand_min",
+            "n": 5
+          },
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "mill_opp",
+            "magnitude": 1
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "mill_self",
+            "magnitude": 2
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-088",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "mill_self",
+            "magnitude": 2
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-091",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 1
+            }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "mill_self",
+            "magnitude": 2
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-092",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "bottomOfDeckFromTrash": 2
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "nameExcludes": "Perona"
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-093",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "trashSelf": true
+          },
+          "action": {
+            "kind": "removal_cost_reduce",
+            "magnitude": -3,
+            "duration": "opp_next_turn"
+          },
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "colors": ["black"]
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-095",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 4
+            }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "mill_self",
+            "magnitude": 2
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "OP10-096",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "trait": "The Seven Warlords of the Sea",
+              "costMax": 8
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  }
+]

@@ -1,0 +1,408 @@
+[
+  {
+    "id": "ST26-001",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "all_your_characters",
+            "filter": {
+              "nameIs": "San-Gorou"
+            }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "all_your_characters",
+            "filter": {
+              "nameIs": "Sanji"
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [
+        {
+          "condition": {
+            "type": "or",
+            "conditions": [
+              {
+                "type": "if_owned_other_with_name",
+                "name": "San-Gorou"
+              },
+              {
+                "type": "if_owned_other_with_name",
+                "name": "Sanji"
+              }
+            ]
+          },
+          "action": {
+            "kind": "cost_modifier_in_hand",
+            "delta": -5
+          }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST26-005",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_leader_multicolored"
+          },
+          "cost": {
+            "donCost": 2
+          },
+          "action": {
+            "kind": "set_base_power",
+            "magnitude": 7000,
+            "duration": "opp_next_end_phase"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_leader_multicolored"
+          },
+          "cost": {
+            "donCost": 2
+          },
+          "action": {
+            "kind": "set_base_power",
+            "magnitude": 7000,
+            "duration": "opp_next_end_phase"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST28-001",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_leader_has_type",
+                "typeString": "Land of Wano"
+              },
+              {
+                "type": "if_opp_life_min",
+                "n": 3
+              }
+            ]
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 5
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST28-004",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "donCost": 2
+          },
+          "action": {
+            "kind": "give_keyword",
+            "keyword": "rush",
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "donCost": 2
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 1000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST28-005",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 1,
+            "filter": {
+              "typeIncludes": "Land of Wano",
+              "costMin": 2
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "self_power_buff",
+            "magnitude": 3000
+          }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST29-001",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_own_life_max",
+            "n": 2
+          },
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST29-002",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "when_attacking",
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST29-003",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "self_power_buff",
+            "magnitude": 1000
+          }
+        }
+      ],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST29-007",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "action": {
+            "kind": "add_to_own_life_top",
+            "faceUp": false,
+            "from": "hand"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST29-008",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [],
+      "continuous": [],
+      "replacements": [
+        {
+          "trigger": "would_be_ko",
+          "condition": {
+            "type": "if_leader_has_type",
+            "typeString": "Egghead"
+          },
+          "action": {
+            "kind": "grant_immunity",
+            "against": "opp_effects",
+            "duration": "this_turn"
+          },
+          "conditional": false,
+          "verified": "flagged"
+        }
+      ]
+    }
+  },
+  {
+    "id": "ST29-012",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "auto",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": {
+            "kind": "give_don_to_target",
+            "magnitude": 1,
+            "rested": true
+          },
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "nameIs": "Monkey.D.Luffy"
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": []
+    }
+  },
+  {
+    "id": "ST29-014",
+    "effectSpecV2": {
+      "schemaVersion": 2,
+      "verified": "flagged",
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "give_don_to_target",
+            "magnitude": 1,
+            "rested": true
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "rush_character"
+          }
+        }
+      ],
+      "replacements": []
+    }
+  }
+]
