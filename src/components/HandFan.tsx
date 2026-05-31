@@ -89,7 +89,13 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true }: H
               <motion.div
                 key={instanceId}
                 layout
-                initial={{ opacity: 0, y: 60 }}
+                // Owner direction 2026-05-30: card draw comes from the DECK
+                // (upper-right of LEADER row), not from below the fan.
+                // x: +190 places the mount near the deck slot's screen x;
+                // y: -330 lifts it to the deck row; scale: 0.7 + rotate -8
+                // give a "card pulled from pile" feel before it settles
+                // into its fan slot.
+                initial={{ opacity: 0, x: 190, y: -330, scale: 0.7, rotate: -8 }}
                 animate={animate}
                 exit={{ opacity: 0, y: 80, transition: { duration: 0.2 } }}
                 transition={spring.handFan}
