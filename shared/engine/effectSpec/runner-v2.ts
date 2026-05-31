@@ -716,14 +716,201 @@ export function applyActionV2(
       me.restrictions.cantUseEffectType = action.effectKind;
       return state;
     }
+    // ── Action group 3 — Sub-phase A.3.5 ──────────────────────────
+    case 'removal_ko': {
+      for (const tid of targets) {
+        for (const pid of ['A', 'B'] as PlayerId[]) {
+          const pl = state.players[pid];
+          const idx = pl.field.findIndex((i) => i.instanceId === tid);
+          if (idx !== -1) {
+            const removed = pl.field.splice(idx, 1)[0];
+            while (removed.attachedDon.length > 0) pl.donRested.push(removed.attachedDon.shift()!);
+            pl.trash.push(removed.instanceId);
+            break;
+          }
+        }
+      }
+      return state;
+    }
+    case 'removal_bounce': {
+      for (const tid of targets) {
+        for (const pid of ['A', 'B'] as PlayerId[]) {
+          const pl = state.players[pid];
+          const idx = pl.field.findIndex((i) => i.instanceId === tid);
+          if (idx !== -1) {
+            const removed = pl.field.splice(idx, 1)[0];
+            while (removed.attachedDon.length > 0) pl.donRested.push(removed.attachedDon.shift()!);
+            pl.hand.push(removed.instanceId);
+            // Reset summoning-sick + perTurn so it plays cleanly later.
+            state.instances[removed.instanceId].summoningSick = false;
+            state.instances[removed.instanceId].rested = false;
+            break;
+          }
+        }
+      }
+      return state;
+    }
+    case 'ramp': {
+      const n = action.magnitude;
+      for (let i = 0; i < n && me.donDeck.length > 0; i++) {
+        if (action.rested) me.donRested.push(me.donDeck.shift()!);
+        else me.donCostArea.push(me.donDeck.shift()!);
+      }
+      return state;
+    }
+    case 'give_don_to_target': {
+      const n = action.magnitude;
+      const source = action.rested ? me.donRested : me.donCostArea;
+      for (let i = 0; i < n && source.length > 0; i++) {
+        for (const tid of targets) {
+          const inst = state.instances[tid];
+          if (!inst) continue;
+          inst.attachedDon.push(source.shift()!);
+          break;
+        }
+      }
+      return state;
+    }
+    case 'give_don_to_opp_target': {
+      const n = action.magnitude;
+      // Cross-side DON grant — pulls from controller's active DON (own
+      // resource cost) and attaches to opp's target.
+      for (let i = 0; i < n && me.donCostArea.length > 0; i++) {
+        for (const tid of targets) {
+          const inst = state.instances[tid];
+          if (!inst) continue;
+          inst.attachedDon.push(me.donCostArea.shift()!);
+          break;
+        }
+      }
+      return state;
+    }
+    case 'return_opp_don_to_deck': {
+      const n = resolveMagnitude(state, ctx.controller, action.magnitude, 1);
+      for (let i = 0; i < n && opp.donCostArea.length > 0; i++) {
+        opp.donDeck.push(opp.donCostArea.shift()!);
+      }
+      return state;
+    }
+    case 'negate_target_effects': {
+      for (const tid of targets) {
+        const inst = state.instances[tid];
+        if (!inst) continue;
+        inst.effectsNegated = true;
+        for (const pid of ['A', 'B'] as PlayerId[]) {
+          const pl = state.players[pid];
+          if (pl.leader.instanceId === tid) pl.leader.effectsNegated = true;
+          for (const f of pl.field) if (f.instanceId === tid) f.effectsNegated = true;
+          if (pl.stage && pl.stage.instanceId === tid) pl.stage.effectsNegated = true;
+        }
+      }
+      return state;
+    }
+    case 'grant_immunity': {
+      for (const tid of targets) {
+        const inst = state.instances[tid];
+        if (!inst) continue;
+        inst.immunity = { against: action.against };
+        for (const pid of ['A', 'B'] as PlayerId[]) {
+          const pl = state.players[pid];
+          if (pl.leader.instanceId === tid) pl.leader.immunity = inst.immunity;
+          for (const f of pl.field) if (f.instanceId === tid) f.immunity = inst.immunity;
+          if (pl.stage && pl.stage.instanceId === tid) pl.stage.immunity = inst.immunity;
+        }
+      }
+      return state;
+    }
+    case 'give_keyword': {
+      for (const tid of targets) {
+        const inst = state.instances[tid];
+        if (!inst) continue;
+        if (!inst.grantedKeywords) inst.grantedKeywords = [];
+        if (!inst.grantedKeywords.includes(action.keyword)) inst.grantedKeywords.push(action.keyword);
+        for (const pid of ['A', 'B'] as PlayerId[]) {
+          const pl = state.players[pid];
+          const mirror = (i: { instanceId: string; grantedKeywords?: string[] }) => {
+            if (i.instanceId === tid) {
+              if (!i.grantedKeywords) i.grantedKeywords = [];
+              if (!i.grantedKeywords.includes(action.keyword)) i.grantedKeywords.push(action.keyword);
+            }
+          };
+          mirror(pl.leader);
+          for (const f of pl.field) mirror(f);
+          if (pl.stage) mirror(pl.stage);
+        }
+      }
+      return state;
+    }
+    case 'play_for_free': {
+      // V0: pick first matching card from the named zone, push to field
+      // summoning-sick. Honors `count` (multi-play) + `uniqueByName`.
+      const sourceList = action.from === 'hand' ? me.hand : action.from === 'trash' ? me.trash : null;
+      if (!sourceList) return state;
+      const count = action.count ?? 1;
+      const seen = new Set<string>();
+      let placed = 0;
+      const matches: string[] = [];
+      for (const id of sourceList) {
+        const inst = state.instances[id];
+        const card = inst ? state.cardLibrary[inst.cardId] : undefined;
+        if (!inst || !card || card.kind !== 'character') continue;
+        if (!matchesFilter(state, inst, action.filter)) continue;
+        if (action.uniqueByName && seen.has(card.name)) continue;
+        matches.push(id);
+        seen.add(card.name);
+        if (matches.length >= count) break;
+      }
+      for (const id of matches) {
+        const sIdx = sourceList.indexOf(id);
+        if (sIdx !== -1) sourceList.splice(sIdx, 1);
+        const inst = state.instances[id];
+        if (inst) {
+          inst.summoningSick = true;
+          me.field.push(inst);
+        }
+        placed++;
+      }
+      void placed;
+      return state;
+    }
+    case 'activate_event_from_hand': {
+      // V0 marker — full activation flow needs a separate engine path
+      // (events trash + dispatch their on_play). Stub for now; full wire
+      // lands when we route events through fireEffects in A.3.10.
+      return state;
+    }
+    case 'damage_immunity_attribute': {
+      // V0 marker — set a flag on the source instance for engine to read
+      // when computing battle outcomes.
+      const inst = state.instances[ctx.sourceInstanceId];
+      if (inst) {
+        (inst as unknown as { damageImmunityAttribute?: string }).damageImmunityAttribute = action.attribute;
+      }
+      return state;
+    }
+    case 'choose_one': {
+      // V0 deterministic: pick first option. Real UI/AI selector arrives
+      // in A.3.9 wiring. The chosen option's targets are computed inline.
+      const opt = action.options[0];
+      if (!opt) return state;
+      // Skip the trigger filter — composite branches assume same trigger
+      // context as the parent clause.
+      if (!evaluateConditionV2(state, ctx.controller, opt.condition)) return state;
+      const optTargets = resolveTargetV2(state, ctx.controller, ctx.sourceInstanceId, opt.target as any);
+      return applyActionV2(state, ctx, opt.action, optTargets);
+    }
+    case 'self_trash_at_end_of_turn': {
+      const inst = state.instances[ctx.sourceInstanceId];
+      if (inst) inst.endOfTurnTrash = true;
+      return state;
+    }
     // Composite actions deferred to later sub-phases.
     case 'reveal_top_and_conditional_play':
     case 'choose_cost_reveal_opp_match':
-    case 'choose_one':
-      // V0 stub — no-op until A.3.5 (composite handlers) lands.
+      // V0 stub — full handler arrives in A.3.6 with UI integration.
       return state;
     default:
-      // Action kinds handled by later sub-phases (A.3.5+) fall through.
+      // Action kinds handled by later sub-phases fall through.
       return state;
   }
 }

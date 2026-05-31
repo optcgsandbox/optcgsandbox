@@ -89,6 +89,21 @@ export interface CardInstance {
    *  printed power when present. Set by `set_base_power` /
    *  `set_base_power_copy_from`. Cleared in `endTurn`. */
   basePowerOverride?: number;
+  /** A.3.5: when true, this instance's effects are suppressed for the
+   *  duration. Set by `negate_target_effects`. Engine should check before
+   *  firing this instance's effects. */
+  effectsNegated?: boolean;
+  /** A.3.5: immunity flag — when set, this instance is shielded against
+   *  the named source (e.g. opp_effects, opp_removal). Cleared by endTurn
+   *  or when duration expires (V0 = this_turn). */
+  immunity?: { against: 'opp_effects' | 'opp_removal' };
+  /** A.3.5: keywords granted by effects (separate from printed keywords).
+   *  E.g. "[X] gains [Rush] during this turn" appends 'rush' here.
+   *  Cleared in `endTurn`. */
+  grantedKeywords?: string[];
+  /** A.3.5: set true by `self_trash_at_end_of_turn` so endTurn knows to
+   *  trash this instance. */
+  endOfTurnTrash?: boolean;
 }
 
 export interface PlayerZones {
