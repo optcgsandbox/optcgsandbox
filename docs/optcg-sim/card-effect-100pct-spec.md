@@ -70,6 +70,63 @@ Top-15 most-complex card sampling surfaced effect patterns the current
 This is the V0 audit. A second pass through 50 more long-text cards is
 required before locking schema (Phase A.2 below).
 
+### Phase A.1 expansion (audit pass on cards #16-65 by complexity)
+
+| #  | Pattern                                                  | Example card        | Proposed addition |
+|----|----------------------------------------------------------|---------------------|-------------------|
+| 27 | Reveal top deck card + conditional play if matches filter| OP07-048            | New action `reveal_and_play_if`; params: filter (trait/cost/type) |
+| 28 | Replacement: trash X from hand instead of being K.O.'d   | OP15-003, ST22-012  | Generalized `EffectReplacement` registry (multi-flavor) |
+| 29 | Trash top N of deck (own)                                | OP14-079            | New action `self_mill_top` (distinct from opp mill) |
+| 30 | Treat-as-multiple-names alias                            | EB04-038            | New Card field `nameAliases: string[]` |
+| 31 | Game-rule override: DON deck size                        | OP15-058            | New top-level `gameRuleOverride` on Card |
+| 32 | Game-rule override: deck construction restriction        | OP13-079            | Same as #31, different override |
+| 33 | At-start-of-game play Stage from deck                    | OP13-079            | New action under at_start_of_game: `play_stage_from_deck` |
+| 34 | Conditional Blocker grant (continuous)                   | OP07-029            | `continuous_keyword_grant` with `condition` field |
+| 35 | Turn-face-up-life as a payable COST                      | OP15-114, EB03-053  | New `EffectCost.flipLife: N` precondition |
+| 36 | Reactive trigger: opp attack declared                    | OP02-085, OP04-068, EB01-034 | New trigger `on_opp_attack` |
+| 37 | Reactive trigger: card removed from Life cards           | OP11-041            | New trigger `on_life_changed` |
+| 38 | Reactive trigger: opp's Refresh phase                    | OP15-023, EB02-015  | New trigger `at_opp_refresh` |
+| 39 | For-every-N scaling magnitude                            | OP07-091, OP15-002  | `magnitudeFormula: 'per_count'` with `count_source` + `divisor` |
+| 40 | Power BECOMES X (set base, not delta)                    | ST26-005, OP06-009  | New action `set_base_power` distinct from power_buff |
+| 41 | DON given to opp's leader/character                      | OP15-023, OP15-008  | New action `give_don_to_opp_target`; new state field |
+| 42 | Reveal opp's deck top (N cards)                          | OP11-070            | New action `peek_opp_deck`; populates knownByViewer |
+| 43 | Multi-color leader condition                             | ST26-005, EB02-061  | New condition `if_leader_multicolored` |
+| 44 | Same-card-name play-from-trash                           | EB02-039            | `play_for_free.params.matchTrashedName: true` |
+| 45 | Effect negation on opp board                             | OP13-064            | `negate_target_effects` action; needs effect-suppression marker on instance |
+| 46 | Restrict opp attack with conditional cost                | OP08-043            | New action `restrict_opp_attack`; `unless: {discardN: 2}` |
+| 47 | Activate Event from hand as part of activate_main        | OP12-041            | `activate_event_from_hand` with cost filter |
+| 48 | Place arbitrary trash → bottom of deck                   | OP07-091            | New action `bottom_of_deck_from_trash` with count |
+| 49 | Conditional Blocker + cost grant (cost ↑)                | ST25-005, OP07-029  | `continuous_keyword_grant` extension with `cost_modifier` |
+| 50 | Effect-only-on-opponent's-turn                           | OP12-102            | New trigger frame `during_opp_turn` |
+| 51 | Negate single specific effect                            | OP09-093            | Same as #6, extended |
+| 52 | Play from trash with cost filter + uniqueByName          | OP06-062            | `play_for_free.params.uniqueByName + costMax + fromZone:'trash'` |
+| 53 | Conditional Rush at game state                           | OP13-119            | `give_keyword` with `condition: if_own_life_max` |
+| 54 | Effect cost: trash 1 of YOUR characters                  | OP14-079, OP15-026  | New `EffectCost.koSelfCharacter: trait?` |
+| 55 | All-affected mass effect targeting your characters       | OP12-073            | New target `all_your_characters_filtered`; with trait/type filter |
+| 56 | DON return as cost (different from DON!! −N)             | EB02-061            | New cost `returnActiveDonToDeck: N` distinct from donCost |
+| 57 | Set Character base power to opp's Leader's base power    | OP06-009            | New action `set_base_power_copy_from`; param: source |
+| 58 | Look at opp deck top (1 card)                            | OP11-070            | See #42 |
+| 59 | DON state: "given DON" tracking                          | OP15-008            | Pin state on target instance: `givenDonCount` |
+| 60 | "Cannot be removed by your opponent's effect"            | OP15-118, OP14-079  | Continuous `immunity` flag with `source` discriminator |
+| 61 | "Cannot attack until end of opp's next End Phase"        | OP09-093, OP14-120  | `attack_lock_until_phase` action |
+| 62 | "Cannot be rested until end of opp's next turn"          | OP14-119, EB02-011  | `rest_lock_until_phase` action |
+| 63 | At-end-of-this-turn defer (set DON active)               | EB02-015            | New trigger frame `at_end_of_turn_self` |
+| 64 | Returning your own DON to deck as cost                   | OP02-085, EB02-061  | See #56 |
+| 65 | Conditional Rush + power buff w/ Don return cost         | ST28-004            | Combined cost + multiple effect clauses |
+| 66 | Counter event with conditional bonus                     | OP15-095, OP01-029  | `EffectCost.flipLife` + chained condition + bonus magnitude |
+| 67 | Activate while-cost-area-≤-opp condition                 | EB02-041, OP12-073  | New condition `if_own_don_le_opp` |
+| 68 | Multi-step searcher: peek + add filtered + play another  | EB02-013, EB02-028  | Composite action — clause chain handles natively |
+| 69 | At start of opp's next End Phase trigger expiry          | OP14-119, OP09-093  | Phase marker reference for lock_until_phase |
+| 70 | Counter event flat 3000 leader boost                     | EB03-038, EB03-049  | Already covered by power_buff target:your_leader; verified |
+| 71 | Add to top of opp's Life cards face-up                   | OP05-096, OP12-119  | New action `add_to_opp_life_top_face_up` |
+| 72 | Add to top of own Life cards from hand/trash             | OP12-119, ST13-003  | New action `add_to_own_life_top_face_up` |
+| 73 | Multi-target play from hand at once                      | OP06-062 (4 cards)  | `play_for_free.params.count: N` |
+| 74 | Discard from top of OPP's deck (mill opp)                | (separate, OP-mill) | New action `mill_opp` (distinct from self mill) |
+| 75 | Conditional power on opp's turn                          | OP15-092            | `during_opp_turn` continuous |
+
+Total cataloged after expansion: 75 distinct patterns. Schema must
+support all 75 before Phase A.3 lock.
+
 ---
 
 ## Phases
