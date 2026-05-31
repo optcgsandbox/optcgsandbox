@@ -401,7 +401,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "EB01-018",
@@ -3283,7 +3297,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "EB03-020",
@@ -6385,7 +6413,21 @@
     "effectTags": [
       "rush"
     ],
-    "effectText": "[Rush] (This card can attack on the turn in which it is played.)"
+    "effectText": "[Rush] (This card can attack on the turn in which it is played.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "rush"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP01-026",
@@ -6436,7 +6478,27 @@
       "removal_cost_reduce"
     ],
     "effectText": "[Main] Give up to 1 of your opponent's Characters −10000 power during this turn.",
-    "counterEventBoost": null
+    "counterEventBoost": null,
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -10000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP01-028",
@@ -8110,7 +8172,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP01-101",
@@ -8852,7 +8928,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP02-013",
@@ -9443,7 +9533,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP02-039",
@@ -10424,7 +10528,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP02-082",
@@ -11013,7 +11131,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP02-109",
@@ -11260,7 +11392,28 @@
       "removal_ko"
     ],
     "effectText": "[Main] K.O. up to 1 of your opponent's Characters with a cost of 1 or less.",
-    "counterEventBoost": null
+    "counterEventBoost": null,
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 1
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP02-120",
@@ -11530,7 +11683,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP03-011",
@@ -12016,7 +12183,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP03-032",
@@ -12797,7 +12978,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP03-066",
@@ -13732,7 +13927,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP03-108",
@@ -13984,6 +14193,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 5000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 5000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -14417,7 +14646,21 @@
     "effectTags": [
       "disruption"
     ],
-    "effectText": "[Banish] (When this card deals damage, the target card is trashed without activating its Trigger.)"
+    "effectText": "[Banish] (When this card deals damage, the target card is trashed without activating its Trigger.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "banish"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP04-015",
@@ -15641,7 +15884,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP04-068",
@@ -15873,7 +16130,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP04-078",
@@ -16146,7 +16417,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP04-090",
@@ -16484,7 +16769,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP04-105",
@@ -17111,7 +17410,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP05-014",
@@ -17363,7 +17676,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP05-025",
@@ -17996,7 +18323,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP05-053",
@@ -19403,7 +19744,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP05-114",
@@ -20299,7 +20654,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP06-033",
@@ -21581,7 +21950,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP06-088",
@@ -22469,7 +22852,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP07-009",
@@ -24238,7 +24635,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP07-085",
@@ -24632,7 +25043,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP07-102",
@@ -25118,7 +25543,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP08-004",
@@ -29015,7 +29454,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP09-055",
@@ -29395,7 +29848,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP09-072",
@@ -29874,7 +30341,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP09-092",
@@ -30081,7 +30562,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP09-101",
@@ -30283,7 +30778,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP09-110",
@@ -30440,6 +30949,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -30809,7 +31338,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP10-013",
@@ -32036,7 +32579,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP10-065",
@@ -35426,7 +35983,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP11-091",
@@ -37266,7 +37837,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP12-051",
@@ -38570,7 +39155,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP12-107",
@@ -39309,7 +39908,27 @@
       "removal_cost_reduce"
     ],
     "effectText": "[Main] Give up to 1 of your opponent's Characters −5000 power during this turn.",
-    "counterEventBoost": null
+    "counterEventBoost": null,
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -5000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP13-021",
@@ -44221,7 +44840,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP14-107",
@@ -44288,7 +44921,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker]"
+    "effectText": "[Blocker]",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP14-110",
@@ -47742,7 +48389,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "P-015",
@@ -47830,7 +48491,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "P-019",
@@ -48386,7 +49061,21 @@
     "effectTags": [
       "disruption"
     ],
-    "effectText": "[Banish] (When this card deals damage, the target card is trashed without activating its Trigger.)"
+    "effectText": "[Banish] (When this card deals damage, the target card is trashed without activating its Trigger.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "banish"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "P-046",
@@ -48883,7 +49572,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "P-071",
@@ -50156,7 +50859,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST01-007",
@@ -50329,6 +51046,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -50486,7 +51223,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST02-005",
@@ -50958,7 +51709,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST03-009",
@@ -51064,7 +51829,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST03-014",
@@ -51406,7 +52185,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST04-012",
@@ -51614,7 +52407,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST05-004",
@@ -52078,7 +52885,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST06-008",
@@ -52274,6 +53095,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -52446,7 +53287,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST07-008",
@@ -52821,7 +53676,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST08-008",
@@ -52991,7 +53860,28 @@
       "removal_ko"
     ],
     "effectText": "[Main] K.O. up to 1 of your opponent's Characters with a cost of 2 or less.",
-    "counterEventBoost": null
+    "counterEventBoost": null,
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 2
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST09-001",
@@ -55945,7 +56835,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST21-008",
@@ -56391,7 +57295,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST22-010",
@@ -57515,7 +58433,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST29-010",
@@ -57557,7 +58489,21 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+    "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST29-012",
