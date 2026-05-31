@@ -475,8 +475,10 @@ Audited 2026-05-29 against engine commit `a84f87d` + UI commit `0ea7edb`.
 - ✅ **D16 [Set Power to 0]** (2026-05-29) — new `EffectTag` `'set_power_zero'`; new `CardInstance.powerModifier?: number` field (turn-scoped delta added to `effectivePower`). The `set_power_zero` template applies `powerModifier = -(currentEffectivePower)` if current > 0 (no-op when ≤ 0 per CR §4-12 spec note "already-negative → no effect"). `effectivePower` in `applyAction.ts` sums base + attachedDon×1000 + powerModifier. `phases/turn.endTurn` clears `powerModifier` on every per-zone instance for BOTH players AND on every entry in `state.instances` so the modifier is wiped at the end of the turn it was applied. Template mirrors the modifier onto the per-zone struct (leader/field/stage) since legality + UI read from per-zone. Trigger surface: on_play, activate_main, trigger (not when_attacking / on_block / on_ko since those resolve in-place without a target picker). Test coverage in `shared/engine/__tests__/effects.test.ts` (3 new cases: positive target → modifier = -current; non-positive target → no-op; endTurn clears modifier on both instances map and per-zone mirror).
 - ✅ **D18 [Once Per Turn] partial-pay failure** (2026-05-29) — `fireEffects` in `cards/effects/dispatch.ts` now centralizes OPT enforcement. Pre-loop: if source card has `keywords: 'once_per_turn'` AND `inst.perTurn.effectsUsed.includes(trigger)`, early return — entire fire is skipped. Post-loop: if any template fired AND the source has `once_per_turn`, push `trigger` onto `instances[id].perTurn.effectsUsed` AND mirror onto the per-zone struct. Defensive `structuredClone` if `cur === state` (e.g. all matched templates returned state unchanged like `vanilla`) so mutation never corrupts the caller's input. Partial-pay failure rule (CR §10-2-13-5) is naturally satisfied: action handlers (`activateMain` etc.) validate cost BEFORE calling fireEffects, so a failed cost-pay never marks the OPT slot. `endTurn` already clears `effectsUsed` per D4 so the slot reopens next turn. Test coverage in `shared/engine/__tests__/effectDispatch.test.ts` (3 new cases: OPT on_play fires once then no-ops; no-keyword control fires every call; OPT slot reopens after endTurn).
 - ✅ **D19 [Replacement effects] — V0 token** (2026-05-30) — new `EffectTag` `'replace_ko_to_hand'` represents the most common replacement pattern: "If this character would be K.O.'d, it moves to its controller's hand instead." Hook lives in the battle-KO branch of `applyAction.resolveDamage`: if the about-to-be-K.O.'d character's effectTags include `replace_ko_to_hand`, push the instance to the defender's `hand` instead of `trash`, and SKIP the `on_ko` `fireEffects` call (per CR §8-1-3-4: replacement REPLACES processing — the K.O. didn't actually happen). `CARD_KOED` event is still emitted as a signal that the K.O.-step ran. Deferred for future cleanup: (a) §8-1-3-4-1 optional/decline UI (V0 always applies); (b) §8-1-3-4-2 multi-replacement ordering (only one replacement modeled); (c) §8-1-3-4-5 fail-no-apply when target zone is unavailable (hand is unbounded so doesn't trigger). Test coverage in `shared/engine/__tests__/applyAction.test.ts` (2 new cases: char with tag → hand, no on_ko draw; control char without tag → trash, on_ko draw fires).
+- ✅ **D6 [Slot-6 trash event]** (2026-05-30) — slot-6 rule processing in `applyAction.playCard` no longer emits `CARD_KOED`; emits the new `CARD_TRASHED_BY_RULE` event (`GameState.GameEvent` union) instead. Distinct event signals to any future on_ko cascade that this trash is rule processing per CR §3-7-6-1-1 and NOT a K.O. `A11yGameLog` handles the new event. Test coverage in `shared/engine/__tests__/effectDispatch.test.ts` (slot-6 case asserts CARD_TRASHED_BY_RULE present, CARD_KOED absent).
+- ✅ **V3 batch** (2026-05-30) — see `docs/optcg-sim/engine-v3-roadmap.md` for full details. V3-1 wired `power_buff` template (was no-op stub). V3-2 added turn-scoped `PlayerZones.nextPlayCostModifier` + `CardInstance.costModifier` for `cost_reduction` / `removal_cost_reduce`; routed through PLAY_CARD char path + legality. V3-3 + V3-4 added `peek_choice` + `discard_choice` phases for real searcher peek + reveal-and-pick disruption, with `PeekChoicePrompt` / `DiscardChoicePrompt` UI; HardAi auto-resolves both windows. V3-5 added 9 new effect tags (rest_opp_don, mill, reveal_opp_hand, take_from_opp_hand, search_deck, exile + new exile zone, play_for_free, rest_target, move_to_top). V3-8 HardAi simulateAction now picks the higher-scoring activate/decline branch for trigger windows instead of auto-declining. V3-9 added `GameState.knownByViewer` overlay; `viewForPlayer` respects it; `reveal_opp_hand` and `take_from_opp_hand` populate it. V3-6 (placement helper) deferred — only one current caller.
 
-Engine test count: 148/148 passing (99 prior + 14 D24b + 3 D5 + 9 D14/D13 + 3 D12 + 2 D11 + 2 D7 + 3 D9 + 2 D17 + 3 D15 + 3 D16 + 3 D18 + 2 D19).
+Engine test count: 185/185 passing (148 prior + 6 V3-1/V3-2 + 9 V3-5 + 10 V3-3/V3-4 + 2 V3-9 overlay).
 
 ### 15.1.1 UI — Closed (2026-05-29)
 
@@ -484,9 +486,20 @@ Engine test count: 148/148 passing (99 prior + 14 D24b + 3 D5 + 9 D14/D13 + 3 D1
 
 ### 15.2 Engine — OPEN
 
-| # | Divergence | Spec | Engine | Severity |
-|---|---|---|---|---|
-| D6 | **Trashing for 6th-character slot emits `CARD_KOED`** | CR §3-7-6-1-1: rule processing, not K.O. | `applyAction.ts:93` emits `CARD_KOED` | MEDIUM (cosmetic until [On K.O.] cards ship) |
+All D-series divergences are closed as of 2026-05-30. See §15.1 above. The
+next layer of engine work (V3 — real searcher peek, reveal disruption, new
+effect tags) is tracked separately in `docs/optcg-sim/engine-v3-roadmap.md`.
+
+Still latent (no current call site triggers them; defer until a card forces
+them):
+
+- **D14 simultaneous-fire ordering (CR §8-6)** — `fireEffects` dispatches one
+  source per action so chained on_ko / board-wipe sequences have no ordering
+  pressure yet. Add a `turnPlayerFirst(state, fires)` sort layer when chained
+  effects ship.
+- **§8-1-3-4-2 multi-replacement ordering** — D19 token implements one
+  replacement (`replace_ko_to_hand`). Add a replacement registry + the
+  active-player-picks-order rule when a second replacement tag lands.
 
 ### 15.2 Keyword gaps
 
