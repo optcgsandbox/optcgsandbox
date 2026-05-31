@@ -20,7 +20,6 @@ import { memo, useMemo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import type { Card, CardColor, LeaderCard } from '@shared/engine/cards/Card';
 import type { CardInstance } from '@shared/engine/GameState';
-import { springs } from '../lib/animationTokens';
 
 export type CardArtSize = 'hand' | 'field' | 'leader' | 'modal' | 'mini' | 'lifeStack';
 
@@ -601,7 +600,6 @@ export const CardArt = memo(function CardArt({
 }: CardArtProps) {
   const dims = CARD_DIMS[size];
   const reduced = useReducedMotion() ?? false;
-  const spring = springs(reduced);
   const isLeader = card?.kind === 'leader';
   const lifeCount = deriveLifeCount({ isLeader, liveLifeCount });
 
