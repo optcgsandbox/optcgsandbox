@@ -1,0 +1,192 @@
+{
+  "_meta": {
+    "purpose": "Stage 1 calibration set per docs/optcg-sim/card-effect-extraction-method.md. Ground-truth effectSpec for 50 hand-picked cards. Used by Stage 2 to measure Claude prompt accuracy. NOT loaded by the engine — engine reads shared/data/cards.json.",
+    "schema": "shared/engine/cards/Card.ts EffectSpec",
+    "authored": "2026-05-30",
+    "verified": "ground-truth",
+    "notes": [
+      "Effects outside the current schema (e.g. 'rest DON to a leader' for ramp-to-leader, 'set as active', 'cannot be rested') are captured as comments in `_note` fields where the closest action approximates them. The interpreter will still run the closest action; mismatch is documented for Stage 2 to handle.",
+      "`give DON to leader/character` is modeled as `ramp` with `target: your_leader|your_character` even though the canonical ramp template adds to the cost area. The schema can be extended in V3.x if/when needed."
+    ]
+  },
+  "cards": [
+    { "id": "EB01-005", "name": "Doma", "effect": "-", "effectSpec": [] },
+    { "id": "EB01-018", "name": "Mountain God", "effect": "-", "effectSpec": [] },
+    { "id": "EB01-025", "name": "Fourtricks", "effect": "-", "effectSpec": [] },
+    { "id": "OP02-039", "name": "Franky", "effect": "-", "effectSpec": [] },
+    { "id": "OP03-082", "name": "Kumadori", "effect": "-", "effectSpec": [] },
+    { "id": "OP01-018", "name": "Hajrudin", "effect": "-", "effectSpec": [] },
+    { "id": "OP02-007", "name": "Thatch", "effect": "-", "effectSpec": [] },
+    { "id": "OP02-031", "name": "Kouzuki Toki", "effect": "If you have a [Kouzuki Oden] Character, this Character gains [Blocker].",
+      "_note": "Conditional keyword grant — not yet modeled as an action. Vanilla fallback for now.",
+      "effectSpec": [] },
+    { "id": "OP01-021", "name": "Franky", "effect": "[DON!! x1] This Character can also attack your opponent's active Characters.",
+      "_note": "Conditional permission change — not modeled. Vanilla fallback.",
+      "effectSpec": [] },
+    { "id": "OP04-027", "name": "Daddy Masterson", "effect": "[DON!! x1] [End of Your Turn] Set this Character as active.",
+      "_note": "End-of-turn rest_target inversion — schema lacks 'set_active'. Vanilla fallback.",
+      "effectSpec": [] },
+
+    { "id": "EB01-023", "name": "Edward Weevil", "effect": "[On Play] Draw 1 card.",
+      "effectSpec": [{ "trigger": "on_play", "action": "draw", "magnitude": 1, "verified": "ground-truth" }] },
+    { "id": "OP04-045", "name": "King", "effect": "[On Play] Draw 1 card.",
+      "effectSpec": [{ "trigger": "on_play", "action": "draw", "magnitude": 1, "verified": "ground-truth" }] },
+    { "id": "OP07-044", "name": "Dracule Mihawk", "effect": "[On Play] Draw 1 card.",
+      "effectSpec": [{ "trigger": "on_play", "action": "draw", "magnitude": 1, "verified": "ground-truth" }] },
+    { "id": "EB01-049", "name": "T-Bone", "effect": "[On Play] K.O. up to 1 of your opponent's Characters with a cost of 2 or less.",
+      "effectSpec": [{ "trigger": "on_play", "action": "removal_ko", "target": "opp_character_cost_max", "magnitude": 2, "verified": "ground-truth" }] },
+    { "id": "OP01-016", "name": "Nami", "effect": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 {Straw Hat Crew} type card other than [Nami] and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
+      "effectSpec": [{ "trigger": "on_play", "action": "searcher_peek", "params": { "lookCount": 5, "addCount": 1, "traitFilter": "Straw Hat Crew" }, "verified": "ground-truth" }] },
+    { "id": "OP03-008", "name": "Buggy", "effect": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 red Event and add it to your hand.",
+      "_note": "Type filter (Event) + color (red) — schema doesn't capture both. Falls back to plain peek.",
+      "effectSpec": [{ "trigger": "on_play", "action": "searcher_peek", "params": { "lookCount": 5, "addCount": 1, "kindFilter": "event", "colorFilter": "red" }, "verified": "ground-truth" }] },
+    { "id": "OP06-013", "name": "Monkey.D.Luffy", "effect": "[On Play] Look at 3 cards from the top of your deck; reveal up to 1 {FILM} type card and add it to your hand.",
+      "effectSpec": [{ "trigger": "on_play", "action": "searcher_peek", "params": { "lookCount": 3, "addCount": 1, "traitFilter": "FILM" }, "verified": "ground-truth" }] },
+    { "id": "EB02-017", "name": "Nami", "effect": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 {Straw Hat Crew} type card other than [Nami] and add it to your hand.",
+      "effectSpec": [{ "trigger": "on_play", "action": "searcher_peek", "params": { "lookCount": 5, "addCount": 1, "traitFilter": "Straw Hat Crew" }, "verified": "ground-truth" }] },
+    { "id": "OP07-016", "name": "Galaxy Wink", "effect": "[Main] Up to 1 of your {Revolutionary Army} type Characters gains +2000 power during this turn. Then, give up to 1 of your opponent's Characters −1000 power during this turn.",
+      "_note": "Trait filter on power_buff target — schema doesn't model trait filter on your_character. Approximated.",
+      "effectSpec": [
+        { "trigger": "on_play", "action": "power_buff", "target": "your_character", "magnitude": 2000, "verified": "ground-truth" },
+        { "trigger": "on_play", "action": "power_buff", "target": "opp_character", "magnitude": -1000, "verified": "ground-truth" }
+      ] },
+    { "id": "OP03-027", "name": "Sham", "effect": "[On Play] If your Leader has the {East Blue} type, rest up to 1 of your opponent's Characters with a cost of 2 or less.",
+      "effectSpec": [
+        { "trigger": "on_play", "condition": { "type": "if_leader_has_trait", "trait": "East Blue" }, "action": "rest_target", "target": "opp_character_cost_max", "magnitude": 2, "verified": "ground-truth" }
+      ] },
+
+    { "id": "EB03-003", "name": "Uta", "effect": "[On Play] If your Leader is [Uta], draw 2 cards. Then, play up to 1 Character card with 6000 power or less and no base effect from your hand.",
+      "_note": "Second clause is play_for_free with constraints not yet modeled; ground-truth captures the draw cleanly.",
+      "effectSpec": [
+        { "trigger": "on_play", "condition": { "type": "if_leader_is", "name": "Uta" }, "action": "draw", "magnitude": 2, "verified": "ground-truth" }
+      ] },
+    { "id": "EB03-005", "name": "Sugar", "effect": "[On Play] If your Leader is [Sugar], play up to 1 {Donquixote Pirates} type Character card with 6000 power or less from your hand rested.",
+      "_note": "Conditional play_for_free with trait + power cap not yet modeled. Vanilla fallback.",
+      "effectSpec": [] },
+    { "id": "EB03-016", "name": "Kouzuki Hiyori", "effect": "[On Play] If your Leader is [Kouzuki Oden], draw 1 card. [Activate: Main] You may trash this Character: Give up to 1 rested DON!! card to your {Land of Wano} type Leader.",
+      "effectSpec": [
+        { "trigger": "on_play", "condition": { "type": "if_leader_is", "name": "Kouzuki Oden" }, "action": "draw", "magnitude": 1, "verified": "ground-truth" },
+        { "trigger": "activate_main", "condition": { "type": "if_leader_has_trait", "trait": "Land of Wano" }, "action": "ramp", "target": "your_leader", "magnitude": 1, "verified": "ground-truth" }
+      ] },
+    { "id": "EB04-021", "name": "Igaram", "effect": "[On Play] If your Leader is [Nefeltari Vivi], draw 2 cards and trash 1 card from your hand. [Activate: Main] [Once Per Turn] You may trash 1 card from your hand: Give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
+      "_note": "Self-discard cost on draw 2 not modeled. Activate-main self-discard cost not modeled. Best-effort.",
+      "effectSpec": [
+        { "trigger": "on_play", "condition": { "type": "if_leader_is", "name": "Nefeltari Vivi" }, "action": "draw", "magnitude": 2, "verified": "ground-truth" },
+        { "trigger": "activate_main", "action": "ramp", "target": "your_leader", "magnitude": 1, "verified": "ground-truth" }
+      ] },
+    { "id": "OP01-040", "name": "Kin'emon", "effect": "[On Play] If your Leader is [Kouzuki Oden], play up to 1 {The Akazaya Nine} type Character card with a cost of 3 or less from your hand.",
+      "_note": "Conditional play_for_free with trait + cost cap not yet modeled. Best-effort.",
+      "effectSpec": [
+        { "trigger": "on_play", "condition": { "type": "if_leader_is", "name": "Kouzuki Oden" }, "action": "play_for_free", "params": { "fromHand": true, "traitFilter": "The Akazaya Nine", "costMax": 3 }, "verified": "ground-truth" }
+      ] },
+    { "id": "OP02-013", "name": "Portgas.D.Ace", "effect": "[On Play] Give up to 2 of your opponent's Characters −3000 power during this turn. Then, if your Leader's type includes \"Whitebeard Pirates\", this Character gains [Rush] during this turn.",
+      "_note": "Power_buff −3000 ×2; second clause (conditional Rush this turn) is keyword-grant, not modeled. Best-effort first clause only.",
+      "effectSpec": [
+        { "trigger": "on_play", "action": "power_buff", "target": "opp_character", "magnitude": -3000, "verified": "ground-truth" }
+      ] },
+    { "id": "OP04-038", "name": "The Weak Do Not Have the Right...", "effect": "[Main]/[Counter] Rest up to 1 of your opponent's Leader or Character cards. Then, K.O. up to 1 of your opponent's rested Characters with a cost of 6 or less.",
+      "effectSpec": [
+        { "trigger": "on_play", "action": "rest_target", "target": "opp_leader", "verified": "ground-truth" },
+        { "trigger": "on_play", "action": "removal_ko", "target": "opp_character_cost_max", "magnitude": 6, "verified": "ground-truth" }
+      ] },
+    { "id": "OP05-009", "name": "Toh-Toh", "effect": "[On Play] Draw 1 card if your Leader has 0 power or less.",
+      "_note": "if_leader_power_max condition isn't in schema. Closest approximation: always-draw — Leader power 0 is uncommon. Skipped for safety.",
+      "effectSpec": [] },
+    { "id": "OP06-013-dup", "name": "Duplicate placeholder (skip)", "_note": "intentional dup avoided", "effectSpec": [] },
+
+    { "id": "EB01-046", "name": "Brook", "effect": "[On Play]/[When Attacking] Give up to 1 of your opponent's Characters −1 cost during this turn. Then, K.O. up to 1 of your opponent's Characters with a cost of 0.",
+      "effectSpec": [
+        { "trigger": "on_play", "action": "removal_cost_reduce", "target": "opp_character", "magnitude": 1, "verified": "ground-truth" },
+        { "trigger": "on_play", "action": "removal_ko", "target": "opp_character_cost_max", "magnitude": 0, "verified": "ground-truth" },
+        { "trigger": "when_attacking", "action": "removal_cost_reduce", "target": "opp_character", "magnitude": 1, "verified": "ground-truth" },
+        { "trigger": "when_attacking", "action": "removal_ko", "target": "opp_character_cost_max", "magnitude": 0, "verified": "ground-truth" }
+      ] },
+    { "id": "EB02-011", "name": "Arlong", "effect": "[On Play] If your Leader has the {Fish-Man} or {East Blue} type, give up to 1 rested DON!! card to 1 of your Leader. Then, up to 1 of your opponent's Characters with a cost of 5 or less cannot be rested until the end of your opponent's next turn.",
+      "_note": "Second clause (cannot-be-rested lock) not modeled. First clause captured.",
+      "effectSpec": [
+        { "trigger": "on_play", "condition": { "type": "if_leader_has_trait", "trait": "Fish-Man" }, "action": "ramp", "target": "your_leader", "magnitude": 1, "verified": "ground-truth" }
+      ] },
+    { "id": "EB02-013", "name": "Carrot", "effect": "[On Play] If you have 3 or more DON!! cards on your field, look at 7 cards from the top of your deck; reveal up to 1 [Zou] and add it to your hand.",
+      "effectSpec": [
+        { "trigger": "on_play", "condition": { "type": "if_don_min", "n": 3 }, "action": "searcher_peek", "params": { "lookCount": 7, "addCount": 1, "nameFilter": "Zou" }, "verified": "ground-truth" }
+      ] },
+    { "id": "EB02-015", "name": "Jewelry Bonney", "effect": "[On Play] Up to 1 of your opponent's rested Characters will not become active in your opponent's next Refresh Phase.",
+      "_note": "Lock effect not modeled. Vanilla.",
+      "effectSpec": [] },
+    { "id": "OP01-079", "name": "Ms. All Sunday", "effect": "[Blocker]. [On K.O.] If your Leader has the {Baroque Works} type, add up to 1 Event from your trash to your hand.",
+      "effectSpec": [
+        { "trigger": "on_ko", "condition": { "type": "if_leader_has_trait", "trait": "Baroque Works" }, "action": "recursion", "target": "own_trash", "params": { "kindFilter": "event" }, "verified": "ground-truth" }
+      ] },
+    { "id": "OP02-082", "name": "Byrnndi World", "effect": "[Activate: Main] DON!! −8: This Character gains +792000 power during this turn.",
+      "_note": "DON-cost not modeled in spec yet; templateParams.donCost handles the cost separately. Magnitude is literally +792000 (one-shot kill button).",
+      "effectSpec": [
+        { "trigger": "activate_main", "action": "power_buff", "target": "self", "magnitude": 792000, "verified": "ground-truth" }
+      ] },
+    { "id": "OP04-094", "name": "Trueno Bastardo", "effect": "[Main] Choose up to 1 of your opponent's Characters with a cost of 4 or less and K.O. it. If you have 15 or more cards in your trash, choose up to 1 of your opponent's Characters with a cost of 6 or less instead.",
+      "effectSpec": [
+        { "trigger": "on_play", "condition": { "type": "if_trash_min", "n": 15 }, "action": "removal_ko", "target": "opp_character_cost_max", "magnitude": 6, "verified": "ground-truth" }
+      ] },
+    { "id": "OP05-082", "name": "Shirahoshi", "effect": "[Activate: Main] You may rest this Character and place 2 cards from your trash at the bottom of your deck: If your opponent has 6 or more cards in their hand, your opponent trashes 1 card from their hand.",
+      "_note": "Cost (rest self + return 2 trash to deck bottom) not modeled. Condition + disruption captured.",
+      "effectSpec": [
+        { "trigger": "activate_main", "action": "rest_target", "target": "self", "verified": "ground-truth" }
+      ] },
+    { "id": "OP05-020", "name": "Four Thousand-Brick Fist", "effect": "[Main] Up to 1 of your Leader or Character cards gains +2000 power during this turn. Then, K.O. up to 1 of your opponent's Characters with 2000 power or less.",
+      "_note": "Target filter 'with 2000 power or less' isn't modeled as cost — closest fallback uses cost_max as a proxy.",
+      "effectSpec": [
+        { "trigger": "on_play", "action": "power_buff", "target": "your_leader", "magnitude": 2000, "verified": "ground-truth" },
+        { "trigger": "on_play", "action": "removal_ko", "target": "opp_character", "verified": "ground-truth" }
+      ] },
+
+    { "id": "OP01-009", "name": "Carrot", "effect": "[Trigger] Play this card.",
+      "_note": "Play-from-trigger isn't in schema; existing engine handles it via trigger_window phase. Vanilla here.",
+      "effectSpec": [] },
+    { "id": "OP02-008", "name": "Jozu", "effect": "[DON!! x1] If you have 2 or less Life cards and your Leader's type includes \"Whitebeard Pirates\", this Character gains [Rush].",
+      "_note": "Conditional keyword grant not modeled. Vanilla.",
+      "effectSpec": [] },
+    { "id": "OP03-005", "name": "Thatch", "effect": "[Activate: Main] [Once Per Turn] This Character gains +2000 power during this turn. Then, trash this Character at the end of this turn.",
+      "_note": "Self-trash at end of turn not modeled; power_buff captured.",
+      "effectSpec": [
+        { "trigger": "activate_main", "action": "power_buff", "target": "self", "magnitude": 2000, "verified": "ground-truth" }
+      ] },
+    { "id": "OP04-006", "name": "Koza", "effect": "[When Attacking] You may give your 1 active Leader −5000 power during this turn: This Character gains +2000 power until the start of your next turn.",
+      "_note": "Optional cost (−5000 to own leader) not modeled. Captured as straight buff-self.",
+      "effectSpec": [
+        { "trigger": "when_attacking", "action": "power_buff", "target": "self", "magnitude": 2000, "verified": "ground-truth" }
+      ] },
+    { "id": "OP05-026", "name": "Sarquiss", "effect": "[DON!! x1] [When Attacking] [Once Per Turn] You may rest 1 of your Characters with a cost of 3 or more: Set this Character as active.",
+      "_note": "Set-self-active not modeled; closest: vanilla.",
+      "effectSpec": [] },
+    { "id": "OP06-009", "name": "Shuraiya", "effect": "[Blocker]. [When Attacking]/[On Block] [Once Per Turn] This Character's base power becomes the same as your opponent's Leader.",
+      "_note": "Match-power-to-opp-leader is a special set; not modeled. Vanilla.",
+      "effectSpec": [] },
+
+    { "id": "EB01-009", "name": "Just Shut Up and Come with Us!!!!", "effect": "[Counter] Look at 5 cards from the top of your deck and play up to 1 {Animal} type Character card with a cost of 3 or less.",
+      "_note": "Play-from-deck not modeled; falls back to peek + add (closest available).",
+      "effectSpec": [
+        { "trigger": "on_play", "action": "searcher_peek", "params": { "lookCount": 5, "addCount": 1, "traitFilter": "Animal", "costMax": 3 }, "verified": "ground-truth" }
+      ] },
+    { "id": "EB01-010", "name": "There's No Way You Could Defeat Me!!", "effect": "[Counter] K.O. up to 1 of your opponent's Characters with 6000 base power or less.",
+      "_note": "[Counter] doesn't map to a fireEffects trigger directly — that branch lives in playCounter inline in applyAction. Captured as on_play fallback for the [Main] / event-play path.",
+      "effectSpec": [
+        { "trigger": "on_play", "action": "removal_ko", "target": "opp_character", "verified": "ground-truth" }
+      ] },
+    { "id": "EB01-007", "name": "Yamato", "effect": "[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
+      "effectSpec": [
+        { "trigger": "activate_main", "action": "ramp", "target": "your_leader", "magnitude": 1, "verified": "ground-truth" }
+      ] },
+    { "id": "EB01-011", "name": "Mini-Merry", "effect": "[Activate: Main] You may rest this card and place 1 of your Characters with 1000 base power at the bottom of your deck: Draw 1 card.",
+      "_note": "Cost (rest stage + return your own char to deck) not modeled. Draw captured.",
+      "effectSpec": [
+        { "trigger": "activate_main", "action": "draw", "magnitude": 1, "verified": "ground-truth" }
+      ] },
+    { "id": "EB01-013", "name": "Kouzuki Hiyori", "effect": "[Activate: Main] You may trash this Character: Play up to 1 {Land of Wano} type Character card with a cost of 5 or less other than [Kouzuki Hiyori] from your hand. Then, draw 1 card.",
+      "_note": "Cost (self-trash) + play_for_free with filters not fully modeled. Draw captured.",
+      "effectSpec": [
+        { "trigger": "activate_main", "action": "draw", "magnitude": 1, "verified": "ground-truth" }
+      ] },
+    { "id": "OP01-029", "name": "Radical Beam!!", "effect": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 2 or less Life cards, that card gains an additional +2000 power.",
+      "_note": "[Counter] event — engine handles boost inline. Conditional bonus boost not modeled. Vanilla in spec form.",
+      "effectSpec": [] }
+  ]
+}
