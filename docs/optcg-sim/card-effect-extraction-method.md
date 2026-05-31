@@ -1,5 +1,9 @@
 # Card Effect Extraction — Methodology
 
+> ⚠️ **SUPERSEDED 2026-05-30 by `card-effect-100pct-spec.md`.** This doc
+> aimed for ≥95% accuracy. Owner direction: 100% fidelity. Kept here for
+> reference + delta tracking.
+
 Authored 2026-05-30. Companion to `engine-v3-roadmap.md`. The V3 batch
 delivered the tag taxonomy and per-tag default magnitudes. This document
 specifies how we go the rest of the way — from "card knows it does `draw`"
