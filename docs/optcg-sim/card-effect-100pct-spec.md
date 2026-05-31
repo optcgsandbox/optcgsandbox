@@ -188,6 +188,30 @@ A.5 Build the verification harness: given a card and its expected
 Exit gate: every pattern in the schema gap table has a passing interpreter
 test. ≥95% engine test coverage on the runner.
 
+### Phase A.3 — Sub-phase implementation plan
+
+A.3 builds the runtime interpreter for the v2 schema (`types-v2.ts`).
+Each sub-phase is one commit + green tests + owner sign-off before
+advancing. Engine continues to run v1 dispatch in parallel until A.3.10
+flips the wire-up.
+
+| Sub-phase | Deliverable | New code | New tests | Exit gate |
+|-----------|-------------|----------|-----------|-----------|
+| A.3.1 | `evaluateConditionV2(state, controller, cond)` covering all 22 condition types incl. composite AND/OR/NOT | `runner-v2.ts` | 25+ unit tests | every condition type has ≥1 positive + 1 negative test |
+| A.3.2 | `resolveTargetV2(state, controller, source, target, magnitude)` for all 11 target kinds + `TargetFilter` | `runner-v2.ts` | 20+ unit tests | each target kind + filter axis (cost/power/trait/type/color/name/kind/rested) tested |
+| A.3.3 | Action group 1 — card movement & draw: `draw`, `mill_self`, `mill_opp`, `lifegain`, `life_to_hand`, `add_to_own_life_top`, `add_to_opp_life_top`, `peek_*` family, `searcher_peek`, `reveal_top_and_conditional_play`, `reveal_opp_hand`, `take_from_opp_hand`, `search_deck`, `bottom_of_deck_from_trash`, `recursion`, `move_to_top`, `exile`, `trash_face_up_life`, `turn_all_own_life_face_down`, `add_to_opp_hand_from_opp_life`, `choose_cost_reveal_opp_match` | `runner-v2.ts` action dispatch | 25+ tests | each action has happy-path test + edge case (empty deck, no target, etc.) |
+| A.3.4 | Action group 2 — power/cost mods + lock/restrict: `power_buff`, `set_power_zero`, `set_base_power`, `set_base_power_copy_from`, `cost_reduction`, `removal_cost_reduce`, `rest_target`, `set_active`, `rest_opp_don`, `attack_lock_until_phase`, `rest_lock_until_phase`, `restrict_opp_attack`, `restrict_play_self_this_turn`, `restrict_effect_type` | runner-v2 + new state fields | 20+ tests | duration enum correctly expires at endTurn / opp_next_turn / opp_next_end_phase |
+| A.3.5 | Action group 3 — DON + removal + negation + immunity: `removal_ko`, `removal_bounce`, `ramp`, `give_don_to_target`, `give_don_to_opp_target`, `return_opp_don_to_deck`, `negate_target_effects`, `grant_immunity`, `give_keyword`, `play_for_free`, `activate_event_from_hand`, `damage_immunity_attribute`, `choose_one`, `self_trash_at_end_of_turn` | runner-v2 + new instance flags | 20+ tests | negate persists for declared duration; immunity blocks correct trigger; choose_one branches by AI/UI selector |
+| A.3.6 | Continuous effects layer: `runContinuousEffects(state)` re-evaluates `state.continuous` on every state read; supports `self_power_buff`, `aura_power_buff`, `aura_cost_modifier`, `self_immune_to_opp_effects`, `grant_keyword_to_self`, `restrict_self_attack`, `cost_modifier_in_hand` | new `continuous.ts` | 15+ tests | continuous fires when condition becomes true mid-turn; ceases when false |
+| A.3.7 | Replacement effects registry: `applyReplacement(state, event)` intercepts events matching `would_be_ko`/`would_be_removed`/`would_take_damage`/`on_life_flip`; supports `conditional: true` ("If you do, …") | new `replacements.ts` | 10+ tests | replacement fires AND blocks normal processing; conditional pays cost only if replacement actually applied |
+| A.3.8 | Game-rule overrides: leader's `rules` field applied at game init (DON deck size, deck restrictions, at-start-of-game play, name aliases) | extend `setupGame` + `legality.deckBuilder` | 8+ tests | DON deck size override flows through `runDonPhase`; name aliases satisfy `if_leader_is` |
+| A.3.9 | New trigger wiring in applyAction/phases: `on_opp_attack`, `on_life_changed`, `at_opp_refresh`, `on_damage_taken`, `on_own_don_returned`, `during_opp_turn`, `on_opp_play_character`, `at_end_of_turn_self`, `at_end_of_turn` | `applyAction.ts` + `phases/turn.ts` + new `triggerBus.ts` | 12+ tests | each new trigger fires from the correct engine event |
+| A.3.10 | Migration cut-over: move v2 types into `Card.ts`, deprecate v1 `EffectSpec`, point `fireEffects` at the v2 runner when card has `effectSpecV2`. Falls back to v1 tag dispatch when neither present. Feature flag `EFFECT_SPEC_V2_ENABLED` (default true) for rollback. | merge runner + dispatch | full suite green | 205+ existing tests + all new sub-phase tests passing; flag-off path verified |
+
+Total estimated effort: 12-20 hours across A.3.1-A.3.10. Each commit is
+independently revertable. Schema migration in A.3.10 is the only "big
+bang" step; rollback flag mitigates.
+
 ### Phase B — Deterministic extractor (high-frequency patterns)
 
 B.1 Inventory the recurring text templates by frequency (cluster
