@@ -1199,7 +1199,26 @@
     "effectTags": [
       "recursion"
     ],
-    "effectText": "[On Play] You may place 3 cards with a type including \"CP\" from your trash at the bottom of your deck in any order: Play up to 1 Character card with a type including \"CP\" and a cost of 4 or less other than [Spandine] from your trash rested."
+    "effectText": "[On Play] You may place 3 cards with a type including \"CP\" from your trash at the bottom of your deck in any order: Play up to 1 Character card with a type including \"CP\" and a cost of 4 or less other than [Spandine] from your trash rested.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "bottomOfDeckFromTrash": 3
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "EB01-044",
@@ -1446,7 +1465,36 @@
       "removal_ko"
     ],
     "effectText": "[Main] You may trash 2 cards from the top of your deck: K.O. up to 1 of your opponent's Characters with a cost of 5 or less.",
-    "counterEventBoost": null
+    "counterEventBoost": null,
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "mill_self",
+            "magnitude": 2
+          },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 5
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "EB01-052",
@@ -4167,6 +4215,25 @@
     "effectText": "[On Play] Trash 1 card from your hand.<br>[Activate: Main] You may trash this Character: If you have 4 or less cards in your hand, draw 2 cards.",
     "templateParams": {
       "draw": 2
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -5393,6 +5460,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -5736,6 +5823,29 @@
     "effectText": "[On Play] If your Leader is [Nefeltari Vivi], draw 2 cards and trash 1 card from your hand.<br>[Activate: Main] [Once Per Turn] You may trash 1 card from your hand: Give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
     "templateParams": {
       "draw": 2
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": {
+            "kind": "give_don_to_target",
+            "magnitude": 1,
+            "rested": true
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto",
+          "cost": {
+            "discardHand": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -6310,6 +6420,29 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto",
+          "cost": {
+            "donCost": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -15327,6 +15460,29 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged",
+          "cost": {
+            "discardHand": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -16046,7 +16202,26 @@
       "removal_ko",
       "recursion"
     ],
-    "effectText": "[On Play] You may place 2 cards with a type including \"CP\" from your trash at the bottom of your deck in any order: K.O. up to 1 of your opponent's Characters with a cost of 3 or less."
+    "effectText": "[On Play] You may place 2 cards with a type including \"CP\" from your trash at the bottom of your deck in any order: K.O. up to 1 of your opponent's Characters with a cost of 3 or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "bottomOfDeckFromTrash": 2
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP03-081",
@@ -16332,11 +16507,23 @@
     ],
     "effectText": "[On Play] You may place 2 cards with a type including \"CP\" from your trash at the bottom of your deck in any order: This Character gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "bottomOfDeckFromTrash": 2
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "auto"
     }
   },
   {
@@ -18355,7 +18542,30 @@
     "effectTags": [
       "searcher"
     ],
-    "effectText": "[On Play] You may trash 2 cards from your hand: Look at 5 cards from the top of your deck; reveal up to 1 {East Blue} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+    "effectText": "[On Play] You may trash 2 cards from your hand: Look at 5 cards from the top of your deck; reveal up to 1 {East Blue} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 1,
+            "filter": {
+              "trait": "East Blue"
+            }
+          },
+          "verified": "auto",
+          "cost": {
+            "discardHand": 2
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP04-042",
@@ -29105,7 +29315,26 @@
       "removal_cost_reduce",
       "recursion"
     ],
-    "effectText": "[On Play] You may place 2 cards with a type including \"CP\" from your trash at the bottom of your deck in any order: Give up to 1 of your opponent's Characters −3 cost during this turn."
+    "effectText": "[On Play] You may place 2 cards with a type including \"CP\" from your trash at the bottom of your deck in any order: Give up to 1 of your opponent's Characters −3 cost during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "bottomOfDeckFromTrash": 2
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP07-081",
@@ -29395,7 +29624,26 @@
       "removal_ko",
       "recursion"
     ],
-    "effectText": "[On Play] You may place 2 cards with a type including \"CP\" from your trash at the bottom of your deck in any order: K.O. up to 1 of your opponent's Characters with a cost of 1 or less."
+    "effectText": "[On Play] You may place 2 cards with a type including \"CP\" from your trash at the bottom of your deck in any order: K.O. up to 1 of your opponent's Characters with a cost of 1 or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "bottomOfDeckFromTrash": 2
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP07-093",
@@ -42116,7 +42364,26 @@
     "effectTags": [
       "recursion"
     ],
-    "effectText": "[On Play] Trash 1 card from your hand.<br>[Activate: Main] You may trash this Character: Play up to 1 [Caribou] with a cost of 4 or less from your trash."
+    "effectText": "[On Play] Trash 1 card from your hand.<br>[Activate: Main] You may trash this Character: Play up to 1 [Caribou] with a cost of 4 or less from your trash.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "OP11-087",
@@ -42436,7 +42703,36 @@
       "removal_ko"
     ],
     "effectText": "[Main] You may trash 3 cards from the top of your deck: K.O. up to 1 of your opponent's Characters with a cost of 2 or less.",
-    "counterEventBoost": null
+    "counterEventBoost": null,
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "mill_self",
+            "magnitude": 3
+          },
+          "verified": "auto"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 2
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP11-099",
@@ -43430,6 +43726,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -43504,6 +43820,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 1000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -44217,6 +44553,29 @@
     "effectText": "[On Play] If your Leader has the {Navy} type, draw 2 cards.<br>[Activate: Main] [Once Per Turn] You may trash 1 card from your hand: Give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
     "templateParams": {
       "draw": 2
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": {
+            "kind": "give_don_to_target",
+            "magnitude": 1,
+            "rested": true
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto",
+          "cost": {
+            "discardHand": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -44259,7 +44618,26 @@
     "effectTags": [
       "removal_bounce"
     ],
-    "effectText": "[On Play] Trash 2 cards from your hand.<br>[Activate: Main] You may trash this Character: Return up to 1 Character with a cost of 5 or less to the owner's hand."
+    "effectText": "[On Play] Trash 2 cards from your hand.<br>[Activate: Main] You may trash this Character: Return up to 1 Character with a cost of 5 or less to the owner's hand.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 2
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "OP12-047",
@@ -44280,7 +44658,30 @@
     "effectTags": [
       "searcher"
     ],
-    "effectText": "[On Play] You may trash 1 card from your hand: Look at 5 cards from the top of your deck; reveal up to 2 {Navy} type cards other than [Sengoku] and add them to your hand. Then, place the rest at the bottom of your deck in any order."
+    "effectText": "[On Play] You may trash 1 card from your hand: Look at 5 cards from the top of your deck; reveal up to 2 {Navy} type cards other than [Sengoku] and add them to your hand. Then, place the rest at the bottom of your deck in any order.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 2,
+            "filter": {
+              "trait": "Navy"
+            }
+          },
+          "verified": "auto",
+          "cost": {
+            "discardHand": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP12-048",
@@ -54602,6 +55003,25 @@
     "effectText": "[On Play] DON!! −1: Draw 1 card.<br>[When Attacking] If you have 6 or less DON!! cards on your field, give up to 1 of your opponent's Characters −1000 power during this turn.",
     "templateParams": {
       "draw": 1
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "auto",
+          "cost": {
+            "donCost": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -54649,6 +55069,25 @@
     "effectText": "[On Play] DON!! −1: Draw 1 card.<br>[On K.O.] If you have 6 or less DON!! cards on your field, K.O. up to 1 of your opponent's Characters with 2000 power or less.",
     "templateParams": {
       "draw": 1
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "auto",
+          "cost": {
+            "donCost": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -54722,6 +55161,25 @@
     "effectText": "[On Play] DON!! −1: Draw 1 card.<br>[When Attacking] If you have 6 or less DON!! cards on your field, look at 2 cards from the top of your deck and place them at the top or bottom of your deck in any order.",
     "templateParams": {
       "draw": 1
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "auto",
+          "cost": {
+            "donCost": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -54751,7 +55209,19 @@
       "draw": 1
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "auto",
+          "cost": {
+            "donCost": 1
+          }
+        }
+      ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
@@ -55420,7 +55890,27 @@
     "effectTags": [
       "trigger"
     ],
-    "effectText": "If your Character with 7000 base power or less would be removed from the field by your opponent's effect, you may trash 1 card from your hand instead."
+    "effectText": "If your Character with 7000 base power or less would be removed from the field by your opponent's effect, you may trash 1 card from your hand instead.",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [
+        {
+          "trigger": "would_be_removed",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP15-091",
@@ -56026,7 +56516,28 @@
     "effectTags": [
       "lifegain"
     ],
-    "effectText": "[On Play] You may trash 1 card from your hand: Add up to 1 card from the top of your deck to the top of your Life cards."
+    "effectText": "[On Play] You may trash 1 card from your hand: Add up to 1 card from the top of your deck to the top of your Life cards.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "add_to_own_life_top",
+            "faceUp": false,
+            "from": "top_of_deck"
+          },
+          "magnitude": 1,
+          "verified": "auto",
+          "cost": {
+            "discardHand": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP15-114",
@@ -61079,7 +61590,26 @@
     "effectTags": [
       "ramp"
     ],
-    "effectText": "[On Play] You may trash 1 card from your hand: Add up to 1 DON!! card from your DON!! deck and set it as active."
+    "effectText": "[On Play] You may trash 1 card from your hand: Add up to 1 DON!! card from your DON!! deck and set it as active.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1
+          },
+          "verified": "auto",
+          "cost": {
+            "discardHand": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST04-009",
@@ -68141,7 +68671,19 @@
     ],
     "effectText": "If your Leader has the {Blackbeard Pirates} type, this Character gains [Blocker] and +1 cost for every 4 cards in your trash.<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Play] Trash 1 card from your hand.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,

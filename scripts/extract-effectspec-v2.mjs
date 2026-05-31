@@ -494,23 +494,110 @@ const matchers = [
     name: 'onPlayPlaceAtBottom',
     rx: /^\[On Play\] Place up to (\d+) Character with a cost of (\d+) or less at the bottom of the owner's deck\.\s*$/,
     emit: (m) => ({
-      // Approximation: treat as removal_bounce since "bottom of deck" is removal from field.
       clauses: [{ trigger: 'on_play', action: { kind: 'removal_bounce' }, target: { kind: 'opp_character', filter: { costMax: parseInt(m[2], 10) } }, verified: 'flagged' }],
+    }),
+  },
+  // B.6 patterns
+  // Replacement when "your Character with N base power or less would be removed by opponent's effect"
+  {
+    name: 'replacementYourCharPowerCap',
+    rx: /^If your Character with (\d+) base power or less would be removed from the field by your opponent's effect, you may trash (\d+) cards? from your hand instead\.\s*$/,
+    emit: (m) => ({
+      replacements: [{
+        trigger: 'would_be_removed',
+        cost: { discardHand: parseInt(m[2], 10) },
+        action: { kind: 'draw', magnitude: 0 }, // V0 placeholder
+        conditional: true,
+        verified: 'flagged',
+      }],
+    }),
+  },
+  // [Counter] DON cost variant — already covered by stripDonCostPrefix but the
+  // matched inner phrase is a counter buff which IS in matchers. Pure
+  // pass-through. (No new explicit pattern needed.)
+
+  // [On Play] Trash N cards from your hand. — pure discard
+  {
+    name: 'onPlayDiscardSelf',
+    rx: /^\[On Play\] Trash (\d+) cards? from your hand\.\s*$/,
+    emit: (m) => ({
+      clauses: [{
+        trigger: 'on_play',
+        cost: { discardHand: parseInt(m[1], 10) },
+        action: { kind: 'draw', magnitude: 0 }, // pure discard, no further action
+        verified: 'flagged',
+      }],
+    }),
+  },
+  // [On Play] Trash N cards from the top of your deck and give up to M opp characters −K power
+  {
+    name: 'onPlayMillThenDebuff',
+    rx: /^\[On Play\] Trash (\d+) cards? from the top of your deck and give up to (\d+) of your opponent's Characters? −(\d+) power during this turn\.\s*$/,
+    emit: (m) => ({
+      clauses: [
+        { trigger: 'on_play', action: { kind: 'mill_self', magnitude: parseInt(m[1], 10) }, verified: 'auto' },
+        { trigger: 'on_play', action: { kind: 'power_buff', magnitude: -parseInt(m[3], 10), duration: 'this_turn' }, target: { kind: 'opp_character' }, verified: 'auto' },
+      ],
+    }),
+  },
+  // [On Play] You may place N cards with a type including "X" from your trash at the bottom of your deck
+  {
+    name: 'onPlayPlaceTrashByTypeAtBottom',
+    rx: /^\[On Play\] You may place (\d+) cards? with a type including "([^"]+)" from your trash at the bottom of your deck in any order: (.+)\.\s*$/,
+    emit: (m) => ({
+      clauses: [{
+        trigger: 'on_play',
+        cost: { bottomOfDeckFromTrash: parseInt(m[1], 10) },
+        action: { kind: 'draw', magnitude: 0 }, // V0: cost recorded, inner effect unparsed
+        verified: 'flagged',
+      }],
+    }),
+  },
+  // [Main] You may trash N cards from the top of your deck: K.O. up to M cost ≤ K
+  {
+    name: 'mainSelfMillCostKo',
+    rx: /^\[Main\] You may trash (\d+) cards? from the top of your deck: K\.O\. up to (\d+) of your opponent's Characters with a cost of (\d+) or less\.\s*$/,
+    emit: (m) => ({
+      clauses: [
+        { trigger: 'on_play', action: { kind: 'mill_self', magnitude: parseInt(m[1], 10) }, verified: 'auto' },
+        { trigger: 'on_play', action: { kind: 'removal_ko' }, target: { kind: 'opp_character', filter: { costMax: parseInt(m[3], 10) } }, verified: 'auto' },
+      ],
+    }),
+  },
+  // Conditional counter buff target: "Up to N of your Characters or [SpecificName]" — V0 captures the +M
+  {
+    name: 'counterBuffWithSpecific',
+    rx: /^\[Counter\] Up to (\d+) of your Characters or \[([^\]]+)\] gains \+(\d+) power during this battle\.\s*$/,
+    emit: (m) => ({
+      clauses: [{ trigger: 'on_play', action: { kind: 'power_buff', magnitude: parseInt(m[3], 10), duration: 'this_battle' }, target: { kind: 'your_leader' }, verified: 'flagged' }],
     }),
   },
 ];
 
 /** Pre-process a clause: if it starts with `[<trigger>] DON!! −N (...): <rest>`,
  *  extract the cost and return both `{ trigger, cost, restClause }`. Returns
- *  null when no DON-cost prefix present. */
+ *  null when no DON-cost prefix present. Accepts both the long parenthetical
+ *  reminder form AND the short colon-only form. */
 function stripDonCostPrefix(clauseText) {
-  const m = clauseText.match(/^(\[(?:On Play|Main|When Attacking|Activate: Main\] \[Once Per Turn|Activate: Main|Counter|On Your Opponent's Attack|On K\.O\.)\]) DON!! −(\d+) \(You may return the specified number of DON!! cards from your field to your DON!! deck\.\): (.+)$/);
+  // Long form with parenthetical reminder.
+  const long = clauseText.match(/^(\[(?:On Play|Main|When Attacking|Activate: Main\] \[Once Per Turn|Activate: Main|Counter|On Your Opponent's Attack|On K\.O\.)\]) DON!! −(\d+) \(You may return the specified number of DON!! cards from your field to your DON!! deck\.\): (.+)$/);
+  if (long) {
+    return { triggerPrefix: long[1], donCost: parseInt(long[2], 10), restClause: `${long[1]} ${long[3]}` };
+  }
+  // Short form: `[Trigger] DON!! −N: rest.`
+  const short = clauseText.match(/^(\[(?:On Play|Main|When Attacking|Activate: Main\] \[Once Per Turn|Activate: Main|Counter|On Your Opponent's Attack|On K\.O\.)\]) DON!! −(\d+): (.+)$/);
+  if (short) {
+    return { triggerPrefix: short[1], donCost: parseInt(short[2], 10), restClause: `${short[1]} ${short[3]}` };
+  }
+  return null;
+}
+
+/** Pre-process: strip a "you may trash N from hand:" discard-cost prefix.
+ *  Returns `{ discardHand, restClause }` or null. */
+function stripDiscardCostPrefix(clauseText) {
+  const m = clauseText.match(/^(\[(?:On Play|Main|When Attacking|Activate: Main\] \[Once Per Turn|Activate: Main|Counter|On Your Opponent's Attack|On K\.O\.)\]) You may trash (\d+) cards? from your hand: (.+)$/);
   if (!m) return null;
-  return {
-    triggerPrefix: m[1],
-    donCost: parseInt(m[2], 10),
-    restClause: `${m[1]} ${m[3]}`,
-  };
+  return { triggerPrefix: m[1], discardHand: parseInt(m[2], 10), restClause: `${m[1]} ${m[3]}` };
 }
 
 function matchClause(clauseText) {
@@ -528,7 +615,6 @@ function matchClause(clauseText) {
       const r = stripped.restClause.match(m.rx);
       if (r) {
         const frag = m.emit(r);
-        // Attach donCost to each emitted clause.
         if (frag.clauses) {
           frag.clauses = frag.clauses.map((c) => ({
             ...c,
@@ -536,6 +622,23 @@ function matchClause(clauseText) {
           }));
         }
         return { ...frag, _patternName: `${m.name}+donCost` };
+      }
+    }
+  }
+  // Try after stripping a discard-cost prefix.
+  const dis = stripDiscardCostPrefix(t);
+  if (dis) {
+    for (const m of matchers) {
+      const r = dis.restClause.match(m.rx);
+      if (r) {
+        const frag = m.emit(r);
+        if (frag.clauses) {
+          frag.clauses = frag.clauses.map((c) => ({
+            ...c,
+            cost: { ...(c.cost ?? {}), discardHand: dis.discardHand },
+          }));
+        }
+        return { ...frag, _patternName: `${m.name}+discard` };
       }
     }
   }
