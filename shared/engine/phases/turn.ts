@@ -4,6 +4,7 @@
 
 import type { GameState, PlayerId } from '../GameState';
 import { RULES } from '../GameState';
+import { publishTrigger } from '../effectSpec/triggerBus-v2';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
@@ -20,6 +21,9 @@ const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 export function runRefreshPhase(state: GameState): GameState {
   const next: GameState = structuredClone(state);
   const p = next.players[next.activePlayer];
+  // A.3.9: opp's view of "their refresh starting" — publish at_opp_refresh
+  // to the v2 bus. No subscribers in V0.
+  publishTrigger('at_opp_refresh', next, { refreshingPlayer: next.activePlayer });
 
   // D5 (CR §6-2-3): detach attached DON BEFORE the rest→active flip so the
   // returning DON itself comes back active this Refresh (consistent with §6-2-4
@@ -159,6 +163,10 @@ export function endTurn(state: GameState): GameState {
   }
 
   next.history.push({ type: 'TURN_ENDED', player: next.activePlayer });
+  // A.3.9: publish end-of-turn triggers BEFORE flipping activePlayer so
+  // subscribers see "whose turn is ending" via state.activePlayer.
+  publishTrigger('at_end_of_turn_self', next, { player: next.activePlayer });
+  publishTrigger('at_end_of_turn', next, { player: next.activePlayer });
   next.activePlayer = OTHER[next.activePlayer];
   next.turn += 1;
   next.phase = 'refresh';
