@@ -128,27 +128,40 @@ function wait(ms: number): Promise<void> {
  *  order. (The OpponentActionBanner that previously consumed this was
  *  removed 2026-05-29 per owner direction — slow visible moves beat banner
  *  pills.) */
+/** Whether the upcoming REFRESH phase has anything visible to do. If none of
+ *  these are true the un-rest action is a no-op; we skip the action-hold so
+ *  the pill still ticks through (250ms PILL_BEAT_MS) but we don't wait an
+ *  extra ~1s for imaginary cards. Owner direction 2026-05-30. */
+function hasRefreshWork(state: GameState): boolean {
+  const p = state.players[state.activePlayer];
+  if (p.leader.rested) return true;
+  if (p.leader.attachedDon.length > 0) return true;
+  if (p.donRested.length > 0) return true;
+  if (p.stage && (p.stage.rested || p.stage.attachedDon.length > 0)) return true;
+  for (const inst of p.field) {
+    if (inst.rested) return true;
+    if (inst.summoningSick) return true;
+    if (inst.attachedDon.length > 0) return true;
+  }
+  return false;
+}
+
 async function runPhasePipelineWithDelays(
   get: () => GameStore,
   set: (partial: Partial<GameStore>) => void,
 ): Promise<void> {
   if (get().state.phase !== 'refresh') return;
 
-  // Sequential pacing (owner direction 2026-05-30): each phase shows its pill
-  // FIRST for PILL_BEAT_MS, then runs its action while the pill is still
-  // highlighted (BETWEEN_PHASE_DELAY_MS), then pauses before advancing the
-  // pill. The engine's phase-functions auto-advance state.phase to the NEXT
-  // phase as a side-effect; we override that back to the CURRENT phase so the
-  // pill stays aligned with the visible action, then explicitly transition
-  // between actions.
+  // Sequential pacing (owner direction 2026-05-30): pill flashes for
+  // PILL_BEAT_MS BEFORE the phase's action runs. After the action commits, we
+  // hold BETWEEN_PHASE_DELAY_MS + POST_ACTION_PAUSE_MS — but ONLY if the
+  // phase actually did visible work. Empty phases skip the action-hold so the
+  // sequence stays REFRESH-pill → DRAW-pill → DON-pill at PILL_BEAT_MS cadence
+  // with action waits inserted only where motion exists.
 
   // === REFRESH ===
-  // Entry: state.phase === 'refresh' already (set by endTurn / mulligan close).
-  // Pill highlights REFRESH alone for a beat before any motion.
   await wait(PILL_BEAT_MS);
-  // Run engine refresh; it sets phase='draw'. Override back to 'refresh' so
-  // the pill stays on REFRESH while the un-rest animation plays out. Splice a
-  // synthetic refresh marker into history for any history-driven UI.
+  const refreshDidWork = hasRefreshWork(get().state);
   let s = runRefreshPhase(get().state);
   const last = s.history.length - 1;
   if (last >= 0 && s.history[last].type === 'PHASE_CHANGED') {
@@ -158,31 +171,38 @@ async function runPhasePipelineWithDelays(
   }
   s = { ...s, phase: 'refresh' };
   set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });
-  await wait(BETWEEN_PHASE_DELAY_MS);
-  await wait(POST_ACTION_PAUSE_MS);
+  if (refreshDidWork) {
+    await wait(BETWEEN_PHASE_DELAY_MS);
+    await wait(POST_ACTION_PAUSE_MS);
+  }
 
   // === DRAW ===
-  // Advance pill to DRAW alone first.
   set({ state: { ...get().state, phase: 'draw' } });
   await wait(PILL_BEAT_MS);
-  // Run engine draw; engine sets phase='don'. Override back to 'draw'.
+  const handBefore = get().state.players[get().state.activePlayer].hand.length;
   s = runDrawPhase(get().state);
   s = { ...s, phase: 'draw' };
   set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });
-  await wait(BETWEEN_PHASE_DELAY_MS);
-  await wait(POST_ACTION_PAUSE_MS);
+  const drawDidWork = s.players[s.activePlayer].hand.length > handBefore;
+  if (drawDidWork) {
+    await wait(BETWEEN_PHASE_DELAY_MS);
+    await wait(POST_ACTION_PAUSE_MS);
+  }
 
   // === DON ===
   set({ state: { ...get().state, phase: 'don' } });
   await wait(PILL_BEAT_MS);
+  const costBefore = get().state.players[get().state.activePlayer].donCostArea.length;
   s = runDonPhase(get().state);
   s = { ...s, phase: 'don' };
   set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });
-  await wait(BETWEEN_PHASE_DELAY_MS);
-  await wait(POST_ACTION_PAUSE_MS);
+  const donDidWork = s.players[s.activePlayer].donCostArea.length > costBefore;
+  if (donDidWork) {
+    await wait(BETWEEN_PHASE_DELAY_MS);
+    await wait(POST_ACTION_PAUSE_MS);
+  }
 
   // === MAIN ===
-  // Final transition — legalActions recomputed under 'main' so the player can act.
   const mainState: GameState = { ...get().state, phase: 'main' };
   set({ state: mainState, legalActions: getLegalActions(mainState, mainState.activePlayer) });
 }
