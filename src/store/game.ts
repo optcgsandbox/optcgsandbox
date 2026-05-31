@@ -100,15 +100,15 @@ function bootGame(seed: number): GameState {
  *  ARE the readability surface — they need room to land.
  */
 const AI_ACTION_DELAY_MS = 2500;
-const BETWEEN_PHASE_DELAY_MS = 1500;
+const BETWEEN_PHASE_DELAY_MS = 900;
 const TURN_HANDOFF_DELAY_MS = 2000;
 const OPP_VISIBLE_HOLD_MS = 800;
-// Owner direction 2026-05-30: phase pill highlights for ~600ms BEFORE the
-// phase's action runs, so the indicator change is visible on its own (no
-// simultaneous motion). After the action's BETWEEN_PHASE_DELAY_MS hold,
-// pause briefly before the next pill change.
-const PILL_BEAT_MS = 600;
-const POST_ACTION_PAUSE_MS = 500;
+// Owner direction 2026-05-30: pill→action→pill→action, tight. Pill alone for
+// PILL_BEAT_MS so it's perceivable, then action runs for
+// BETWEEN_PHASE_DELAY_MS (~animation length), then brief pause before next
+// pill. Previously 600/1500/500 = 2600ms per phase = too slow.
+const PILL_BEAT_MS = 250;
+const POST_ACTION_PAUSE_MS = 150;
 
 function wait(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
