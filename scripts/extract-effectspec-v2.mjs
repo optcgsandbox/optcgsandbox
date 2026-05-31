@@ -272,6 +272,113 @@ const matchers = [
       }],
     }),
   },
+  // B.4 patterns
+  {
+    name: 'counterDiscardBuff',
+    rx: /^\[Counter\] You may trash (\d+) cards? from your hand: Up to (\d+) of your Leader or Character cards gains \+(\d+) power during this battle\.\s*$/,
+    emit: (m) => ({
+      clauses: [{
+        trigger: 'on_play',
+        cost: { discardHand: parseInt(m[1], 10) },
+        action: { kind: 'power_buff', magnitude: parseInt(m[3], 10), duration: 'this_battle' },
+        target: { kind: 'your_leader' },
+        verified: 'auto',
+      }],
+    }),
+  },
+  {
+    name: 'replacementDiscardOnRemove',
+    rx: /^\[Once Per Turn\] If this Character would be removed from the field by your opponent's effect, you may trash (\d+) cards? from your hand instead\.\s*$/,
+    emit: (m) => ({
+      replacements: [{
+        trigger: 'would_be_removed',
+        cost: { discardHand: parseInt(m[1], 10) },
+        action: { kind: 'draw', magnitude: 0 }, // V0 placeholder — engine just blocks removal
+        conditional: true,
+        verified: 'flagged',
+      }],
+    }),
+  },
+  {
+    name: 'onPlayCostDebuff',
+    rx: /^\[On Play\] Give up to (\d+) of your opponent's Characters? −(\d+) cost during this turn\.\s*$/,
+    emit: (m) => ({
+      clauses: [{
+        trigger: 'on_play',
+        action: { kind: 'removal_cost_reduce', magnitude: parseInt(m[2], 10), duration: 'this_turn' },
+        target: { kind: 'opp_character' },
+        verified: 'auto',
+      }],
+    }),
+  },
+  {
+    name: 'onPlayRampDon',
+    rx: /^\[On Play\] Add up to (\d+) DON!! cards? from your DON!! deck and set it as active\.\s*$/,
+    emit: (m) => ({
+      clauses: [{
+        trigger: 'on_play',
+        action: { kind: 'ramp', magnitude: parseInt(m[1], 10) },
+        verified: 'auto',
+      }],
+    }),
+  },
+  {
+    name: 'onPlayPeekReorderOwnDeck',
+    rx: /^\[On Play\] Look at (\d+) cards? from the top of your deck and place them at the top or bottom of (?:the|your) deck in any order\.\s*$/,
+    emit: (m) => ({
+      clauses: [{
+        trigger: 'on_play',
+        action: { kind: 'peek_and_reorder_own_deck', count: parseInt(m[1], 10) },
+        verified: 'auto',
+      }],
+    }),
+  },
+  {
+    name: 'donXBlockerGrant',
+    rx: /^\[DON!! x(\d+)\] This Character gains \[Blocker\]\.\s*$/,
+    emit: (m) => ({
+      continuous: [{
+        condition: { type: 'if_have_given_don_min', n: parseInt(m[1], 10) },
+        action: { kind: 'grant_keyword_to_self', keyword: 'blocker' },
+      }],
+    }),
+  },
+  {
+    name: 'donXRushGrant',
+    rx: /^\[DON!! x(\d+)\] This Character gains \[Rush\]\.\s*$/,
+    emit: (m) => ({
+      continuous: [{
+        condition: { type: 'if_have_given_don_min', n: parseInt(m[1], 10) },
+        action: { kind: 'grant_keyword_to_self', keyword: 'rush' },
+      }],
+    }),
+  },
+  {
+    name: 'donXAttackKoByPower',
+    rx: /^\[DON!! x(\d+)\] \[When Attacking\] K\.O\. up to (\d+) of your opponent's Characters with (\d+) power or less\.\s*$/,
+    emit: (m) => ({
+      clauses: [{
+        trigger: 'when_attacking',
+        condition: { type: 'if_have_given_don_min', n: parseInt(m[1], 10) },
+        action: { kind: 'removal_ko' },
+        target: { kind: 'opp_character', filter: { powerMax: parseInt(m[3], 10) } },
+        verified: 'auto',
+      }],
+    }),
+  },
+  {
+    name: 'donXAttackDebuff',
+    rx: /^\[DON!! x(\d+)\] \[When Attacking\] Give up to (\d+) of your opponent's Characters? −(\d+) power during this turn\.\s*$/,
+    emit: (m) => ({
+      clauses: [{
+        trigger: 'when_attacking',
+        condition: { type: 'if_have_given_don_min', n: parseInt(m[1], 10) },
+        action: { kind: 'power_buff', magnitude: -parseInt(m[3], 10), duration: 'this_turn' },
+        target: { kind: 'opp_character' },
+        verified: 'auto',
+      }],
+    }),
+  },
 ];
 
 /** Pre-process a clause: if it starts with `[<trigger>] DON!! −N (...): <rest>`,
@@ -333,6 +440,12 @@ function matchCardEffectText(text) {
     if (frag.replacements) merged.replacements.push(...frag.replacements);
   }
   if (!anyMatched) return null;
+  // Don't write specs whose merged content is empty (e.g. card had only
+  // flavor parentheticals matched). Those carry no value and pollute the
+  // count.
+  if (merged.clauses.length === 0 && merged.continuous.length === 0 && merged.replacements.length === 0) {
+    return null;
+  }
   return {
     spec: {
       ...merged,

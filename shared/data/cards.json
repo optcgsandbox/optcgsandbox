@@ -1619,7 +1619,23 @@
       "ramp",
       "power_buff"
     ],
-    "effectText": "[On Play] Add up to 1 DON!! card from your DON!! deck and set it as active.<br>[When Attacking] Select up to 1 of your opponent's Characters. This Character's base power becomes the same as the selected Character's power during this turn."
+    "effectText": "[On Play] Add up to 1 DON!! card from your DON!! deck and set it as active.<br>[When Attacking] Select up to 1 of your opponent's Characters. This Character's base power becomes the same as the selected Character's power during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "EB02-001",
@@ -3774,7 +3790,23 @@
     "effectTags": [
       "searcher"
     ],
-    "effectText": "[On Play] Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order."
+    "effectText": "[On Play] Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "peek_and_reorder_own_deck",
+            "count": 5
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "EB03-024",
@@ -5962,7 +5994,23 @@
       "ramp",
       "recursion"
     ],
-    "effectText": "[On Play] Add up to 1 DON!! card from your DON!! deck and set it as active.<br>[Activate: Main] You may trash this Character: Play up to 1 {Kid Pirates} type Character card with a cost of 5 or less from your hand."
+    "effectText": "[On Play] Add up to 1 DON!! card from your DON!! deck and set it as active.<br>[Activate: Main] You may trash this Character: Play up to 1 {Kid Pirates} type Character card with a cost of 5 or less from your hand.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "EB04-040",
@@ -6466,7 +6514,25 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "If you have 2 or less Life cards, all of your yellow {Scientist} type Characters cannot be removed from the field by your opponent's effects.<br>[DON!! x1] This Character gains [Blocker]."
+    "effectText": "If you have 2 or less Life cards, all of your yellow {Scientist} type Characters cannot be removed from the field by your opponent's effects.<br>[DON!! x1] This Character gains [Blocker].",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "EB04-058",
@@ -7032,7 +7098,32 @@
     "effectTags": [
       "removal_ko"
     ],
-    "effectText": "[DON!! x1] [When Attacking] K.O. up to 1 of your opponent's Characters with 3000 power or less."
+    "effectText": "[DON!! x1] [When Attacking] K.O. up to 1 of your opponent's Characters with 3000 power or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "powerMax": 3000
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP01-018",
@@ -7159,7 +7250,31 @@
     "effectTags": [
       "power_buff"
     ],
-    "effectText": "[DON!! x1] [When Attacking] Give up to 2 of your opponent's Characters −2000 power during this turn."
+    "effectText": "[DON!! x1] [When Attacking] Give up to 2 of your opponent's Characters −2000 power during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -2000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP01-023",
@@ -8665,7 +8780,23 @@
     "effectTags": [
       "searcher"
     ],
-    "effectText": "[On Play] Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order."
+    "effectText": "[On Play] Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "peek_and_reorder_own_deck",
+            "count": 5
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP01-078",
@@ -9898,6 +10029,31 @@
     "effectText": "[On Play] Up to 1 of your Leader gains +2000 power until the start of your next turn. Then, you cannot add Life cards to your hand using your own effects during this turn.<br>[DON!! x2] [When Attacking] K.O. up to 1 of your opponent's Characters with 3000 power or less.",
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "powerMax": 3000
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -10226,7 +10382,32 @@
     "effectTags": [
       "removal_ko"
     ],
-    "effectText": "[DON!! x2] [When Attacking] K.O. up to 1 of your opponent's Characters with 2000 power or less."
+    "effectText": "[DON!! x2] [When Attacking] K.O. up to 1 of your opponent's Characters with 2000 power or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "powerMax": 2000
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP02-018",
@@ -11217,7 +11398,23 @@
       "searcher",
       "removal_bounce"
     ],
-    "effectText": "[On Play] Look at 3 cards from the top of your deck and place them at the top or bottom of the deck in any order.<br>[DON!! x1] [When Attacking] You may trash 1 card from your hand: Place up to 1 of your opponent's Characters with a cost of 1 or less at the bottom of the owner's deck."
+    "effectText": "[On Play] Look at 3 cards from the top of your deck and place them at the top or bottom of the deck in any order.<br>[DON!! x1] [When Attacking] You may trash 1 card from your hand: Place up to 1 of your opponent's Characters with a cost of 1 or less at the bottom of the owner's deck.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "peek_and_reorder_own_deck",
+            "count": 3
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "OP02-057",
@@ -11512,6 +11709,29 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -12551,7 +12771,27 @@
     "effectTags": [
       "removal_cost_reduce"
     ],
-    "effectText": "[On Play] Give up to 1 of your opponent's Characters −2 cost during this turn."
+    "effectText": "[On Play] Give up to 1 of your opponent's Characters −2 cost during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_cost_reduce",
+            "magnitude": 2,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP02-107",
@@ -13047,7 +13287,18 @@
     "effectText": "This Character cannot attack a Leader on the turn in which it is played.<br>[DON!! x1] This Character gains [Rush].<br>(This card can attack on the turn in which it is played.)",
     "effectSpecV2": {
       "clauses": [],
-      "continuous": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "rush"
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
       "verified": "flagged"
@@ -13234,7 +13485,31 @@
     "effectTags": [
       "power_buff"
     ],
-    "effectText": "[DON!! x1] [When Attacking] Give up to 1 of your opponent's Characters −2000 power during this turn."
+    "effectText": "[DON!! x1] [When Attacking] Give up to 1 of your opponent's Characters −2000 power during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -2000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP03-012",
@@ -14898,6 +15173,29 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -15313,7 +15611,18 @@
     "effectText": "[DON!! x1] This Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On K.O.] Play up to 1 Character card with a type including \"CP\" and a cost of 4 or less from your trash rested.",
     "effectSpecV2": {
       "clauses": [],
-      "continuous": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
       "verified": "flagged"
@@ -15480,6 +15789,29 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -16437,7 +16769,32 @@
     "effectTags": [
       "removal_ko"
     ],
-    "effectText": "[DON!! x1] [When Attacking] K.O. up to 1 of your opponent's Characters with 4000 power or less."
+    "effectText": "[DON!! x1] [When Attacking] K.O. up to 1 of your opponent's Characters with 4000 power or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "powerMax": 4000
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP04-014",
@@ -16538,6 +16895,29 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -19531,7 +19911,31 @@
     "effectTags": [
       "power_buff"
     ],
-    "effectText": "[DON!! x1] [When Attacking] Give up to 1 of your opponent's Characters −2000 power during this turn."
+    "effectText": "[DON!! x1] [When Attacking] Give up to 1 of your opponent's Characters −2000 power during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -2000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP05-015",
@@ -20125,6 +20529,29 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -25234,6 +25661,29 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -25654,7 +26104,32 @@
       "removal_ko",
       "ramp"
     ],
-    "effectText": "[DON!! x1] [When Attacking] K.O. up to 1 of your opponent's Characters with 2000 power or less."
+    "effectText": "[DON!! x1] [When Attacking] K.O. up to 1 of your opponent's Characters with 2000 power or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "powerMax": 2000
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP07-012",
@@ -28794,10 +29269,21 @@
     "effectText": "[DON!! x2] This Character gains [Rush].<br>(This card can attack on the turn in which it is played.)",
     "effectSpecV2": {
       "clauses": [],
-      "continuous": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "rush"
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "auto"
     }
   },
   {
@@ -31746,6 +32232,30 @@
     "effectText": "[On Play] Up to 1 of your Leader gains +1000 power until the end of your opponent's next turn.<br>[DON!! x1] [When Attacking] Give up to 1 of your opponent's Characters −1000 power during this turn.",
     "templateParams": {
       "power_buff": 1000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -1000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -38869,6 +39379,22 @@
     "effectText": "[On Play] Look at 3 cards from the top of your deck and place them at the top or bottom of the deck in any order.<br>[On Your Opponent's Attack] You may trash this Character: Up to 1 of your Leader gains +1000 power during this battle.",
     "templateParams": {
       "power_buff": 1000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "peek_and_reorder_own_deck",
+            "count": 3
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -42065,7 +42591,27 @@
       "blocker",
       "power_buff"
     ],
-    "effectText": "[Once Per Turn] If this Character would be removed from the field by your opponent's effect, you may trash 1 card from your hand instead.<br>[Opponent's Turn] If your Leader has the {Navy} type, this Character gains [Blocker] and +1000 power."
+    "effectText": "[Once Per Turn] If this Character would be removed from the field by your opponent's effect, you may trash 1 card from your hand instead.<br>[Opponent's Turn] If your Leader has the {Navy} type, this Character gains [Blocker] and +1000 power.",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [
+        {
+          "trigger": "would_be_removed",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "OP12-054",
@@ -45797,6 +46343,29 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -47313,10 +47882,21 @@
     "effectText": "[DON!! x2] This Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
     "effectSpecV2": {
       "clauses": [],
-      "continuous": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "auto"
     }
   },
   {
@@ -47485,7 +48065,31 @@
       "power_buff",
       "trigger"
     ],
-    "effectText": "[Opponent's Turn] [Once Per Turn] If your {Supernovas} type Character would be removed from the field by your opponent's effect, you may give your Leader −2000 power during this turn instead.<br>[DON!! x1] [When Attacking] Give up to 1 of your opponent's Characters −2000 power during this turn."
+    "effectText": "[Opponent's Turn] [Once Per Turn] If your {Supernovas} type Character would be removed from the field by your opponent's effect, you may give your Leader −2000 power during this turn instead.<br>[DON!! x1] [When Attacking] Give up to 1 of your opponent's Characters −2000 power during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -2000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "OP14-017",
@@ -48802,7 +49406,23 @@
     "effectTags": [
       "ramp"
     ],
-    "effectText": "[On Play] Add up to 1 DON!! card from your DON!! deck and set it as active.<br>[On K.O.] If your opponent has 6 or more DON!! cards on their field, play up to 1 {Donquixote Pirates} type Character card with a cost of 5 or less from your hand."
+    "effectText": "[On Play] Add up to 1 DON!! card from your DON!! deck and set it as active.<br>[On K.O.] If your opponent has 6 or more DON!! cards on their field, play up to 1 {Donquixote Pirates} type Character card with a cost of 5 or less from your hand.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "OP14-064",
@@ -49017,7 +49637,23 @@
       "ramp",
       "lifegain"
     ],
-    "effectText": "[On Play] Add up to 1 DON!! card from your DON!! deck and set it as active.<br>[On K.O.] DON!! −1: Add up to 1 card from the top of your deck to the top of your Life cards.<br>"
+    "effectText": "[On Play] Add up to 1 DON!! card from your DON!! deck and set it as active.<br>[On K.O.] DON!! −1: Add up to 1 card from the top of your deck to the top of your Life cards.<br>",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "OP14-073",
@@ -52910,6 +53546,29 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -53553,10 +54212,21 @@
     "effectText": "[DON!! x2] This Character gains [Rush].<br>(This card can attack on the turn in which it is played.)",
     "effectSpecV2": {
       "clauses": [],
-      "continuous": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "rush"
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "auto"
     }
   },
   {
@@ -53634,10 +54304,21 @@
     "effectText": "[DON!! x1] This Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
     "effectSpecV2": {
       "clauses": [],
-      "continuous": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "auto"
     }
   },
   {
@@ -54026,7 +54707,32 @@
     "effectTags": [
       "removal_ko"
     ],
-    "effectText": "[DON!! x1] [When Attacking] K.O. up to 1 of your opponent's Characters with 3000 power or less."
+    "effectText": "[DON!! x1] [When Attacking] K.O. up to 1 of your opponent's Characters with 3000 power or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "powerMax": 3000
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "P-020",
@@ -54710,7 +55416,23 @@
     "effectTags": [
       "searcher"
     ],
-    "effectText": "[On Play] Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order."
+    "effectText": "[On Play] Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "peek_and_reorder_own_deck",
+            "count": 5
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "P-050",
@@ -56645,10 +57367,21 @@
     "effectText": "[DON!! x2] This Character gains [Rush].<br>(This card can attack on the turn in which it is played.)",
     "effectSpecV2": {
       "clauses": [],
-      "continuous": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "rush"
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "auto"
     }
   },
   {
@@ -59044,7 +59777,27 @@
     "effectTags": [
       "removal_cost_reduce"
     ],
-    "effectText": "[On Play] Give up to 1 of your opponent's Characters −4 cost during this turn."
+    "effectText": "[On Play] Give up to 1 of your opponent's Characters −4 cost during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_cost_reduce",
+            "magnitude": 4,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST06-009",
@@ -59084,7 +59837,27 @@
     "effectTags": [
       "removal_cost_reduce"
     ],
-    "effectText": "[On Play] Give up to 1 of your opponent's Characters −3 cost during this turn."
+    "effectText": "[On Play] Give up to 1 of your opponent's Characters −3 cost during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_cost_reduce",
+            "magnitude": 3,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST06-011",
@@ -59262,7 +60035,27 @@
     "effectTags": [
       "removal_cost_reduce"
     ],
-    "effectText": "[On Play] Give up to 1 of your opponent's Characters −1 cost during this turn.<br>[Activate: Main] You may rest this Stage: If your Leader has the {Navy} type, give up to 1 of your opponent's Characters −1 cost during this turn."
+    "effectText": "[On Play] Give up to 1 of your opponent's Characters −1 cost during this turn.<br>[Activate: Main] You may rest this Stage: If your Leader has the {Navy} type, give up to 1 of your opponent's Characters −1 cost during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_cost_reduce",
+            "magnitude": 1,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "ST07-001",
@@ -59877,7 +60670,27 @@
     "effectTags": [
       "removal_cost_reduce"
     ],
-    "effectText": "[On Play] Give up to 1 of your opponent's Characters −2 cost during this turn."
+    "effectText": "[On Play] Give up to 1 of your opponent's Characters −2 cost during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_cost_reduce",
+            "magnitude": 2,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST08-009",
@@ -60529,7 +61342,31 @@
       "power_buff",
       "removal_cost_reduce"
     ],
-    "effectText": "[DON!! x1] [When Attacking] Give up to 1 of your opponent's Characters −2000 power during this turn."
+    "effectText": "[DON!! x1] [When Attacking] Give up to 1 of your opponent's Characters −2000 power during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -2000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST10-006",
@@ -61278,7 +62115,23 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "[On Play] Look at 3 cards from the top of your deck and place them at the top or bottom of the deck in any order.<br>[When Attacking] Reveal 1 card from the top of your deck and play up to 1 Character card with a cost of 2 rested. Then, place the rest at the top or bottom of your deck."
+    "effectText": "[On Play] Look at 3 cards from the top of your deck and place them at the top or bottom of the deck in any order.<br>[When Attacking] Reveal 1 card from the top of your deck and play up to 1 Character card with a cost of 2 rested. Then, place the rest at the top or bottom of your deck.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "peek_and_reorder_own_deck",
+            "count": 3
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "ST12-014",
@@ -63371,7 +64224,32 @@
     "effectTags": [
       "removal_ko"
     ],
-    "effectText": "[DON!! x2] [When Attacking] K.O. up to 1 of your opponent's Characters with 4000 power or less."
+    "effectText": "[DON!! x2] [When Attacking] K.O. up to 1 of your opponent's Characters with 4000 power or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "powerMax": 4000
+            }
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST21-011",
@@ -63501,7 +64379,25 @@
       "ramp",
       "rush"
     ],
-    "effectText": "[DON!! x2] This Character gains [Rush].<br>[On K.O.] Play up to 1 red Character card with 6000 power or less other than [Roronoa Zoro] from your hand."
+    "effectText": "[DON!! x2] This Character gains [Rush].<br>[On K.O.] Play up to 1 red Character card with 6000 power or less other than [Roronoa Zoro] from your hand.",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "rush"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "ST21-016",
@@ -64517,7 +65413,26 @@
     "effectTags": [
       "ramp"
     ],
-    "effectText": "[On Play] DON!! −2 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Add up to 1 DON!! card from your DON!! deck and set it as active."
+    "effectText": "[On Play] DON!! −2 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Add up to 1 DON!! card from your DON!! deck and set it as active.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1
+          },
+          "verified": "auto",
+          "cost": {
+            "donCost": 2
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST26-004",
@@ -64807,7 +65722,25 @@
     "effectTags": [
       "blocker"
     ],
-    "effectText": "[DON!! x2] This Character gains [Blocker].<br>[On Play] Your {Land of Wano} type Leader gains [Banish] during this turn."
+    "effectText": "[DON!! x2] This Character gains [Blocker].<br>[On Play] Your {Land of Wano} type Leader gains [Banish] during this turn.",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "ST28-003",
