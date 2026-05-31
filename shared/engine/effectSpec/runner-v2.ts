@@ -7,7 +7,7 @@
 
 import type { CardInstance, GameState, PlayerId } from '../GameState';
 import type { Card } from '../cards/Card';
-import type { EffectConditionV2, EffectTargetV2, TargetFilter } from './types-v2';
+import type { EffectActionV2, EffectConditionV2, EffectTargetV2, TargetFilter } from './types-v2';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
@@ -307,5 +307,259 @@ export function resolveTargetV2(
 
     default:
       return [];
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Action group 1 — card movement & draw — Sub-phase A.3.3
+// ─────────────────────────────────────────────────────────────────────
+
+export interface ActionContext {
+  sourceInstanceId: string;
+  controller: PlayerId;
+}
+
+/** Compute a magnitude from an action's field. Numeric literals pass
+ *  through; formula objects evaluate against state. V0 supports the
+ *  common formula kinds; unknown formulas default to 1. */
+function resolveMagnitude(
+  state: GameState,
+  controller: PlayerId,
+  m: number | { kind: string; [k: string]: unknown } | undefined,
+  fallback: number,
+): number {
+  if (typeof m === 'number') return m;
+  if (!m) return fallback;
+  const opp = state.players[OTHER[controller]];
+  const me = state.players[controller];
+  if (m.kind === 'match_opp_don') return opp.donCostArea.length;
+  if (m.kind === 'read_state') {
+    switch (m.source) {
+      case 'own_trash_count': return me.trash.length;
+      case 'opp_trash_count': return opp.trash.length;
+      case 'own_hand_count': return me.hand.length;
+      case 'opp_hand_count': return opp.hand.length;
+      case 'own_life_count': return me.life.length;
+      case 'opp_life_count': return opp.life.length;
+      case 'own_don_count': return me.donCostArea.length;
+      case 'opp_don_count': return opp.donCostArea.length;
+      default: return fallback;
+    }
+  }
+  return fallback;
+}
+
+/** Apply one EffectActionV2 to state. Targets are pre-resolved via
+ *  resolveTargetV2. Mutates `state` in place per the project convention
+ *  (callers are responsible for cloning). Returns the same state ref for
+ *  chaining.
+ *
+ *  Sub-phase A.3.3 ships action GROUP 1 only (card movement + draw +
+ *  life-zone manipulation + zone search). Other action groups (power /
+ *  cost / lock / DON / replacement / negation) land in A.3.4, A.3.5.
+ *  Unknown action kinds in group 1 are no-ops; cross-group kinds fall
+ *  through to a "not yet handled" return without throwing.
+ */
+export function applyActionV2(
+  state: GameState,
+  ctx: ActionContext,
+  action: EffectActionV2,
+  targets: string[],
+): GameState {
+  const me = state.players[ctx.controller];
+  const opp = state.players[OTHER[ctx.controller]];
+
+  switch (action.kind) {
+    case 'draw': {
+      const n = resolveMagnitude(state, ctx.controller, action.magnitude, 1);
+      for (let i = 0; i < n && me.deck.length > 0; i++) {
+        me.hand.push(me.deck.shift()!);
+      }
+      return state;
+    }
+    case 'mill_self': {
+      const n = action.magnitude ?? 1;
+      for (let i = 0; i < n && me.deck.length > 0; i++) {
+        me.trash.push(me.deck.shift()!);
+      }
+      return state;
+    }
+    case 'mill_opp': {
+      const n = action.magnitude ?? 1;
+      for (let i = 0; i < n && opp.deck.length > 0; i++) {
+        opp.trash.push(opp.deck.shift()!);
+      }
+      return state;
+    }
+    case 'lifegain': {
+      const n = action.magnitude ?? 1;
+      for (let i = 0; i < n && me.deck.length > 0; i++) {
+        me.life.unshift(me.deck.shift()!);
+      }
+      return state;
+    }
+    case 'life_to_hand': {
+      const n = action.magnitude ?? 1;
+      for (let i = 0; i < n && me.life.length > 0; i++) {
+        me.hand.push(me.life.shift()!);
+      }
+      return state;
+    }
+    case 'add_to_own_life_top': {
+      // V0 ignores faceUp flag (engine doesn't track per-life face state).
+      if (action.from === 'top_of_deck' && me.deck.length > 0) {
+        me.life.unshift(me.deck.shift()!);
+      } else if (action.from === 'hand' && targets.length > 0) {
+        const id = targets[0];
+        const idx = me.hand.indexOf(id);
+        if (idx !== -1) { me.hand.splice(idx, 1); me.life.unshift(id); }
+      } else if (action.from === 'own_trash' && targets.length > 0) {
+        const id = targets[0];
+        const idx = me.trash.indexOf(id);
+        if (idx !== -1) { me.trash.splice(idx, 1); me.life.unshift(id); }
+      }
+      return state;
+    }
+    case 'add_to_opp_life_top': {
+      // V0 takes from top of opp deck (Bandai's "Place at top of opp Life face-up").
+      if (opp.deck.length > 0) opp.life.unshift(opp.deck.shift()!);
+      return state;
+    }
+    case 'add_to_opp_hand_from_opp_life': {
+      if (opp.life.length > 0) opp.hand.push(opp.life.shift()!);
+      return state;
+    }
+    case 'trash_face_up_life': {
+      // V0: face-up tracking absent → no-op. Acknowledged limitation.
+      return state;
+    }
+    case 'turn_all_own_life_face_down': {
+      // V0: face-up tracking absent → no-op.
+      return state;
+    }
+    case 'peek_and_reorder_own_life':
+    case 'peek_and_reorder_opp_life':
+    case 'peek_and_reorder_own_deck': {
+      // V0: no UI for reorder; no-op.
+      return state;
+    }
+    case 'searcher_peek': {
+      // V0: take first matching card from deck → hand (filter applied).
+      for (let i = 0; i < me.deck.length; i++) {
+        const inst = state.instances[me.deck[i]];
+        const card = inst ? state.cardLibrary[inst.cardId] : undefined;
+        if (inst && card && matchesFilter(state, inst, action.filter)) {
+          me.deck.splice(i, 1);
+          me.hand.push(inst.instanceId);
+          return state;
+        }
+      }
+      // No match → no-op.
+      return state;
+    }
+    case 'reveal_opp_hand': {
+      const known = state.knownByViewer?.[ctx.controller];
+      if (!known) return state;
+      for (const id of opp.hand) if (!known.includes(id)) known.push(id);
+      return state;
+    }
+    case 'peek_opp_deck': {
+      const known = state.knownByViewer?.[ctx.controller];
+      if (!known) return state;
+      const n = action.count;
+      for (let i = 0; i < n && i < opp.deck.length; i++) {
+        if (!known.includes(opp.deck[i])) known.push(opp.deck[i]);
+      }
+      return state;
+    }
+    case 'take_from_opp_hand': {
+      if (opp.hand.length === 0) return state;
+      const taken = targets.length > 0 && opp.hand.includes(targets[0])
+        ? targets[0]
+        : opp.hand[0];
+      const idx = opp.hand.indexOf(taken);
+      opp.hand.splice(idx, 1);
+      me.hand.push(taken);
+      return state;
+    }
+    case 'search_deck': {
+      // V0: same as searcher_peek but with filter applied.
+      for (let i = 0; i < me.deck.length; i++) {
+        const inst = state.instances[me.deck[i]];
+        const card = inst ? state.cardLibrary[inst.cardId] : undefined;
+        if (inst && card && matchesFilter(state, inst, action.filter)) {
+          me.deck.splice(i, 1);
+          me.hand.push(inst.instanceId);
+          return state;
+        }
+      }
+      return state;
+    }
+    case 'bottom_of_deck_from_trash': {
+      const n = typeof action.magnitude === 'number' ? action.magnitude : 1;
+      // V0: oldest-N from trash to bottom of deck.
+      for (let i = 0; i < n && me.trash.length > 0; i++) {
+        me.deck.push(me.trash.shift()!);
+      }
+      return state;
+    }
+    case 'recursion': {
+      // V0: pick the first match from trash by filter, return to hand.
+      const f = action.filter;
+      for (let i = me.trash.length - 1; i >= 0; i--) {
+        const inst = state.instances[me.trash[i]];
+        if (inst && matchesFilter(state, inst, f)) {
+          me.trash.splice(i, 1);
+          me.hand.push(inst.instanceId);
+          return state;
+        }
+      }
+      return state;
+    }
+    case 'move_to_top': {
+      // Move target from hand/trash to top of deck.
+      if (targets.length === 0) return state;
+      const id = targets[0];
+      const hIdx = me.hand.indexOf(id);
+      if (hIdx !== -1) { me.hand.splice(hIdx, 1); me.deck.unshift(id); return state; }
+      const tIdx = me.trash.indexOf(id);
+      if (tIdx !== -1) { me.trash.splice(tIdx, 1); me.deck.unshift(id); return state; }
+      return state;
+    }
+    case 'exile': {
+      if (targets.length === 0) return state;
+      const id = targets[0];
+      for (const pid of ['A', 'B'] as PlayerId[]) {
+        const pl = state.players[pid];
+        const fIdx = pl.field.findIndex((i) => i.instanceId === id);
+        if (fIdx !== -1) {
+          const removed = pl.field.splice(fIdx, 1)[0];
+          while (removed.attachedDon.length > 0) pl.donRested.push(removed.attachedDon.shift()!);
+          pl.exile.push(removed.instanceId);
+          return state;
+        }
+        if (pl.stage && pl.stage.instanceId === id) {
+          while (pl.stage.attachedDon.length > 0) pl.donRested.push(pl.stage.attachedDon.shift()!);
+          pl.exile.push(pl.stage.instanceId);
+          pl.stage = null;
+          return state;
+        }
+        const tIdx = pl.trash.indexOf(id);
+        if (tIdx !== -1) { pl.trash.splice(tIdx, 1); pl.exile.push(id); return state; }
+        const hIdx = pl.hand.indexOf(id);
+        if (hIdx !== -1) { pl.hand.splice(hIdx, 1); pl.exile.push(id); return state; }
+      }
+      return state;
+    }
+    // Composite actions deferred to later sub-phases.
+    case 'reveal_top_and_conditional_play':
+    case 'choose_cost_reveal_opp_match':
+    case 'choose_one':
+      // V0 stub — no-op until A.3.5 (composite handlers) lands.
+      return state;
+    default:
+      // Cross-group action kinds (power_buff, removal_ko, etc.) are
+      // handled by A.3.4 / A.3.5 — fall through as no-op for now.
+      return state;
   }
 }
