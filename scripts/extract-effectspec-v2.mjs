@@ -379,6 +379,125 @@ const matchers = [
       }],
     }),
   },
+  // B.5 patterns
+  // Counter buff + any "Then, ..." follow-up: capture the +N base only;
+  // the follow-up clause is out of V0 scope. Flagged.
+  {
+    name: 'counterBuffWithThen',
+    rx: /^\[Counter\] Up to (\d+) of your (?:[^.]*?Leader or Character cards|Leader|Character cards) gains \+(\d+) power during this battle\. Then,.+\.\s*$/,
+    emit: (m) => ({
+      clauses: [{
+        trigger: 'on_play',
+        action: { kind: 'power_buff', magnitude: parseInt(m[2], 10), duration: 'this_battle' },
+        target: { kind: 'your_leader' },
+        verified: 'flagged',
+      }],
+    }),
+  },
+  // Counter buff for own leader only (no Character)
+  {
+    name: 'counterBuffOwnLeaderOnly',
+    rx: /^\[Counter\] Up to (\d+) of your Leader gains \+(\d+) power during this battle\.\s*$/,
+    emit: (m) => ({
+      clauses: [{
+        trigger: 'on_play',
+        action: { kind: 'power_buff', magnitude: parseInt(m[2], 10), duration: 'this_battle' },
+        target: { kind: 'your_leader' },
+        verified: 'auto',
+      }],
+    }),
+  },
+  // Generic rest-self-as-cost activate: "[Activate: Main] You may rest this Character: <effect>"
+  // V0: drop the cost detail and just emit the inner action via recursive match.
+  {
+    name: 'activateRestSelfAny',
+    rx: /^\[Activate: Main\] You may rest this Character: (.+)\.\s*$/,
+    emit: (m) => {
+      // Try to match the inner content as a "[Main] X" or "[On Play] X" by
+      // wrapping in [Main] prefix. If no inner pattern matches, return null
+      // by emitting a generic flagged stub.
+      const inner = `[Main] ${m[1]}.`;
+      for (const matcher of matchers) {
+        const r = inner.match(matcher.rx);
+        if (r && matcher.name !== 'activateRestSelfAny') {
+          const frag = matcher.emit(r);
+          if (frag.clauses) {
+            frag.clauses = frag.clauses.map((c) => ({ ...c, trigger: 'activate_main', cost: { ...(c.cost ?? {}), restSelf: true } }));
+          }
+          return frag;
+        }
+      }
+      return {
+        clauses: [{
+          trigger: 'activate_main',
+          cost: { restSelf: true },
+          action: { kind: 'draw', magnitude: 0 }, // placeholder
+          verified: 'flagged',
+        }],
+      };
+    },
+  },
+  // Draw + discard combo: "[On Play] Draw N cards and trash M cards from your hand."
+  {
+    name: 'onPlayDrawTrash',
+    rx: /^\[On Play\] Draw (\d+) cards? and trash (\d+) cards? from your hand\.\s*$/,
+    emit: (m) => ({
+      clauses: [{
+        trigger: 'on_play',
+        cost: { discardHand: parseInt(m[2], 10) },
+        action: { kind: 'draw', magnitude: parseInt(m[1], 10) },
+        verified: 'auto',
+      }],
+    }),
+  },
+  // Bounce by cost without "opponent's" prefix variant
+  {
+    name: 'onPlayBounceCostNoQualifier',
+    rx: /^\[On Play\] Return up to (\d+) Character with a cost of (\d+) or less to the owner's hand\.\s*$/,
+    emit: (m) => ({
+      clauses: [{ trigger: 'on_play', action: { kind: 'removal_bounce' }, target: { kind: 'opp_character', filter: { costMax: parseInt(m[2], 10) } }, verified: 'flagged' }],
+    }),
+  },
+  // [End of Your Turn] Set up to N of your DON!! cards as active.
+  {
+    name: 'endOfTurnSetDonActive',
+    rx: /^\[End of Your Turn\] Set up to (\d+) of your DON!! cards? as active\.\s*$/,
+    emit: (m) => ({
+      clauses: [{
+        trigger: 'at_end_of_turn_self',
+        action: { kind: 'ramp', magnitude: parseInt(m[1], 10) },
+        verified: 'flagged', // schema's `ramp` adds to active pool which is roughly right
+      }],
+    }),
+  },
+  // [DON!! xN] This Character gains [Double Attack].
+  {
+    name: 'donXDoubleAttackGrant',
+    rx: /^\[DON!! x(\d+)\] This Character gains \[Double Attack\]\.\s*$/,
+    emit: (m) => ({
+      continuous: [{
+        condition: { type: 'if_have_given_don_min', n: parseInt(m[1], 10) },
+        action: { kind: 'grant_keyword_to_self', keyword: 'double_attack' },
+      }],
+    }),
+  },
+  // [Main] Look at N cards from the top of your deck and place them at the top or bottom of your deck.
+  {
+    name: 'mainPeekReorder',
+    rx: /^\[Main\] Look at (\d+) cards? from the top of your deck and place them at the top or bottom of (?:the|your) deck in any order\.\s*$/,
+    emit: (m) => ({
+      clauses: [{ trigger: 'on_play', action: { kind: 'peek_and_reorder_own_deck', count: parseInt(m[1], 10) }, verified: 'auto' }],
+    }),
+  },
+  // [On Play] Place up to N Character with a cost of N or less at the bottom of the owner's deck.
+  {
+    name: 'onPlayPlaceAtBottom',
+    rx: /^\[On Play\] Place up to (\d+) Character with a cost of (\d+) or less at the bottom of the owner's deck\.\s*$/,
+    emit: (m) => ({
+      // Approximation: treat as removal_bounce since "bottom of deck" is removal from field.
+      clauses: [{ trigger: 'on_play', action: { kind: 'removal_bounce' }, target: { kind: 'opp_character', filter: { costMax: parseInt(m[2], 10) } }, verified: 'flagged' }],
+    }),
+  },
 ];
 
 /** Pre-process a clause: if it starts with `[<trigger>] DON!! −N (...): <rest>`,

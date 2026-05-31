@@ -434,7 +434,26 @@
     "effectTags": [
       "removal_ko"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: K.O. up to 1 of your opponent's rested Characters with a cost of 1 or less."
+    "effectText": "[Activate: Main] You may rest this Character: K.O. up to 1 of your opponent's rested Characters with a cost of 1 or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "EB01-017",
@@ -516,6 +535,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -726,6 +765,25 @@
     "templateParams": {
       "draw": 2,
       "power_buff": 1000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 2
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -1165,6 +1223,25 @@
     "effectText": "[Activate: Main] You may rest this Character: Up to 1 of your [Spandam] Characters gains +3000 power during this turn.",
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -1264,7 +1341,26 @@
     "effectTags": [
       "removal_cost_reduce"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Give up to 1 of your opponent's Characters −4 cost during this turn."
+    "effectText": "[Activate: Main] You may rest this Character: Give up to 1 of your opponent's Characters −4 cost during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "EB01-049",
@@ -1681,6 +1777,25 @@
     "effectText": "[Activate: Main] You may rest this Character: Up to 1 of your {Revolutionary Army} type Characters other than [Sabo] gains +2000 power during this turn.",
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -3125,6 +3240,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 1000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 1000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -3427,6 +3562,25 @@
     "effectText": "[Activate: Main] You may rest this Character: Up to 1 of your Characters with no base effect gains +2000 power during this turn.",
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -3511,7 +3665,26 @@
     "effectTags": [
       "removal_bounce"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Rest up to 1 of your opponent's DON!! cards or {Animal} or {SMILE} type Characters with a cost of 3 or less."
+    "effectText": "[Activate: Main] You may rest this Character: Rest up to 1 of your opponent's DON!! cards or {Animal} or {SMILE} type Characters with a cost of 3 or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "EB03-013",
@@ -3557,7 +3730,26 @@
     "effectTags": [
       "ramp"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Give up to 2 rested DON!! cards to your <Slash> attribute Leader."
+    "effectText": "[Activate: Main] You may rest this Character: Give up to 2 rested DON!! cards to your <Slash> attribute Leader.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "EB03-015",
@@ -3580,7 +3772,26 @@
       "ramp",
       "disruption"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Give up to 1 rested DON!! card to 1 of your {Fish-Man} or {Merfolk} type Leader or Character cards. Then, rest up to 1 of your opponent's Characters with a cost of 2 or less."
+    "effectText": "[Activate: Main] You may rest this Character: Give up to 1 rested DON!! card to 1 of your {Fish-Man} or {Merfolk} type Leader or Character cards. Then, rest up to 1 of your opponent's Characters with a cost of 2 or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "EB03-016",
@@ -3712,6 +3923,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -5458,6 +5689,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -5648,6 +5899,25 @@
     "effectText": "[On Play] Draw 2 cards and trash 1 card from your hand.",
     "templateParams": {
       "draw": 2
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 2
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -6177,6 +6447,25 @@
     "effectText": "[Activate: Main] You may rest this Character: If there are 2 or more Characters with a cost of 8 or more, up to 1 of your {Revolutionary Army} type Leader or Character cards gains +1000 power during this turn.",
     "templateParams": {
       "power_buff": 1000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -7207,6 +7496,29 @@
     "effectText": "[Activate: Main] You may rest this Character: Up to 1 of your Leader or Character cards gains +2000 power during this turn.",
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto",
+          "cost": {
+            "restSelf": true
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -7379,6 +7691,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -8260,6 +8592,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -8288,6 +8640,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -8581,7 +8953,28 @@
     "effectTags": [
       "removal_bounce"
     ],
-    "effectText": "[On Play] Place up to 1 Character with a cost of 7 or less at the bottom of the owner's deck."
+    "effectText": "[On Play] Place up to 1 Character with a cost of 7 or less at the bottom of the owner's deck.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 7
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP01-071",
@@ -8603,7 +8996,28 @@
     "effectTags": [
       "removal_bounce"
     ],
-    "effectText": "[On Play] Place up to 1 Character with a cost of 3 or less at the bottom of the owner's deck."
+    "effectText": "[On Play] Place up to 1 Character with a cost of 3 or less at the bottom of the owner's deck.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 3
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP01-072",
@@ -9048,6 +9462,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -9096,6 +9530,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -9827,6 +10281,29 @@
     "templateParams": {
       "draw": 1,
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged",
+          "cost": {
+            "donCost": 2
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -9853,6 +10330,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -10186,7 +10683,26 @@
     "effectTags": [
       "cost_reduction"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Play up to 1 red Character other than [Dogura] with a cost of 1 from your hand."
+    "effectText": "[Activate: Main] You may rest this Character: Play up to 1 red Character other than [Dogura] with a cost of 1 from your hand.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP02-011",
@@ -10337,6 +10853,25 @@
     "effectText": "[Activate: Main] You may rest this Character: Up to 1 of your red Characters with a cost of 1 gains +3000 power during this turn.",
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -10694,7 +11229,23 @@
       "ramp",
       "trigger"
     ],
-    "effectText": "[End of Your Turn] Set up to 1 of your DON!! cards as active."
+    "effectText": "[End of Your Turn] Set up to 1 of your DON!! cards as active.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "at_end_of_turn_self",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP02-030",
@@ -11113,6 +11664,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 6000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 6000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -11758,6 +12329,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 6000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 6000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -12952,6 +13543,25 @@
     "effectText": "[Activate: Main] You may rest this Character: Give up to 1 of your opponent's Characters −1 cost during this turn. Then, up to 1 of your Leader or Character cards gains +1000 power during this turn.",
     "templateParams": {
       "power_buff": 1000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -13862,7 +14472,18 @@
     "effectText": "[On Play] You may trash 1 card from your hand: K.O. up to 2 of your opponent's rested Characters with a cost of 4 or less.<br>[DON!! x1] This Character gains [Double Attack].<br>(This card deals 2 damage.)",
     "effectSpecV2": {
       "clauses": [],
-      "continuous": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "double_attack"
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
       "verified": "flagged"
@@ -14391,6 +15012,25 @@
     "effectText": "[On Play] Draw 2 cards and trash 2 cards from your hand.",
     "templateParams": {
       "draw": 2
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 2
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 2
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -14641,6 +15281,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -16265,6 +16925,25 @@
     "effectText": "[On Play] Draw 3 cards and trash 2 cards from your hand.",
     "templateParams": {
       "draw": 3
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 2
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 3
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -16291,6 +16970,25 @@
     "effectText": "[Activate: Main] You may rest this Character: Up to 1 of your [Charlotte Linlin] cards gains +1000 power until the start of your next turn.",
     "templateParams": {
       "power_buff": 1000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -16559,7 +17257,26 @@
     "effectTags": [
       "ramp"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Give up to 1 rested DON!! card to each of your {Alabasta} type Characters."
+    "effectText": "[Activate: Main] You may rest this Character: Give up to 1 rested DON!! card to each of your {Alabasta} type Characters.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP04-005",
@@ -16990,7 +17707,23 @@
       "ramp"
     ],
     "life": 5,
-    "effectText": "[End of Your Turn] Set up to 2 of your DON!! cards as active."
+    "effectText": "[End of Your Turn] Set up to 2 of your DON!! cards as active.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "at_end_of_turn_self",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 2
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP04-020",
@@ -17056,7 +17789,31 @@
     "effectTags": [
       "disruption"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Rest up to 1 of your opponent's Characters with a cost of 1 or less."
+    "effectText": "[Activate: Main] You may rest this Character: Rest up to 1 of your opponent's Characters with a cost of 1 or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 1
+            }
+          },
+          "verified": "auto",
+          "cost": {
+            "restSelf": true
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP04-023",
@@ -17246,7 +18003,23 @@
       "ramp",
       "trigger"
     ],
-    "effectText": "[End of Your Turn] Set up to 1 of your DON!! cards as active."
+    "effectText": "[End of Your Turn] Set up to 1 of your DON!! cards as active.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "at_end_of_turn_self",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP04-030",
@@ -17406,6 +18179,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -17980,6 +18773,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -18420,6 +19233,29 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 1000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 1000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged",
+          "cost": {
+            "donCost": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -18445,6 +19281,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 6000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 6000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -18954,6 +19810,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -19461,6 +20337,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 6000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 6000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -20045,6 +20941,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -20235,7 +21151,31 @@
     "effectTags": [
       "removal_bounce"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Rest up to 1 of your opponent's Characters with a cost of 3 or less."
+    "effectText": "[Activate: Main] You may rest this Character: Rest up to 1 of your opponent's Characters with a cost of 3 or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 3
+            }
+          },
+          "verified": "auto",
+          "cost": {
+            "restSelf": true
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP05-026",
@@ -20577,6 +21517,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -20602,6 +21562,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -20891,7 +21871,28 @@
     "effectTags": [
       "removal_bounce"
     ],
-    "effectText": "[On Play] Place up to 1 Character with a cost of 4 or less at the bottom of the owner's deck."
+    "effectText": "[On Play] Place up to 1 Character with a cost of 4 or less at the bottom of the owner's deck.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 4
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP05-052",
@@ -22073,6 +23074,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -22590,6 +23611,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -23736,6 +24777,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -23958,7 +25019,28 @@
     "effectTags": [
       "removal_bounce"
     ],
-    "effectText": "[On Play] Place up to 1 Character with a cost of 2 or less at the bottom of the owner's deck."
+    "effectText": "[On Play] Place up to 1 Character with a cost of 2 or less at the bottom of the owner's deck.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 2
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP06-047",
@@ -26821,6 +27903,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -27365,6 +28467,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -27869,6 +28991,29 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged",
+          "cost": {
+            "donCost": 1
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -28297,6 +29442,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -28321,6 +29486,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -29355,6 +30540,25 @@
     "effectText": "[Activate: Main] You may rest this Character: If your Leader is [Tony Tony.Chopper], all of your [Tony Tony.Chopper] Characters gain +2000 power during this turn.",
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -29380,6 +30584,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -29738,7 +30962,26 @@
     "effectTags": [
       "ramp"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: If your Leader has the {Minks} type, set up to 1 of your DON!! cards as active."
+    "effectText": "[Activate: Main] You may rest this Character: If your Leader has the {Minks} type, set up to 1 of your DON!! cards as active.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP08-033",
@@ -30267,6 +31510,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -31018,6 +32281,25 @@
     "effectText": "This Character gains +4 cost.<br>[Activate: Main] You may rest this Character: Draw 1 card and trash 1 card from your hand. Then, K.O. up to 1 of your opponent's Characters with a cost of 3 or less.",
     "templateParams": {
       "draw": 1
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -31589,6 +32871,25 @@
     "effectText": "[Activate: Main] You may rest this Character: Up to 1 of your [Charlotte Pudding] cards gains +2000 power during this turn.",
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -31792,6 +33093,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -32183,7 +33504,26 @@
       "removal_cost_reduce",
       "power_buff"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: If your Leader has the {Red-Haired Pirates} type, give up to 1 of your opponent's Characters −2000 power during this turn."
+    "effectText": "[Activate: Main] You may rest this Character: If your Leader has the {Red-Haired Pirates} type, give up to 1 of your opponent's Characters −2000 power during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP09-012",
@@ -32977,6 +34317,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -33422,6 +34782,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -34283,6 +35663,25 @@
     "effectText": "[Activate: Main] You may rest this Character: If the number of cards in your hand is at least 3 less than the number in your opponent's hand, draw 2 cards and trash 1 card from your hand.",
     "templateParams": {
       "draw": 2
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -34748,6 +36147,25 @@
     "effectText": "[On Play] Draw 2 cards and trash 2 cards from your hand.",
     "templateParams": {
       "draw": 2
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 2
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 2
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -35467,7 +36885,26 @@
       "removal_cost_reduce",
       "ramp"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Give up to 2 rested DON!! cards to your Leader or 1 of your Characters. Then, give up to 1 of your opponent's Characters −1000 power during this turn."
+    "effectText": "[Activate: Main] You may rest this Character: Give up to 2 rested DON!! cards to your Leader or 1 of your Characters. Then, give up to 1 of your opponent's Characters −1000 power during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP10-017",
@@ -35514,6 +36951,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -35543,6 +37000,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -36209,7 +37686,28 @@
     "effectTags": [
       "removal_bounce"
     ],
-    "effectText": "[On Play] Return up to 1 Character with a cost of 5 or less to the owner's hand."
+    "effectText": "[On Play] Return up to 1 Character with a cost of 5 or less to the owner's hand.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 5
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP10-047",
@@ -37073,6 +38571,26 @@
     "templateParams": {
       "draw": 1,
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -37416,7 +38934,25 @@
     "effectTags": [
       "double_attack"
     ],
-    "effectText": "[DON!! x1] This Character gains [Double Attack]."
+    "effectText": "[DON!! x1] This Character gains [Double Attack].",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "double_attack"
+          }
+        }
+      ],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP10-095",
@@ -37921,7 +39457,26 @@
     "effectTags": [
       "removal_bounce"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: If the number of your Life cards is equal to or less than the number of your opponent's Life cards, rest up to 1 of your opponent's Characters with a cost of 4 or less."
+    "effectText": "[Activate: Main] You may rest this Character: If the number of your Life cards is equal to or less than the number of your opponent's Life cards, rest up to 1 of your opponent's Characters with a cost of 4 or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP10-115",
@@ -37948,6 +39503,26 @@
     "templateParams": {
       "draw": 1,
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -38244,6 +39819,25 @@
     "effectText": "[Activate: Main] You may rest this Character: If your Leader has the {Navy} type, up to 1 of your {Navy} type Characters gains +2000 power during this turn.",
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -38589,6 +40183,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -38615,6 +40229,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -38976,7 +40610,26 @@
     "effectTags": [
       "disruption"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: If your Leader has the {Fish-Man} or {Merfolk} type, up to 1 of your opponent's Characters with a cost of 3 or less cannot be rested until the end of your opponent's next turn."
+    "effectText": "[Activate: Main] You may rest this Character: If your Leader has the {Fish-Man} or {Merfolk} type, up to 1 of your opponent's Characters with a cost of 3 or less cannot be rested until the end of your opponent's next turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP11-035",
@@ -39074,6 +40727,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -39101,6 +40774,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -39663,6 +41356,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -39830,7 +41543,26 @@
       "disruption",
       "ramp"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Choose a cost and reveal 1 card from the top of your opponent's deck. If the revealed card has the chosen cost, K.O. up to 1 of your opponent's Characters with a base cost of 3 or less. Then, add up to 1 DON!! card from your DON!! deck and rest it."
+    "effectText": "[Activate: Main] You may rest this Character: Choose a cost and reveal 1 card from the top of your opponent's deck. If the revealed card has the chosen cost, K.O. up to 1 of your opponent's Characters with a base cost of 3 or less. Then, add up to 1 DON!! card from your DON!! deck and rest it.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP11-067",
@@ -40199,6 +41931,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -40642,6 +42394,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 1000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 1000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -41106,6 +42878,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -41795,7 +43587,26 @@
     "effectTags": [
       "disruption"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Up to 1 of your opponent's rested Characters with a cost of 5 or less will not become active in your opponent's next Refresh Phase."
+    "effectText": "[Activate: Main] You may rest this Character: Up to 1 of your opponent's rested Characters with a cost of 5 or less will not become active in your opponent's next Refresh Phase.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP12-023",
@@ -41883,7 +43694,26 @@
       "disruption",
       "ramp"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Rest up to 1 of your opponent's Characters with a base cost of 4 or less. Then, give up to 3 rested DON!! cards to your [Roronoa Zoro] Leader."
+    "effectText": "[Activate: Main] You may rest this Character: Rest up to 1 of your opponent's Characters with a base cost of 4 or less. Then, give up to 3 rested DON!! cards to your [Roronoa Zoro] Leader.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "OP12-027",
@@ -42697,6 +44527,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -43752,6 +45602,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -43832,6 +45702,25 @@
     "effectText": "[Activate: Main] You may rest this Character: Your {Supernovas} type Leader gains +1000 power until the end of your opponent's next turn.",
     "templateParams": {
       "power_buff": 1000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -44161,6 +46050,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -44670,6 +46579,25 @@
     "effectText": "[Activate: Main] You may rest this Character: Up to 1 of your [Monkey.D.Luffy] cards gains +2000 power during this turn.",
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -47435,6 +49363,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -49797,6 +51745,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -50794,6 +52762,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -53072,6 +55060,26 @@
     "templateParams": {
       "draw": 1,
       "power_buff": 1000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 1000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -53331,6 +55339,25 @@
     "effectText": "If you have 10 or more cards in your trash, this Character gains [Blocker].<br>[On Play] Draw 2 cards and trash 2 cards from your hand.",
     "templateParams": {
       "draw": 2
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 2
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 2
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -54275,10 +56302,21 @@
     "effectText": "[DON!! x2] This Character gains [Double Attack].<br>(This card deals 2 damage.)",
     "effectSpecV2": {
       "clauses": [],
-      "continuous": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "double_attack"
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "auto"
     }
   },
   {
@@ -54412,7 +56450,26 @@
     "effectTags": [
       "removal_bounce"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Rest 1 of your opponent's Characters with a cost of 2 or less."
+    "effectText": "[Activate: Main] You may rest this Character: Rest 1 of your opponent's Characters with a cost of 2 or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "P-009",
@@ -55272,7 +57329,28 @@
     "effectTags": [
       "removal_bounce"
     ],
-    "effectText": "[On Play] Return up to 1 Character with a cost of 3 or less to the owner's hand."
+    "effectText": "[On Play] Return up to 1 Character with a cost of 3 or less to the owner's hand.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 3
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "P-044",
@@ -56333,7 +58411,26 @@
     "effectTags": [
       "cost_reduction"
     ],
-    "effectText": "[On Play] Play up to 1 {Neptunian} or {Fish-Man Island} type Character card with a cost of 5 or less from your hand.<br>[Activate: Main] You may rest this Character: Up to 1 of your {Neptunian} type Characters can attack Characters on the turn in which it is played."
+    "effectText": "[On Play] Play up to 1 {Neptunian} or {Fish-Man Island} type Character card with a cost of 5 or less from your hand.<br>[Activate: Main] You may rest this Character: Up to 1 of your {Neptunian} type Characters can attack Characters on the turn in which it is played.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "P-092",
@@ -56374,7 +58471,26 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "[On Play] Draw 1 card and trash 1 card from your hand.<br>[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to 1 of your [Nami] cards."
+    "effectText": "[On Play] Draw 1 card and trash 1 card from your hand.<br>[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to 1 of your [Nami] cards.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "auto"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "P-097",
@@ -58141,6 +60257,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -58167,6 +60303,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -58419,7 +60575,28 @@
     "effectTags": [
       "removal_bounce"
     ],
-    "effectText": "[On Play] Return up to 1 Character with a cost of 7 or less to the owner's hand."
+    "effectText": "[On Play] Return up to 1 Character with a cost of 7 or less to the owner's hand.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 7
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST03-010",
@@ -58539,7 +60716,28 @@
     "effectTags": [
       "removal_bounce"
     ],
-    "effectText": "[On Play] Return up to 1 Character with a cost of 3 or less to the owner's hand."
+    "effectText": "[On Play] Return up to 1 Character with a cost of 3 or less to the owner's hand.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 3
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST03-015",
@@ -58611,6 +60809,26 @@
     "templateParams": {
       "draw": 1,
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -59721,7 +61939,26 @@
     "effectTags": [
       "removal_cost_reduce"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Give up to 1 of your opponent's Characters −2 cost during this turn."
+    "effectText": "[Activate: Main] You may rest this Character: Give up to 1 of your opponent's Characters −2 cost during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST06-007",
@@ -59942,6 +62179,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -60324,11 +62581,23 @@
     ],
     "effectText": "[Activate: Main] You may rest this Character: Up to 1 of your [Charlotte Linlin] cards gains [Banish] during this turn.<br>(When this card deals damage, the target card is trashed without activating its Trigger.)",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "auto"
     }
   },
   {
@@ -60375,11 +62644,23 @@
     ],
     "effectText": "[Activate: Main] You may rest this Character: Up to 1 of your [Charlotte Linlin] cards gains [Double Attack] during this turn.<br>(This card deals 2 damage.)",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "auto"
     }
   },
   {
@@ -60515,7 +62796,26 @@
     "effectTags": [
       "removal_cost_reduce"
     ],
-    "effectText": "This Character cannot be K.O.'d in battle by Leaders.<br>[Activate: Main] You may rest this Character: Give up to 1 of your opponent's Characters −2 cost during this turn."
+    "effectText": "This Character cannot be K.O.'d in battle by Leaders.<br>[Activate: Main] You may rest this Character: Give up to 1 of your opponent's Characters −2 cost during this turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "ST08-003",
@@ -60556,7 +62856,31 @@
     "effectTags": [
       "removal_ko"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: K.O. up to 1 of your opponent's Characters with a cost of 2 or less."
+    "effectText": "[Activate: Main] You may rest this Character: K.O. up to 1 of your opponent's Characters with a cost of 2 or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 2
+            }
+          },
+          "verified": "auto",
+          "cost": {
+            "restSelf": true
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST08-005",
@@ -60971,7 +63295,18 @@
     "effectText": "[DON!! x1] This Character gains [Double Attack].<br>(This card deals 2 damage.)<br>[On K.O.] You may trash 2 cards from your hand: Add up to 1 card from the top of your deck to the top of your Life cards.",
     "effectSpecV2": {
       "clauses": [],
-      "continuous": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "double_attack"
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
       "verified": "flagged"
@@ -61211,6 +63546,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -61875,7 +64230,31 @@
     "effectTags": [
       "disruption"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Rest up to 1 of your opponent's Characters with a cost of 4 or less."
+    "effectText": "[Activate: Main] You may rest this Character: Rest up to 1 of your opponent's Characters with a cost of 4 or less.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 4
+            }
+          },
+          "verified": "auto",
+          "cost": {
+            "restSelf": true
+          }
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST12-003",
@@ -62236,6 +64615,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -62701,6 +65100,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -62728,6 +65147,26 @@
     "templateParams": {
       "draw": 1,
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -62948,6 +65387,25 @@
     "effectText": "[Activate: Main] You may rest this Character: Up to 1 of your black {Straw Hat Crew} type Characters gains +2 cost until the end of your opponent's next turn. Then, if you have a Character with a cost of 8 or more, draw 1 card and trash 1 card from your hand.",
     "templateParams": {
       "draw": 1
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -63014,7 +65472,26 @@
     "effectTags": [
       "power_buff"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: Up to 1 of your black {Straw Hat Crew} type Characters gains +2 cost until the end of your opponent's next turn."
+    "effectText": "[Activate: Main] You may rest this Character: Up to 1 of your black {Straw Hat Crew} type Characters gains +2 cost until the end of your opponent's next turn.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST14-012",
@@ -65141,7 +67618,23 @@
       "ramp",
       "trigger"
     ],
-    "effectText": "[End of Your Turn] Set up to 1 of your DON!! cards as active."
+    "effectText": "[End of Your Turn] Set up to 1 of your DON!! cards as active.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "at_end_of_turn_self",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
+    }
   },
   {
     "id": "ST24-004",
@@ -65677,7 +68170,26 @@
       "removal_ko",
       "recursion"
     ],
-    "effectText": "[Activate: Main] You may rest this Character: K.O. up to 1 Character with a cost of 3 or less.<br>[On K.O.] Add up to 1 black card from your trash to your hand."
+    "effectText": "[Activate: Main] You may rest this Character: K.O. up to 1 Character with a cost of 3 or less.<br>[On K.O.] Add up to 1 black card from your trash to your hand.",
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 0
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "ST28-001",
@@ -66222,6 +68734,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 2000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   },
   {
@@ -66297,6 +68829,26 @@
     "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
+    },
+    "effectSpecV2": {
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "auto"
     }
   }
 ]
