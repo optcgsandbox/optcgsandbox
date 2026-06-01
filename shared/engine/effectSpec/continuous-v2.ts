@@ -64,6 +64,12 @@ export function applyContinuousEffectsV2ToInstance(
               case 'own_don_count': return me.donCostArea.length;
               case 'opp_don_count': return opp.donCostArea.length;
               case 'own_rested_don_count': return me.donRested.length;
+              case 'own_trash_event_count':
+                return me.trash.reduce((n, id) => {
+                  const inst = state.instances[id];
+                  const card = inst ? state.cardLibrary[inst.cardId] : undefined;
+                  return n + (card?.kind === 'event' ? 1 : 0);
+                }, 0);
               default: return 0;
             }
           })();
