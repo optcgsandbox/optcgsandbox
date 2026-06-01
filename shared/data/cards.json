@@ -2049,27 +2049,25 @@
             "trashSelf": true
           },
           "action": {
-            "kind": "play_for_free",
-            "from": "hand",
-            "filter": {
-              "trait": "Dressrosa",
-              "costMax": 3,
-              "nameExcludes": "Scarlet",
-              "kind": "character"
-            },
-            "rested": true
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "trashSelf": true
-          },
-          "action": {
-            "kind": "removal_cost_reduce",
-            "magnitude": 2,
-            "duration": "this_turn"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "play_for_free",
+                "from": "hand",
+                "filter": {
+                  "trait": "Dressrosa",
+                  "costMax": 3,
+                  "nameExcludes": "Scarlet",
+                  "kind": "character"
+                },
+                "rested": true
+              },
+              {
+                "kind": "removal_cost_reduce",
+                "magnitude": 2,
+                "duration": "this_turn"
+              }
+            ]
           },
           "target": {
             "kind": "opp_character"
