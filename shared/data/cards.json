@@ -110623,7 +110623,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] You may rest this Character and trash 1 {FILM} type card from your hand: If your opponent has more DON!! cards on their field than you, add 2 DON!! cards from your DON!! deck and rest them.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -110643,7 +110643,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost discardHand:1 generic; text \"trash 1 {FILM} type card from your hand\" needs discardHandFilter:{trait:FILM}; also condition if_own_don_le_opp (≤); text \"If your opponent has MORE DON!! cards on their field than you\" (strict <)"
     }
   },
   {
@@ -110810,7 +110811,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -110829,7 +110830,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "spec only encodes activate_main +2000 clause; missing \"When this Character battles ＜Strike＞ attribute Characters, this Character gains +3000 power during this turn\" battle-trigger clause"
     }
   },
   {
@@ -111097,7 +111099,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -111131,7 +111133,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause target your_character filter trait:FILM (any FILM char); text \"If that card is a Character, that Character cannot be K.O.'d\" must reference the same card from clause 1 (same-target tracking)"
     }
   },
   {
@@ -111973,7 +111976,7 @@
     "effectText": "[On Play] Look at up to 1 card from the top of your or your opponent's Life cards, and place it at the top or bottom of the Life cards. Then, if you have less Life cards than your opponent, this Character gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -111999,7 +112002,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause action peek_and_reorder_opp_life only; text \"Look at up to 1 card from the top of your OR your opponent's Life cards\" — missing own-life branch"
     }
   },
   {
@@ -112199,7 +112203,7 @@
     "effectText": "[On Play] Look at up to 1 card from the top of your or your opponent's Life cards, and place it at the top or bottom of the Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -112210,7 +112214,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action peek_and_reorder_opp_life only; text \"Look at up to 1 card from the top of your OR your opponent's Life cards\" — missing own-life branch"
     }
   },
   {
@@ -112285,7 +112290,7 @@
     "effectText": "[On Play] Your opponent chooses one:<br>- Trash 1 card from the top of your opponent's Life cards.<br>- Add 1 card from the top of your deck to the top of your Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -112317,7 +112322,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action choose_one defaults to YOU choosing; text \"YOUR OPPONENT chooses one\" — opponent's choice, not player's"
     }
   },
   {
@@ -112498,7 +112504,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -112530,7 +112536,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action choose_one defaults to YOU choosing; text \"YOUR OPPONENT chooses one\" — opponent's choice, not player's"
     }
   },
   {
@@ -112558,7 +112565,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -112581,7 +112588,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause action peek_and_reorder_opp_life only; text \"Look at up to 1 card from the top of your OR your opponent's Life cards\" — missing own-life branch"
     }
   },
   {
@@ -112608,7 +112616,7 @@
     "effectText": "[Activate: Main] You may rest this Stage and add 1 card from the top or bottom of your Life cards to your hand: Add up to 1 of your Characters with a cost of 3 to the top of the owner's Life cards face-up.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -112632,7 +112640,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action add_to_own_life_top from:\"hand\" + target your_character filter cost 3 — text \"Add up to 1 of your Characters with a cost of 3 to the top of the owner's Life cards face-up\" moves an existing field character to life, not a card from hand — needs from:\"own_field\""
     }
   },
   {
@@ -112658,7 +112667,7 @@
     "effectText": "[Your Turn] When a Character is K.O.'d, give up to 1 rested DON!! card to this Leader.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_any_opp_char_ko",
@@ -112677,7 +112686,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "trigger on_any_opp_char_ko (only opp chars); text \"[Your Turn] When A CHARACTER is K.O.'d\" — any character (own or opp), not just opponent's"
     }
   },
   {
