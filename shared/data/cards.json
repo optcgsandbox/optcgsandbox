@@ -82964,7 +82964,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_opp_attack",
@@ -82989,7 +82989,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target your_leader only; text \"this Leader OR up to 1 of your {Straw Hat Crew} type Characters\" — needs your_leader_or_character with Straw-Hat filter; also missing [DON!! x1] if_attached_don_min:1 condition; magnitude countSource own_don_count is total active DON, but text counts \"every DON!! card RESTED THIS WAY\" (variable count of opt-rested DONs)"
     }
   },
   {
@@ -83022,7 +83023,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_opp_attack",
@@ -83053,7 +83054,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause target opp_character; text says \"your opponent's Leader or Character cards\" — needs opp_leader_or_character; second clause trigger only on_damage_taken — missing \"or your Character with 6000 base power or more is K.O.'d\" branch; condition if_don_min:1 should be if_attached_don_min:1 ([DON!! x1] is attached)"
     }
   },
   {
@@ -83079,7 +83081,7 @@
     "effectText": "If you have any DON!! cards on your field, 1 DON!! card placed during your DON!! Phase is given to your Leader.<br>If you have 9 or less DON!! cards on your field, give this Leader −2000 power.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -83093,7 +83095,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "spec only encodes the -2000 power penalty; missing \"If you have any DON!! cards on your field, 1 DON!! card placed during your DON!! Phase is given to your Leader\" — automatic-DON-attach rule not encoded"
     }
   },
   {
@@ -83122,7 +83125,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -83157,7 +83160,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition uses if_don_min:1; text \"[DON!! x1]\" is attached-don condition — needs if_attached_don_min:1"
     }
   },
   {
@@ -83267,7 +83271,7 @@
     "effectText": "[Activate: Main] You may give 1 of your active DON!! cards to 1 of your Leader or Character cards and trash this Character: Give up to 1 of your opponent's Characters −3000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -83286,7 +83290,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost only trashSelf:true; text says \"give 1 of your active DON!! cards to 1 of your Leader or Character cards AND trash this Character\" — missing the \"give 1 active DON\" cost"
     }
   },
   {
@@ -83309,7 +83314,7 @@
     "effectText": "If your {Revolutionary Army} type Character would be K.O.'d by your opponent's effect, you may trash this Character instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -83326,7 +83331,8 @@
           "conditional": true,
           "verified": "flagged"
         }
-      ]
+      ],
+      "auditNote": "replacement has no filter on which character is being saved; text \"If your {Revolutionary Army} type Character would be K.O.'d\" — needs filter trait:\"Revolutionary Army\" on would_be_ko target"
     }
   },
   {
@@ -83351,7 +83357,7 @@
     "effectText": "If you have a {Mountain Bandits} type Character other than this card, this Character gains [Double Attack].",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -83365,7 +83371,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition if_owned_other_with_name:\"Mountain Bandits\" checks for another card NAMED \"Mountain Bandits\"; text \"if you have a {Mountain Bandits} TYPE Character other than this card\" — needs trait-based check (any Mountain Bandits trait other than self)"
     }
   },
   {
@@ -83664,7 +83671,7 @@
     "effectText": "[Once Per Turn] If your {Revolutionary Army} type Character would be removed from the field by your opponent's effect, you may give this Character −2000 power during this turn instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -83689,7 +83696,8 @@
           "verified": "human-reviewed",
           "opt": true
         }
-      ]
+      ],
+      "auditNote": "replacement target your_character filter Revolutionary Army applies the -2000 to any Rev Army character; text \"you may give THIS Character −2000 power during this turn instead\" — \"this Character\" refers to Dragon (self), penalty is on Dragon, not on the saved char"
     }
   },
   {
@@ -83765,7 +83773,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes [Counter] Leader +3000 power_buff; missing entire [Main] clause \"You may rest 4 of your DON!! cards: Give up to 1 of your opponent's Characters −3000 power during this turn. Then, K.O. up to 1 of your opponent's Characters with 3000 power or less\""
     }
   },
   {
@@ -84001,7 +84010,7 @@
     "effectText": "[On Play] You may reveal 1 {Music} or {FILM} type card from your hand: Set up to 2 of your DON!! cards as active at the end of this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -84024,7 +84033,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action set_active_don:2 fires immediately on on_play; text \"Set up to 2 of your DON!! cards as active AT THE END OF THIS TURN\" — delayed end-of-turn timing not encoded"
     }
   },
   {
@@ -84394,7 +84404,7 @@
     "effectText": "[On Play] Up to 1 of your opponent's Characters with a cost of 8 or less cannot be rested until the end of your opponent's next End Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -84412,7 +84422,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action rest_lock_until_phase keeps a rested card from becoming active in refresh; text \"cannot be RESTED until the end of your opponent's next End Phase\" prevents resting (the char stays active) — different effect; needs rest_immunity"
     }
   },
   {
@@ -84479,7 +84490,7 @@
     "effectText": "[On Play] If your Leader has the {FILM} or {Straw Hat Crew} type, set up to 1 of your DON!! cards as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -84503,7 +84514,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "on_play action set_active with no target; text \"set up to 1 of your DON!! cards as active\" — needs set_active_don:1, not set_active"
     }
   },
   {
@@ -84530,7 +84542,7 @@
     "effectText": "[End of Your Turn] Set this Character or up to 1 of your DON!! cards as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "at_end_of_turn_self",
@@ -84541,7 +84553,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "at_end_of_turn_self action set_active with no target choice; text \"Set THIS CHARACTER OR up to 1 of your DON!! cards as active\" — needs choose_one between self vs DON"
     }
   },
   {
@@ -84597,7 +84610,7 @@
     "effectText": "[On Play] If your Leader has the {FILM} or {Straw Hat Crew} type, set up to 2 of your DON!! cards as active.<br>[End of Your Turn] Set this Character as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -84631,7 +84644,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause action set_active (sets a single character active); text \"set up to 2 of your DON!! cards as active\" — needs set_active_don:2"
     }
   },
   {
@@ -84660,7 +84674,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -84684,7 +84698,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause action set_active fires immediately; text \"set up to 2 of your DON!! cards as active AT THE END OF THIS TURN\" — needs set_active_don:2 with delayed end-of-turn timing"
     }
   },
   {
@@ -84779,7 +84794,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes [Counter] Leader +3000 power_buff; missing entire [Main] clause \"rest 2 DON: up to 2 of your opponent's rested Characters with a cost of 7 or less will not become active in your opponent's next Refresh Phase\""
     }
   },
   {
@@ -84890,7 +84906,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "on_play cost discardHand:1 + draw:2 — text \"Draw 2 cards and trash 1 card from your hand\" is sequential effects not cost+effect"
     }
   },
   {
@@ -85004,7 +85021,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause give_don_to_target target your_leader filter Whitebeard Pirates; text \"your Leader with a type including \\\"Whitebeard Pirates\\\" OR 1 Character with a type including \\\"Whitebeard Pirates\\\"\" — Character branch missing"
     }
   },
   {
@@ -85393,7 +85411,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -85431,7 +85449,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost koSelfCharacter filter Whitebeard Pirates (KO own char); text says \"you may TRASH 1 of your Characters with a type including \\\"Whitebeard Pirates\\\"\" — trash differs from K.O. (no [On K.O.] triggers fire)"
     }
   },
   {
@@ -85651,7 +85670,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause action restrict_opp_blocker without specifier; text \"your opponent cannot activate [Blocker] WHEN YOUR LEADER ATTACKS during this turn\" — restriction only applies to attacks made by leader, not all attacks"
     }
   },
   {
@@ -85740,7 +85760,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -85760,7 +85780,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "bounce target opp_character; text \"Return up to 1 Character with a cost of 6 or less\" (any character)"
     }
   },
   {
