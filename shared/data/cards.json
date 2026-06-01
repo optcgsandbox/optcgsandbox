@@ -64837,7 +64837,7 @@
     "effectText": "[End of Your Turn] If you have a {Donquixote Pirates} type Character with 6000 power or more, set up to 1 of your DON!! cards as active.<br>[Opponent's Turn] [Once Per Turn] When you activate an Event, add up to 1 DON!! card from your DON!! deck and set it as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "at_end_of_turn_self",
@@ -66336,7 +66336,7 @@
     "effectText": "[On Play] If you have 2 or more rested {ODYSSEY} type Characters, up to 1 of your opponent's rested DON!! cards will not become active in your opponent's next Refresh Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -66349,7 +66349,10 @@
             "until": "opp_next_turn"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_don_or_character",
+            "filter": {
+              "rested": true
+            }
           },
           "verified": "flagged"
         }
@@ -66467,7 +66470,7 @@
     "effectText": "[Your Turn] [Once Per Turn] If a Character is rested by your effect, set up to 1 of your DON!! cards as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -67543,7 +67546,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -67569,7 +67572,8 @@
               "nameExcludes": "Rebecca",
               "kind": "character"
             },
-            "count": 2
+            "count": 2,
+            "uniqueByName": false
           },
           "verified": "flagged"
         }
@@ -71774,8 +71778,14 @@
             "kind": "play_for_free",
             "from": "hand",
             "filter": {
-              "trait": "Neptunian",
-              "kind": "character"
+              "traitsAny": [
+                "Neptunian"
+              ],
+              "namesAny": [
+                "Megalo"
+              ],
+              "kind": "character",
+              "costMaxFromCount": "own_don_count"
             }
           },
           "verified": "flagged"
@@ -71790,7 +71800,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -75677,7 +75687,7 @@
     "effectText": "[Your Turn] [Once Per Turn] This effect can be activated when your opponent activates an Event or [Trigger]. If your opponent has 2 or more Life cards, trash 1 card from the top of each of your and your opponent's Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_opp_activate_event",
@@ -75942,7 +75952,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -75972,7 +75982,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -75996,14 +76006,13 @@
             "name": "Shirahoshi"
           },
           "cost": {
-            "flipLife": 1,
-            "discardHand": 1
+            "flipLife": 1
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "discard_from_hand",
+            "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -76309,7 +76318,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -78068,6 +78077,14 @@
             "magnitude": 4
           },
           "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "restrict_play_self_this_turn",
+            "kind_filter": "character"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -78080,7 +78097,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -80241,7 +80258,7 @@
     "effectText": "[On Play] K.O. up to 1 of your opponent's Characters with a cost of 3 or less. Then, your opponent may add 1 DON!! card from their DON!! deck and set it as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -80254,7 +80271,7 @@
               "costMax": 3
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -84229,12 +84246,13 @@
           "action": {
             "kind": "give_don_to_target",
             "magnitude": 2,
-            "rested": true,
-            "target": {
-              "kind": "your_leader"
-            }
+            "rested": true
           },
-          "verified": "flagged"
+          "target": {
+            "kind": "your_leader_or_character",
+            "count": 2
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -84247,7 +84265,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -87344,7 +87362,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -87357,8 +87375,7 @@
           },
           "verified": "flagged",
           "condition": {
-            "type": "if_own_life_max",
-            "n": 4
+            "type": "if_own_life_le_opp"
           }
         },
         {
