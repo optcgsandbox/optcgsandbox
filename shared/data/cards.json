@@ -91864,7 +91864,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -91883,7 +91883,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "activate_main",
@@ -91902,7 +91902,7 @@
           "target": {
             "kind": "all_your_characters"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "when_attacking",
@@ -91914,7 +91914,7 @@
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -91950,13 +91950,27 @@
             "kind": "mill_self",
             "magnitude": 3
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_ko",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 1,
+              "costMin": 1
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -91981,13 +91995,13 @@
     "effectText": "[On K.O.] All of your {Thriller Bark Pirates} type Characters gain +4 cost until the end of your opponent's next End Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 0,
+            "kind": "removal_cost_reduce",
+            "magnitude": -4,
             "duration": "opp_next_end_phase"
           },
           "target": {
@@ -91996,7 +92010,7 @@
               "typeIncludes": "Thriller Bark Pirates"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -92026,7 +92040,7 @@
     "effectText": "[Activate: Main] You may trash this Character: Give up to 1 of your opponent's 0 cost Characters −3000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -92044,7 +92058,7 @@
               "costMax": 0
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -92073,7 +92087,7 @@
     "effectText": "[On Play] If your Leader's type includes \"Baroque Works\", play up to 1 Character card with a type including \"Baroque Works\" and a cost of 4 or less and up to 1 Character card with a type including \"Baroque Works\" and a cost of 1 from your trash.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -92090,7 +92104,7 @@
               "kind": "character"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -92108,7 +92122,7 @@
               "kind": "character"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -92141,7 +92155,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -92149,18 +92163,15 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_ko",
-          "cost": {
-            "discardHand": 2
-          },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "discard_from_hand",
+            "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -92193,7 +92204,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -92245,7 +92256,7 @@
     "effectText": "[On Play] If your Leader's type includes \"Baroque Works\", look at 4 cards from the top of your deck; reveal up to 1 card with a type including \"Baroque Works\" other than [Miss.Valentine(Mikita)] and add it to your hand. Then, trash the rest.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -92295,7 +92306,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -92360,7 +92371,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -92368,18 +92379,15 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_ko",
-          "cost": {
-            "discardHand": 2
-          },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "discard_from_hand",
+            "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -92423,7 +92431,7 @@
               "costMax": 0
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -92431,6 +92439,21 @@
           "action": {
             "kind": "grant_keyword_to_self",
             "keyword": "Rush"
+          },
+          "condition": {
+            "type": "or",
+            "conditions": [
+              {
+                "type": "if_opp_chars_max_cost",
+                "n": 1,
+                "maxCost": 0
+              },
+              {
+                "type": "if_opp_chars_min_cost",
+                "n": 1,
+                "minCost": 8
+              }
+            ]
           }
         }
       ],
@@ -92459,13 +92482,13 @@
     "effectText": "[On K.O.] Play up to 1 Character card with a type including \"Baroque Works\" and a cost of 5 or less other than [Mr.2.Bon.Kurei(Bentham)] from your hand or trash.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
           "action": {
             "kind": "play_for_free",
-            "from": "hand",
+            "from": "hand_or_trash",
             "filter": {
               "typeIncludes": "Baroque Works",
               "costMax": 5,
@@ -92473,7 +92496,7 @@
               "nameExcludes": "Mr.2.Bon.Kurei(Bentham)"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -92505,7 +92528,7 @@
     "effectText": "[Opponent's Turn] [Once Per Turn] If this Character would be K.O.'d, you may place 3 cards from your trash at the bottom of your deck in any order instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -92523,7 +92546,10 @@
             "kind": "self"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "condition": {
+            "type": "is_opp_turn"
+          }
         }
       ]
     }
@@ -92551,7 +92577,20 @@
     ],
     "effectText": "[Blocker]<br>[On K.O.] Add up to 1 Character card with a type including \"Baroque Works\" and a cost of 8 or less from your trash to your hand.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "action": {
+            "kind": "recursion",
+            "magnitude": 1,
+            "filter": {
+              "typeIncludes": "Baroque Works",
+              "costMax": 8
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -92562,7 +92601,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -92592,7 +92631,54 @@
       "draw": 2
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "or",
+            "conditions": [
+              {
+                "type": "if_opp_chars_max_cost",
+                "n": 1,
+                "maxCost": 0
+              },
+              {
+                "type": "if_opp_chars_min_cost",
+                "n": 1,
+                "minCost": 8
+              }
+            ]
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 2
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "or",
+            "conditions": [
+              {
+                "type": "if_opp_chars_max_cost",
+                "n": 1,
+                "maxCost": 0
+              },
+              {
+                "type": "if_opp_chars_min_cost",
+                "n": 1,
+                "minCost": 8
+              }
+            ]
+          },
+          "action": {
+            "kind": "discard_from_hand",
+            "magnitude": 1
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -92663,7 +92749,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -92680,7 +92766,7 @@
               "costMax": 5
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -92694,9 +92780,9 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -92727,7 +92813,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -92777,6 +92863,36 @@
       "clauses": [
         {
           "trigger": "on_play",
+          "condition": {
+            "type": "or",
+            "conditions": [
+              {
+                "type": "if_opp_chars_max_cost",
+                "n": 1,
+                "maxCost": 0
+              },
+              {
+                "type": "if_opp_chars_min_cost",
+                "n": 1,
+                "minCost": 8
+              }
+            ]
+          },
+          "action": {
+            "kind": "removal_cost_reduce",
+            "magnitude": -3,
+            "duration": "opp_next_end_phase"
+          },
+          "target": {
+            "kind": "all_your_characters",
+            "filter": {
+              "typeIncludes": "Baroque Works"
+            }
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
           "action": {
             "kind": "power_buff",
             "magnitude": 3000,
@@ -92785,13 +92901,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -92819,7 +92935,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -92861,7 +92977,7 @@
     "effectText": "[On K.O.] Look at 3 cards from the top of your deck; reveal up to 1 {Thriller Bark Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -92956,19 +93072,19 @@
     "effectText": "[On Play] You may add 1 card from the top or bottom of your Life cards to your hand: Add up to 1 card from your hand to the top of your Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "add_to_own_life_top",
             "faceUp": false,
             "from": "hand"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -92999,7 +93115,7 @@
     "effectText": "[On Play] Select up to 1 {Thriller Bark Pirates} type Character with a cost of 4 or less from your trash and play it or add it to the top of your Life cards face-up.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93017,7 +93133,7 @@
                     "kind": "character"
                   }
                 },
-                "verified": "auto"
+                "verified": "human-reviewed"
               },
               {
                 "trigger": "on_play",
@@ -93026,11 +93142,11 @@
                   "faceUp": true,
                   "from": "own_trash"
                 },
-                "verified": "auto"
+                "verified": "human-reviewed"
               }
             ]
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -93061,7 +93177,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] You may reveal 3 {Amazon Lily} or {Kuja Pirates} type cards from your hand: Give your Leader and all of your Characters up to 1 rested DON!! card each.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -93069,7 +93185,10 @@
             "revealHand": {
               "count": 3,
               "filter": {
-                "typeIncludes": "Amazon Lily"
+                "traitsAny": [
+                  "Amazon Lily",
+                  "Kuja Pirates"
+                ]
               }
             }
           },
@@ -93081,7 +93200,8 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         },
         {
           "trigger": "activate_main",
@@ -93089,7 +93209,10 @@
             "revealHand": {
               "count": 3,
               "filter": {
-                "typeIncludes": "Amazon Lily"
+                "traitsAny": [
+                  "Amazon Lily",
+                  "Kuja Pirates"
+                ]
               }
             }
           },
@@ -93101,7 +93224,8 @@
           "target": {
             "kind": "all_your_characters"
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -93141,7 +93265,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -93170,7 +93294,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93182,7 +93306,7 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -93190,14 +93314,11 @@
             "type": "if_opp_life_max",
             "n": 3
           },
-          "cost": {
-            "discardHand": 2
-          },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "discard_from_hand",
+            "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -93226,7 +93347,7 @@
     "effectText": "[On Play] If your Leader is multicolored and your opponent has 3 or less Life cards, K.O. up to 1 of your opponent's Characters with 7000 base power or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93290,7 +93411,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -93315,7 +93436,7 @@
     "effectText": "[On K.O.] Play up to 1 Character card with a cost of 4 or less and a [Trigger] other than [Dr. Hogback] from your trash.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -93325,10 +93446,11 @@
             "filter": {
               "costMax": 4,
               "kind": "character",
-              "nameExcludes": "Dr. Hogback"
+              "nameExcludes": "Dr. Hogback",
+              "hasTrigger": true
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -93360,7 +93482,7 @@
     "effectText": "[On Play]/[On K.O.] Up to 1 of your opponent's Characters with a cost of 6 or less cannot attack until the end of your opponent's next End Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93419,7 +93541,7 @@
     "effectText": "[On Play] If your Leader has the {The Seven Warlords of the Sea} type, add up to 1 card from the top of your deck to the top of your Life cards. Then, add up to 1 card from the top of your opponent's Life cards to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93472,7 +93594,7 @@
     "effectText": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 {Amazon Lily} or {Kuja Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order and trash 1 card from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93481,21 +93603,21 @@
             "lookCount": 5,
             "addCount": 1,
             "filter": {
-              "typeIncludes": "Amazon Lily"
+              "traitsAny": [
+                "Amazon Lily",
+                "Kuja Pirates"
+              ]
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
-          "cost": {
-            "discardHand": 1
-          },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "discard_from_hand",
+            "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -93525,7 +93647,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to 1 of your {Kuja Pirates} type Leader or Character cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -93535,12 +93657,13 @@
             "rested": true
           },
           "target": {
-            "kind": "your_character",
+            "kind": "your_leader_or_character",
             "filter": {
               "typeIncludes": "Kuja Pirates"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -93569,7 +93692,7 @@
     "effectText": "[Opponent's Turn] [On K.O.] Add up to 1 card from the top of your deck to the top of your Life cards. Then, you take 1 damage.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -93578,7 +93701,10 @@
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "condition": {
+            "type": "is_opp_turn"
+          }
         }
       ],
       "continuous": [],
@@ -93619,15 +93745,31 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "traitsAny": [
+                "Amazon Lily",
+                "Kuja Pirates"
+              ],
+              "costMax": 4,
+              "kind": "character"
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -93655,7 +93797,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93665,12 +93807,12 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_character",
+            "kind": "your_leader_or_character",
             "filter": {
               "typeIncludes": "Thriller Bark Pirates"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -93702,7 +93844,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93786,7 +93928,7 @@
           "target": {
             "kind": "your_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
