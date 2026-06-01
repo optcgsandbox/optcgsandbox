@@ -55241,8 +55241,7 @@
             }
           },
           "action": {
-            "kind": "bottom_of_deck_from_trash",
-            "magnitude": 1
+            "kind": "bottom_of_deck_to_opp_deck"
           },
           "target": {
             "kind": "opp_character",
@@ -55250,13 +55249,13 @@
               "costMax": 6
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -55285,7 +55284,26 @@
       "draw": 1
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "opt": true,
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_ko",
+          "opt": true,
+          "action": {
+            "kind": "peek_and_reorder_own_deck",
+            "count": 1
+          },
+          "verified": "flagged"
+        }
+      ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
@@ -55355,13 +55373,14 @@
               }
             ]
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -55405,7 +55424,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -55464,7 +55483,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -55497,7 +55516,7 @@
             "donCostReturnToDeck": 1
           },
           "condition": {
-            "type": "if_opp_hand_min",
+            "type": "if_opp_don_min",
             "n": 5
           },
           "action": {
@@ -55508,13 +55527,13 @@
           "target": {
             "kind": "self"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -55560,7 +55579,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -55651,7 +55670,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -55690,13 +55709,14 @@
               "nameIs": "Biscuit Warrior"
             }
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -55748,7 +55768,17 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On K.O.] Add up to 1 DON!! card from your DON!! deck and rest it.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1,
+            "rested": true
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -55759,7 +55789,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -55793,13 +55823,17 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true,
+          "condition": {
+            "type": "is_own_turn"
+          }
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -55837,7 +55871,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -55900,7 +55934,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -55926,7 +55960,24 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On K.O.] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Play up to 1 [Viscount Hiyoko] with a cost of 5 or less from your hand.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "cost": {
+            "donCostReturnToDeck": 1
+          },
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "nameIs": "Viscount Hiyoko",
+              "costMax": 5,
+              "kind": "character"
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -55937,7 +55988,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -55974,9 +56025,13 @@
               "kind": "character",
               "nameIs": "Baron Tamago",
               "costMax": 4
-            }
+            },
+            "playInsteadOfHand": false
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "condition": {
+            "type": "is_opp_turn"
+          }
         }
       ],
       "continuous": [],
@@ -56017,7 +56072,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56057,7 +56112,10 @@
               "costMax": 6
             }
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "condition": {
+            "type": "is_opp_turn"
+          }
         }
       ],
       "continuous": [],
@@ -56100,7 +56158,8 @@
             "magnitude": 5,
             "rested": true
           },
-          "verified": "auto"
+          "verified": "flagged",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -56163,7 +56222,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56197,25 +56256,27 @@
             "magnitude": 1,
             "rested": false
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
           "condition": {
-            "type": "always"
+            "type": "if_opp_chars_min_power",
+            "n": 1,
+            "minPower": 6000
           },
           "action": {
             "kind": "ramp",
             "magnitude": 1,
             "rested": false
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56271,7 +56332,7 @@
               "costMax": 6
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -56300,13 +56361,13 @@
               "costMax": 6
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56378,7 +56439,8 @@
               "costMax": 7
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         },
         {
           "trigger": "activate_main",
@@ -56389,13 +56451,14 @@
             "type": "if_played_this_turn"
           },
           "action": {
-            "kind": "bottom_of_deck_from_trash",
+            "kind": "discard_from_hand",
             "magnitude": 1
           },
           "target": {
             "kind": "opp_hand_card"
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -56433,7 +56496,8 @@
             "lookCount": 5,
             "addCount": 1,
             "filter": {
-              "trait": "Animal Kingdom Pirates"
+              "trait": "Animal Kingdom Pirates",
+              "nameExcludes": "Queen"
             }
           },
           "verified": "auto"
@@ -56442,7 +56506,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56489,7 +56553,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56518,6 +56582,7 @@
         {
           "trigger": "activate_main",
           "cost": {
+            "donCost": 1,
             "restSelf": true
           },
           "action": {
@@ -56533,7 +56598,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56562,19 +56627,27 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_have_given_don_min",
-            "n": 1
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_attached_don_min",
+                "n": 1
+              },
+              {
+                "type": "is_own_turn"
+              }
+            ]
           },
           "action": {
             "kind": "aura_cost_modifier",
             "filter": {},
-            "delta": 1
+            "delta": -1
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "flagged"
     }
   },
   {
@@ -56611,16 +56684,34 @@
             "restSelf": true
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "chained_actions",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "discard_from_hand",
+                "magnitude": 1
+              },
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 3
+                  }
+                }
+              }
+            ]
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56652,9 +56743,18 @@
             "donCost": 1
           },
           "condition": {
-            "type": "if_own_chars_min_cost",
-            "n": 1,
-            "minCost": 8
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_attached_don_min",
+                "n": 1
+              },
+              {
+                "type": "if_own_chars_min_cost",
+                "n": 1,
+                "minCost": 8
+              }
+            ]
           },
           "action": {
             "kind": "removal_ko"
@@ -56671,7 +56771,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56707,21 +56807,31 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "condition": {
+            "type": "if_opp_chars_max_cost",
+            "n": 1,
+            "maxCost": 0
+          }
         },
         {
           "trigger": "on_play",
+          "condition": {
+            "type": "if_opp_chars_max_cost",
+            "n": 1,
+            "maxCost": 0
+          },
           "action": {
-            "kind": "mill_self",
+            "kind": "discard_from_hand",
             "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56749,7 +56859,20 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[Activate: Main] [Once Per Turn] Give up to 1 of your opponent's Characters −1 cost during this turn.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "opt": true,
+          "action": {
+            "kind": "cost_reduction",
+            "magnitude": 1
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -56760,7 +56883,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56788,19 +56911,20 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "cost_reduction",
-            "magnitude": -1
+            "kind": "removal_cost_reduce",
+            "magnitude": -1,
+            "duration": "opp_next_turn"
           },
           "target": {
             "kind": "your_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56870,7 +56994,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56916,7 +57040,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56958,7 +57082,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56986,18 +57110,18 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_have_given_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
-            "kind": "self_power_buff",
-            "magnitude": 0
+            "kind": "self_cost_buff",
+            "magnitude": 2
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -57045,7 +57169,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
