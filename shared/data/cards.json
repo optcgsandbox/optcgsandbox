@@ -16309,7 +16309,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -19988,7 +19988,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -20298,7 +20298,10 @@
             "kind": "play_for_free",
             "from": "hand",
             "filter": {
-              "trait": "FILM",
+              "traitsAny": [
+                "FILM",
+                "Straw Hat Crew"
+              ],
               "kind": "character",
               "costMax": 2
             }
@@ -20309,7 +20312,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -20405,7 +20408,10 @@
             "kind": "play_for_free",
             "from": "hand",
             "filter": {
-              "trait": "FILM",
+              "traitsAny": [
+                "FILM",
+                "Straw Hat Crew"
+              ],
               "kind": "character",
               "costMax": 3
             }
@@ -20416,7 +20422,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -20451,12 +20457,15 @@
             "kind": "play_for_free",
             "from": "hand",
             "filter": {
-              "trait": "FILM",
-              "costMax": 4,
-              "kind": "character"
+              "traitsAny": [
+                "FILM",
+                "Straw Hat Crew"
+              ],
+              "kind": "character",
+              "costMax": 4
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -20469,7 +20478,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -23104,13 +23113,14 @@
             "name": "Fullbody"
           },
           "action": {
-            "kind": "self_immune_to_opp_effects"
+            "kind": "grant_keyword_to_self",
+            "keyword": "cannot_be_ko_in_battle"
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
