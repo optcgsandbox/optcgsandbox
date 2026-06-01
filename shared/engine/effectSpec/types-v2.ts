@@ -53,6 +53,7 @@ export type EffectConditionV2 =
   | { type: 'if_leader_has_type'; typeString: string }                  // (gap #19) — type-includes match
   | { type: 'if_leader_multicolored' }                                  // (gap #43)
   | { type: 'if_leader_power_max'; n: number }                          // (gap from OP05-009)
+  | { type: 'if_leader_power_min'; n: number }                          // OP09-017 — "if your Leader has N power or more"
   // Resource counts
   | { type: 'if_don_min'; n: number }
   | { type: 'if_don_max'; n: number }

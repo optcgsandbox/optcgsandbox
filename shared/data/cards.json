@@ -58749,15 +58749,17 @@
         },
         {
           "action": {
-            "kind": "aura_power_buff",
-            "filter": {},
+            "kind": "opp_aura_power_buff",
+            "filter": {
+              "kind": "character"
+            },
             "magnitude": -1000
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -59362,6 +59364,10 @@
               {
                 "type": "if_leader_has_type",
                 "typeString": "Kid Pirates"
+              },
+              {
+                "type": "if_leader_power_min",
+                "n": 7000
               }
             ]
           },
@@ -59373,7 +59379,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60821,13 +60827,14 @@
             ]
           },
           "action": {
-            "kind": "self_immune_to_opp_effects"
+            "kind": "grant_keyword_to_self",
+            "keyword": "cannot_be_ko_in_battle"
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -62826,7 +62833,7 @@
             "n": 5
           },
           "action": {
-            "kind": "discard_from_hand",
+            "kind": "opp_discard_from_hand",
             "magnitude": 1
           },
           "verified": "flagged"
@@ -62835,7 +62842,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -63540,7 +63547,7 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "mill_opp",
+            "kind": "opp_discard_from_hand",
             "magnitude": 1
           },
           "verified": "flagged"
@@ -63549,7 +63556,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {

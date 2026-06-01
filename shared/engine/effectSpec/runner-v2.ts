@@ -61,6 +61,13 @@ export function evaluateConditionV2(
       const buff = me.leader.attachedDon.length * 1000;
       return Math.max(0, base + mod + buff) <= cond.n;
     }
+    case 'if_leader_power_min': {
+      const card = state.cardLibrary[me.leader.cardId];
+      const base = typeof card?.power === 'number' ? card.power : 0;
+      const mod = me.leader.powerModifier ?? 0;
+      const buff = me.leader.attachedDon.length * 1000;
+      return Math.max(0, base + mod + buff) >= cond.n;
+    }
 
     // ── Resource counts ────────────────────────────────────────────
     case 'if_don_min':
