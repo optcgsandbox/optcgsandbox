@@ -3358,7 +3358,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -3368,7 +3368,8 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character",
+            "count": 3
           },
           "verified": "human-reviewed"
         },
@@ -3387,8 +3388,7 @@
         }
       ],
       "continuous": [],
-      "replacements": [],
-      "auditNote": "buff target your_character no count; text says up to 3 Leader and Character — needs leader_or_character count:3"
+      "replacements": []
     }
   },
   {
