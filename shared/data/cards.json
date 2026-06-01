@@ -233,7 +233,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB01-006",
@@ -825,7 +832,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB01-019",
@@ -1138,7 +1152,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB01-026",
@@ -1460,7 +1481,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB01-033",
@@ -1841,7 +1869,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB01-042",
@@ -2475,7 +2510,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB01-056",
@@ -2759,7 +2801,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB02-002",
@@ -2893,7 +2942,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB02-005",
@@ -4167,7 +4223,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB02-030",
@@ -4372,7 +4435,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB02-035",
@@ -4765,7 +4835,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB02-043",
@@ -4784,7 +4861,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB02-044",
@@ -5322,7 +5406,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB02-056",
@@ -5722,7 +5813,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB03-003",
@@ -7039,7 +7137,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB03-031",
@@ -7508,7 +7613,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "EB03-041",
@@ -10850,6 +10962,13 @@
     "effectText": "[Once Per Turn] If your Leader's type includes \"Navy\" and this Character would be removed from the field, you may trash 1 card from your hand instead.<br>[Your Turn] [Once Per Turn] When your opponent's Character is K.O.'d, draw 1 card.",
     "templateParams": {
       "draw": 1
+    },
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -12111,7 +12230,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-011",
@@ -12173,7 +12299,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-013",
@@ -12421,7 +12554,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-019",
@@ -12612,7 +12752,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-024",
@@ -13162,7 +13309,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-037",
@@ -13183,7 +13337,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-038",
@@ -13451,7 +13612,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-044",
@@ -13507,7 +13675,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-046",
@@ -13824,7 +13999,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-054",
@@ -14322,7 +14504,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-066",
@@ -14341,7 +14530,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-067",
@@ -14709,7 +14905,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-077",
@@ -14885,7 +15088,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-082",
@@ -14905,7 +15115,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-083",
@@ -15326,7 +15543,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-093",
@@ -15770,7 +15994,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-104",
@@ -15790,7 +16021,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-105",
@@ -15886,7 +16124,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-108",
@@ -16006,7 +16251,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP01-111",
@@ -16558,7 +16810,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-004",
@@ -16675,7 +16934,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-007",
@@ -16694,7 +16960,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-008",
@@ -17263,7 +17536,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-021",
@@ -17563,7 +17843,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-029",
@@ -17770,7 +18057,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-034",
@@ -18029,7 +18323,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-040",
@@ -18174,7 +18475,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-044",
@@ -18614,7 +18922,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-054",
@@ -18634,7 +18949,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-055",
@@ -18653,7 +18975,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-056",
@@ -18854,7 +19183,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-061",
@@ -19557,7 +19893,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-076",
@@ -19623,7 +19966,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-078",
@@ -19738,7 +20088,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-081",
@@ -19885,7 +20242,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-085",
@@ -20023,7 +20387,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-089",
@@ -20380,7 +20751,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-098",
@@ -20630,7 +21008,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-105",
@@ -20732,7 +21117,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-108",
@@ -20788,7 +21180,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-110",
@@ -21076,7 +21475,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP02-117",
@@ -21538,7 +21944,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-007",
@@ -21558,7 +21971,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-008",
@@ -22359,7 +22779,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-024",
@@ -22810,7 +23237,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-034",
@@ -22874,7 +23308,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-036",
@@ -23335,7 +23776,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-047",
@@ -23585,7 +24033,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-053",
@@ -23952,7 +24407,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-062",
@@ -24885,7 +25347,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-083",
@@ -24942,7 +25411,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-085",
@@ -24961,7 +25437,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-086",
@@ -25026,7 +25509,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-088",
@@ -25580,7 +26070,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-101",
@@ -25599,7 +26096,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-102",
@@ -25672,7 +26176,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-104",
@@ -25775,7 +26286,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-107",
@@ -25979,7 +26497,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP03-112",
@@ -26810,7 +27335,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP04-008",
@@ -27493,7 +28025,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP04-024",
@@ -28830,7 +29369,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP04-055",
@@ -29169,7 +29715,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP04-063",
@@ -29860,7 +30413,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP04-079",
@@ -30288,7 +30848,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP04-088",
@@ -30840,7 +31407,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP04-101",
@@ -31116,7 +31690,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP04-108",
@@ -31357,7 +31938,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP04-114",
@@ -31377,7 +31965,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP04-115",
@@ -32109,7 +32704,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP05-013",
@@ -33100,7 +33702,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP05-036",
@@ -33490,7 +34099,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP05-045",
@@ -34408,7 +35024,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP05-066",
@@ -35178,7 +35801,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP05-084",
@@ -36153,7 +36783,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP05-106",
@@ -36254,7 +36891,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP05-109",
@@ -36323,7 +36967,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP05-111",
@@ -36921,7 +37572,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP06-006",
@@ -37049,7 +37707,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP06-009",
@@ -38218,7 +38883,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP06-032",
@@ -38487,7 +39159,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP06-038",
@@ -38960,7 +39639,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP06-050",
@@ -39986,7 +40672,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP06-071",
@@ -41089,7 +41782,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP06-095",
@@ -41561,7 +42261,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP06-106",
@@ -41673,7 +42380,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP06-109",
@@ -42446,7 +43160,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP07-008",
@@ -43346,7 +44067,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP07-028",
@@ -43366,7 +44094,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP07-029",
@@ -43847,6 +44582,13 @@
     "effectText": "[Your Turn] [Once Per Turn] This effect can be activated when a Character is removed from the field by your effect. If you have 5 or less cards in your hand, draw 1 card.",
     "templateParams": {
       "draw": 1
+    },
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -45172,7 +45914,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP07-068",
@@ -46206,7 +46955,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP07-090",
@@ -46651,7 +47407,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP07-100",
@@ -46769,7 +47532,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP07-103",
@@ -46790,7 +47560,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP07-104",
@@ -46810,7 +47587,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP07-105",
@@ -46934,7 +47718,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP07-108",
@@ -46953,7 +47744,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP07-109",
@@ -47198,7 +47996,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP07-114",
@@ -47968,7 +48773,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP08-010",
@@ -48041,7 +48853,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP08-012",
@@ -48800,7 +49619,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP08-028",
@@ -49124,7 +49950,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP08-036",
@@ -49739,7 +50572,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP08-049",
@@ -50089,6 +50929,13 @@
     "effectText": "[Your Turn] [Once Per Turn] When your Character with a type including \"Whitebeard Pirates\" is removed from the field by an effect, draw 1 card. Then, place 1 card from your hand at the top or bottom of your deck.",
     "templateParams": {
       "draw": 1
+    },
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -50515,7 +51362,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP08-066",
@@ -51118,7 +51972,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP08-079",
@@ -51606,7 +52467,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP08-090",
@@ -52070,7 +52938,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP08-100",
@@ -52268,7 +53143,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP08-105",
@@ -52448,7 +53330,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP08-109",
@@ -52661,7 +53550,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP08-114",
@@ -53242,7 +54138,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP09-007",
@@ -53668,7 +54571,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP09-017",
@@ -54727,7 +55637,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP09-039",
@@ -55217,7 +56134,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP09-050",
@@ -55459,7 +56383,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP09-056",
@@ -55814,7 +56745,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP09-064",
@@ -55984,7 +56922,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP09-068",
@@ -56590,7 +57535,14 @@
       "ramp",
       "trigger"
     ],
-    "effectText": "[Opponent's Turn] You may rest this Stage: When your {Straw Hat Crew} type Character is removed from the field by your opponent's effect, add up to 1 DON!! card from your DON!! deck and rest it."
+    "effectText": "[Opponent's Turn] You may rest this Stage: When your {Straw Hat Crew} type Character is removed from the field by your opponent's effect, add up to 1 DON!! card from your DON!! deck and rest it.",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "OP09-081",
@@ -56660,7 +57612,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP09-083",
@@ -57211,7 +58170,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP09-095",
@@ -57717,7 +58683,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP09-106",
@@ -57825,7 +58798,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP09-109",
@@ -57926,7 +58906,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP09-112",
@@ -57990,7 +58977,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP09-114",
@@ -58851,7 +59845,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP10-014",
@@ -58872,7 +59873,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP10-015",
@@ -59700,7 +60708,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP10-032",
@@ -60205,6 +61220,13 @@
     "effectText": "All of your {Dressrosa} type Characters with a cost of 2 or more gain +1 cost.<br>[Opponent's Turn] [Once Per Turn] This effect can be activated when your {Dressrosa} type Character is removed from the field by your opponent's effect or K.O.'d. If you have 5 or less cards in your hand, draw 1 card.",
     "templateParams": {
       "draw": 1
+    },
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -60555,7 +61577,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP10-051",
@@ -60700,7 +61729,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP10-055",
@@ -61332,7 +62368,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP10-069",
@@ -61559,7 +62602,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP10-074",
@@ -62069,7 +63119,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP10-085",
@@ -62321,7 +63378,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP10-090",
@@ -62923,7 +63987,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP10-102",
@@ -63094,7 +64165,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP10-106",
@@ -63896,7 +64974,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-004",
@@ -64220,7 +65305,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-012",
@@ -64353,7 +65445,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-016",
@@ -64416,7 +65515,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-018",
@@ -64817,7 +65923,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-027",
@@ -65092,7 +66205,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-033",
@@ -65111,7 +66231,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-034",
@@ -65675,7 +66802,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-046",
@@ -65965,7 +67099,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-053",
@@ -65985,7 +67126,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-054",
@@ -66045,7 +67193,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-056",
@@ -66421,7 +67576,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-065",
@@ -66563,7 +67725,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-069",
@@ -67060,7 +68229,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-079",
@@ -67444,7 +68620,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-088",
@@ -67504,7 +68687,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-090",
@@ -67658,7 +68848,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-094",
@@ -67677,7 +68874,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-095",
@@ -68186,7 +69390,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-106",
@@ -68475,7 +69686,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-112",
@@ -68535,7 +69753,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP11-114",
@@ -68911,7 +70136,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-003",
@@ -69038,7 +70270,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-006",
@@ -69263,7 +70502,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-011",
@@ -69282,7 +70528,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-012",
@@ -69879,7 +71132,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-024",
@@ -69953,7 +71213,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-026",
@@ -70256,7 +71523,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-033",
@@ -70357,7 +71631,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-036",
@@ -70812,7 +72093,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-046",
@@ -70969,7 +72257,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-050",
@@ -71072,7 +72367,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-053",
@@ -71182,7 +72484,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-056",
@@ -71634,7 +72943,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-065",
@@ -71753,7 +73069,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-068",
@@ -71773,7 +73096,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-069",
@@ -72150,7 +73480,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-077",
@@ -72428,7 +73765,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-083",
@@ -72447,7 +73791,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-084",
@@ -72656,7 +74007,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-089",
@@ -72835,7 +74193,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-093",
@@ -73344,7 +74709,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-104",
@@ -73364,7 +74736,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-105",
@@ -73566,7 +74945,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-110",
@@ -73585,7 +74971,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-111",
@@ -73604,7 +74997,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-112",
@@ -73623,7 +75023,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-113",
@@ -73691,7 +75098,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP12-115",
@@ -74394,7 +75808,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-011",
@@ -74413,7 +75834,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-012",
@@ -74516,7 +75944,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-015",
@@ -74685,7 +76120,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-019",
@@ -75198,7 +76640,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-030",
@@ -75489,7 +76938,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-037",
@@ -76037,7 +77493,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-049",
@@ -76056,7 +77519,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-050",
@@ -77098,7 +78568,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-071",
@@ -77215,7 +78692,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-074",
@@ -77427,7 +78911,14 @@
       "ramp",
       "trigger"
     ],
-    "effectText": "[Once Per Turn] When your Character with a type including \"Roger Pirates\" is removed from the field by your opponent's effect, add up to 1 DON!! card from your DON!! deck and rest it."
+    "effectText": "[Once Per Turn] When your Character with a type including \"Roger Pirates\" is removed from the field by your opponent's effect, add up to 1 DON!! card from your DON!! deck and rest it.",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
+    }
   },
   {
     "id": "OP13-079",
@@ -77782,7 +79273,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-086",
@@ -77892,7 +79390,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-089",
@@ -77956,7 +79461,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-091",
@@ -78504,7 +80016,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-102",
@@ -78584,7 +80103,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-104",
@@ -78710,7 +80236,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-108",
@@ -78871,7 +80404,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP13-112",
@@ -79582,7 +81122,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP14-008",
@@ -79602,7 +81149,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP14-009",
@@ -80619,7 +82173,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP14-031",
@@ -81167,6 +82728,13 @@
     "effectText": "[Opponent's Turn] When you play a Character, draw 1 card.<br>[DON!! x1] [Once Per Turn] When one of your {Amazon Lily} or {Kuja Pirates} type Characters with 5000 base power or more is K.O.'d, add up to 1 card from the top of your opponent's Life cards to the owner's hand.",
     "templateParams": {
       "draw": 1
+    },
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "flagged"
     }
   },
   {
@@ -81790,7 +83358,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP14-056",
@@ -82324,7 +83899,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP14-067",
@@ -82634,7 +84216,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP14-074",
@@ -83788,7 +85377,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP14-096",
@@ -84056,7 +85652,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP14-102",
@@ -84075,7 +85678,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP14-103",
@@ -85845,7 +87455,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP15-017",
@@ -86515,7 +88132,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP15-031",
@@ -87395,7 +89019,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP15-050",
@@ -88111,7 +89742,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP15-063",
@@ -89511,7 +91149,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP15-090",
@@ -90188,7 +91833,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP15-104",
@@ -90306,7 +91958,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP15-107",
@@ -90327,7 +91986,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "OP15-108",
@@ -91476,7 +93142,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "P-013",
@@ -91578,7 +93251,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "P-016",
@@ -91599,7 +93279,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "P-017",
@@ -91793,7 +93480,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "P-022",
@@ -91814,7 +93508,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "P-023",
@@ -91834,7 +93535,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "P-024",
@@ -92535,7 +94243,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "P-042",
@@ -92555,7 +94270,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "P-043",
@@ -93387,7 +95109,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "P-062",
@@ -94334,7 +96063,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "P-089",
@@ -94354,7 +96090,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "P-090",
@@ -96126,7 +97869,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST01-004",
@@ -96312,7 +98062,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST01-009",
@@ -96331,7 +98088,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST01-010",
@@ -96350,7 +98114,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST01-011",
@@ -96719,7 +98490,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST02-003",
@@ -96868,7 +98646,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST02-007",
@@ -97047,7 +98832,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST02-012",
@@ -97067,7 +98859,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST02-013",
@@ -97350,7 +99149,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST03-003",
@@ -97499,7 +99305,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST03-007",
@@ -97683,7 +99496,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST03-012",
@@ -97703,7 +99523,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST03-013",
@@ -98222,7 +100049,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST04-008",
@@ -98282,7 +100116,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST04-010",
@@ -98381,7 +100222,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST04-013",
@@ -98402,7 +100250,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST04-014",
@@ -98874,7 +100729,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST05-008",
@@ -98933,7 +100795,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST05-010",
@@ -99068,7 +100937,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST05-013",
@@ -99088,7 +100964,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST05-014",
@@ -99151,7 +101034,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST05-016",
@@ -99359,7 +101249,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST06-004",
@@ -99580,7 +101477,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST06-010",
@@ -99640,7 +101544,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST06-012",
@@ -99706,7 +101617,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST06-014",
@@ -99967,7 +101885,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST07-003",
@@ -100154,7 +102079,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST07-007",
@@ -100373,7 +102305,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST07-013",
@@ -100437,7 +102376,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST07-015",
@@ -100668,7 +102614,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST08-004",
@@ -100936,7 +102889,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST08-011",
@@ -100955,7 +102915,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST08-012",
@@ -100974,7 +102941,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST08-013",
@@ -101165,7 +103139,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST09-003",
@@ -101184,7 +103165,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST09-004",
@@ -101293,7 +103281,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST09-007",
@@ -101406,7 +103401,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST09-010",
@@ -101470,7 +103472,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST09-012",
@@ -101537,7 +103546,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST09-014",
@@ -102867,7 +104883,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST12-005",
@@ -102887,7 +104910,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST12-006",
@@ -103043,7 +105073,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST12-010",
@@ -103293,7 +105330,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST12-016",
@@ -104575,7 +106619,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST14-006",
@@ -104805,7 +106856,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST14-011",
@@ -104906,7 +106964,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST14-014",
@@ -106381,7 +108446,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST20-004",
@@ -106685,7 +108757,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST21-006",
@@ -106704,7 +108783,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST21-007",
@@ -106760,7 +108846,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST21-009",
@@ -106960,7 +109053,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST21-014",
@@ -107351,7 +109451,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST22-005",
@@ -107538,7 +109645,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST22-009",
@@ -107592,7 +109706,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST22-011",
@@ -107742,7 +109863,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST22-014",
@@ -107761,7 +109889,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST22-015",
@@ -109398,7 +111533,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST28-004",
@@ -109730,7 +111872,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST29-006",
@@ -109749,7 +111898,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST29-007",
@@ -109891,7 +112047,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST29-011",
@@ -109994,7 +112157,14 @@
     "effectTags": [
       "vanilla"
     ],
-    "effectText": "-"
+    "effectText": "-",
+    "effectSpecV2": {
+      "clauses": [],
+      "continuous": [],
+      "replacements": [],
+      "schemaVersion": 2,
+      "verified": "ground-truth"
+    }
   },
   {
     "id": "ST29-014",
