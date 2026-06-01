@@ -14,7 +14,7 @@ import type { GameState, PlayerId } from '../GameState';
 import type { Card } from '../cards/Card';
 import { applyActionV2, evaluateConditionV2, resolveTargetV2 } from './runner-v2';
 import { applyContinuousEffectsV2ToInstance } from './continuous-v2';
-import { tryApplyReplacement } from './replacements-v2';
+import { tryApplyReplacement, canPayClauseCost, payClauseCost } from './replacements-v2';
 import type { EffectClauseV2, EffectTriggerV2 } from './types-v2';
 
 /** Feature flag — `false` rolls back to v1 dispatch. Default true. */
@@ -62,8 +62,22 @@ export function fireV2Effects(
   if (clauses.length === 0) return state;
 
   let cur = structuredClone(state);
-  for (const clause of clauses) {
-    if (!evaluateConditionV2(cur, controller, clause.condition)) continue;
+  for (const [idx, clause] of clauses.entries()) {
+    // Once Per Turn: per-source-per-clause-index tally on the instance.
+    if (clause.opt) {
+      const inst = cur.instances[sourceInstanceId];
+      if (!inst) continue;
+      const tag = `opt:${trigger}:${idx}`;
+      if (inst.perTurn.effectsUsed.includes(tag)) continue;
+      inst.perTurn.effectsUsed.push(tag);
+    }
+    if (!evaluateConditionV2(cur, controller, clause.condition, sourceInstanceId)) continue;
+    if (clause.cost) {
+      if (!canPayClauseCost(cur, controller, sourceInstanceId, clause.cost)) continue;
+      const paid = payClauseCost(cur, controller, sourceInstanceId, clause.cost);
+      if (!paid) continue;
+      cur = paid;
+    }
     const targets = resolveTargetV2(cur, controller, sourceInstanceId, clause.target);
     cur = applyActionV2(cur, { sourceInstanceId, controller }, clause.action, targets);
   }

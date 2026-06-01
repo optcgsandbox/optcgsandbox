@@ -54,6 +54,8 @@ export type EffectConditionV2 =
   // Resource counts
   | { type: 'if_don_min'; n: number }
   | { type: 'if_don_max'; n: number }
+  | { type: 'if_opp_don_min'; n: number }                               // EB02-061 — opp DON in donCostArea ≥ n
+  | { type: 'if_opp_don_max'; n: number }                               // mirror
   | { type: 'if_own_don_le_opp' }                                       // (gap #67)
   | { type: 'if_own_life_max'; n: number }
   | { type: 'if_own_life_min'; n: number }
@@ -68,6 +70,14 @@ export type EffectConditionV2 =
   // Field state
   | { type: 'if_own_chars_min'; n: number }                             // (gap #14)
   | { type: 'if_own_chars_min_cost'; n: number; minCost: number }
+  | { type: 'if_opp_chars_min'; n: number }                             // opp has ≥N chars
+  | { type: 'if_opp_chars_min_cost'; n: number; minCost: number }       // opp has ≥N chars with cost ≥ minCost
+  | { type: 'if_opp_chars_max_cost'; n: number; maxCost: number }       // opp has ≥N chars with cost ≤ maxCost (EB01-045 "cost of 0")
+  | { type: 'if_attached_don_min'; n: number }                          // [DON!! xN] — DON attached to SOURCE card
+  | { type: 'is_opp_turn' }                                             // EB02-003 [Opponent's Turn] gate
+  | { type: 'is_own_turn' }                                             // mirror
+  | { type: 'if_only_chars_with_trait'; trait: string }                 // EB02-010 — every char on your field has this trait
+  | { type: 'if_own_chars_max_with_min_power'; n: number; minPower: number } // EB02-022 — ≤N own chars whose power ≥ minPower
   | { type: 'if_owned_other_with_name'; name: string }
   | { type: 'if_no_other_with_name'; name: string }                     // (gap from EB04-031)
   | { type: 'if_played_this_turn' }                                     // (gap #16)
@@ -95,6 +105,10 @@ export interface TargetFilter {
   nameExcludes?: string;
   kind?: 'character' | 'event' | 'stage';
   rested?: boolean;
+  /** EB02-022 — "no base effect" / vanilla character (effectText null/-/empty). */
+  noBaseEffect?: boolean;
+  /** EB03-014 — attribute is a card metadata field ('Slash', 'Strike', 'Ranged', etc.). */
+  attribute?: string;
 }
 
 export type EffectTargetV2 =
@@ -103,7 +117,9 @@ export type EffectTargetV2 =
   | { kind: 'your_leader' }
   | { kind: 'opp_leader' }
   | { kind: 'your_character'; filter?: TargetFilter }
+  | { kind: 'your_leader_or_character'; filter?: TargetFilter }         // EB01-028 etc. — "Leader or Character" target
   | { kind: 'opp_character'; filter?: TargetFilter }                    // includes cost-capped via filter.costMax (gap #11, #15)
+  | { kind: 'opp_leader_or_character'; filter?: TargetFilter }          // mirror — "your opponent's Leader or Character"
   | { kind: 'opp_hand_card'; filter?: TargetFilter }
   | { kind: 'own_trash_card'; filter?: TargetFilter }                   // (gap #15)
   | { kind: 'top_of_deck' }
@@ -129,6 +145,13 @@ export interface EffectCostV2 {
   revealHand?: { count: number; filter?: TargetFilter };  // (gap #90)
   koSelfCharacter?: { filter?: TargetFilter };            // (gap #54)
   bottomOfDeckFromTrash?: number;                          // (gap #48) "place N cards from your trash at bottom"
+  bottomOfDeckFromHand?: number;                           // EB01-030 Loguetown — place N cards from hand at bottom
+  bottomOfDeckSelf?: boolean;                              // EB01-030 — place THIS card at bottom of deck
+  lifeToHand?: number;                                     // EB01-056 — pay-cost variant: move N life to hand
+  selfPowerCost?: number;                                  // EB01-004 — give your own active leader −X power this turn as cost
+  donRestedToActive?: number;                              // mirror cost — set N rested DON as active as cost (rare)
+  bottomOfDeckOwnChar?: { filter?: TargetFilter };         // EB01-011 — place 1 own char with X power at bottom of deck as cost
+  discardHandFilter?: { count: number; filter: TargetFilter }; // EB01-008 — discard 1 Event-or-Stage card
   returnSelfChar?: { filter?: TargetFilter };              // ST22-005 etc.
 }
 
@@ -149,6 +172,8 @@ export type CountSource =
   | 'own_hand_count'  | 'opp_hand_count'
   | 'own_life_count'  | 'opp_life_count'
   | 'own_don_count'   | 'opp_don_count'
+  | 'own_rested_don_count'                       // EB01-014 — power scales per 3 rested DON
+  | 'own_trash_event_count'                      // EB01-027 — power scales per N events in trash
   | 'cards_trashed_this_resolution' // for gap #39 (OP07-091)
   ;
 
@@ -175,14 +200,14 @@ export type EffectActionV2 =
   | { kind: 'lifegain'; magnitude?: number }
   | { kind: 'life_to_hand'; magnitude?: number }
   | { kind: 'add_to_own_life_top'; faceUp: boolean; from: 'top_of_deck' | 'hand' | 'own_trash' }  // (gaps #71, #72, #76)
-  | { kind: 'add_to_opp_life_top'; faceUp: boolean }                   // (gap #71)
+  | { kind: 'add_to_opp_life_top'; faceUp: boolean; position?: 'top' | 'bottom' }  // (gap #71); EB01-053 supports bottom too
   | { kind: 'add_to_opp_hand_from_opp_life' }                          // (gap #95)
   | { kind: 'trash_face_up_life' }                                     // (gap #77)
   | { kind: 'turn_all_own_life_face_down' }                            // (gap #86)
   | { kind: 'peek_and_reorder_own_life'; count: number }               // ST07-003
   | { kind: 'peek_and_reorder_opp_life' }                              // (gap #85)
   | { kind: 'peek_and_reorder_own_deck'; count: number }               // ST17-004
-  | { kind: 'searcher_peek'; lookCount: number; addCount: number; filter?: TargetFilter }  // V3-3 + filters
+  | { kind: 'searcher_peek'; lookCount: number; addCount: number; filter?: TargetFilter; playInsteadOfHand?: boolean }  // V3-3 + filters; EB01-009 plays instead of adding to hand
   | { kind: 'reveal_opp_hand' }                                        // V3-4
   | { kind: 'reveal_top_and_conditional_play'; filter: TargetFilter; rested?: boolean }  // (gap #27)
   | { kind: 'peek_opp_deck'; count: number }                           // (gap #42, #58)
@@ -190,6 +215,10 @@ export type EffectActionV2 =
   | { kind: 'choose_cost_reveal_opp_match'; thenAction: EffectActionV2 } // (gap #79)
   | { kind: 'search_deck'; filter?: TargetFilter }
   | { kind: 'bottom_of_deck_from_trash'; magnitude: number | MagnitudeFormula }  // (gap #48)
+  // EB02-024 Sogeking — place N cards from hand at bottom of deck (mandatory).
+  | { kind: 'bottom_of_deck_from_hand'; magnitude: number }
+  // EB02-027 Vista — place targets (opp chars) at bottom of opp's deck.
+  | { kind: 'bottom_of_deck_to_opp_deck' }
   | { kind: 'recursion'; magnitude?: number; filter?: TargetFilter }
   | { kind: 'move_to_top' }
   | { kind: 'exile' }
@@ -222,7 +251,25 @@ export type EffectActionV2 =
   | { kind: 'grant_immunity'; against: 'opp_effects' | 'opp_removal'; duration: EffectDuration } // (gap #60)
   | { kind: 'give_keyword'; keyword: string; duration: EffectDuration }    // (gaps #9, #34, #49, #53)
   // Cards out of hand or trash
-  | { kind: 'play_for_free'; from: 'hand' | 'trash'; filter?: TargetFilter; count?: number; uniqueByName?: boolean }
+  | { kind: 'play_for_free'; from: 'hand' | 'trash' | 'hand_or_trash'; filter?: TargetFilter; count?: number; uniqueByName?: boolean; rested?: boolean }
+  // EB01-047 — mandatory discard from hand (not a cost). Distinct from cost.discardHand.
+  | { kind: 'discard_from_hand'; magnitude: number }
+  // EB01-059 / EB01-060 — trash from top of own life until N remain.
+  | { kind: 'trash_own_life_until'; n: number }
+  // EB01-038 — defensive: redirect opp's pending attack to a chosen own char.
+  | { kind: 'attack_redirect_to_target' }
+  // EB01-012 / EB02-010 — flip N rested DON to active (different from per-card set_active).
+  | { kind: 'set_active_don'; magnitude: number }
+  // EB01-061 — copy power from the SELECTED opp character (chosen via target).
+  | { kind: 'set_base_power_copy_from_target'; duration: EffectDuration }
+  // EB02-009 Thousand Sunny — transfer an already-attached DON from one own
+  // instance to another (rather than pulling from donCostArea).
+  | { kind: 'transfer_attached_don'; magnitude: number; fromKind: 'your_leader' | 'your_character' | 'self' }
+  // EB01-029 Sorry. I'm a Goner — reveal top, if it matches a cost gate,
+  // run the inner action (bounce). Otherwise no-op. Card goes to bottom.
+  | { kind: 'reveal_top_then_if_cost_min'; minCost: number; thenAction: EffectActionV2 }
+  // EB02-061 etc. — run a sequence of actions in one clause, sharing the cost paid for the clause.
+  | { kind: 'chained_actions'; actions: EffectActionV2[] }
   // Misc
   | { kind: 'activate_event_from_hand'; filter?: TargetFilter }            // (gap #47)
   | { kind: 'damage_immunity_attribute'; attribute: string }               // (gap #26)
@@ -240,6 +287,8 @@ export interface EffectClauseV2 {
   cost?: EffectCostV2;
   action: EffectActionV2;
   target?: EffectTargetV2;
+  /** Once Per Turn — engine refuses to fire this clause a second time within the same turn. */
+  opt?: boolean;
   verified: 'ground-truth' | 'auto' | 'human-reviewed' | 'flagged' | 'human-deferred';
 }
 
@@ -255,6 +304,7 @@ export interface ContinuousEffectV2 {
     | { kind: 'grant_keyword_to_self'; keyword: string }                     // (gap #34)
     | { kind: 'aura_power_buff'; filter: TargetFilter; magnitude: number }   // OP12-073
     | { kind: 'aura_cost_modifier'; filter: TargetFilter; delta: number }    // OP10-042
+    | { kind: 'aura_counter_buff'; filter: TargetFilter; magnitude: number } // EB01-001 — chars without a counter chip gain +N counter
     | { kind: 'restrict_self_attack' }                                       // "This Leader cannot attack"
     | { kind: 'cost_modifier_in_hand'; delta: number };                      // (gap #91, EB04-061)
 }

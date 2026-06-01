@@ -53,7 +53,7 @@ export function tryApplyReplacement(
 ): ReplacementResult {
   for (const r of replacements) {
     if (r.trigger !== trigger) continue;
-    if (!evaluateConditionV2(state, ctx.controller, r.condition)) continue;
+    if (!evaluateConditionV2(state, ctx.controller, r.condition, ctx.sourceInstanceId)) continue;
 
     // Check cost payability.
     if (r.cost && !canPayCost(state, ctx.controller, ctx.sourceInstanceId, r.cost)) {
@@ -111,6 +111,43 @@ function canPayCost(
     if (matches.length === 0) return false;
   }
   if (typeof cost.bottomOfDeckFromTrash === 'number' && me.trash.length < cost.bottomOfDeckFromTrash) return false;
+  if (typeof cost.bottomOfDeckFromHand === 'number' && me.hand.length < cost.bottomOfDeckFromHand) return false;
+  if (cost.bottomOfDeckSelf) {
+    const inst = state.instances[sourceInstanceId];
+    if (!inst) return false;
+  }
+  if (typeof cost.lifeToHand === 'number' && me.life.length < cost.lifeToHand) return false;
+  if (typeof cost.selfPowerCost === 'number') {
+    // Cost requires an active own leader (text: 'give your 1 active Leader −X power').
+    if (me.leader.rested) return false;
+  }
+  if (typeof cost.donRestedToActive === 'number' && me.donRested.length < cost.donRestedToActive) return false;
+  if (cost.bottomOfDeckOwnChar) {
+    const filter = cost.bottomOfDeckOwnChar.filter;
+    const matches = me.field.filter((inst) => {
+      if (!filter) return true;
+      const card = state.cardLibrary[inst.cardId];
+      if (!card) return false;
+      if (typeof filter.powerMax === 'number' && (typeof (card as { power?: number }).power !== 'number' || (card as { power: number }).power > filter.powerMax)) return false;
+      if (typeof filter.powerMin === 'number' && (typeof (card as { power?: number }).power !== 'number' || (card as { power: number }).power < filter.powerMin)) return false;
+      if (filter.trait && (!card.traits || !card.traits.includes(filter.trait))) return false;
+      return true;
+    });
+    if (matches.length === 0) return false;
+  }
+  if (cost.discardHandFilter) {
+    const need = cost.discardHandFilter.count;
+    const filter = cost.discardHandFilter.filter;
+    const matches = me.hand.filter((id) => {
+      const inst = state.instances[id];
+      const card = inst ? state.cardLibrary[inst.cardId] : undefined;
+      if (!card) return false;
+      if (filter.kind && card.kind !== filter.kind) return false;
+      if (filter.trait && (!card.traits || !card.traits.includes(filter.trait))) return false;
+      return true;
+    });
+    if (matches.length < need) return false;
+  }
   return true;
 }
 
@@ -180,10 +217,101 @@ function payCost(
       me.deck.push(me.trash.shift()!);
     }
   }
+  if (typeof cost.bottomOfDeckFromHand === 'number') {
+    for (let i = 0; i < cost.bottomOfDeckFromHand && me.hand.length > 0; i++) {
+      me.deck.push(me.hand.shift()!);
+    }
+  }
+  if (cost.bottomOfDeckSelf) {
+    const inst = state.instances[sourceInstanceId];
+    if (inst) {
+      for (const pid of ['A', 'B'] as PlayerId[]) {
+        const pl = state.players[pid];
+        const idx = pl.field.findIndex((i) => i.instanceId === sourceInstanceId);
+        if (idx !== -1) {
+          pl.field.splice(idx, 1);
+          pl.deck.push(sourceInstanceId);
+          break;
+        }
+        // Self stage cards
+        if (pl.stage && pl.stage.instanceId === sourceInstanceId) {
+          pl.deck.push(sourceInstanceId);
+          pl.stage = null;
+          break;
+        }
+      }
+    }
+  }
+  if (typeof cost.lifeToHand === 'number') {
+    for (let i = 0; i < cost.lifeToHand && me.life.length > 0; i++) {
+      me.hand.push(me.life.shift()!);
+    }
+  }
+  if (typeof cost.selfPowerCost === 'number') {
+    me.leader.powerModifier = (me.leader.powerModifier ?? 0) - cost.selfPowerCost;
+    // 'this turn' duration is implicit; engine clears powerModifier at end of turn.
+  }
+  if (typeof cost.donRestedToActive === 'number') {
+    for (let i = 0; i < cost.donRestedToActive && me.donRested.length > 0; i++) {
+      me.donCostArea.push(me.donRested.shift()!);
+    }
+  }
+  if (cost.bottomOfDeckOwnChar) {
+    const filter = cost.bottomOfDeckOwnChar.filter;
+    const match = me.field.find((inst) => {
+      if (!filter) return true;
+      const card = state.cardLibrary[inst.cardId];
+      if (!card) return false;
+      if (typeof filter.powerMax === 'number' && (typeof (card as { power?: number }).power !== 'number' || (card as { power: number }).power > filter.powerMax)) return false;
+      if (typeof filter.powerMin === 'number' && (typeof (card as { power?: number }).power !== 'number' || (card as { power: number }).power < filter.powerMin)) return false;
+      if (filter.trait && (!card.traits || !card.traits.includes(filter.trait))) return false;
+      return true;
+    });
+    if (match) {
+      const idx = me.field.findIndex((i) => i.instanceId === match.instanceId);
+      me.field.splice(idx, 1);
+      me.deck.push(match.instanceId);
+    }
+  }
+  if (cost.discardHandFilter) {
+    const filter = cost.discardHandFilter.filter;
+    for (let i = 0; i < cost.discardHandFilter.count; i++) {
+      const idx = me.hand.findIndex((id) => {
+        const inst = state.instances[id];
+        const card = inst ? state.cardLibrary[inst.cardId] : undefined;
+        if (!card) return false;
+        if (filter.kind && card.kind !== filter.kind) return false;
+        if (filter.trait && (!card.traits || !card.traits.includes(filter.trait))) return false;
+        return true;
+      });
+      if (idx === -1) break;
+      me.trash.push(me.hand.splice(idx, 1)[0]);
+    }
+  }
   // OTHER reference used only for diagnostic ergonomics — keep around.
   void OTHER;
   void controller;
   return state;
+}
+
+/** Public cost helpers — used by migration-v2 to pay clause costs before
+ *  dispatching applyActionV2. Replacements path uses the internal versions. */
+export function canPayClauseCost(
+  state: GameState,
+  controller: PlayerId,
+  sourceInstanceId: string,
+  cost: EffectCostV2,
+): boolean {
+  return canPayCost(state, controller, sourceInstanceId, cost);
+}
+
+export function payClauseCost(
+  state: GameState,
+  controller: PlayerId,
+  sourceInstanceId: string,
+  cost: EffectCostV2,
+): GameState | null {
+  return payCost(state, controller, sourceInstanceId, cost);
 }
 
 /** Re-export the cost type so callers don't need to dig into types-v2. */

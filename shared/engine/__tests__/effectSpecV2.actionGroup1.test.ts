@@ -255,10 +255,26 @@ describe('EffectSpec v2 — applyActionV2 group 1 (card movement & draw)', () =>
     expect(s.players.A.exile).toContain('t1');
   });
 
-  it('composite stubs (reveal_top_and_conditional_play, choose_*) return state unchanged', () => {
+  it('reveal_top_and_conditional_play plays top card from deck when matching filter', () => {
+    const s = boot();
+    const deckLenBefore = s.players.A.deck.length;
+    const fieldLenBefore = s.players.A.field.length;
+    applyActionV2(s, CTX, { kind: 'reveal_top_and_conditional_play', filter: {} }, []);
+    // Vanilla top card matches empty filter → moves from deck to field.
+    expect(s.players.A.deck.length).toBe(deckLenBefore - 1);
+    expect(s.players.A.field.length).toBe(fieldLenBefore + 1);
+  });
+
+  it('reveal_top_and_conditional_play is a no-op when filter rejects', () => {
     const s = boot();
     const before = JSON.stringify(s);
-    applyActionV2(s, CTX, { kind: 'reveal_top_and_conditional_play', filter: {} }, []);
+    applyActionV2(s, CTX, { kind: 'reveal_top_and_conditional_play', filter: { trait: '__nonexistent__' } }, []);
+    expect(JSON.stringify(s)).toBe(before);
+  });
+
+  it('other composite stubs (choose_cost_reveal_opp_match, empty choose_one) return state unchanged', () => {
+    const s = boot();
+    const before = JSON.stringify(s);
     applyActionV2(s, CTX, { kind: 'choose_cost_reveal_opp_match', thenAction: { kind: 'draw', magnitude: 1 } } as any, []);
     applyActionV2(s, CTX, { kind: 'choose_one', options: [] }, []);
     expect(JSON.stringify(s)).toBe(before);

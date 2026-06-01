@@ -32,7 +32,7 @@ export function applyContinuousEffectsV2ToInstance(
   const opp = state.players[OTHER[controller]];
 
   for (const eff of effects) {
-    if (!evaluateConditionV2(state, controller, eff.condition)) continue;
+    if (!evaluateConditionV2(state, controller, eff.condition, sourceInstanceId)) continue;
 
     switch (eff.action.kind) {
       case 'self_power_buff': {
@@ -87,6 +87,25 @@ export function applyContinuousEffectsV2ToInstance(
           if (inst.instanceId === sourceInstanceId) continue;
           inst.costModifier = (inst.costModifier ?? 0) + delta;
           state.instances[inst.instanceId].costModifier = inst.costModifier;
+        }
+        break;
+      }
+      case 'aura_counter_buff': {
+        // EB01-001 — chars matching filter that lack a counter chip gain
+        // +magnitude counter while source is on field. Counter is read at
+        // counter-play time from card.counterValue; we mirror onto inst.
+        const m = eff.action.magnitude;
+        const filter = eff.action.filter;
+        for (const inst of me.field) {
+          if (!matchesFilterMinimal(state, inst, filter)) continue;
+          const card = state.cardLibrary[inst.cardId];
+          // Only add when printed counter is 0/null (text: "without a Counter").
+          const printed = card && typeof (card as { counterValue?: number | null }).counterValue === 'number'
+            ? (card as { counterValue: number | null }).counterValue
+            : null;
+          if (printed && printed > 0) continue;
+          const augmented = inst as unknown as { counterBonus?: number };
+          augmented.counterBonus = (augmented.counterBonus ?? 0) + m;
         }
         break;
       }

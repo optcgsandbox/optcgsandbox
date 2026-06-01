@@ -24,6 +24,7 @@ export function evaluateConditionV2(
   state: GameState,
   controller: PlayerId,
   cond: EffectConditionV2 | undefined,
+  sourceInstanceId?: string,
 ): boolean {
   if (!cond) return true;
   const me = state.players[controller];
@@ -66,6 +67,10 @@ export function evaluateConditionV2(
       return me.donCostArea.length >= cond.n;
     case 'if_don_max':
       return me.donCostArea.length <= cond.n;
+    case 'if_opp_don_min':
+      return opp.donCostArea.length >= cond.n;
+    case 'if_opp_don_max':
+      return opp.donCostArea.length <= cond.n;
     case 'if_own_don_le_opp':
       return me.donCostArea.length <= opp.donCostArea.length;
 
@@ -107,6 +112,55 @@ export function evaluateConditionV2(
       });
       return match.length >= cond.n;
     }
+    case 'if_opp_chars_min': {
+      const charCount = opp.field.filter(
+        (inst) => state.cardLibrary[inst.cardId]?.kind === 'character',
+      ).length;
+      return charCount >= cond.n;
+    }
+    case 'if_opp_chars_min_cost': {
+      const match = opp.field.filter((inst) => {
+        const card = state.cardLibrary[inst.cardId];
+        return card?.kind === 'character' &&
+          typeof card.cost === 'number' && card.cost >= cond.minCost;
+      });
+      return match.length >= cond.n;
+    }
+    case 'if_opp_chars_max_cost': {
+      const match = opp.field.filter((inst) => {
+        const card = state.cardLibrary[inst.cardId];
+        return card?.kind === 'character' &&
+          typeof card.cost === 'number' && card.cost <= cond.maxCost;
+      });
+      return match.length >= cond.n;
+    }
+    case 'if_attached_don_min': {
+      if (!sourceInstanceId) return false;
+      const inst = state.instances[sourceInstanceId];
+      if (!inst) return false;
+      return inst.attachedDon.length >= cond.n;
+    }
+    case 'is_opp_turn':
+      return state.activePlayer !== controller;
+    case 'is_own_turn':
+      return state.activePlayer === controller;
+    case 'if_only_chars_with_trait': {
+      const chars = me.field.filter((inst) => state.cardLibrary[inst.cardId]?.kind === 'character');
+      if (chars.length === 0) return false;
+      return chars.every((inst) => {
+        const card = state.cardLibrary[inst.cardId];
+        return Array.isArray(card?.traits) && card.traits.includes(cond.trait);
+      });
+    }
+    case 'if_own_chars_max_with_min_power': {
+      const count = me.field.filter((inst) => {
+        const card = state.cardLibrary[inst.cardId];
+        if (card?.kind !== 'character') return false;
+        const power = (card as { power?: number }).power ?? 0;
+        return power >= cond.minPower;
+      }).length;
+      return count <= cond.n;
+    }
     case 'if_owned_other_with_name':
       return me.field.some((inst) =>
         state.cardLibrary[inst.cardId]?.name === cond.name,
@@ -115,11 +169,13 @@ export function evaluateConditionV2(
       return !me.field.some((inst) =>
         state.cardLibrary[inst.cardId]?.name === cond.name,
       );
-    case 'if_played_this_turn':
-      // Heuristic V0: a character is "played this turn" if it's still
-      // summoning-sick. Engine could carry an explicit flag later if needed.
-      // For non-instance conditions, fall back to false.
-      return false;
+    case 'if_played_this_turn': {
+      // True when the source card was played this turn — engine tracks via
+      // `summoningSick` flag on instances. Cleared at end of own turn.
+      if (!sourceInstanceId) return false;
+      const inst = state.instances[sourceInstanceId];
+      return !!inst?.summoningSick;
+    }
     case 'if_have_given_don_min': {
       // "Given DON" means DON attached to opp's characters by your effects.
       // Engine doesn't model the "your-effect" provenance yet; approximate
@@ -151,11 +207,11 @@ export function evaluateConditionV2(
 
     // ── Composite ───────────────────────────────────────────────────
     case 'and':
-      return cond.conditions.every((c) => evaluateConditionV2(state, controller, c));
+      return cond.conditions.every((c) => evaluateConditionV2(state, controller, c, sourceInstanceId));
     case 'or':
-      return cond.conditions.some((c) => evaluateConditionV2(state, controller, c));
+      return cond.conditions.some((c) => evaluateConditionV2(state, controller, c, sourceInstanceId));
     case 'not':
-      return !evaluateConditionV2(state, controller, cond.condition);
+      return !evaluateConditionV2(state, controller, cond.condition, sourceInstanceId);
 
     default:
       // Future condition types fall through to false defensively.
@@ -228,6 +284,15 @@ function matchesFilter(state: GameState, inst: CardInstance, filter: TargetFilte
   if (typeof filter.rested === 'boolean') {
     if (inst.rested !== filter.rested) return false;
   }
+  if (filter.attribute) {
+    if ((card as { attribute?: string }).attribute !== filter.attribute) return false;
+  }
+  if (filter.noBaseEffect === true) {
+    // Vanilla / no base effect: card has no effectSpecV2 content OR explicit ground-truth marker.
+    const spec = (card as { effectSpecV2?: { clauses?: unknown[]; continuous?: unknown[]; replacements?: unknown[]; verified?: string } }).effectSpecV2;
+    const hasContent = spec && ((spec.clauses?.length ?? 0) > 0 || (spec.continuous?.length ?? 0) > 0 || (spec.replacements?.length ?? 0) > 0);
+    if (hasContent) return false;
+  }
   return true;
 }
 
@@ -263,7 +328,20 @@ export function resolveTargetV2(
       return hits.length > 0 ? [hits[0].instanceId] : [];
     }
 
+    case 'your_leader_or_character': {
+      // Picks the leader by default (cheap default — UI can override later).
+      if (matchesFilter(state, me.leader, target.filter)) return [me.leader.instanceId];
+      const hits = me.field.filter((inst) => matchesFilter(state, inst, target.filter));
+      return hits.length > 0 ? [hits[0].instanceId] : [];
+    }
+
     case 'opp_character': {
+      const hits = opp.field.filter((inst) => matchesFilter(state, inst, target.filter));
+      return hits.length > 0 ? [hits[0].instanceId] : [];
+    }
+
+    case 'opp_leader_or_character': {
+      if (matchesFilter(state, opp.leader, target.filter)) return [opp.leader.instanceId];
       const hits = opp.field.filter((inst) => matchesFilter(state, inst, target.filter));
       return hits.length > 0 ? [hits[0].instanceId] : [];
     }
@@ -334,19 +412,43 @@ function resolveMagnitude(
   const me = state.players[controller];
   if (m.kind === 'match_opp_don') return opp.donCostArea.length;
   if (m.kind === 'read_state') {
-    switch (m.source) {
-      case 'own_trash_count': return me.trash.length;
-      case 'opp_trash_count': return opp.trash.length;
-      case 'own_hand_count': return me.hand.length;
-      case 'opp_hand_count': return opp.hand.length;
-      case 'own_life_count': return me.life.length;
-      case 'opp_life_count': return opp.life.length;
-      case 'own_don_count': return me.donCostArea.length;
-      case 'opp_don_count': return opp.donCostArea.length;
-      default: return fallback;
-    }
+    return readCountSource(state, controller, m.source as string, fallback);
+  }
+  if (m.kind === 'per_count') {
+    const total = readCountSource(state, controller, m.countSource as string, 0);
+    const divisor = (m.divisor as number) || 1;
+    const perUnit = (m.perUnit as number) || 0;
+    return Math.floor(total / divisor) * perUnit;
   }
   return fallback;
+}
+
+function readCountSource(
+  state: GameState,
+  controller: PlayerId,
+  source: string,
+  fallback: number,
+): number {
+  const me = state.players[controller];
+  const opp = state.players[OTHER[controller]];
+  switch (source) {
+    case 'own_trash_count': return me.trash.length;
+    case 'opp_trash_count': return opp.trash.length;
+    case 'own_hand_count': return me.hand.length;
+    case 'opp_hand_count': return opp.hand.length;
+    case 'own_life_count': return me.life.length;
+    case 'opp_life_count': return opp.life.length;
+    case 'own_don_count': return me.donCostArea.length;
+    case 'opp_don_count': return opp.donCostArea.length;
+    case 'own_rested_don_count': return me.donRested.length;
+    case 'own_trash_event_count':
+      return me.trash.reduce((n, id) => {
+        const inst = state.instances[id];
+        const card = inst ? state.cardLibrary[inst.cardId] : undefined;
+        return n + (card?.kind === 'event' ? 1 : 0);
+      }, 0);
+    default: return fallback;
+  }
 }
 
 /** Apply one EffectActionV2 to state. Targets are pre-resolved via
@@ -421,8 +523,26 @@ export function applyActionV2(
       return state;
     }
     case 'add_to_opp_life_top': {
-      // V0 takes from top of opp deck (Bandai's "Place at top of opp Life face-up").
-      if (opp.deck.length > 0) opp.life.unshift(opp.deck.shift()!);
+      // Source: the resolved target (an opp character) gets placed into opp's
+      // life zone. Caller passes opp_character target descriptor; the character
+      // moves from field to top (default) or bottom of opp life.
+      if (targets.length > 0) {
+        const tid = targets[0];
+        // Find target on opp field/stage, remove + push to opp life zone.
+        const idx = opp.field.findIndex((i) => i.instanceId === tid);
+        if (idx !== -1) {
+          const removed = opp.field.splice(idx, 1)[0];
+          while (removed.attachedDon.length > 0) opp.donRested.push(removed.attachedDon.shift()!);
+          if (action.position === 'bottom') opp.life.push(removed.instanceId);
+          else opp.life.unshift(removed.instanceId);
+          return state;
+        }
+      }
+      // Legacy V0 path: pull from top of opp deck (older spec usage).
+      if (opp.deck.length > 0) {
+        if (action.position === 'bottom') opp.life.push(opp.deck.shift()!);
+        else opp.life.unshift(opp.deck.shift()!);
+      }
       return state;
     }
     case 'add_to_opp_hand_from_opp_life': {
@@ -445,12 +565,18 @@ export function applyActionV2(
     }
     case 'searcher_peek': {
       // V0: take first matching card from deck → hand (filter applied).
+      // EB01-009 etc. set playInsteadOfHand:true to put it on the field instead.
       for (let i = 0; i < me.deck.length; i++) {
         const inst = state.instances[me.deck[i]];
         const card = inst ? state.cardLibrary[inst.cardId] : undefined;
         if (inst && card && matchesFilter(state, inst, action.filter)) {
           me.deck.splice(i, 1);
-          me.hand.push(inst.instanceId);
+          if (action.playInsteadOfHand && card.kind === 'character') {
+            inst.summoningSick = true;
+            me.field.push(inst);
+          } else {
+            me.hand.push(inst.instanceId);
+          }
           return state;
         }
       }
@@ -500,6 +626,24 @@ export function applyActionV2(
       // V0: oldest-N from trash to bottom of deck.
       for (let i = 0; i < n && me.trash.length > 0; i++) {
         me.deck.push(me.trash.shift()!);
+      }
+      return state;
+    }
+    case 'bottom_of_deck_from_hand': {
+      const n = action.magnitude;
+      for (let i = 0; i < n && me.hand.length > 0; i++) {
+        me.deck.push(me.hand.shift()!);
+      }
+      return state;
+    }
+    case 'bottom_of_deck_to_opp_deck': {
+      for (const tid of targets) {
+        const idx = opp.field.findIndex((i) => i.instanceId === tid);
+        if (idx !== -1) {
+          const removed = opp.field.splice(idx, 1)[0];
+          while (removed.attachedDon.length > 0) opp.donRested.push(removed.attachedDon.shift()!);
+          opp.deck.push(removed.instanceId);
+        }
       }
       return state;
     }
@@ -843,34 +987,134 @@ export function applyActionV2(
     }
     case 'play_for_free': {
       // V0: pick first matching card from the named zone, push to field
-      // summoning-sick. Honors `count` (multi-play) + `uniqueByName`.
-      const sourceList = action.from === 'hand' ? me.hand : action.from === 'trash' ? me.trash : null;
-      if (!sourceList) return state;
+      // summoning-sick. Honors `count`, `uniqueByName`, `rested`. Source
+      // 'hand_or_trash' scans hand first then trash.
+      const sources: ('hand' | 'trash')[] =
+        action.from === 'hand_or_trash' ? ['hand', 'trash']
+        : action.from === 'trash' ? ['trash']
+        : ['hand'];
       const count = action.count ?? 1;
       const seen = new Set<string>();
-      let placed = 0;
-      const matches: string[] = [];
-      for (const id of sourceList) {
-        const inst = state.instances[id];
-        const card = inst ? state.cardLibrary[inst.cardId] : undefined;
-        if (!inst || !card || card.kind !== 'character') continue;
-        if (!matchesFilter(state, inst, action.filter)) continue;
-        if (action.uniqueByName && seen.has(card.name)) continue;
-        matches.push(id);
-        seen.add(card.name);
-        if (matches.length >= count) break;
+      const matches: { id: string; from: 'hand' | 'trash' }[] = [];
+      outer: for (const src of sources) {
+        const sourceList = src === 'hand' ? me.hand : me.trash;
+        for (const id of sourceList) {
+          const inst = state.instances[id];
+          const card = inst ? state.cardLibrary[inst.cardId] : undefined;
+          if (!inst || !card || card.kind !== 'character') continue;
+          if (!matchesFilter(state, inst, action.filter)) continue;
+          if (action.uniqueByName && seen.has(card.name)) continue;
+          matches.push({ id, from: src });
+          seen.add(card.name);
+          if (matches.length >= count) break outer;
+        }
       }
-      for (const id of matches) {
-        const sIdx = sourceList.indexOf(id);
+      for (const m of matches) {
+        const sourceList = m.from === 'hand' ? me.hand : me.trash;
+        const sIdx = sourceList.indexOf(m.id);
         if (sIdx !== -1) sourceList.splice(sIdx, 1);
-        const inst = state.instances[id];
+        const inst = state.instances[m.id];
         if (inst) {
           inst.summoningSick = true;
+          inst.rested = !!action.rested;
           me.field.push(inst);
         }
-        placed++;
       }
-      void placed;
+      return state;
+    }
+    case 'discard_from_hand': {
+      const n = action.magnitude;
+      // Mandatory discard — engine picks first card; UI selector arrives later.
+      for (let i = 0; i < n && me.hand.length > 0; i++) {
+        me.trash.push(me.hand.shift()!);
+      }
+      return state;
+    }
+    case 'trash_own_life_until': {
+      const target = action.n;
+      while (me.life.length > target) {
+        me.trash.push(me.life.shift()!);
+      }
+      return state;
+    }
+    case 'attack_redirect_to_target': {
+      if (!state.pendingAttack || targets.length === 0) return state;
+      state.pendingAttack.defenderInstanceId = targets[0];
+      return state;
+    }
+    case 'set_active_don': {
+      const n = action.magnitude;
+      for (let i = 0; i < n && me.donRested.length > 0; i++) {
+        me.donCostArea.push(me.donRested.shift()!);
+      }
+      return state;
+    }
+    case 'transfer_attached_don': {
+      // Pick a source instance to pull DON from. fromKind:'your_leader' pulls
+      // from leader's attachedDon; 'your_character' pulls from first own field
+      // member with attachedDon; 'self' pulls from this card's attached DON.
+      let sourceInst: { attachedDon: string[] } | undefined;
+      if (action.fromKind === 'your_leader') sourceInst = me.leader;
+      else if (action.fromKind === 'self') sourceInst = state.instances[ctx.sourceInstanceId];
+      else sourceInst = me.field.find((i) => i.attachedDon.length > 0);
+      if (!sourceInst || sourceInst.attachedDon.length === 0) return state;
+      const n = action.magnitude;
+      for (let i = 0; i < n && sourceInst.attachedDon.length > 0; i++) {
+        for (const tid of targets) {
+          const inst = state.instances[tid];
+          if (!inst) continue;
+          inst.attachedDon.push(sourceInst.attachedDon.shift()!);
+          break;
+        }
+      }
+      return state;
+    }
+    case 'chained_actions': {
+      for (const sub of action.actions) {
+        // Re-resolve targets per sub-action since they may differ.
+        const subTargets = resolveTargetV2(state, ctx.controller, ctx.sourceInstanceId, (sub as { target?: EffectTargetV2 }).target);
+        applyActionV2(state, ctx, sub, subTargets.length > 0 ? subTargets : targets);
+      }
+      return state;
+    }
+    case 'reveal_top_then_if_cost_min': {
+      if (me.deck.length === 0) return state;
+      const topId = me.deck[0];
+      const topInst = state.instances[topId];
+      const topCard = topInst ? state.cardLibrary[topInst.cardId] : undefined;
+      const topCost = topCard && typeof topCard.cost === 'number' ? topCard.cost : 0;
+      // Reveal: move top card to known-by-controller; we approximate by reading it.
+      if (topCost >= action.minCost) {
+        // Resolve inner action's targets at this point — caller's resolved
+        // targets were for the OUTER action; inner can re-use them.
+        applyActionV2(state, ctx, action.thenAction, targets);
+      }
+      // Card goes to bottom of deck regardless.
+      me.deck.shift();
+      me.deck.push(topId);
+      return state;
+    }
+    case 'set_base_power_copy_from_target': {
+      // First target is the source to copy FROM; remaining targets receive
+      // the override. For one-source-one-dest (EB01-061: self copies opp char),
+      // the target descriptor should resolve to BOTH self and chosen opp char.
+      // Convention: when only one target is resolved (the opp char), the source
+      // instance is the destination — copy onto self.
+      if (targets.length === 0) return state;
+      const srcInst = state.instances[targets[0]];
+      const srcCard = srcInst ? state.cardLibrary[srcInst.cardId] : undefined;
+      const srcBase = srcCard && (srcCard.kind === 'leader' || srcCard.kind === 'character')
+        ? (srcCard as { power: number }).power : 0;
+      const dest = state.instances[ctx.sourceInstanceId];
+      if (dest) {
+        dest.basePowerOverride = srcBase;
+        for (const pid of ['A', 'B'] as PlayerId[]) {
+          const pl = state.players[pid];
+          if (pl.leader.instanceId === ctx.sourceInstanceId) pl.leader.basePowerOverride = srcBase;
+          for (const f of pl.field) if (f.instanceId === ctx.sourceInstanceId) f.basePowerOverride = srcBase;
+          if (pl.stage && pl.stage.instanceId === ctx.sourceInstanceId) pl.stage.basePowerOverride = srcBase;
+        }
+      }
       return state;
     }
     case 'activate_event_from_hand': {
@@ -895,7 +1139,7 @@ export function applyActionV2(
       if (!opt) return state;
       // Skip the trigger filter — composite branches assume same trigger
       // context as the parent clause.
-      if (!evaluateConditionV2(state, ctx.controller, opt.condition)) return state;
+      if (!evaluateConditionV2(state, ctx.controller, opt.condition, ctx.sourceInstanceId)) return state;
       const optTargets = resolveTargetV2(state, ctx.controller, ctx.sourceInstanceId, opt.target as any);
       return applyActionV2(state, ctx, opt.action, optTargets);
     }
@@ -904,8 +1148,21 @@ export function applyActionV2(
       if (inst) inst.endOfTurnTrash = true;
       return state;
     }
-    // Composite actions deferred to later sub-phases.
-    case 'reveal_top_and_conditional_play':
+    case 'reveal_top_and_conditional_play': {
+      // EB02-025 etc. — peek top of deck, if it matches the filter (and kind=character),
+      // play it; otherwise return to deck. V0 picks top card only.
+      if (me.deck.length === 0) return state;
+      const topId = me.deck[0];
+      const topInst = state.instances[topId];
+      const topCard = topInst ? state.cardLibrary[topInst.cardId] : undefined;
+      if (topInst && topCard && topCard.kind === 'character' && matchesFilter(state, topInst, action.filter)) {
+        me.deck.shift();
+        topInst.summoningSick = true;
+        topInst.rested = !!action.rested;
+        me.field.push(topInst);
+      }
+      return state;
+    }
     case 'choose_cost_reveal_opp_match':
       // V0 stub — full handler arrives in A.3.6 with UI integration.
       return state;
