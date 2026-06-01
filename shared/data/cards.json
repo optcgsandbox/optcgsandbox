@@ -47185,7 +47185,7 @@
     "effectText": "[On Play] You may place 1 Stage with a cost of 1 at the bottom of the owner's deck: Look at 5 cards from the top of your deck; reveal up to 1 [Upper Yard] or {Shandian Warrior} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -47213,7 +47213,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost bottomOfDeckOwnChar filter:{kind:stage} only; text requires \"Stage with a cost of 1\" — missing costMin:1 costMax:1"
     }
   },
   {
@@ -47596,7 +47597,7 @@
     "effectText": "[Activate: Main] You may trash this Character: Give up to 2 of your opponent's Characters −2000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -47615,7 +47616,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target opp_character missing count:2; text says \"Give up to 2 of your opponent's Characters\""
     }
   },
   {
@@ -48053,7 +48055,7 @@
     "effectText": "[On Play] If your Leader is [Portgas.D.Ace], look at 5 cards from the top of your deck; reveal up to 1 [Portgas.D.Ace] or red Event and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -48079,7 +48081,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek filter combines {namesAny:[\"Portgas.D.Ace\"],colors:[\"red\"],kind:event} as AND; text \"[Portgas.D.Ace] OR red Event\" needs OR-of-branches"
     }
   },
   {
@@ -48108,7 +48111,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -48127,7 +48130,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "on_play clause missing is_own_turn condition for [Your Turn]"
     }
   },
   {
@@ -48177,7 +48181,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target your_leader only; text says \"your Leader or 1 of your Characters\" — needs your_leader_or_character"
     }
   },
   {
@@ -48265,7 +48270,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -48296,7 +48301,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause target opp_character with filter kind:stage — target kind mismatch (opp_character implies character); needs opp_stage target type"
     }
   },
   {
@@ -48716,7 +48722,7 @@
     "effectText": "[On Play] Up to 1 of your opponent's rested Character or DON!! cards will not become active in your opponent's next Refresh Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -48734,7 +48740,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target opp_character filter rested:true only; text says \"opponent's rested Character OR DON!! cards\" — opp_don_or_character with rested filter"
     }
   },
   {
@@ -48949,7 +48956,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "trigger on_play is wrong; text fires \"[Your Turn] [Once Per Turn] If a Character is rested by your effect\" — needs on_char_rested_by_own_effect trigger"
     }
   },
   {
@@ -49167,7 +49175,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause target your_leader_or_character (any); text \"that card gains an additional +1000\" must reference the same card that received the initial +2000"
     }
   },
   {
@@ -49330,7 +49339,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "trigger on_any_opp_char_ko too narrow (only opp + only KO); text \"when a Character is removed from the field by your effect\" includes bounce, trash, sent to life, any own/opp; also missing is_own_turn for [Your Turn]"
     }
   },
   {
@@ -49419,7 +49429,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "bounce target opp_character but text says \"Return up to 1 Character\" (any character)"
     }
   },
   {
@@ -49490,7 +49501,7 @@
     "effectText": "[Once Per Turn] If your Leader has the {The Seven Warlords of the Sea} type and this Character would be removed from the field by your opponent's effect, you may place 1 of your Characters other than [Gecko Moria] at the bottom of the owner's deck instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -49516,7 +49527,8 @@
             }
           }
         }
-      ]
+      ],
+      "auditNote": "replacement action grant_immunity against:opp_removal duration:this_turn — text \"you may place 1 of your Characters other than [Gecko Moria] at the bottom of the owner's deck instead\" is instance-scoped redirect, not turn-wide immunity"
     }
   },
   {
@@ -49545,7 +49557,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -49564,7 +49576,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "on_play clause missing is_own_turn condition for [Your Turn]"
     }
   },
   {
@@ -49717,7 +49730,7 @@
     "effectText": "[Activate: Main] You may return this Character to the owner's hand: If your opponent has 6 or more cards in their hand, your opponent places 1 card from their hand at the bottom of their deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -49738,7 +49751,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action mill_opp mills opp deck; text says opp places 1 card FROM THEIR HAND at the bottom of THEIR deck — needs opp_bottom_of_deck_from_hand"
     }
   },
   {
@@ -49909,7 +49923,7 @@
     "effectText": "[On Play] Up to 1 of your opponent's Characters other than [Monkey.D.Luffy] cannot attack until the end of your opponent's next turn. Then, place up to 1 Character with a cost of 1 or less at the bottom of the owner's deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -49940,7 +49954,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause target opp_character with costMax:1; text says \"place up to 1 Character with a cost of 1 or less\" (any character)"
     }
   },
   {
@@ -49965,7 +49980,7 @@
     "effectText": "[On Play] If you have 2 or more {Amazon Lily} or {Kuja Pirates} type Characters on your field, place up to 1 Character with a cost of 2 or less at the bottom of the owner's deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -49993,7 +50008,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target opp_character but text says \"Place up to 1 Character\" (any character)"
     }
   },
   {
@@ -50050,7 +50066,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "action bottom_of_deck_from_hand only; text says \"place 2 cards from your hand at the top or bottom of your deck\" — top-of-deck option missing"
     }
   },
   {
