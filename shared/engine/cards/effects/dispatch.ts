@@ -188,9 +188,18 @@ export function fireEffects(
   if (shouldUseV2(card)) {
     const v2trigger = trigger as EffectTriggerV2;
     const after = fireV2Effects(state, instanceId, v2trigger, controller);
-    // V2 path doesn't yet handle OPT enforcement — fall through to legacy
-    // post-fire bookkeeping below ONLY if v2 path didn't actually mutate.
     if (after !== state) return after;
+    // When V2 spec is verified-authoritative (human-reviewed or ground-truth),
+    // the absence of a matching clause is intentional: do NOTHING for this
+    // trigger. Skipping the V1 effectTag fallback prevents auto-extracted
+    // tags (e.g., 'ramp' on OP01-060 Doflamingo from a "DON!! −1" regex hit)
+    // from firing ghost effects at game start / on triggers the printed text
+    // never authorized. Cards not yet migrated to V2 (verified === 'auto' or
+    // 'flagged' or unset) still fall through to the legacy template path.
+    const verified = (card as { effectSpecV2?: { verified?: string } }).effectSpecV2?.verified;
+    if (verified === 'human-reviewed' || verified === 'ground-truth') {
+      return state;
+    }
   }
 
   // Stage 0: prefer structured `effectSpec` when present. The runner resolves
