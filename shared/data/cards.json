@@ -102191,7 +102191,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "continuous condition if_have_given_don_min:2 (total given DON); text \"[DON!! x2]\" needs if_attached_don_min:2 (DON attached to this card)"
     }
   },
   {
@@ -102218,7 +102219,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -102233,7 +102234,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "spec only encodes draw with magnitude:own_hand_count; missing \"Return all cards in your hand to your deck AND SHUFFLE your deck\" precondition"
     }
   },
   {
@@ -102273,7 +102275,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "continuous condition if_have_given_don_min:2 (total given DON); text \"[DON!! x2]\" needs if_attached_don_min:2"
     }
   },
   {
@@ -102313,7 +102316,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "continuous condition if_have_given_don_min:1 (total given DON); text \"[DON!! x1]\" needs if_attached_don_min:1"
     }
   },
   {
@@ -102385,7 +102389,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -102399,7 +102403,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition if_don_min:2 (total DON on field); text \"[DON!! x2]\" needs if_attached_don_min:2; also missing is_own_turn for [Your Turn]"
     }
   },
   {
@@ -102593,7 +102598,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -102619,7 +102624,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action has nested target filter (noBaseEffect:true) AND outer target your_character with no filter — duplicated/conflicting target spec"
     }
   },
   {
@@ -102673,7 +102679,7 @@
     "effectText": "[Activate: Main] You may place this Character at the bottom of the owner's deck: Give up to 1 of your opponent's Characters −3000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -102692,7 +102698,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost returnSelfChar returns to hand; text \"you may PLACE THIS CHARACTER AT THE BOTTOM OF THE OWNER'S DECK\" — needs bottomOfDeckSelf"
     }
   },
   {
@@ -102912,7 +102919,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "condition if_have_given_don_min:1; text \"[DON!! x1]\" needs if_attached_don_min:1"
     }
   },
   {
@@ -102957,7 +102965,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target your_leader; text \"Up to 1 of your Leader or Character cards\" — needs your_leader_or_character"
     }
   },
   {
@@ -103069,7 +103078,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -103090,7 +103099,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "magnitude countSource own_hand_count counts cards in hand; text \"+1000 power for each of YOUR CHARACTERS\" — needs own_chars_count"
     }
   },
   {
@@ -103330,7 +103340,7 @@
     "effectText": "[On K.O.] Place up to 1 Character with a cost of 3 or less at the bottom of the owner's deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -103347,7 +103357,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action removal_bounce returns to hand; text \"Place up to 1 Character with a cost of 3 or less AT THE BOTTOM OF THE OWNER'S DECK\" — needs bottom_of_deck_to_opp_deck"
     }
   },
   {
@@ -103426,7 +103437,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "continuous condition if_have_given_don_min:1; text \"[DON!! x1] [Your Turn]\" needs if_attached_don_min:1 + is_own_turn; also aura_cost_modifier delta:2 (raises cost); text \"Give all of your opponent's Characters −2 cost\" needs delta:-2 (reduce cost)"
     }
   },
   {
@@ -103455,7 +103467,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -103470,7 +103482,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost returnSelfChar returns to hand; text \"you may PLACE THIS CHARACTER AT THE BOTTOM OF THE OWNER'S DECK\" — needs bottomOfDeckSelf"
     }
   },
   {
@@ -103545,7 +103558,7 @@
     "effectText": "[DON!! x1] [When Attacking] You may trash 1 card from your hand: K.O. up to 1 of your opponent's Characters with a cost of 0.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -103569,7 +103582,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "condition if_don_min:1 (total DON); text \"[DON!! x1]\" needs if_attached_don_min:1"
     }
   },
   {
@@ -103838,7 +103852,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "bounce target opp_character; text \"Return up to 1 Character with a cost of 3 or less\" (any character)"
     }
   },
   {
@@ -103864,7 +103879,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -103887,7 +103902,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "condition if_don_min:1 (total DON); text \"[DON!! x1]\" needs if_attached_don_min:1"
     }
   },
   {
@@ -103945,7 +103961,7 @@
     "effectText": "[On Play] You may place all cards in your hand at the bottom of your deck in any order. If you do, draw cards equal to the number you placed at the bottom of your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -103960,7 +103976,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "spec only encodes draw with magnitude:own_hand_count; missing \"you may place all cards in your hand AT THE BOTTOM OF YOUR DECK in any order\" precondition"
     }
   },
   {
@@ -103989,7 +104006,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -104014,7 +104031,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "condition if_don_min:1 (total DON); text \"[DON!! x1] [When Attacking]\" needs if_attached_don_min:1"
     }
   },
   {
@@ -104359,7 +104377,7 @@
     "effectText": "[On Play] You may trash 2 cards from your hand: Your opponent places 1 of their Characters at the bottom of the owner's deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -104377,7 +104395,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action bottom_of_deck_from_trash places from trash; text \"Your opponent places 1 of their Characters at the bottom of the owner's deck\" — opp chooses 1 of their own chars to send to bottom of their own deck (different action verb)"
     }
   },
   {
@@ -104422,7 +104441,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "bounce target opp_character; text \"Return up to 1 Character with a cost of 5 or less\" (any character)"
     }
   },
   {
@@ -104449,7 +104469,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -104472,7 +104492,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target opp_character missing count:2; text \"up to 2 of your opponent's rested Characters\"; also action until:opp_next_turn should be opp_next_end_phase to match \"in your opponent's next Refresh Phase\""
     }
   },
   {
@@ -104499,7 +104520,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -104520,7 +104541,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action set_active fires immediately; text \"set all of your {FILM} type Characters as active AT THE END OF THIS TURN\" — delayed end-of-turn timing not encoded"
     }
   },
   {
@@ -104550,7 +104572,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -104584,7 +104606,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause power_buff magnitude:2000 fixed; text \"+2000 power during this battle FOR EVERY RETURNED CHARACTER\" — needs per_count based on chars returned in clause 1"
     }
   },
   {
@@ -104611,7 +104634,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -104630,7 +104653,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost koSelfCharacter filter nameIs:Uta (KOs an Uta char); text \"you may REST 1 of your [Uta] cards\" — needs restOwnCharFilter:{nameIs:Uta} (rest not KO)"
     }
   },
   {
