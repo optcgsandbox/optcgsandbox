@@ -76959,13 +76959,25 @@
           "trigger": "on_play",
           "action": {
             "kind": "power_buff",
+            "magnitude": 1000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "your_leader_or_character"
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
             "magnitude": 2000,
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -77013,7 +77025,8 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -77047,6 +77060,14 @@
           "action": {
             "kind": "grant_keyword_to_self",
             "keyword": "blocker"
+          }
+        },
+        {
+          "condition": {
+            "type": "always"
+          },
+          "action": {
+            "kind": "self_immune_to_opp_effects"
           }
         }
       ],
@@ -77086,16 +77107,23 @@
             "restSelf": true
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "rest_lock_until_phase",
+            "until": "opp_next_end_phase"
           },
-          "verified": "flagged"
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 5,
+              "rested": true
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -77150,7 +77178,7 @@
     "effectText": "If this Character is active, this Character cannot be K.O.'d by your opponent's effects.<br>[When Attacking] If you have a total of 3 or more given DON!! cards, rest up to 1 of your opponent's Characters with a base cost of 6 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -77167,7 +77195,7 @@
               "costMax": 6
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -77238,16 +77266,37 @@
             "restSelf": true
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "chained_actions",
+            "actions": [
+              {
+                "kind": "rest_target",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 4
+                  }
+                }
+              },
+              {
+                "kind": "give_don_to_target",
+                "magnitude": 3,
+                "rested": true,
+                "target": {
+                  "kind": "your_leader",
+                  "filter": {
+                    "nameIs": "Roronoa Zoro"
+                  }
+                }
+              }
+            ]
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -77284,7 +77333,24 @@
           }
         }
       ],
-      "replacements": [],
+      "replacements": [
+        {
+          "trigger": "would_be_ko",
+          "cost": {
+            "restSelf": true
+          },
+          "condition": {
+            "type": "is_opp_turn"
+          },
+          "action": {
+            "kind": "grant_immunity",
+            "against": "opp_removal",
+            "duration": "this_turn"
+          },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ],
       "schemaVersion": 2,
       "verified": "flagged"
     }
@@ -77312,7 +77378,7 @@
     "effectText": "[Activate: Main] You may rest 1 of your DON!! cards and this Character: If your Leader is [Roronoa Zoro], look at 5 cards from the top of your deck; reveal up to 1 <Slash> attribute card or green Event and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -77330,7 +77396,7 @@
             "addCount": 1,
             "filter": {}
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -77361,7 +77427,7 @@
     "effectText": "[On Play] Rest up to 1 of your opponent's Characters with a cost of 2 or less. Then, K.O. up to 1 of your opponent's rested Characters with a base cost of 1 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -77374,7 +77440,7 @@
               "costMax": 2
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -77388,7 +77454,7 @@
               "rested": true
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -77419,7 +77485,16 @@
     ],
     "effectText": "[Blocker]<br>[On Play] Set up to 4 of your DON!! cards as active. Then, you cannot play Character cards with a base cost of 7 or more during this turn.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "set_active_don",
+            "magnitude": 4
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -77457,7 +77532,7 @@
     "effectText": "[On Play] Rest up to 1 of your opponent's Characters with a base cost of 6 or less. Then, give up to 3 rested DON!! cards to your [Roronoa Zoro] Leader.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -77470,7 +77545,7 @@
               "costMax": 6
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -77482,7 +77557,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -77540,7 +77615,21 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Block] Rest up to 1 of your opponent's Characters with a cost of 5 or less.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_block",
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 5
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -77551,7 +77640,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -77577,7 +77666,7 @@
     "effectText": "[On Play] If your Leader has the <Slash> attribute, look at 5 cards from the top of your deck; reveal up to 1 <Slash> attribute card or green Event and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -77591,7 +77680,7 @@
             "addCount": 1,
             "filter": {}
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -77649,7 +77738,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -77698,6 +77787,19 @@
       "clauses": [
         {
           "trigger": "on_play",
+          "cost": {
+            "donCost": 3
+          },
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
           "action": {
             "kind": "power_buff",
             "magnitude": 3000,
@@ -77706,7 +77808,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -77745,6 +77847,23 @@
       "clauses": [
         {
           "trigger": "on_play",
+          "cost": {
+            "donCost": 2
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 4,
+              "rested": true
+            }
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_play",
           "action": {
             "kind": "power_buff",
             "magnitude": 3000,
@@ -77753,7 +77872,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -77785,7 +77904,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -77799,7 +77918,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -77831,7 +77950,17 @@
     "effectSpecV2": {
       "schemaVersion": 2,
       "verified": "flagged",
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "opt": true,
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "flagged"
+        }
+      ],
       "continuous": [],
       "replacements": []
     }
@@ -77863,7 +77992,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] DON!! −1: Activate up to 1 {Straw Hat Crew} type Event with a base cost of 3 or less from your hand.<br>[When Attacking] If the number of DON!! cards on your field is equal to or less than the number on your opponent's field, add up to 1 DON!! card from your DON!! deck and rest it.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -77877,7 +78006,7 @@
               "costMax": 3
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "when_attacking",
@@ -77889,7 +78018,7 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -77918,7 +78047,7 @@
     "effectText": "If you have 2 or more Characters with a base cost of 5 or more, this Character gains +1 cost.<br>[On Play] Place up to 1 of your opponent's Characters with a base cost of 1 or less at the bottom of the owner's deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -77932,7 +78061,7 @@
               "costMax": 1
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -77976,7 +78105,7 @@
     "effectText": "If you have 5 or more cards in your hand, this Character gains +1 cost.<br>[On Play] You may trash 1 card from your hand: Up to 1 of your opponent's Characters cannot attack until the end of your opponent's next End Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -77990,7 +78119,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -78040,6 +78169,18 @@
     "effectSpecV2": {
       "clauses": [
         {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_leader_has_trait",
+            "trait": "Navy"
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 2
+          },
+          "verified": "human-reviewed"
+        },
+        {
           "trigger": "activate_main",
           "action": {
             "kind": "give_don_to_target",
@@ -78049,16 +78190,17 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto",
+          "verified": "human-reviewed",
           "cost": {
             "discardHand": 1
-          }
+          },
+          "opt": true
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -78113,20 +78255,33 @@
       "clauses": [
         {
           "trigger": "on_play",
+          "action": {
+            "kind": "discard_from_hand",
+            "magnitude": 2
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "activate_main",
           "cost": {
-            "discardHand": 2
+            "trashSelf": true
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "removal_bounce"
           },
-          "verified": "flagged"
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 5
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -78161,7 +78316,7 @@
               "trait": "Navy"
             }
           },
-          "verified": "auto",
+          "verified": "human-reviewed",
           "cost": {
             "discardHand": 1
           }
@@ -78170,7 +78325,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -78219,7 +78374,7 @@
             "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ]
     }
@@ -78285,7 +78440,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -78310,7 +78465,7 @@
     "effectText": "[Activate: Main] You may rest this Character and trash 1 card from your hand: Up to 1 of your opponent's Characters with a base cost of 4 or less cannot activate [Blocker] during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -78385,7 +78540,44 @@
     "effectText": "[Once Per Turn] If this Character would be removed from the field by your opponent's effect, you may trash 1 card from your hand instead.<br>[Opponent's Turn] If your Leader has the {Navy} type, this Character gains [Blocker] and +1000 power.",
     "effectSpecV2": {
       "clauses": [],
-      "continuous": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "is_opp_turn"
+              },
+              {
+                "type": "if_leader_has_trait",
+                "trait": "Navy"
+              }
+            ]
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        },
+        {
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "is_opp_turn"
+              },
+              {
+                "type": "if_leader_has_trait",
+                "trait": "Navy"
+              }
+            ]
+          },
+          "action": {
+            "kind": "self_power_buff",
+            "magnitude": 1000
+          }
+        }
+      ],
       "replacements": [
         {
           "trigger": "would_be_removed",
@@ -78393,15 +78585,17 @@
             "discardHand": 1
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "grant_immunity",
+            "against": "opp_removal",
+            "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -78427,7 +78621,7 @@
     "effectText": "[On Play] If your Leader has the {The Seven Warlords of the Sea} type, return up to 1 Character with a cost of 1 or less other than this Character to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -78445,7 +78639,7 @@
               "nameExcludes": "Marshall.D.Teach"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -78500,7 +78694,7 @@
     "effectText": "[On Play] You may trash 1 card from your hand: Play up to 1 blue {Navy} type Character card with 8000 power or less other than [Monkey.D.Garp] from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -78520,7 +78714,7 @@
               "nameExcludes": "Monkey.D.Garp"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -78560,15 +78754,23 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "discard_from_hand",
+            "magnitude": 1
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -78598,7 +78800,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -78614,7 +78816,7 @@
               "costMax": 9
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
