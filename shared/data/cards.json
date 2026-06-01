@@ -6300,7 +6300,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "replacement filter missing: only chars with base cost >=4 should be protected; spec has no filter. Also activate main 2nd clause filter missing \"no When Attacking effect\""
     }
   },
   {
@@ -6795,7 +6796,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher filter only powerMax:1000 char; text also allows Event branch — missing OR for kind:event"
     }
   },
   {
@@ -7200,7 +7202,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "on_play action set_active without target — should be set_active_don:1"
     }
   },
   {
@@ -7349,7 +7352,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root flagged: chained_actions buff-twice approximates conditional \"additional +2000\" but doesn\\u0027t re-target same selected card"
     }
   },
   {
@@ -7605,7 +7609,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "filter powerMax:6000; text says EXACTLY 6000 base power — needs powerMin+powerMax"
     }
   },
   {
@@ -7724,7 +7729,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "filter powerMax:7000; text says EXACTLY 7000 base power — needs powerMin+powerMax"
     }
   },
   {
