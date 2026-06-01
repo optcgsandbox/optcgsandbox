@@ -1704,7 +1704,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "OPT not set on on_opp_attack clause despite [Once Per Turn]"
     }
   },
   {
@@ -1732,7 +1733,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -1752,7 +1753,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target your_character; text says Leader or Character so should be your_leader_or_character"
     }
   },
   {
@@ -2131,7 +2133,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost.bottomOfDeckFromTrash:3 has no CP trait filter — text requires CP type cards as cost"
     }
   },
   {
@@ -2338,7 +2341,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -2360,7 +2363,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "trigger on_ko fires on source-KO only; text says When a Character is KO_d (any char)"
     }
   },
   {
@@ -2541,7 +2545,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "mill 2 was the COST not a separate effect; spec has it as a separate on_play clause"
     }
   },
   {
