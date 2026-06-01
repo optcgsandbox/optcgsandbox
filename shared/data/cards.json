@@ -27750,7 +27750,7 @@
             "n": 6
           },
           "action": {
-            "kind": "discard_from_hand",
+            "kind": "opp_discard_from_hand",
             "magnitude": 2
           },
           "verified": "flagged"
@@ -27759,19 +27759,29 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_attached_don_min",
-            "n": 1
+            "type": "and",
+            "conditions": [
+              {
+                "type": "is_own_turn"
+              },
+              {
+                "type": "if_attached_don_min",
+                "n": 1
+              }
+            ]
           },
           "action": {
-            "kind": "aura_cost_modifier",
-            "filter": {},
-            "delta": 3
+            "kind": "opp_aura_cost_modifier",
+            "filter": {
+              "kind": "character"
+            },
+            "delta": -3
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -30681,19 +30691,29 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_attached_don_min",
-            "n": 1
+            "type": "and",
+            "conditions": [
+              {
+                "type": "is_own_turn"
+              },
+              {
+                "type": "if_attached_don_min",
+                "n": 1
+              }
+            ]
           },
           "action": {
-            "kind": "aura_cost_modifier",
-            "filter": {},
+            "kind": "opp_aura_cost_modifier",
+            "filter": {
+              "kind": "character"
+            },
             "delta": -1
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -31704,7 +31724,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -31950,14 +31970,17 @@
             "lookCount": 7,
             "addCount": 2,
             "filter": {
-              "trait": "Animal Kingdom Pirates"
+              "namesAny": [
+                "Plague Rounds",
+                "Ice Oni"
+              ]
             }
           },
           "verified": "human-reviewed"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34387,14 +34410,17 @@
             "kind": "opp_character",
             "filter": {
               "costMax": 3,
-              "trait": "Animal"
+              "traitsAny": [
+                "Animal",
+                "SMILE"
+              ]
             }
           },
           "verified": "flagged"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
