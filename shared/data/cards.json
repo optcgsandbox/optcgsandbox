@@ -80823,7 +80823,8 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -80859,7 +80860,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -80870,7 +80871,7 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -80920,16 +80921,23 @@
             "restSelf": true
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "power_buff",
+            "magnitude": 1000,
+            "duration": "opp_next_turn"
           },
-          "verified": "flagged"
+          "target": {
+            "kind": "your_leader",
+            "filter": {
+              "typeIncludes": "Supernovas"
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -80966,8 +80974,16 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_no_other_with_name",
-            "name": "Shirahoshi"
+            "type": "and",
+            "conditions": [
+              {
+                "type": "is_opp_turn"
+              },
+              {
+                "type": "if_no_other_with_name",
+                "name": "Shirahoshi"
+              }
+            ]
           },
           "action": {
             "kind": "aura_power_buff",
@@ -80990,7 +81006,8 @@
             "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "opt": true
         }
       ]
     }
@@ -81075,7 +81092,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -81090,7 +81107,7 @@
               "nameIs": "Trafalgar Law"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -81131,7 +81148,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -81159,7 +81176,7 @@
     "effectText": "If you have 2 or less Life cards, this Character gains [Rush].<br>(This card can attack on the turn in which it is played.)<br>[Opponent's Turn] [On K.O.] Add up to 1 card from the top of your deck to the top of your Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -81171,7 +81188,7 @@
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -81212,7 +81229,7 @@
     "effectText": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 [Trafalgar Law] and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -81224,7 +81241,7 @@
               "nameIs": "Trafalgar Law"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -81360,7 +81377,7 @@
     "effectText": "[On K.O.] If your Leader has the {Supernovas} type, play up to 1 {Supernovas} type Character card with a cost of 4 or less from your hand rested.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -81378,7 +81395,7 @@
             },
             "rested": true
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -81449,13 +81466,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -81483,7 +81500,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -81495,7 +81512,7 @@
               "typeIncludes": "Shandian Warrior"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -81542,13 +81559,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -81580,7 +81597,44 @@
       "draw": 2
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_chars_min",
+            "n": 8
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 2
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_chars_min",
+            "n": 8
+          },
+          "action": {
+            "kind": "discard_from_hand",
+            "magnitude": 1
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_chars_min",
+            "n": 8
+          },
+          "action": {
+            "kind": "set_active_don",
+            "magnitude": 1
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -81618,7 +81672,7 @@
     "effectText": "[On Play] You may trash 1 card from your hand: Add up to 1 card from the top of your deck to the top of your Life cards. Then, this Character gains +2 cost until the end of your opponent's next End Phase.<br>[Opponent's Turn] [On K.O.] Add up to 1 card from the top of your deck to the top of your Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -81630,7 +81684,7 @@
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -81638,14 +81692,14 @@
             "discardHand": 1
           },
           "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
+            "kind": "removal_cost_reduce",
+            "magnitude": -2,
             "duration": "opp_next_end_phase"
           },
           "target": {
             "kind": "self"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_ko",
@@ -81657,7 +81711,7 @@
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -81749,7 +81803,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_opp_attack",
@@ -81764,7 +81818,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_damage_taken",
@@ -81776,7 +81830,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -81818,6 +81872,16 @@
             "kind": "self_power_buff",
             "magnitude": -2000
           }
+        },
+        {
+          "condition": {
+            "type": "if_don_max",
+            "n": 9
+          },
+          "action": {
+            "kind": "self_power_buff",
+            "magnitude": -2000
+          }
         }
       ],
       "replacements": []
@@ -81849,7 +81913,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -81919,13 +81983,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -81950,7 +82014,7 @@
     "effectText": "[On Play] Give up to 2 rested DON!! cards to 1 of your [Monkey.D.Luffy] cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -81965,7 +82029,7 @@
               "nameIs": "Monkey.D.Luffy"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -81994,7 +82058,7 @@
     "effectText": "[Activate: Main] You may give 1 of your active DON!! cards to 1 of your Leader or Character cards and trash this Character: Give up to 1 of your opponent's Characters −3000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -82009,7 +82073,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -82036,7 +82100,7 @@
     "effectText": "If your {Revolutionary Army} type Character would be K.O.'d by your opponent's effect, you may trash this Character instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -82078,7 +82142,7 @@
     "effectText": "If you have a {Mountain Bandits} type Character other than this card, this Character gains [Double Attack].",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -82170,7 +82234,7 @@
     "effectText": "[On Play] Look at 4 cards from the top of your deck; reveal up to 1 {Alabasta} or {Straw Hat Crew} type card with a cost of 2 or more and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -82179,11 +82243,14 @@
             "lookCount": 4,
             "addCount": 1,
             "filter": {
-              "typeIncludes": "Alabasta",
+              "traitsAny": [
+                "Alabasta",
+                "Straw Hat Crew"
+              ],
               "costMin": 2
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -82223,13 +82290,13 @@
               "powerMax": 0
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -82289,16 +82356,23 @@
             "restSelf": true
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_turn"
           },
-          "verified": "flagged"
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "nameIs": "Monkey.D.Luffy"
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -82323,7 +82397,7 @@
     "effectText": "[On Play] If your Leader is [Sabo], [Portgas.D.Ace] or [Monkey.D.Luffy], look at 4 cards from the top of your deck; reveal up to 1 card with a cost of 3 or more and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -82352,7 +82426,7 @@
               "costMin": 3
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -82403,7 +82477,8 @@
             }
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ]
     }
@@ -82475,13 +82550,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -82517,13 +82592,13 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -82550,7 +82625,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -82565,7 +82640,7 @@
               "nameIs": "Monkey.D.Luffy"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -82577,7 +82652,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -82610,7 +82685,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -82628,7 +82703,7 @@
               "powerMax": 2000
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -82664,9 +82739,10 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "set_active"
+            "kind": "set_active_don",
+            "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -82674,7 +82750,7 @@
             "kind": "restrict_play_self_this_turn",
             "kind_filter": "character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_ko",
@@ -82687,7 +82763,7 @@
               "rested": true
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -82722,11 +82798,18 @@
           "trigger": "on_play",
           "cost": {
             "revealHand": {
-              "count": 1
+              "count": 1,
+              "filter": {
+                "traitsAny": [
+                  "Music",
+                  "FILM"
+                ]
+              }
             }
           },
           "action": {
-            "kind": "set_active"
+            "kind": "set_active_don",
+            "magnitude": 2
           },
           "verified": "flagged"
         }
@@ -82759,7 +82842,20 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Play] If your Leader has the {FILM} type or the <Strike> attribute, set up to 1 of your DON!! cards as active.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_leader_has_type",
+            "typeString": "FILM"
+          },
+          "action": {
+            "kind": "set_active_don",
+            "magnitude": 1
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -82800,7 +82896,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -82815,7 +82911,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -82847,14 +82943,15 @@
     "effectText": "[On Play] Set up to 2 of your DON!! cards as active.<br>[End of Your Turn] If your Leader has the {FILM} or {Straw Hat Crew} type, set up to 1 of your DON!! cards as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "action": {
-            "kind": "set_active"
+            "kind": "set_active_don",
+            "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "at_end_of_turn_self",
@@ -82872,9 +82969,10 @@
             ]
           },
           "action": {
-            "kind": "set_active"
+            "kind": "set_active_don",
+            "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -82910,16 +83008,17 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "set_active"
+            "kind": "set_active_don",
+            "magnitude": 99
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
           "action": {
             "kind": "restrict_play_self_this_turn"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -82978,14 +83077,15 @@
     "effectText": "[On Play] Set up to 2 of your DON!! cards as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "action": {
-            "kind": "set_active"
+            "kind": "set_active_don",
+            "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -83019,7 +83119,7 @@
     "effectText": "If you have 1 or less Life cards, this Character gains [Blocker].<br>[On Play] You may return 1 of your Characters to the owner's hand: Play up to 1 Character card with a cost of 5 or less from your hand rested.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -83035,7 +83135,7 @@
               "rested": true
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -83076,7 +83176,7 @@
     "effectText": "[On Play] Up to 1 of your opponent's Characters with a cost of 8 or less cannot be rested until the end of your opponent's next End Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -83090,7 +83190,7 @@
               "costMax": 8
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -83160,7 +83260,7 @@
     "effectText": "[On Play] If your Leader has the {FILM} or {Straw Hat Crew} type, set up to 1 of your DON!! cards as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -83180,7 +83280,7 @@
           "action": {
             "kind": "set_active"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -83211,14 +83311,14 @@
     "effectText": "[End of Your Turn] Set this Character or up to 1 of your DON!! cards as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "at_end_of_turn_self",
           "action": {
             "kind": "set_active"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -83278,7 +83378,7 @@
     "effectText": "[On Play] If your Leader has the {FILM} or {Straw Hat Crew} type, set up to 2 of your DON!! cards as active.<br>[End of Your Turn] Set this Character as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -83298,7 +83398,7 @@
           "action": {
             "kind": "set_active"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "at_end_of_turn_self",
@@ -83308,7 +83408,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -83341,7 +83441,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -83354,14 +83454,14 @@
               "costMax": 5
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
           "action": {
             "kind": "set_active"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -83392,7 +83492,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -83406,7 +83506,7 @@
               "rested": true
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
