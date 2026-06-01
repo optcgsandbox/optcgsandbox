@@ -34033,7 +34033,10 @@
               "costMax": 1
             }
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "cost": {
+            "restSelf": true
+          }
         },
         {
           "trigger": "on_play",
@@ -34045,7 +34048,7 @@
             "kind": "mill_self",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "schemaVersion": 2,
@@ -34089,7 +34092,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34157,7 +34160,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34215,7 +34218,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34252,15 +34255,31 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_trash_min",
+            "n": 15
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader_or_character"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34287,7 +34306,22 @@
     "effectSpecV2": {
       "clauses": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "flagged",
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_leader_has_trait",
+            "trait": "Dressrosa"
+          },
+          "action": {
+            "kind": "aura_power_buff",
+            "filter": {
+              "trait": "Dressrosa"
+            },
+            "magnitude": 0
+          }
+        }
+      ]
     }
   },
   {
@@ -34317,12 +34351,14 @@
           "trigger": "on_play",
           "action": {
             "kind": "add_to_opp_life_top",
-            "faceUp": true
+            "faceUp": true,
+            "position": "top"
           },
           "target": {
             "kind": "opp_character",
             "filter": {
-              "costMax": 3
+              "costMax": 3,
+              "trait": "Animal"
             }
           },
           "verified": "flagged"
@@ -34361,18 +34397,23 @@
             "n": 1
           },
           "cost": {
-            "discardHand": 2
+            "discardHandFilter": {
+              "count": 2,
+              "filter": {
+                "trait": "Land of Wano"
+              }
+            }
           },
           "action": {
             "kind": "add_to_own_life_top",
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34403,7 +34444,7 @@
         ]
       },
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34467,7 +34508,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34496,13 +34537,15 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 1
+            "donCost": 1,
+            "lifeToHand": 1
           },
           "action": {
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         },
         {
           "trigger": "activate_main",
@@ -34515,11 +34558,12 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34556,7 +34600,7 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_character",
+            "kind": "your_leader_or_character",
             "filter": {
               "typeIncludes": "Land of Wano"
             }
@@ -34565,7 +34609,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34600,7 +34644,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34629,7 +34673,12 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "discardHand": 1
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "hasTrigger": true
+              }
+            }
           },
           "action": {
             "kind": "rest_target"
@@ -34640,11 +34689,12 @@
               "costMax": 2
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34676,8 +34726,17 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_own_life_max",
-            "n": 0
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_attached_don_min",
+                "n": 1
+              },
+              {
+                "type": "if_own_life_max",
+                "n": 3
+              }
+            ]
           },
           "action": {
             "kind": "self_power_buff",
@@ -34738,7 +34797,7 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -34748,7 +34807,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34787,7 +34846,7 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_character",
+            "kind": "your_leader_or_character",
             "filter": {
               "typeIncludes": "Land of Wano"
             }
@@ -34796,7 +34855,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34822,7 +34881,22 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On K.O.] Add up to 1 of your opponent's Characters with a cost of 3 or less to the top or bottom of your opponent's Life cards face-up.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "action": {
+            "kind": "add_to_opp_life_top",
+            "faceUp": true
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 3
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -34833,7 +34907,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34882,7 +34956,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34929,7 +35003,7 @@
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "schemaVersion": 2,
@@ -35021,7 +35095,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "give_keyword",
@@ -35034,11 +35108,11 @@
               "typeIncludes": "Land of Wano"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35075,7 +35149,33 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_own_life_max",
+                "n": 2
+              },
+              {
+                "type": "if_opp_life_max",
+                "n": 2
+              }
+            ]
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 2
+            }
           },
           "verified": "flagged"
         }
@@ -35083,7 +35183,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "flagged"
     }
   },
   {
@@ -35127,7 +35227,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35209,10 +35309,12 @@
               "colors": [
                 "green"
               ],
+              "costMin": 5,
+              "costMax": 5,
               "kind": "character"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "schemaVersion": 2,
@@ -35257,7 +35359,8 @@
             "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "schemaVersion": 2,
@@ -35295,7 +35398,12 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "discardHand": 1
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "trait": "Revolutionary Army"
+              }
+            }
           },
           "action": {
             "kind": "power_buff",
@@ -35308,7 +35416,8 @@
               "typeIncludes": "Revolutionary Army"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "schemaVersion": 2,
@@ -35340,8 +35449,12 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_owned_other_with_name",
-            "name": "(power>=7000)"
+            "type": "not",
+            "condition": {
+              "type": "if_own_chars_max_with_min_power",
+              "n": 0,
+              "minPower": 7000
+            }
           },
           "action": {
             "kind": "grant_keyword_to_self",
@@ -35350,7 +35463,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35388,7 +35501,8 @@
               "kind": "character"
             }
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "opt": true
         }
       ],
       "schemaVersion": 2,
@@ -35432,7 +35546,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "when_attacking",
@@ -35442,7 +35556,7 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_leader_or_character"
           },
           "verified": "flagged"
         }
@@ -35491,7 +35605,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35560,19 +35674,23 @@
         {
           "trigger": "activate_main",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
-            "kind": "ramp",
+            "kind": "give_don_to_target",
             "magnitude": 2,
             "rested": true
           },
-          "verified": "auto"
+          "verified": "auto",
+          "target": {
+            "kind": "your_leader"
+          },
+          "opt": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35614,7 +35732,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35656,7 +35774,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35699,7 +35817,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35761,7 +35879,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35789,7 +35907,7 @@
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_have_given_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -35806,7 +35924,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35838,7 +35956,8 @@
             "lookCount": 5,
             "addCount": 1,
             "filter": {
-              "trait": "Revolutionary Army"
+              "trait": "Revolutionary Army",
+              "nameExcludes": "Belo Betty"
             }
           },
           "verified": "auto"
@@ -35847,7 +35966,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35872,7 +35991,15 @@
     ],
     "effectText": "[When Attacking] If this Character has 7000 power or more, your opponent cannot activate [Blocker] during this battle.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "action": {
+            "kind": "restrict_opp_attack"
+          },
+          "verified": "flagged"
+        }
+      ],
       "schemaVersion": 2,
       "verified": "flagged"
     }
@@ -35915,7 +36042,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "flagged"
     }
   },
   {
@@ -35952,15 +36079,28 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "typeIncludes": "Revolutionary Army",
+              "powerMax": 5000,
+              "kind": "character"
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36018,7 +36158,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36057,7 +36197,7 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
           "verified": "auto"
         },
@@ -36076,7 +36216,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36120,7 +36260,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36149,7 +36289,22 @@
     "life": 5,
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[End of Your Turn] If you have 6 or less cards in your hand, set this Leader as active.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "at_end_of_turn_self",
+          "condition": {
+            "type": "if_hand_max",
+            "n": 6
+          },
+          "action": {
+            "kind": "set_active"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -36160,7 +36315,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36189,7 +36344,7 @@
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -36206,7 +36361,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36241,7 +36396,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36286,7 +36441,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36315,7 +36470,7 @@
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "cost": {
@@ -36331,7 +36486,8 @@
           "target": {
             "kind": "self"
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "opt": true
         }
       ],
       "schemaVersion": 2,
@@ -36378,7 +36534,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36422,7 +36578,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36463,11 +36619,12 @@
               "costMax": 6
             }
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36504,7 +36661,21 @@
           }
         }
       ],
-      "replacements": [],
+      "replacements": [
+        {
+          "trigger": "would_be_ko",
+          "cost": {
+            "trashSelf": true
+          },
+          "action": {
+            "kind": "grant_immunity",
+            "against": "opp_removal",
+            "duration": "this_turn"
+          },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ],
       "schemaVersion": 2,
       "verified": "flagged"
     }
@@ -36548,11 +36719,12 @@
               "rested": true
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36590,7 +36762,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "replacements": [
@@ -36610,11 +36782,12 @@
             }
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36647,16 +36820,21 @@
             "donCost": 1
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "trait": "Donquixote Pirates",
+              "costMax": 2,
+              "kind": "character"
+            }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36689,16 +36867,20 @@
             "donCost": 1
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 1,
+            "filter": {
+              "trait": "Donquixote Pirates"
+            }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36749,7 +36931,21 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Block] Rest up to 1 of your opponent's Characters with a cost of 4 or less.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_block",
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 4
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -36760,7 +36956,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36799,7 +36995,7 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
           "verified": "auto"
         }
@@ -36807,7 +37003,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36844,15 +37040,26 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "set_active_don",
+            "magnitude": 3
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36889,15 +37096,29 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 3,
+              "rested": true
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36949,7 +37170,11 @@
             "name": "Donquixote Doflamingo"
           },
           "action": {
-            "kind": "restrict_self_attack"
+            "kind": "aura_power_buff",
+            "filter": {
+              "costMax": 5
+            },
+            "magnitude": 0
           }
         }
       ],
@@ -36996,7 +37221,8 @@
           "verified": "auto",
           "cost": {
             "discardHand": 1
-          }
+          },
+          "opt": true
         },
         {
           "trigger": "when_attacking",
@@ -37014,7 +37240,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -37055,7 +37281,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -37094,7 +37320,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -37154,7 +37380,7 @@
             "restSelf": true
           },
           "action": {
-            "kind": "removal_bounce"
+            "kind": "bottom_of_deck_to_opp_deck"
           },
           "target": {
             "kind": "opp_character",
@@ -37162,11 +37388,11 @@
               "costMax": 2
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -37200,19 +37426,19 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_ko",
           "action": {
-            "kind": "bottom_of_deck_from_trash",
+            "kind": "bottom_of_deck_from_hand",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -37243,7 +37469,29 @@
       "power_buff": 1000
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_block",
+          "action": {
+            "kind": "chained_actions",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_battle",
+                "target": {
+                  "kind": "self"
+                }
+              }
+            ]
+          },
+          "verified": "flagged"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -37282,11 +37530,11 @@
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
-            "kind": "removal_bounce"
+            "kind": "bottom_of_deck_to_opp_deck"
           },
           "target": {
             "kind": "opp_character",
@@ -37294,11 +37542,11 @@
               "costMax": 2
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -37327,7 +37575,7 @@
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -37343,7 +37591,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -37385,7 +37633,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -37413,7 +37661,7 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "removal_bounce"
+            "kind": "bottom_of_deck_to_opp_deck"
           },
           "target": {
             "kind": "opp_character",
@@ -37421,13 +37669,13 @@
               "costMax": 4
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
