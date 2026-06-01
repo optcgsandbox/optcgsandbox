@@ -20009,7 +20009,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "condition if_own_chars_min:0 = always true; text says \"1 or less Characters\" needs if_own_chars_max:1"
     }
   },
   {
@@ -20071,7 +20072,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "trigger on_play fires on any own-char play; text restricts to vanilla (no base effect) and chars-≤3 — restrictive trigger gap"
     }
   },
   {
@@ -20239,7 +20241,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: 2nd clause searcher_peek+playInsteadOfHand approximates play-from-deck but action is search-add"
     }
   },
   {
@@ -21193,7 +21196,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "action draw:3 fixed; text says \"draw card(s) so you have 3\" — draw-to-N mechanic gap"
     }
   },
   {
