@@ -299,12 +299,12 @@
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)[DON!! x2] [When Attacking] Give up to 1 of your opponent's Characters −3000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 2
           },
           "action": {
@@ -326,8 +326,7 @@
           }
         }
       ],
-      "replacements": [],
-      "auditNote": "[DON!! x2] gate should be if_attached_don_min not if_don_min"
+      "replacements": []
     }
   },
   {
