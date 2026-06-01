@@ -100665,7 +100665,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -100692,7 +100692,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -100703,7 +100703,7 @@
               "source": "own_hand_count"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -100747,7 +100747,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -100787,7 +100787,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -100813,7 +100813,7 @@
     "effectText": "[Activate: Main]  DON!! −2 (You may return the specified number of DON!! cards from your field to your DON!! deck.): This Character gains [Banish] during this turn.<br>(When this card deals damage, the target card is trashed without activating its Trigger.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -100828,7 +100828,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -100859,7 +100859,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -100902,7 +100902,7 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -100942,16 +100942,21 @@
             "restSelf": true
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "rest_target"
           },
-          "verified": "flagged"
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 2
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -100977,7 +100982,7 @@
     "effectText": "[On Play] If your opponent has 6 or more cards in their hand, your opponent adds 1 card from their Life area to their hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -100988,7 +100993,7 @@
           "action": {
             "kind": "add_to_opp_hand_from_opp_life"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -101019,7 +101024,7 @@
     "effectText": "[End of Your Turn] Add 1 DON!! card from your DON!! deck and set it as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "at_end_of_turn_self",
@@ -101028,7 +101033,7 @@
             "magnitude": 1,
             "rested": false
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -101062,7 +101067,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -101072,12 +101077,19 @@
           "action": {
             "kind": "power_buff",
             "magnitude": 2000,
-            "duration": "this_turn"
+            "duration": "this_turn",
+            "target": {
+              "kind": "your_character",
+              "filter": {
+                "noBaseEffect": true
+              }
+            }
           },
           "target": {
             "kind": "your_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -101135,7 +101147,7 @@
     "effectText": "[Activate: Main] You may place this Character at the bottom of the owner's deck: Give up to 1 of your opponent's Characters −3000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -101150,7 +101162,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -101190,7 +101202,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -101283,13 +101295,13 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -101326,7 +101338,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -101368,13 +101380,13 @@
               "powerMax": 3000
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -101413,13 +101425,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -101531,7 +101543,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -101548,7 +101560,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -101582,7 +101594,7 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -101626,13 +101638,13 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -101658,7 +101670,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -101668,6 +101680,9 @@
               "powerMax": 3000
             },
             "magnitude": 1000
+          },
+          "condition": {
+            "type": "is_opp_turn"
           }
         }
       ],
@@ -101711,7 +101726,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -101741,7 +101756,7 @@
     "effectText": "[End of Your Turn] You may rest this Character: Set up to 1 of your {FILM} type Characters other than [Bartolomeo] as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "at_end_of_turn_self",
@@ -101758,7 +101773,7 @@
               "nameExcludes": "Bartolomeo"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -101789,7 +101804,7 @@
     "effectText": "[On K.O.] Place up to 1 Character with a cost of 3 or less at the bottom of the owner's deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -101802,7 +101817,7 @@
               "costMax": 3
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -101838,13 +101853,13 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -101885,7 +101900,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -101914,7 +101929,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -101925,7 +101940,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -101955,7 +101970,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -102004,7 +102019,7 @@
     "effectText": "[DON!! x1] [When Attacking] You may trash 1 card from your hand: K.O. up to 1 of your opponent's Characters with a cost of 0.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -102024,7 +102039,7 @@
               "costMax": 0
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -102058,7 +102073,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -102069,7 +102084,7 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "when_attacking",
@@ -102081,7 +102096,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "when_attacking",
@@ -102093,7 +102108,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -102125,7 +102140,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -102141,7 +102156,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -102178,11 +102193,30 @@
             "kind": "grant_keyword_to_self",
             "keyword": "banish"
           }
+        },
+        {
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_attached_don_min",
+                "n": 2
+              },
+              {
+                "type": "if_own_life_max",
+                "n": 0
+              }
+            ]
+          },
+          "action": {
+            "kind": "self_power_buff",
+            "magnitude": 2000
+          }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
