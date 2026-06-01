@@ -30545,13 +30545,16 @@
           "target": {
             "kind": "opp_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "condition": {
+            "type": "if_own_leader_active"
+          }
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36105,11 +36108,15 @@
               "powerMax": 3000
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "condition": {
+            "type": "if_self_power_min",
+            "n": 7000
+          }
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -38868,13 +38875,20 @@
           "action": {
             "kind": "searcher_peek",
             "lookCount": 3,
-            "addCount": 1
+            "addCount": 1,
+            "filter": {
+              "traitsAny": [
+                "Straw Hat Crew",
+                "Kid Pirates",
+                "Heart Pirates"
+              ]
+            }
           },
           "verified": "flagged"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -39150,14 +39164,14 @@
             "n": 6
           },
           "action": {
-            "kind": "mill_opp",
+            "kind": "opp_discard_from_hand",
             "magnitude": 1
           },
           "verified": "flagged"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -39211,8 +39225,10 @@
       "continuous": [
         {
           "action": {
-            "kind": "aura_cost_modifier",
-            "filter": {},
+            "kind": "opp_aura_cost_modifier",
+            "filter": {
+              "kind": "character"
+            },
             "delta": -4
           },
           "condition": {
@@ -39230,7 +39246,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -39632,8 +39648,10 @@
       "continuous": [
         {
           "action": {
-            "kind": "aura_cost_modifier",
-            "filter": {},
+            "kind": "opp_aura_cost_modifier",
+            "filter": {
+              "kind": "character"
+            },
             "delta": -6
           },
           "condition": {
@@ -39651,7 +39669,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -41040,7 +41058,7 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_leader_power_max",
+            "type": "if_self_power_min",
             "n": 7000
           },
           "action": {
@@ -41050,7 +41068,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {

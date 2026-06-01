@@ -231,6 +231,9 @@ export function evaluateConditionV2(
       if (!inst) return false;
       return effectivePower(state, inst) >= cond.n;
     }
+    case 'if_own_leader_active': {
+      return !me.leader.rested;
+    }
 
     // ── Composite ───────────────────────────────────────────────────
     case 'and':
