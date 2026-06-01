@@ -25973,13 +25973,21 @@
               "nameIs": "Kuro"
             }
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "cost": {
+            "restOwnCharFilter": {
+              "count": 1,
+              "filter": {
+                "trait": "East Blue"
+              }
+            }
+          }
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -26019,13 +26027,21 @@
               "rested": true
             }
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "cost": {
+            "restOwnCharFilter": {
+              "count": 1,
+              "filter": {
+                "trait": "East Blue"
+              }
+            }
+          }
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -27860,7 +27876,7 @@
     "effectSpecV2": {
       "clauses": [
         {
-          "trigger": "on_play",
+          "trigger": "on_any_opp_char_ko",
           "cost": {
             "discardHand": 2
           },
@@ -27870,13 +27886,17 @@
           "target": {
             "kind": "self"
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "opt": true,
+          "condition": {
+            "type": "is_own_turn"
+          }
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -28198,7 +28218,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -28504,7 +28524,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -30159,7 +30179,8 @@
             "kind": "your_character",
             "filter": {
               "trait": "Alabasta"
-            }
+            },
+            "count": 99
           },
           "verified": "flagged"
         }
@@ -30167,7 +30188,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -33773,7 +33794,7 @@
         {
           "trigger": "when_attacking",
           "cost": {
-            "selfPowerCost": 5000
+            "restLeader": true
           },
           "action": {
             "kind": "removal_ko"
@@ -33792,11 +33813,11 @@
             "kind": "mill_self",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "continuous": [
         {
           "condition": {
@@ -33941,7 +33962,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35623,7 +35644,31 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed",
+      "continuous": [
+        {
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_self_rested"
+              },
+              {
+                "type": "is_opp_turn"
+              }
+            ]
+          },
+          "action": {
+            "kind": "aura_immunity",
+            "filter": {
+              "costMin": 5,
+              "costMax": 5,
+              "kind": "character"
+            },
+            "against": "opp_effects"
+          }
+        }
+      ]
     }
   },
   {
