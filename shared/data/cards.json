@@ -35425,9 +35425,6 @@
       "replacements": [
         {
           "trigger": "would_be_ko",
-          "condition": {
-            "type": "always"
-          },
           "action": {
             "kind": "power_buff",
             "magnitude": -1000,
@@ -35435,11 +35432,23 @@
           },
           "conditional": true,
           "verified": "human-reviewed",
-          "opt": true
+          "opt": true,
+          "filter": {
+            "powerMin": 5000,
+            "kind": "character"
+          },
+          "appliesToFiltered": true,
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "powerMin": 5000,
+              "kind": "character"
+            }
+          }
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -65962,7 +65971,7 @@
     "effectText": "If you have a green Character other than [Tashigi] that would be removed from the field by your opponent's effect, you may rest this Character instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -65977,7 +65986,15 @@
             "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "filter": {
+            "colors": [
+              "green"
+            ],
+            "nameExcludes": "Tashigi",
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ]
     }
@@ -66484,7 +66501,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -66812,7 +66829,7 @@
     "effectText": "If your Character with a base cost of 7 or less other than [Sabo] would be removed from the field by your opponent's effect, you may return this Character to the owner's hand instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -66827,7 +66844,13 @@
             "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "filter": {
+            "costMax": 7,
+            "nameExcludes": "Sabo",
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ]
     }
@@ -77560,11 +77583,18 @@
             "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "filter": {
+            "attribute": "Slash",
+            "costMax": 5,
+            "nameExcludes": "Koushirou",
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -81176,7 +81206,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -81214,7 +81244,12 @@
           },
           "conditional": true,
           "verified": "flagged",
-          "opt": true
+          "opt": true,
+          "filter": {
+            "costMax": 6,
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ]
     }
@@ -84118,15 +84153,12 @@
     "effectText": "If your Character with a type including \"Whitebeard Pirates\" would be K.O.'d by your opponent's effect, you may trash this Character instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
         {
           "trigger": "would_be_ko",
-          "condition": {
-            "type": "always"
-          },
           "cost": {
             "trashSelf": true
           },
@@ -84142,7 +84174,12 @@
             }
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "filter": {
+            "typeIncludes": "Whitebeard Pirates",
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ]
     }
@@ -84769,15 +84806,12 @@
     "effectText": "If your Character with a type including \"Roger Pirates\" would be K.O.'d by your opponent's effect, you may trash this Character instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
         {
           "trigger": "would_be_ko",
-          "condition": {
-            "type": "always"
-          },
           "cost": {
             "trashSelf": true
           },
@@ -84793,7 +84827,12 @@
             }
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "filter": {
+            "typeIncludes": "Roger Pirates",
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ]
     }
@@ -88591,11 +88630,16 @@
             "kind": "your_leader"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "filter": {
+            "typeIncludes": "Supernovas",
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -89518,7 +89562,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -89538,9 +89582,6 @@
       "replacements": [
         {
           "trigger": "would_be_ko",
-          "condition": {
-            "type": "always"
-          },
           "cost": {
             "restSelf": true
           },
@@ -89557,7 +89598,12 @@
           },
           "conditional": true,
           "verified": "flagged",
-          "opt": true
+          "opt": true,
+          "filter": {
+            "typeIncludes": "Straw Hat Crew",
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ]
     }
@@ -91077,11 +91123,16 @@
             "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "filter": {
+            "typeIncludes": "Donquixote Pirates",
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -94769,7 +94820,7 @@
     "effectText": "If your Character with 7000 base power or less would be removed from the field by your opponent's effect, you may give your Leader −2000 power during this turn instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -94781,11 +94832,20 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_character",
+            "filter": {
+              "powerMax": 7000,
+              "kind": "character"
+            }
           },
           "conditional": true,
           "verified": "flagged",
-          "opt": true
+          "opt": true,
+          "filter": {
+            "powerMax": 7000,
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ]
     }
@@ -96147,7 +96207,7 @@
     "effectText": "If your Character with 7000 base power or less would be removed from the field by your opponent's effect, you may rest 2 of your cards instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -96157,13 +96217,22 @@
             "kind": "rest_target"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_character",
+            "filter": {
+              "powerMax": 7000,
+              "kind": "character"
+            }
           },
           "conditional": true,
           "verified": "flagged",
           "cost": {
             "restSelf": true
-          }
+          },
+          "filter": {
+            "powerMax": 7000,
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ]
     }
@@ -97018,7 +97087,7 @@
     "effectText": "If your Character with 7000 base power or less would be removed from the field by your opponent's effect, you may place 1 of your Characters at the bottom of the owner's deck instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -97028,10 +97097,19 @@
             "kind": "bottom_of_deck_to_opp_deck"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_character",
+            "filter": {
+              "powerMax": 7000,
+              "kind": "character"
+            }
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "filter": {
+            "powerMax": 7000,
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ]
     }
@@ -98028,7 +98106,7 @@
     "effectText": "If your Character with 7000 base power or less would be removed from the field by your opponent's effect, you may return 1 DON!! card from your field to your DON!! deck instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -98039,7 +98117,19 @@
             "magnitude": 1
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "filter": {
+            "powerMax": 7000,
+            "kind": "character"
+          },
+          "appliesToFiltered": true,
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "powerMax": 7000,
+              "kind": "character"
+            }
+          }
         }
       ]
     }
@@ -99279,11 +99369,23 @@
             "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "filter": {
+            "powerMax": 7000,
+            "kind": "character"
+          },
+          "appliesToFiltered": true,
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "powerMax": 7000,
+              "kind": "character"
+            }
+          }
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -99489,11 +99591,17 @@
             "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "filter": {
+            "typeIncludes": "Straw Hat Crew",
+            "nameExcludes": "Roronoa Zoro",
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -99706,7 +99814,7 @@
     "effectText": "If your {Sky Island} type Character with 6000 base power or more would be removed from the field by your opponent, you may add 1 card from the top of your Life cards to your hand instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -100067,7 +100175,7 @@
     "effectText": "If your Character with 7000 base power or less would be removed from the field by your opponent's effect, you may add 1 card from the top of your Life cards to your hand instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -100080,11 +100188,17 @@
           "target": {
             "kind": "your_character",
             "filter": {
-              "powerMax": 7000
+              "powerMax": 7000,
+              "kind": "character"
             }
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "filter": {
+            "powerMax": 7000,
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ]
     }

@@ -361,6 +361,17 @@ export interface ReplacementEffectV2 {
   action: EffectActionV2;
   /** "If you do" — only run if the cost was paid. */
   conditional: boolean;
+  /** Target descriptor; used both to (a) restrict which would-be-removed events
+   *  this replacement applies to, and (b) where the replacement action lands. */
+  target?: EffectTargetV2;
+  /** Filter applied to the would-be-removed instance — restricts the replacement
+   *  to e.g. "your Character with 7000 base power or less" (OP15-009 etc.). */
+  filter?: TargetFilter;
+  /** When true, the replacement may fire even when the removed instance isn't
+   *  the source — i.e. it covers OTHER chars matching `filter` (OP05-001 etc.). */
+  appliesToFiltered?: boolean;
+  /** Marks once-per-turn replacements. */
+  opt?: boolean;
   verified: 'ground-truth' | 'auto' | 'human-reviewed' | 'flagged';
 }
 
