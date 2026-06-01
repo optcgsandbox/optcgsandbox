@@ -29834,7 +29834,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost discardHand:2 + draw 3 — text is sequential \"Draw 3 cards and trash 2 cards from your hand\" not cost+effect"
     }
   },
   {
@@ -30132,7 +30133,8 @@
           "Usopp"
         ]
       },
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "bounce target opp_character; text says \"Return up to 1 Character\" (any) AND second clause uses cost form for sequential \"draw 2 and trash 2\""
     }
   },
   {
@@ -30170,7 +30172,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "add_to_own_life_top only; text says \"to the top or bottom of the owner's Life cards\" — owner-any + top-or-bottom not encoded"
     }
   },
   {
@@ -30376,7 +30379,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target count:99 hack for \"each of your Alabasta Characters\" — needs proper all-targets semantic"
     }
   },
   {
@@ -30612,7 +30616,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "self_trash_at_end_of_turn but text says \"Return this Character to the owner's hand at the end of this turn\" (bounce, not trash)"
     }
   },
   {
@@ -30708,7 +30713,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "reveal_top_then_if_filter encodes the +3000 conditional but omits the unconditional \"Then, place the revealed card at the bottom of your deck\""
     }
   },
   {
@@ -31027,7 +31033,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character missing count:2; text says \"give up to 2 of your opponent's Characters\""
     }
   },
   {
@@ -31322,7 +31329,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "on_opp_play_character clause missing if_leader_has_trait:Donquixote Pirates gating condition from text"
     }
   },
   {
@@ -31425,7 +31433,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause uses standalone at_end_of_turn_self trigger; text \"Then, set up to 1 DON!! active at end of turn\" must be gated by paying [When Attacking] cost this turn"
     }
   },
   {
@@ -31676,7 +31685,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "rest_lock_until_phase target only opp_characters (missing leader); missing count:3 cap on \"up to a total of 3\" leader+char selection"
     }
   },
   {
@@ -31772,7 +31782,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause uses standalone at_end_of_turn_self trigger; text \"Then, set up to 1 DON!! active at end of turn\" must be gated by [On Play] resolving"
     }
   },
   {
@@ -32022,7 +32033,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "rest_target only opp_character; text says \"opp's Leader or Character cards\" — missing leader; also only on_play trigger, missing [Counter] branch"
     }
   },
   {
@@ -32080,7 +32092,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek default disposes rest to bottom; text says \"trash the rest\" — trash-rest semantics not encoded"
     }
   },
   {
@@ -32153,7 +32166,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "choose_one options lack the \"if total Life+hand ≤ 4\" gating condition that determines whether the effect fires at all"
     }
   },
   {
@@ -32225,7 +32239,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "empty clauses + text truncated to \"[On Play] Up to 1 of your\" — real on_play effect not encoded"
     }
   },
   {
@@ -32269,7 +32284,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "bounce target opp_character; text \"Return up to 1 Character\" (any) AND missing \"or the bottom of their deck\" alternate destination"
     }
   },
   {
@@ -32323,7 +32339,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "bounce targets opp_character; text \"Return up to 1 Character\" (any character, no opp restriction)"
     }
   },
   {
@@ -32437,7 +32454,8 @@
     "effectSpecV2": {
       "clauses": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "empty clauses; text \"[Your Turn] At the end of a battle...\" battle-end trigger to bottom-of-deck not encoded"
     }
   },
   {
@@ -32476,7 +32494,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only draw with magnitude=own_hand_count; missing \"Return all cards in your hand to your deck and shuffle\" precondition"
     }
   },
   {
