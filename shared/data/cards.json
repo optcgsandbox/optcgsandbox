@@ -98519,7 +98519,7 @@
               "nameIs": "Oars"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -98568,7 +98568,7 @@
     "effectText": "[On Play] If your Leader has the {Straw Hat Crew} type, trash 5 cards from the top of your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -98616,13 +98616,25 @@
             "kind": "mill_self",
             "magnitude": 3
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_ko",
+          "action": {
+            "kind": "recursion",
+            "magnitude": 1,
+            "filter": {
+              "kind": "character",
+              "costMax": 8
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -98655,13 +98667,32 @@
             "kind": "mill_self",
             "magnitude": 3
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "trashSelf": true
+          },
+          "condition": {
+            "type": "if_trash_min",
+            "n": 15
+          },
+          "action": {
+            "kind": "give_don_to_target",
+            "magnitude": 1,
+            "rested": true
+          },
+          "target": {
+            "kind": "your_leader_or_character"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -98690,7 +98721,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -98752,13 +98783,32 @@
             "kind": "mill_self",
             "magnitude": 3
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "trashSelf": true
+          },
+          "condition": {
+            "type": "if_leader_has_type",
+            "typeString": "Straw Hat Crew"
+          },
+          "action": {
+            "kind": "recursion",
+            "magnitude": 1,
+            "filter": {
+              "typeIncludes": "Straw Hat Crew",
+              "nameExcludes": "Tony Tony.Chopper"
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -98785,7 +98835,7 @@
     "effectText": "[On Play] If your Leader has the {Straw Hat Crew} type, play up to 1 {Straw Hat Crew} type Character with a cost of 7 or less from your trash. The Character played with this effect gains [Rush] during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -98815,7 +98865,10 @@
             "keyword": "Rush",
             "duration": "this_turn"
           },
-          "verified": "auto"
+          "verified": "auto",
+          "target": {
+            "kind": "self"
+          }
         }
       ],
       "continuous": [],
@@ -98858,13 +98911,24 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
-      "continuous": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_trash_min",
+            "n": 10
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -98890,23 +98954,23 @@
     "effectText": "This Character gains +6 cost.<br>[On Play] You may trash 3 cards from the top of your deck: Play up to 1 {Straw Hat Crew} type Character card with a cost of 2 or less from your trash.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "cost": {
-            "discardHand": 0
+            "millSelf": 3
           },
           "action": {
             "kind": "play_for_free",
             "from": "trash",
             "filter": {
-              "kind": "character",
               "typeIncludes": "Straw Hat Crew",
-              "costMax": 2
+              "costMax": 2,
+              "kind": "character"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -98979,15 +99043,16 @@
             "discardHand": 1
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "grant_immunity",
+            "against": "opp_removal",
+            "duration": "this_turn"
           },
           "conditional": true,
           "verified": "flagged"
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "flagged"
     }
   },
   {
@@ -99017,8 +99082,7 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "bottom_of_deck_from_trash",
-            "magnitude": 1
+            "kind": "bottom_of_deck_to_opp_deck"
           },
           "verified": "flagged"
         }
@@ -99060,7 +99124,7 @@
           },
           "action": {
             "kind": "self_power_buff",
-            "magnitude": 0
+            "magnitude": 9000
           }
         },
         {
@@ -99120,7 +99184,7 @@
     "effectText": "[Activate: Main] You may trash this Character: If you have 15 or more cards in your trash, up to 1 of your [Monkey.D.Luffy] Characters gains [Rush: Character] and the <Slash> attribute during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -99180,7 +99244,22 @@
           }
         }
       ],
-      "replacements": [],
+      "replacements": [
+        {
+          "trigger": "would_be_removed",
+          "opt": true,
+          "cost": {
+            "trashSelf": true
+          },
+          "action": {
+            "kind": "grant_immunity",
+            "against": "opp_removal",
+            "duration": "this_turn"
+          },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ],
       "schemaVersion": 2,
       "verified": "flagged"
     }
@@ -99212,7 +99291,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -99234,7 +99313,23 @@
               "typeIncludes": "Straw Hat Crew"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_trash_min",
+            "n": 15
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader_or_character"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -99270,6 +99365,21 @@
         {
           "trigger": "on_play",
           "cost": {
+            "donCost": 1
+          },
+          "condition": {
+            "type": "if_leader_has_type",
+            "typeString": "Straw Hat Crew"
+          },
+          "action": {
+            "kind": "mill_self",
+            "magnitude": 5
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "cost": {
             "discardHand": 1
           },
           "action": {
@@ -99280,13 +99390,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -99314,7 +99424,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -99414,12 +99524,17 @@
     "effectText": "[On Play] You may trash 1 {Supernovas} type card from your hand: This Character gains [Rush] during this turn.<br>[Activate: Main] You may turn 1 card from the top of your Life cards face-down: Give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "cost": {
-            "discardHand": 1
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "typeIncludes": "Supernovas"
+              }
+            }
           },
           "action": {
             "kind": "give_keyword",
@@ -99429,7 +99544,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "activate_main",
@@ -99444,7 +99559,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -99475,23 +99590,25 @@
     "effectText": "[On Play] You may trash this Character and add 1 card from the top of your Life cards to your hand: K.O. up to 1 of your opponent's Characters with a cost of 6 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "cost": {
-            "trashSelf": true
+            "trashSelf": true,
+            "lifeToHand": 1
           },
           "action": {
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
           "cost": {
-            "trashSelf": true
+            "trashSelf": true,
+            "lifeToHand": 1
           },
           "action": {
             "kind": "removal_ko"
@@ -99502,7 +99619,7 @@
               "costMax": 6
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -99545,7 +99662,12 @@
             "lookCount": 5,
             "addCount": 2,
             "filter": {
-              "typeIncludes": "Shandian Warrior"
+              "traitsAny": [
+                "Shandian Warrior"
+              ],
+              "namesAny": [
+                "Mont Blanc Noland"
+              ]
             }
           },
           "verified": "flagged"
@@ -99578,7 +99700,7 @@
     "effectText": "If you have a {Sky Island} type Character with 7000 power or more, give this card in your hand −3 cost.<br>[On Play] Rest up to 1 of your opponent's Characters with a cost equal to or less than the number of your opponent's Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -99594,8 +99716,12 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_own_chars_min",
-            "n": 1
+            "type": "not",
+            "condition": {
+              "type": "if_own_chars_max_with_min_power",
+              "n": 0,
+              "minPower": 7000
+            }
           },
           "action": {
             "kind": "cost_modifier_in_hand",
@@ -99667,18 +99793,19 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "flagged"
         },
         {
           "trigger": "on_play",
-          "cost": {
-            "discardHand": 2
+          "condition": {
+            "type": "if_own_life_max",
+            "n": 3
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "discard_from_hand",
+            "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -99825,7 +99952,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -99853,7 +99980,7 @@
     "effectText": "[On Play] You may add 1 card from the top of your Life cards to your hand: If your Leader has the {Straw Hat Crew} type, add up to 1 card from the top of your deck to the top of your Life cards. Then, play up to 1 {Sky Island} type Character card with a cost of 5 or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -99919,7 +100046,7 @@
     "effectText": "[On K.O.] If your Leader has the {Shandian Warrior} type, add up to 1 card from the top of your deck to the top of your Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -99964,12 +100091,12 @@
     "effectText": "[DON!! x1] [When Attacking] Up to 1 of your [Kalgara] cards gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_have_given_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -99983,7 +100110,7 @@
               "nameIs": "Kalgara"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -100014,7 +100141,21 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Play] Play up to 1 {Shandian Warrior} type Character card with a cost of 3 or less from your hand.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "typeIncludes": "Shandian Warrior",
+              "costMax": 3,
+              "kind": "character"
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -100025,7 +100166,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -100068,7 +100209,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -100100,7 +100241,7 @@
     "effectText": "[On Play] You may turn 1 card from the top of your Life cards face-up: Give all of your opponent's Characters −2000 power during this turn. Then, K.O. all of your opponent's Characters with 0 power or less.<br>[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to 1 of your {Sky Island} type Leader or Character cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -100178,7 +100319,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -100239,6 +100380,34 @@
       "clauses": [
         {
           "trigger": "on_play",
+          "condition": {
+            "type": "if_leader_has_type",
+            "typeString": "Straw Hat Crew"
+          },
+          "action": {
+            "kind": "chained_actions",
+            "actions": [
+              {
+                "kind": "trash_face_up_life",
+                "target": {
+                  "kind": "own_life_top"
+                }
+              },
+              {
+                "kind": "add_to_own_life_top",
+                "faceUp": false,
+                "from": "top_of_deck"
+              },
+              {
+                "kind": "discard_from_hand",
+                "magnitude": 1
+              }
+            ]
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
           "action": {
             "kind": "power_buff",
             "magnitude": 4000,
@@ -100247,13 +100416,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -100283,7 +100452,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -100341,7 +100510,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -100353,7 +100522,7 @@
             "lookCount": 5,
             "addCount": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -100362,7 +100531,7 @@
             "discardHand": 1
           },
           "action": {
-            "kind": "mill_self",
+            "kind": "bottom_of_deck_from_hand",
             "magnitude": 0
           },
           "verified": "flagged"
