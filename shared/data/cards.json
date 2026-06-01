@@ -62253,7 +62253,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost discardHand:2 + mill_self:2 fixed; text says \"Then, trash UP TO 2 cards from your hand. Trash the same number of cards from the top of your deck as you did from your hand\" — variable count (0-2) needed"
     }
   },
   {
@@ -62615,7 +62616,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "condition if_own_don_le_opp (≤); text says \"If your opponent has MORE DON!! cards on their field than you\" — strict less than (own < opp), not ≤"
     }
   },
   {
@@ -62791,7 +62793,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target your_leader only; text says \"your Leader or 1 of your Characters\" — needs your_leader_or_character"
     }
   },
   {
@@ -62923,7 +62926,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character missing count:2; text says \"give up to 2 of your opponent's Characters\""
     }
   },
   {
@@ -63291,7 +63295,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "trigger on_own_char_removed_by_opp_effect with no trait filter; text scopes to \"your {Straw Hat Crew} type Character\""
     }
   },
   {
@@ -63342,7 +63347,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "continuous self_immune_to_opp_effects but text says \"Your [On Play] effects are negated\" (own on_play effects negated, not leader immune); activate clause action negate_target_effects targets all_opp_characters but text \"Your opponent's [On Play] effects are negated\" is a global on_play-negation effect"
     }
   },
   {
@@ -63695,7 +63701,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost donCost:1 + discardHand:2; text \"[DON!! x1] [When Attacking]\" — DON!! x1 is a condition, not a 1-DON pay cost (only discardHand:2 is the real cost)"
     }
   },
   {
@@ -63908,7 +63915,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "condition if_opp_hand_min:4; text \"If the number of cards in your hand is at least 3 less than the number in your opponent's hand\" — gap (opp_hand − own_hand) ≥ 3, not opp_hand ≥ 4"
     }
   },
   {
@@ -63992,7 +64000,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "chained_actions has negate→negate→attack_lock all on opp_character with independent selections; text \"that Character\" must reference the same Character whose effect was just negated (same-target tracking)"
     }
   },
   {
@@ -64109,7 +64118,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek default disposes rest to bottom of deck; text says \"Then, trash the rest\" — trash-rest semantics not encoded"
     }
   },
   {
@@ -64164,7 +64174,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause target opp_leader_or_character (any); text \"give THAT card −4000 power\" must reference the same card whose effect was negated"
     }
   },
   {
@@ -64229,7 +64240,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause target opp_character with costMax:4 (any opp char ≤4); text \"if THAT Character has a cost of 4 or less, K.O. it\" must reference the same character that was negated"
     }
   },
   {
@@ -64361,7 +64373,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause add_to_opp_life_top with no position field; text says \"to the top or bottom of your opponent's Life cards face-up\" — bottom option missing"
     }
   },
   {
@@ -64587,7 +64600,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -64603,7 +64616,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target your_leader with no filter; text \"Up to 1 of your [Nico Robin] Leader\" requires leader to be Nico Robin — needs nameIs:\"Nico Robin\" filter or if_leader_is condition"
     }
   },
   {
@@ -64754,7 +64768,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost discardHand:2 + draw 2 — text \"Draw 2 cards and trash 2 cards from your hand\" is sequential effects not cost+effect"
     }
   },
   {
@@ -64878,7 +64893,7 @@
     "effectText": "[On Play] If you and your opponent have a total of 5 or less Life cards, K.O. up to 1 of your opponent's Characters with 2000 power or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -64904,7 +64919,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "condition only checks if_own_life_max:5; text says \"If you and your opponent have a TOTAL of 5 or less Life cards\" — sum constraint (own + opp ≤ 5), not own ≤ 5"
     }
   },
   {
