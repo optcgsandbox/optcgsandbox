@@ -135,6 +135,9 @@ export interface TargetFilter {
   traitsAny?: string[];
   /** Mirror — name OR name (e.g., "Sanji or Black Leg"). */
   namesAny?: string[];
+  /** OP05-102/103/116, OP08-098/102, OP09-114, OP10-100/110, OP15-102, ST29-002 etc. —
+   *  dynamic upper bound on cost: "cost equal to or less than the number of [opp Life cards / own Life cards / DON cards on your field / ...]". */
+  costMaxFromCount?: 'own_life_count' | 'opp_life_count' | 'own_don_count' | 'opp_don_count' | 'own_life_plus_opp_life';
 }
 
 export type EffectTargetV2 =

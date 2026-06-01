@@ -35092,7 +35092,10 @@
             "kind": "removal_ko"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_character",
+            "filter": {
+              "costMaxFromCount": "own_life_plus_opp_life"
+            }
           },
           "verified": "flagged"
         },
@@ -35111,7 +35114,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -40282,13 +40285,16 @@
             "kind": "removal_ko"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_character",
+            "filter": {
+              "costMaxFromCount": "opp_life_count"
+            }
           },
           "verified": "flagged"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -40323,13 +40329,16 @@
             "kind": "removal_ko"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_character",
+            "filter": {
+              "costMaxFromCount": "opp_life_count"
+            }
           },
           "verified": "flagged"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -40889,13 +40898,16 @@
             "kind": "removal_ko"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_character",
+            "filter": {
+              "costMaxFromCount": "opp_life_count"
+            }
           },
           "verified": "flagged"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -46007,7 +46019,7 @@
     "effectText": "[DON!! x2] [When Attacking] You may trash 1 card from your hand: K.O. up to 1 of your opponent's Characters with a cost equal to or less than the number of your opponent's Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -46022,7 +46034,10 @@
             "kind": "removal_ko"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_character",
+            "filter": {
+              "costMaxFromCount": "opp_life_count"
+            }
           },
           "verified": "flagged"
         }
@@ -57559,7 +57574,8 @@
             "from": "hand",
             "filter": {
               "kind": "character",
-              "trait": "Shandian Warrior"
+              "trait": "Shandian Warrior",
+              "costMaxFromCount": "own_don_count"
             }
           },
           "verified": "flagged",
@@ -57584,7 +57600,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -57736,7 +57752,10 @@
             "kind": "removal_ko"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_character",
+            "filter": {
+              "costMaxFromCount": "own_life_count"
+            }
           },
           "verified": "flagged"
         }
@@ -57744,7 +57763,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -64176,11 +64195,7 @@
             "conditions": [
               {
                 "type": "if_own_life_max",
-                "n": 2
-              },
-              {
-                "type": "if_opp_life_max",
-                "n": 3
+                "n": 5
               }
             ]
           }
@@ -69480,7 +69495,7 @@
     "effectText": "[DON!! x1] [When Attacking] Rest up to 1 of your opponent's Characters with a cost equal to or less than the total of your and your opponent's Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -69492,7 +69507,10 @@
             "kind": "rest_target"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_character",
+            "filter": {
+              "costMaxFromCount": "opp_life_count"
+            }
           },
           "verified": "flagged"
         }
@@ -69921,7 +69939,7 @@
     "effectText": "[On Play] Rest up to 1 of your opponent's Characters with a cost equal to or less than the number of your opponent's Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -69929,7 +69947,10 @@
             "kind": "rest_target"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_character",
+            "filter": {
+              "costMaxFromCount": "opp_life_count"
+            }
           },
           "verified": "flagged"
         }
@@ -100110,7 +100131,7 @@
     "effectText": "If you have a {Sky Island} type Character with 7000 power or more, give this card in your hand −3 cost.<br>[On Play] Rest up to 1 of your opponent's Characters with a cost equal to or less than the number of your opponent's Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -100118,7 +100139,10 @@
             "kind": "rest_target"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_character",
+            "filter": {
+              "costMaxFromCount": "opp_life_count"
+            }
           },
           "verified": "flagged"
         }
@@ -121139,7 +121163,7 @@
     "effectText": "[On Play]/[When Attacking] Rest up to 1 of your opponent's Characters with a cost equal to or less than the number of your opponent's Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -121147,7 +121171,10 @@
             "kind": "rest_target"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_character",
+            "filter": {
+              "costMaxFromCount": "opp_life_count"
+            }
           },
           "verified": "flagged"
         },
@@ -121157,7 +121184,10 @@
             "kind": "rest_target"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_character",
+            "filter": {
+              "costMaxFromCount": "opp_life_count"
+            }
           },
           "verified": "flagged"
         }

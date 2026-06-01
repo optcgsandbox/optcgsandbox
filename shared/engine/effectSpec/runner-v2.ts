@@ -311,6 +311,26 @@ function matchesFilter(state: GameState, inst: CardInstance, filter: TargetFilte
   const card = state.cardLibrary[inst.cardId];
   if (!card) return false;
 
+  if (filter.costMaxFromCount) {
+    // Resolve the dynamic upper bound against the CURRENT controller (whoever
+    // is firing the effect). We approximate "own" as player 'A' here because
+    // filter resolution doesn't carry an explicit controller — the caller
+    // already restricts to me.field/opp.field by target.kind. Use state.players
+    // to compute counts; for own_/opp_ semantics we use the inst's owner.
+    const ownerSide = (inst as { controller?: 'A' | 'B' }).controller;
+    const me = ownerSide ? state.players[ownerSide] : state.players.A;
+    const opp = ownerSide ? state.players[ownerSide === 'A' ? 'B' : 'A'] : state.players.B;
+    let cap = 0;
+    switch (filter.costMaxFromCount) {
+      case 'own_life_count': cap = me.life.length; break;
+      case 'opp_life_count': cap = opp.life.length; break;
+      case 'own_don_count': cap = me.donCostArea.length + me.donRested.length; break;
+      case 'opp_don_count': cap = opp.donCostArea.length + opp.donRested.length; break;
+      case 'own_life_plus_opp_life': cap = me.life.length + opp.life.length; break;
+    }
+    const c = effectiveCost(card, inst);
+    if (c === null || c > cap) return false;
+  }
   if (typeof filter.costMax === 'number') {
     const c = effectiveCost(card, inst);
     if (c === null || c > filter.costMax) return false;
