@@ -90890,15 +90890,16 @@
             ]
           },
           "action": {
-            "kind": "set_base_power_copy_from",
-            "source": "opp_leader",
-            "duration": "this_battle"
+            "kind": "aura_set_base_power_copy_from_leader",
+            "filter": {
+              "nameIs": "Vista"
+            }
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -99729,27 +99730,18 @@
             "n": 10
           },
           "action": {
-            "kind": "self_power_buff",
-            "magnitude": 9000
+            "kind": "self_set_base_power",
+            "basePower": 9000
           }
         },
         {
           "condition": {
-            "type": "and",
-            "conditions": [
-              {
-                "type": "if_trash_min",
-                "n": 20
-              },
-              {
-                "type": "during_opp_turn"
-              }
-            ]
+            "type": "if_trash_min",
+            "n": 10
           },
           "action": {
-            "kind": "aura_power_buff",
-            "filter": {},
-            "magnitude": 0
+            "kind": "self_cost_buff",
+            "magnitude": 10
           }
         },
         {

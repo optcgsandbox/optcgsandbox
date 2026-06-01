@@ -151,6 +151,26 @@ export function applyContinuousEffectsV2ToInstance(
         if (matchesFilterMinimal(state, source, filter)) apply(source);
         break;
       }
+      case 'self_set_base_power': {
+        (source as { baseOverride?: number }).baseOverride = eff.action.basePower;
+        break;
+      }
+      case 'aura_set_base_power_copy_from_leader': {
+        const filter = eff.action.filter;
+        const leaderCard = state.cardLibrary[me.leader.cardId];
+        const bp = leaderCard && typeof leaderCard.power === 'number' ? leaderCard.power : 0;
+        const apply = (inst: CardInstance) => {
+          (inst as { baseOverride?: number }).baseOverride = bp;
+          const mirror = state.instances[inst.instanceId] as { baseOverride?: number };
+          if (mirror) mirror.baseOverride = bp;
+        };
+        for (const inst of me.field) {
+          if (!matchesFilterMinimal(state, inst, filter)) continue;
+          apply(inst);
+        }
+        if (matchesFilterMinimal(state, source, filter)) apply(source);
+        break;
+      }
       case 'self_cost_buff': {
         const m = eff.action.magnitude;
         let delta: number;

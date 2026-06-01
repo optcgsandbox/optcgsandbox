@@ -364,6 +364,8 @@ export interface ContinuousEffectV2 {
     | { kind: 'aura_immunity'; filter: TargetFilter; against: 'opp_effects' | 'opp_removal' } // EB04-057 — chars matching filter become immune
     | { kind: 'aura_grant_keyword'; filter: TargetFilter; keyword: string } // OP02-074 Saldeath / OP04-096 Corrida Coliseum / OP04-118 Vivi / OP15-070 Fuza / OP15-071 Holly
     | { kind: 'aura_set_base_power'; filter: TargetFilter; basePower: number } // OP15-070 / OP15-071 — set base power of filter to N
+    | { kind: 'self_set_base_power'; basePower: number } // OP15-092 — "this Character's base power becomes N"
+    | { kind: 'aura_set_base_power_copy_from_leader'; filter: TargetFilter } // OP14-053 Vista — base power copies controller's leader's base power
     | { kind: 'self_cost_buff'; magnitude: number | MagnitudeFormula }       // EB04-048 — own cost scales by formula (mirrors self_power_buff)
     | { kind: 'restrict_self_attack' }                                       // "This Leader cannot attack"
     | { kind: 'cost_modifier_in_hand'; delta: number };                      // (gap #91, EB04-061)
