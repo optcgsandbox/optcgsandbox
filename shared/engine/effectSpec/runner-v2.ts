@@ -225,12 +225,15 @@ export function evaluateConditionV2(
       return count >= cond.n;
     }
     case 'if_owned_other_with_name':
+      // "other" — exclude the source instance itself.
       return me.field.some((inst) =>
-        state.cardLibrary[inst.cardId]?.name === cond.name,
+        inst.instanceId !== sourceInstanceId
+        && state.cardLibrary[inst.cardId]?.name === cond.name,
       );
     case 'if_no_other_with_name':
       return !me.field.some((inst) =>
-        state.cardLibrary[inst.cardId]?.name === cond.name,
+        inst.instanceId !== sourceInstanceId
+        && state.cardLibrary[inst.cardId]?.name === cond.name,
       );
     case 'if_played_this_turn': {
       // True when the source card was played this turn — engine tracks via
