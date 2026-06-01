@@ -13399,39 +13399,48 @@
             "donCost": 4
           },
           "action": {
-            "kind": "chained_actions",
-            "actions": [
-              {
-                "kind": "set_active",
-                "target": {
-                  "kind": "your_character",
-                  "filter": {
-                    "trait": "Straw Hat Crew",
-                    "costMax": 5
-                  }
-                }
-              },
-              {
-                "kind": "power_buff",
-                "magnitude": 1000,
-                "duration": "this_turn",
-                "target": {
-                  "kind": "your_character",
-                  "filter": {
-                    "trait": "Straw Hat Crew",
-                    "costMax": 5
-                  }
-                }
-              }
-            ]
+            "kind": "set_active"
           },
-          "verified": "flagged"
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "traitsAny": [
+                "Supernovas",
+                "Straw Hat Crew"
+              ],
+              "costMax": 5
+            }
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "activate_main",
+          "opt": true,
+          "cost": {
+            "donCost": 4
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 1000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "traitsAny": [
+                "Supernovas",
+                "Straw Hat Crew"
+              ],
+              "costMax": 5
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -14729,6 +14738,10 @@
               {
                 "type": "if_attached_don_min",
                 "n": 1
+              },
+              {
+                "type": "if_opp_chars_min_rested",
+                "n": 2
               }
             ]
           },
@@ -14740,7 +14753,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -14990,7 +15003,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -17802,18 +17815,18 @@
       "continuous": [
         {
           "action": {
-            "kind": "aura_immunity",
+            "kind": "aura_grant_keyword",
             "filter": {
               "trait": "Kurozumi Clan",
               "nameExcludes": "Kurozumi Semimaru"
             },
-            "against": "opp_removal"
+            "keyword": "cannot_be_ko_in_battle"
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
