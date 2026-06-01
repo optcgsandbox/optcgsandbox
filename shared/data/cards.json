@@ -15935,7 +15935,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character no count; text says \"up to 2 opp rested Characters\""
     }
   },
   {
@@ -16243,7 +16244,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec has no clauses/continuous/replacements but card has a real effect — empty spec is not faithful"
     }
   },
   {
@@ -16287,7 +16289,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: reveal_opp_hand only; conditional opp-life-to-deck-bottom branch missing on Event-reveal match"
     }
   },
   {
@@ -16440,7 +16443,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "aura_cost_modifier walks me.field; text targets blue Events in HAND — no in-hand aura support"
     }
   },
   {
@@ -16525,7 +16529,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: searcher_peek+playInsteadOfHand from deck approximates play-from-deck but action verb is search-then-add"
     }
   },
   {
@@ -16801,10 +16806,11 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "rules": {
         "deckRestrictions": {}
-      }
+      },
+      "auditNote": "rules.deckRestrictions:{} is empty placeholder; text says \"any number of this card in deck\""
     }
   },
   {
