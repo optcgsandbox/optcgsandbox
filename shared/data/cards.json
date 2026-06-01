@@ -24168,11 +24168,62 @@
       "power_buff": 1000
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "when_attacking",
+          "cost": {
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "kind": "event"
+              }
+            }
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": {
+              "kind": "per_count",
+              "countSource": "cards_trashed_this_resolution",
+              "divisor": 1,
+              "perUnit": 1000
+            },
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_opp_attack",
+          "cost": {
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "kind": "event"
+              }
+            }
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": {
+              "kind": "per_count",
+              "countSource": "cards_trashed_this_resolution",
+              "divisor": 1,
+              "perUnit": 1000
+            },
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -41729,7 +41780,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -116707,7 +116758,33 @@
       "power_buff": 1000
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_opp_attack",
+          "cost": {
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "typeIncludes": "Music"
+              }
+            }
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": {
+              "kind": "per_count",
+              "countSource": "cards_trashed_this_resolution",
+              "divisor": 1,
+              "perUnit": 1000
+            },
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader_or_character"
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -116718,7 +116795,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
