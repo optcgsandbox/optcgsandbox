@@ -113145,7 +113145,7 @@
     "effectText": "[DON!! x1] At the end of a battle in which this Character battles your opponent's Character, you may K.O. the opponent’s Character you battled with. If you do, K.O. this Character.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_battle_ko",
@@ -113168,7 +113168,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "chained_actions has removal_ko followed by self_trash_at_end_of_turn; text \"K.O. this Character\" is immediate after the opp char KO, not delayed end-of-turn"
     }
   },
   {
@@ -113885,7 +113886,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause action add_to_opp_life_top position:\"top\"; text \"add up to 1 of your opponent's Characters... to the top or bottom of the owner's Life cards face-up\" — bottom option missing"
     }
   },
   {
@@ -113915,7 +113917,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] DON!! −3 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Place up to 1 of your opponent's Characters with 3000 power or less at the bottom of the owner's deck, and play up to 1 Character card with a cost of 4 or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -113950,7 +113952,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause action removal_bounce returns to hand; text \"Place up to 1 of your opponent's Characters with 3000 power or less at the BOTTOM OF THE OWNER'S DECK\" — needs bottom_of_deck_to_opp_deck"
     }
   },
   {
@@ -113978,7 +113981,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] If you have 0 DON!! cards on your field or 8 or more DON!! cards on your field, add up to 1 DON!! card from your DON!! deck and set it as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -114003,7 +114006,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action ramp magnitude:1 with no rested specifier; text \"add up to 1 DON!! card from your DON!! deck and SET IT AS ACTIVE\" — needs rested:false"
     }
   },
   {
@@ -114035,7 +114039,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -114065,7 +114069,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition if_own_life_min:4 (always-on once life ≥4); text \"[Your Turn] If you have 4 or more Life cards\" — needs is_own_turn"
     }
   },
   {
@@ -114200,7 +114205,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes Rush continuous; missing \"[Once Per Turn] When your opponent activates a [Blocker], K.O. up to 1 of your opponent's Characters with 8000 power or less\" triggered clause"
     }
   },
   {
@@ -114227,7 +114233,7 @@
     "effectText": "[Your Turn] [Once Per Turn] When a DON!! card on your field is returned to your DON!! deck, K.O. up to 1 of your opponent's rested Characters with a cost of 3 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_own_don_returned",
@@ -114245,7 +114251,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "on_own_don_returned clause missing is_own_turn condition for [Your Turn]"
     }
   },
   {
@@ -114327,7 +114334,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "action ramp magnitude:1 with no rested specifier; text \"Add up to 1 DON!! card from your DON!! deck and SET IT AS ACTIVE\" — needs rested:false"
     }
   },
   {
@@ -114412,7 +114420,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_own_don_returned",
@@ -114428,7 +114436,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "on_own_don_returned clause missing is_own_turn condition for [Your Turn]"
     }
   },
   {
@@ -114455,7 +114464,7 @@
     "effectText": "[On Play]/[When Attacking] If your opponent has more DON!! cards on their field than you, add up to 1 DON!! card from your DON!! deck and rest it.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -114483,7 +114492,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "both clauses condition if_own_don_le_opp (≤); text \"If your opponent has MORE DON!! cards on their field than you\" (strict <)"
     }
   },
   {
@@ -114971,7 +114981,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -115004,7 +115014,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause action ramp magnitude:1 (no rested specifier); text \"set up to 1 of your DON!! cards as active\" — needs rested:false (or set_active_don:1)"
     }
   },
   {
@@ -115173,7 +115184,7 @@
     "effectText": "[On Play] If you have 2 or less Characters, play up to 1 {Muggy Kingdom} type or <Slash> attribute Character card with a cost of 4 or less other than [Dracule Mihawk] from your hand rested.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -115196,7 +115207,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "condition if_own_chars_min:0 is always-true; text \"If you have 2 OR LESS Characters\" — needs if_own_chars_max:2; also filter trait:\"Muggy Kingdom\" only — text \"{Muggy Kingdom} OR <Slash> attribute Character\" — Slash-attribute branch missing"
     }
   },
   {
@@ -115649,7 +115661,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause action reveal_top_and_conditional_play missing rested:true on the conditional play; text \"play up to 1 Character card with a cost of 2 RESTED\""
     }
   },
   {
