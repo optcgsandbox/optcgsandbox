@@ -4558,7 +4558,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -4575,7 +4575,8 @@
           "conditional": true,
           "verified": "human-reviewed"
         }
-      ]
+      ],
+      "auditNote": "text says K.O.d in BATTLE; spec uses opp_removal which covers effect-KO too"
     }
   },
   {
@@ -4643,7 +4644,7 @@
     "effectText": "[On Play] If you have 3 or more DON!! cards on your field, look at 7 cards from the top of your deck; reveal up to 1 [Galley-La Company] and add it to your hand. Then, place the rest at the bottom of your deck in any order and play up to 1 [Galley-La Company] from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -4679,7 +4680,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher filter uses trait:Galley-La Company; [Galley-La Company] is a name, should be nameIs"
     }
   },
   {
@@ -4704,7 +4706,7 @@
     "effectText": "If you have [Merry Go] on your field, this Character gains [Blocker].",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -4718,7 +4720,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "Merry Go is a Stage; if_owned_other_with_name walks me.field chars only, not stage"
     }
   },
   {
@@ -4778,7 +4781,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_own_don_returned",
@@ -4803,7 +4806,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "trigger on_own_don_returned needs count threshold 2; spec has no count gate"
     }
   },
   {
@@ -4999,7 +5003,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -5029,7 +5033,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "play target filter must match name of trashed card; same-name dynamic constraint gap"
     }
   },
   {
@@ -5101,7 +5106,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -5138,7 +5143,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "activate-main action removal_cost_reduce mag:-2 targets your_character — should be give_cost_buff +2 on SH chars"
     }
   },
   {
@@ -5322,7 +5328,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: 2nd choose option still flagged for opp-discard semantics distinct from random"
     }
   },
   {
@@ -5745,7 +5752,7 @@
     "effectText": "[On Play]/[On K.O.] Look at up to 1 card from the top of your or your opponent's Life cards and place it at the top or bottom of the Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -5763,7 +5770,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "peek_and_reorder_opp_life only opp side; text gives choice of own or opp life"
     }
   },
   {
@@ -6082,7 +6090,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "play filter trait+yellow misses Sanji name branch; need namesAny + traitsAny OR-fusion"
     }
   },
   {
