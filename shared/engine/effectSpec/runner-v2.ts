@@ -1286,6 +1286,10 @@ export function applyActionV2(
       const excludeColors = action.colorMustDifferFromLastBounced
         ? sourceInst2?.lastBouncedColors ?? []
         : [];
+      // EB02-039: same name as the card discarded as cost in this clause.
+      const requireName = action.nameMatchesLastDiscarded
+        ? sourceInst2?.lastDiscardedName
+        : undefined;
       outer: for (const src of sources) {
         const sourceList = src === 'hand' ? me.hand : me.trash;
         for (const id of sourceList) {
@@ -1301,6 +1305,7 @@ export function applyActionV2(
           if (action.uniqueByName && seen.has(card.name)) continue;
           if (excludeColors.length > 0
               && card.colors?.some((c) => excludeColors.includes(c))) continue;
+          if (requireName !== undefined && card.name !== requireName) continue;
           matches.push({ id, from: src });
           seen.add(card.name);
           if (matches.length >= count) break outer;

@@ -117,6 +117,11 @@ export interface CardInstance {
    *  "different color than the returned Character" constraint. Cleared
    *  by endTurn alongside other turn-scoped runtime state. */
   lastBouncedColors?: string[];
+  /** EB02-039 (GERMA 66) etc. — when an effect on this card discards a
+   *  card from hand as cost (discardHandFilter), the discarded card's
+   *  name is stamped here so a follow-up play_for_free can enforce the
+   *  "same name as the trashed card" constraint. */
+  lastDiscardedName?: string;
 }
 
 export interface PlayerZones {

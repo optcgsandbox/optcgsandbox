@@ -4990,7 +4990,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -5014,14 +5014,14 @@
               "powerMin": 5000,
               "powerMax": 7000,
               "kind": "character"
-            }
+            },
+            "nameMatchesLastDiscarded": true
           },
           "verified": "human-reviewed"
         }
       ],
       "continuous": [],
-      "replacements": [],
-      "auditNote": "play target filter must match name of trashed card; same-name dynamic constraint gap"
+      "replacements": []
     }
   },
   {

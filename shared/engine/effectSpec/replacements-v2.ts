@@ -435,6 +435,7 @@ function payCost(
   }
   if (cost.discardHandFilter) {
     const filter = cost.discardHandFilter.filter;
+    const sourceInst = state.instances[sourceInstanceId];
     for (let i = 0; i < cost.discardHandFilter.count; i++) {
       const idx = me.hand.findIndex((id) => {
         const inst = state.instances[id];
@@ -443,10 +444,19 @@ function payCost(
         if (filter.kind && card.kind !== filter.kind) return false;
         if (filter.kindsAny && !filter.kindsAny.includes(card.kind as 'character' | 'event' | 'stage')) return false;
         if (filter.trait && (!card.traits || !card.traits.includes(filter.trait))) return false;
+        if (typeof filter.powerMax === 'number'
+            && (typeof (card as { power?: number }).power !== 'number'
+              || (card as { power: number }).power > filter.powerMax)) return false;
         return true;
       });
       if (idx === -1) break;
-      me.trash.push(me.hand.splice(idx, 1)[0]);
+      const discardedId = me.hand.splice(idx, 1)[0];
+      // Stamp source's lastDiscardedName for follow-up
+      // "same name as the trashed card" constraints (EB02-039 etc.).
+      const discInst = state.instances[discardedId];
+      const discCard = discInst ? state.cardLibrary[discInst.cardId] : undefined;
+      if (sourceInst && discCard) sourceInst.lastDiscardedName = discCard.name;
+      me.trash.push(discardedId);
     }
   }
   // OTHER reference used only for diagnostic ergonomics — keep around.

@@ -324,7 +324,10 @@ export type EffectActionV2 =
       /** EB01-020 (Chambres) — when true, candidate must share NO color with
        *  source.lastBouncedColors (set by a prior removal_bounce in the same
        *  clause sequence). */
-      colorMustDifferFromLastBounced?: boolean }
+      colorMustDifferFromLastBounced?: boolean;
+      /** EB02-039 (GERMA 66) — when true, candidate must have the same name
+       *  as source.lastDiscardedName (set by a prior discardHandFilter cost). */
+      nameMatchesLastDiscarded?: boolean }
   // EB01-047 — mandatory discard from hand (not a cost). Distinct from cost.discardHand.
   | { kind: 'discard_from_hand'; magnitude: number }
   // Opp-side mirror — "your opponent trashes 1 card from their hand" (random pick).
