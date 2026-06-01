@@ -4018,7 +4018,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "rush_vs_characters"
+            "keyword": "rush_character"
           }
         }
       ],
@@ -49007,7 +49007,7 @@
         {
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "rush_vs_characters"
+            "keyword": "rush_character"
           }
         }
       ],
@@ -105791,7 +105791,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "rush_vs_characters",
+            "keyword": "rush_character",
             "duration": "this_turn"
           },
           "target": {

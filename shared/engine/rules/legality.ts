@@ -205,11 +205,13 @@ function attackActions(state: GameState, player: PlayerId): Action[] {
     //   - plain `rush`           → can attack any legal target this turn
     //   - `rush_character`       → can attack opp characters only this turn (D9)
     //   - neither                → can't attack at all this turn
-    if (
-      inst.summoningSick &&
-      !card.keywords.includes('rush') &&
-      !card.keywords.includes('rush_character')
-    ) {
+    // F9: also check inst.grantedKeywords so effect-granted rush keywords
+    // (EB02-019 Zoro etc. via continuous `grant_keyword_to_self`) honor
+    // the same attack-legality semantics as printed keywords.
+    const granted = inst.grantedKeywords ?? [];
+    const hasRush = card.keywords.includes('rush') || granted.includes('rush');
+    const hasRushChar = card.keywords.includes('rush_character') || granted.includes('rush_character');
+    if (inst.summoningSick && !hasRush && !hasRushChar) {
       continue;
     }
     attackers.push(inst);
@@ -225,12 +227,12 @@ function attackActions(state: GameState, player: PlayerId): Action[] {
 
   for (const att of attackers) {
     const attCard = state.cardLibrary[att.cardId];
+    const attGranted = att.grantedKeywords ?? [];
     // D9: rush_character without plain rush cannot attack opp Leader on a
     // summoning-sick turn. Drop the leader from this attacker's target list.
-    const leaderForbidden =
-      att.summoningSick &&
-      attCard.keywords.includes('rush_character') &&
-      !attCard.keywords.includes('rush');
+    const attHasRush = attCard.keywords.includes('rush') || attGranted.includes('rush');
+    const attHasRushChar = attCard.keywords.includes('rush_character') || attGranted.includes('rush_character');
+    const leaderForbidden = att.summoningSick && attHasRushChar && !attHasRush;
     for (const tgt of targets) {
       if (leaderForbidden && tgt === opLeaderId) continue;
       out.push({ type: 'DECLARE_ATTACK', attackerInstanceId: att.instanceId, targetInstanceId: tgt });

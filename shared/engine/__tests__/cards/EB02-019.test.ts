@@ -4,9 +4,9 @@
 //    [On Play] If your Leader has the {Straw Hat Crew} type, rest up
 //    to 1 of your opponent's Characters with a cost of 4 or less."
 //
-// V0 note: 'rush_vs_characters' (limited rush) is recorded as a granted
-// keyword. Attack legality for char-targeting on first turn does not
-// yet inspect this keyword (gap noted).
+// F9: 'rush_character' (limited rush) recorded as a granted keyword.
+// Attack legality (rules/legality.ts) now reads inst.grantedKeywords, so
+// effect-granted rush_character works the same as printed.
 import { describe, expect, it } from 'vitest';
 import { applyActionV2, evaluateConditionV2 } from '../../effectSpec/runner-v2';
 import { applyContinuousEffectsV2ToInstance } from '../../effectSpec/continuous-v2';
@@ -85,20 +85,20 @@ describe('EB02-019 — Roronoa Zoro (green)', () => {
     expect(s.instances['c4'].rested).toBe(true);
   });
 
-  it('continuous: rush_vs_characters granted when opp has 2+ chars', () => {
+  it('continuous: rush_character granted when opp has 2+ chars', () => {
     const s = boot(['Straw Hat Crew']);
     placeZoro(s);
     placeOppChar(s, 'a', 2);
     placeOppChar(s, 'b', 2);
     applyContinuousEffectsV2ToInstance(s, 'z', cont);
-    expect(s.instances['z'].grantedKeywords).toContain('rush_vs_characters');
+    expect(s.instances['z'].grantedKeywords).toContain('rush_character');
   });
 
-  it('continuous: no rush_vs_characters when opp has only 1 char', () => {
+  it('continuous: no rush_character when opp has only 1 char', () => {
     const s = boot(['Straw Hat Crew']);
     placeZoro(s);
     placeOppChar(s, 'a', 2);
     applyContinuousEffectsV2ToInstance(s, 'z', cont);
-    expect(s.instances['z'].grantedKeywords ?? []).not.toContain('rush_vs_characters');
+    expect(s.instances['z'].grantedKeywords ?? []).not.toContain('rush_character');
   });
 });
