@@ -140,8 +140,16 @@ export interface PlayerZones {
   /** Stage Area — single slot, CR §3-8-5. Null when empty. Replacing a Stage
    *  trashes the existing one (CR §3-8-5-1) — handled in applyAction.PLAY_STAGE. */
   stage: CardInstance | null;
-  /** Life cards — top to bottom. Face-down to both players. */
+  /** Life cards — top to bottom. Face-down to both players by default.
+   *  Face-up state is tracked in `lifeFaceUp` (parallel map, sparse:
+   *  presence = face-up, absence = face-down). */
   life: string[];
+  /** EB01-040 Kyros etc. — `[Cost: flip 1 of your Life cards face-up]`.
+   *  Sparse map keyed by life-card instance ID. Entry present ⇒ face-up to
+   *  both players (revealed but still in life zone). Cleared when the card
+   *  leaves the life zone (KO / life-to-hand / trash). Cleared in bulk by
+   *  `turn_all_own_life_face_down` action. */
+  lifeFaceUp: Record<string, boolean>;
   /** DON deck — remaining DON instance IDs (popped to costArea each DON phase). 10 at setup. */
   donDeck: string[];
   /** Active (face-up) DON in the cost area, available to spend or attach. */
@@ -389,6 +397,7 @@ export function initialState(args: {
       field: [],
       stage: null,
       life: [],
+      lifeFaceUp: {},
       donDeck,
       donCostArea: [],
       donRested: [],

@@ -68,11 +68,14 @@ describe('EB01-040 — Kyros (leader)', () => {
     expect(canPayClauseCost(s, 'A', s.players.A.leader.instanceId, clause.cost!)).toBe(false);
   });
 
-  it('paying cost consumes 1 life card (V0 trashes face-up flip)', () => {
+  it('paying cost flips top life card face-up (count unchanged)', () => {
     const s = boot();
     const lifeBefore = s.players.A.life.length;
+    const topId = s.players.A.life[0];
     payClauseCost(s, 'A', s.players.A.leader.instanceId, clause.cost!);
-    expect(s.players.A.life.length).toBe(lifeBefore - 1);
+    // F6: flipLife reveals the top card via lifeFaceUp; doesn't trash.
+    expect(s.players.A.life.length).toBe(lifeBefore);
+    expect(s.players.A.lifeFaceUp[topId]).toBe(true);
   });
 
   it('target includes cost-0 opp char', () => {

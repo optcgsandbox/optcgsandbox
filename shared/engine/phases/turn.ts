@@ -179,6 +179,15 @@ export function endTurn(state: GameState): GameState {
   // V3-2: nextPlayCostModifier expires at end of turn if not consumed by a play.
   for (const pid of ['A', 'B'] as PlayerId[]) {
     delete next.players[pid].nextPlayCostModifier;
+    // F6: prune orphans from lifeFaceUp (entries for instanceIds no longer in
+    // the life zone — left over from KO / life-to-hand / counter-flip etc.).
+    const pl = next.players[pid];
+    if (pl.lifeFaceUp) {
+      const liveSet = new Set(pl.life);
+      for (const id of Object.keys(pl.lifeFaceUp)) {
+        if (!liveSet.has(id)) delete pl.lifeFaceUp[id];
+      }
+    }
   }
 
   next.history.push({ type: 'TURN_ENDED', player: next.activePlayer });

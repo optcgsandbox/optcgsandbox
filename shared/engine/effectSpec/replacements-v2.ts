@@ -243,9 +243,12 @@ function payCost(
     }
   }
   if (typeof cost.flipLife === 'number') {
-    // V0: trash N from top of life (face-flip mechanics deferred).
-    for (let i = 0; i < cost.flipLife && me.life.length > 0; i++) {
-      me.trash.push(me.life.shift()!);
+    // F6 (CR §10-1-3): "Flip N of your Life cards face-up". Top N stay in
+    // the life zone but become revealed to both players via lifeFaceUp.
+    // Distinct from attack-life-flip (which REMOVES the life card); this
+    // cost reveals WITHOUT removing.
+    for (let i = 0; i < cost.flipLife && i < me.life.length; i++) {
+      me.lifeFaceUp[me.life[i]] = true;
     }
   }
   if (cost.restSelf) {

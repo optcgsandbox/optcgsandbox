@@ -694,41 +694,47 @@ export function applyActionV2(
       return state;
     }
     case 'add_to_own_life_top': {
-      // V0 ignores faceUp flag (engine doesn't track per-life face state).
+      // F6: honor faceUp flag — record in lifeFaceUp on placement.
+      let placedId: string | undefined;
       if (action.from === 'top_of_deck' && me.deck.length > 0) {
-        me.life.unshift(me.deck.shift()!);
+        placedId = me.deck.shift()!;
+        me.life.unshift(placedId);
       } else if (action.from === 'hand' && targets.length > 0) {
         const id = targets[0];
         const idx = me.hand.indexOf(id);
-        if (idx !== -1) { me.hand.splice(idx, 1); me.life.unshift(id); }
+        if (idx !== -1) { me.hand.splice(idx, 1); me.life.unshift(id); placedId = id; }
       } else if (action.from === 'own_trash' && targets.length > 0) {
         const id = targets[0];
         const idx = me.trash.indexOf(id);
-        if (idx !== -1) { me.trash.splice(idx, 1); me.life.unshift(id); }
+        if (idx !== -1) { me.trash.splice(idx, 1); me.life.unshift(id); placedId = id; }
       }
+      if (placedId && action.faceUp) me.lifeFaceUp[placedId] = true;
       return state;
     }
     case 'add_to_opp_life_top': {
       // Source: the resolved target (an opp character) gets placed into opp's
       // life zone. Caller passes opp_character target descriptor; the character
       // moves from field to top (default) or bottom of opp life.
+      let placedId: string | undefined;
       if (targets.length > 0) {
         const tid = targets[0];
-        // Find target on opp field/stage, remove + push to opp life zone.
         const idx = opp.field.findIndex((i) => i.instanceId === tid);
         if (idx !== -1) {
           const removed = opp.field.splice(idx, 1)[0];
           while (removed.attachedDon.length > 0) opp.donRested.push(removed.attachedDon.shift()!);
           if (action.position === 'bottom') opp.life.push(removed.instanceId);
           else opp.life.unshift(removed.instanceId);
-          return state;
+          placedId = removed.instanceId;
         }
       }
       // Legacy V0 path: pull from top of opp deck (older spec usage).
-      if (opp.deck.length > 0) {
-        if (action.position === 'bottom') opp.life.push(opp.deck.shift()!);
-        else opp.life.unshift(opp.deck.shift()!);
+      if (!placedId && opp.deck.length > 0) {
+        const fromDeck = opp.deck.shift()!;
+        if (action.position === 'bottom') opp.life.push(fromDeck);
+        else opp.life.unshift(fromDeck);
+        placedId = fromDeck;
       }
+      if (placedId && action.faceUp) opp.lifeFaceUp[placedId] = true;
       return state;
     }
     case 'add_to_opp_hand_from_opp_life': {
@@ -740,7 +746,8 @@ export function applyActionV2(
       return state;
     }
     case 'turn_all_own_life_face_down': {
-      // V0: face-up tracking absent → no-op.
+      // F6: clear all face-up flags on the controller's life zone.
+      me.lifeFaceUp = {};
       return state;
     }
     case 'peek_and_reorder_own_life':
