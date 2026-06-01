@@ -406,7 +406,10 @@
             "discardHandFilter": {
               "count": 1,
               "filter": {
-                "kindsAny": ["event", "stage"]
+                "kindsAny": [
+                  "event",
+                  "stage"
+                ]
               }
             }
           },
@@ -928,7 +931,7 @@
       "searcher"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, look at 3 cards from the top of your deck; reveal up to 1 {Donquixote Pirates} type Character card and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -1382,7 +1385,7 @@
       "removal_bounce"
     ],
     "effectText": "[Counter] If your Leader has the {Impel Down} type, up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, your opponent returns 1 of their active Characters to the owner's hand.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -6035,7 +6038,7 @@
       "searcher"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +1000 power during this battle. Then, if you have 1 or less Life cards, play up to 1 of your yellow {Straw Hat Crew} type Character cards or [Sanji] with a cost of 5 or less from your hand.",
-    "counterEventBoost": null,
+    "counterEventBoost": 1000,
     "templateParams": {
       "power_buff": 1000
     },
@@ -6806,7 +6809,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] If your Leader is [Nefeltari Vivi], up to 1 of your Leader or Character cards gains +4000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -7307,7 +7310,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 2 or more {FILM} type Characters, that card gains an additional +2000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -10795,7 +10798,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your {Fish-Man} type Leader or Character cards gains +3000 power during this battle. Then, set up to 1 of your {Fish-Man} type Characters as active.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -14487,7 +14490,7 @@
       "removal_ko"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, K.O. up to 1 of your opponent's Characters with 4000 power or less.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -14630,7 +14633,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 2 or less Life cards, that card gains an additional +2000 power.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -15946,7 +15949,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, set up to 1 of your Characters as active.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -16004,7 +16007,7 @@
       "removal_bounce"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, rest up to 1 of your opponent's Characters with a cost of 4 or less.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -17269,7 +17272,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, return up to 1 active Character with a cost of 3 or less to the owner's hand.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -17372,7 +17375,7 @@
       "searcher"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, look at 3 cards from the top of your deck and place them at the top or bottom of the deck in any order.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -18664,7 +18667,7 @@
       "draw"
     ],
     "effectText": "[Counter] DON!! −2 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, draw 1 card.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "draw": 1,
       "power_buff": 2000
@@ -18725,7 +18728,7 @@
       "ramp"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, if you have 2 or less Life cards, add up to 1 DON!! card from your DON!! deck and rest it.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -20862,7 +20865,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +6000 power during this battle. Then, play up to 1 Character card with a cost of 3 or less and no base effect from your hand.<br>",
-    "counterEventBoost": null,
+    "counterEventBoost": 6000,
     "templateParams": {
       "power_buff": 6000
     },
@@ -21966,7 +21969,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] You may trash 1 card from your hand: Up to 1 of your Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -22015,7 +22018,7 @@
       "draw"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +6000 power during this battle. Then, draw cards so that you have 2 cards in your hand.",
-    "counterEventBoost": null,
+    "counterEventBoost": 6000,
     "templateParams": {
       "power_buff": 6000
     },
@@ -26969,7 +26972,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, you may trash 1 card from the top of your deck.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -27024,7 +27027,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] You may trash 1 card from your hand: Up to 1 of your Leader gains +4000 power during this battle. Then, you may trash 2 cards from the top of your deck.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -27837,7 +27840,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] You may trash 1 card from your hand: Up to 1 of your Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -28948,7 +28951,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] You may trash 1 card from your hand: Up to 1 of your Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -29897,7 +29900,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +5000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 5000,
     "templateParams": {
       "power_buff": 5000
     },
@@ -30891,7 +30894,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] You may trash 1 card from your hand: Up to 1 of your Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -31841,7 +31844,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, set up to 1 of your Characters as active.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -32845,7 +32848,7 @@
       "removal_bounce"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, place up to 1 Character with a cost of 1 or less at the bottom of the owner's deck.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -33652,7 +33655,7 @@
       "removal_bounce"
     ],
     "effectText": "[Counter] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Up to 1 of your Leader or Character cards gains +1000 power during this battle. Then, rest up to 1 of your opponent's Characters with a cost of 4 or less.",
-    "counterEventBoost": null,
+    "counterEventBoost": 1000,
     "templateParams": {
       "power_buff": 1000
     },
@@ -33716,7 +33719,7 @@
       "ramp"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +6000 power during this battle. Then, if you have 2 or less Life cards, add up to 1 DON!! card from your DON!! deck and rest it.",
-    "counterEventBoost": null,
+    "counterEventBoost": 6000,
     "templateParams": {
       "power_buff": 6000
     },
@@ -34770,7 +34773,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 15 or more cards in your trash, that card gains an additional +2000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -35674,7 +35677,7 @@
       "removal_ko"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +6000 power during this battle. Then, if you and your opponent have a total of 4 or less Life cards, K.O. up to 1 of your opponent's Characters with a cost of 2 or less.",
-    "counterEventBoost": null,
+    "counterEventBoost": 6000,
     "templateParams": {
       "power_buff": 6000
     },
@@ -36661,7 +36664,7 @@
       "searcher"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +3000 power during this battle. Then, play up to 1 {Revolutionary Army} type Character card with 5000 power or less from your hand.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -37586,7 +37589,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] You may trash 1 card from your hand: Up to 1 of your Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -37634,7 +37637,7 @@
       "ramp"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, you may trash 1 card from your hand. If you do, set up to 3 of your DON!! cards as active.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -37690,7 +37693,7 @@
       "removal_ko"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, K.O. up to 1 of your opponent's rested Characters with a cost of 3 or less.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -40359,7 +40362,7 @@
       "removal_ko"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, if you have 15 or more cards in your trash, K.O. up to 1 of your opponent's Characters with a cost of 4 or less.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -41256,7 +41259,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if your opponent has 2 or less Life cards, that card gains an additional +2000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -43458,7 +43461,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 8 or more rested cards, that card gains an additional +2000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -47223,7 +47226,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] You may trash 1 card from your hand: Up to 1 of your Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -49124,7 +49127,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 3 or more Characters, that card gains an additional +1000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -50126,7 +50129,7 @@
       "removal_bounce"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, return up to 1 of your Characters to the owner's hand.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -50182,7 +50185,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] You may return 1 of your Characters with a cost of 2 or more to the owner's hand: Up to 1 of your Leader or Character cards gains +4000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -51188,7 +51191,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, rest up to 1 of your opponent's Characters.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -52092,7 +52095,7 @@
       "recursion"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 10 or more cards in your trash, return up to 1 of your Characters with a type including \"CP\" to the owner's hand.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -52153,7 +52156,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, if you have 10 or more cards in your trash, that card gains an additional +2000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 6000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -53056,7 +53059,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] If you have 2 or less Life cards, up to 1 of your Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -54188,7 +54191,7 @@
       "removal_cost_reduce"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, give up to 1 of your opponent's Leader or Character cards −1000 power during this turn.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -56014,7 +56017,7 @@
       "searcher"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +3000 power during this battle. Then, reveal 1 card from the top of your deck and play up to 1 Character card with a type including \"Whitebeard Pirates\" and a cost of 3 or less. Then, place the rest at the top or bottom of your deck.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -58095,7 +58098,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Trash 1 card from the top of your deck. If the trashed card has a cost of 6 or more, up to 1 of your Leader or Character cards gains +5000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 5000,
     "templateParams": {
       "power_buff": 5000
     },
@@ -59041,7 +59044,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] If your Leader has the {Shandian Warrior} type, up to 1 of your Leader or Character cards gains +3000 power during this battle. Then, play up to 1 [Upper Yard] from your hand.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -59107,7 +59110,7 @@
       "life_to_hand"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, you may add 1 card from the top or bottom of your Life cards to your hand. If you do, add up to 1 {Shandian Warrior} type card from your hand to the top of your Life cards face-up.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -61364,7 +61367,7 @@
       "ramp"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if your Leader has the {ODYSSEY} type and you have 2 or more rested Characters, set up to 2 of your Characters as active.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -62207,7 +62210,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +3000 power during this battle. Then, trash up to 2 cards from your hand. Trash the same number of cards from the top of your deck as you did from your hand.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -63128,7 +63131,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] DON!! −2, You may trash 1 card from your hand: If your Leader has the {Straw Hat Crew} type, up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, draw 2 cards.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "draw": 2,
       "power_buff": 4000
@@ -64973,7 +64976,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -65995,7 +65998,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +3000 power during this battle. Then, give up to 1 of your opponent's Leader or Character cards −2000 power during this turn.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -69086,7 +69089,7 @@
       "draw"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, if you have 7 or more DON!! cards on your field and 5 or less cards in your hand, draw 1 card.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "draw": 1,
       "power_buff": 4000
@@ -70937,7 +70940,7 @@
       "draw"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, if you have 0 Life cards, draw 1 card.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "draw": 1,
       "power_buff": 4000
@@ -71037,7 +71040,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] If you have 1 or less Life cards, up to 1 of your Leader or Character cards gains +3000 power during this battle. Then, set up to 1 of your Characters with a cost of 5 or less as active.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -72064,7 +72067,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if your opponent has a Character with 6000 power or more, up to 1 of your Leader or Character cards gains +1000 power during this turn.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -72127,7 +72130,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if your opponent has a Character with 6000 power or more, up to 1 of your Leader or Character cards gains +1000 power during this turn.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -73097,7 +73100,7 @@
       "removal_bounce"
     ],
     "effectText": "[Counter] Up to 1 of your {Fish-Man} or {Merfolk} type Leader or Character cards gains +3000 power during this battle. Then, rest up to 1 of your opponent's Characters with a cost of 3 or less.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -74062,7 +74065,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 4 or less cards in your hand, that card gains an additional +2000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -75112,7 +75115,7 @@
       "disruption"
     ],
     "effectText": "[Counter] Choose a cost and reveal 1 card from the top of your opponent's deck. If the revealed card has the chosen cost, up to 1 of your Leader or Character cards gains +5000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 5000,
     "templateParams": {
       "power_buff": 5000
     },
@@ -75944,7 +75947,7 @@
       "recursion"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +1000 power during this battle. Then, if you have 10 or more cards in your trash, add up to 1 black Character card with a cost of 3 or less from your trash to your hand.",
-    "counterEventBoost": null,
+    "counterEventBoost": 1000,
     "templateParams": {
       "power_buff": 1000
     },
@@ -76882,7 +76885,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] If your Leader is [Shirahoshi], up to 1 of your Leader or Character cards gains +4000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -78008,7 +78011,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Characters or [Silvers Rayleigh] gains +2000 power during this battle. Then, you may rest 1 of your DON!! cards. If you do, give your opponent's Leader and all of their Characters −1000 power during this turn.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -79910,7 +79913,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, trash 1 card from your hand.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -81934,7 +81937,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have a {Revolutionary Army} type Character with a cost of 8 or more, that card gains an additional +2000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -82652,7 +82655,7 @@
       "recursion"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 2 or less Life cards, add up to 1 [Trafalgar Law] from your trash to your hand.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -88593,7 +88596,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +3000 power during this battle. Then, if your opponent has 2 or less Life cards, up to 1 of your Leader or Character cards gains +1000 power during this turn.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -89725,7 +89728,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] If there is a Character with 8000 power or more, up to 1 of your Leader or Character cards gains +4000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -90699,7 +90702,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] You may rest 1 of your cards: Up to 1 of your Leader or Character cards gains +4000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -92970,7 +92973,7 @@
       "ramp"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, if your opponent has a Character with 6000 power or more, add up to 1 DON!! card from your DON!! deck and rest it.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -93029,7 +93032,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] DON!! −1: If your Leader has the {Donquixote Pirates} type, up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, that card gains an additional +2000 power during this turn.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -95106,7 +95109,7 @@
       "searcher"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, play up to 1 {Amazon Lily} or {Kuja Pirates} type Character card with a cost of 4 or less from your hand.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -95166,7 +95169,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your {Thriller Bark Pirates} type Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -104553,7 +104556,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] If your Leader is [Uta], you may return any number of Characters on your field to the owner's hand. Up to 1 of your Leader or Character cards gains +2000 power during this battle for every returned Character.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -108086,7 +108089,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -108845,7 +108848,7 @@
       "ramp"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, set up to 1 of your DON!! cards as active.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -108892,7 +108895,7 @@
       "ramp"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, set up to 1 of your DON!! cards as active.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -109628,7 +109631,7 @@
       "draw"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, draw 1 card if you have 3 or less cards in your hand.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "draw": 1,
       "power_buff": 4000
@@ -110328,7 +110331,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Up to 1 of your Leader or Character cards gains +4000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -111080,7 +111083,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your {FILM} type Leader or Character cards gains +4000 power during this battle. If that card is a Character, that Character cannot be K.O.'d during this turn.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -111658,7 +111661,7 @@
       "removal_ko"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, K.O. up to 1 of your opponent's active Characters with a cost of 3 or less.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -111770,7 +111773,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -112546,7 +112549,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Look at up to 1 card from the top of your or your opponent's Life cards, and place it at the top or bottom of the Life cards. Then, up to 1 of your Leader or Character cards gains +2000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -113832,7 +113835,7 @@
       "removal_bounce"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, if you have 2 or less Life cards, add up to 1 of your opponent's Characters with a cost of 3 or less to the top or bottom of the owner's Life cards face-up.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -114628,7 +114631,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle, and K.O. up to 1 of your opponent's Characters with 2000 power or less.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -115790,7 +115793,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, reveal 1 card from the top of your deck, play up to 1 Character card with a cost of 2, and place the rest at the top or bottom of your deck.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -116775,7 +116778,7 @@
       "life_to_hand"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, look at all your Life cards and place them back in your Life area in any order.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -116829,7 +116832,7 @@
       "draw"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 0 Life cards, draw 1 card.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "draw": 1,
       "power_buff": 2000
@@ -117607,7 +117610,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] If you have a Character with a cost of 8 or more, up to 1 of your Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 3000,
     "templateParams": {
       "power_buff": 3000
     },
@@ -120887,7 +120890,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Reveal 1 card from the top of your deck. If that card's type includes \"Whitebeard Pirates\", up to 1 of your Leader or Character cards gains +4000 power during this battle.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
@@ -123384,7 +123387,7 @@
       "removal_cost_reduce"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 1 or less Life cards, give up to 1 of your opponent's Leader or Character cards −2000 power during this turn.",
-    "counterEventBoost": null,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -123496,7 +123499,7 @@
       "removal_ko"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, if you have 2 or less Life cards, K.O. up to 1 of your opponent's Characters with a cost of 3 or less.",
-    "counterEventBoost": null,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
