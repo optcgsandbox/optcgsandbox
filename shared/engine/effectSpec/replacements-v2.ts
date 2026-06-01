@@ -236,9 +236,13 @@ function payCost(
   }
   if (typeof cost.donCostReturnToDeck === 'number') {
     for (let i = 0; i < cost.donCostReturnToDeck; i++) me.donDeck.push(me.donCostArea.shift()!);
-    // F2: dispatch on_own_don_returned for any spec clauses listening on the
-    // controller's field (EB02-035 Sanji & Pudding etc.).
+    // F2 + EB02-035 Sanji & Pudding count gate: stash the number of DON
+    // returned in this resolution so if_don_returned_count_min can read it.
+    const anyState = state as any;
+    anyState.pendingDonReturned = anyState.pendingDonReturned ?? {};
+    anyState.pendingDonReturned[controller] = cost.donCostReturnToDeck;
     state = broadcastTriggerToOwnField(state, 'on_own_don_returned', controller);
+    delete anyState.pendingDonReturned[controller];
   }
   if (typeof cost.discardHand === 'number') {
     for (let i = 0; i < cost.discardHand && me.hand.length > 0; i++) {

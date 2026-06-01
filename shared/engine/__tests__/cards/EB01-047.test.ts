@@ -2,13 +2,9 @@
 //   "[Once Per Turn] When a Character is K.O.'d, draw 1 card and trash
 //    1 card from your hand."
 //
-// NOTE: V0 engine fires `on_ko` only for the source card itself. Per the
-// printed text the trigger should fire when ANY character is KO'd (likely
-// any of your own characters). Broader "at_any_ko" broadcast across
-// field instances is not yet wired (audit-note flagged on the spec).
-// These tests verify the per-clause action handlers work correctly so
-// that, when the at_any_ko trigger is wired in the future, only the
-// dispatcher layer needs to change.
+// Trigger: `on_any_char_ko` — broadcast after any KO (own or opp) by
+// applyAction (battle path) and runner-v2 removal_ko (effect path).
+// Single sequence clause: draw 1 → discard 1.
 import { describe, expect, it } from 'vitest';
 import { applyActionV2 } from '../../effectSpec/runner-v2';
 import { initialState } from '../../GameState';
@@ -42,21 +38,25 @@ function boot() {
 }
 
 describe('EB01-047 — Laboon', () => {
-  const [drawClause, discardClause] = EB01_047.effectSpecV2!.clauses!;
+  const clauses = EB01_047.effectSpecV2!.clauses!;
 
-  it('draw clause: draws 1 card', () => {
-    const s = boot();
-    const before = s.players.A.hand.length;
-    applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, drawClause.action, []);
-    expect(s.players.A.hand.length).toBe(before + 1);
+  it('spec shape: single on_any_char_ko sequence clause (draw 1 → discard 1)', () => {
+    expect(clauses.length).toBe(1);
+    expect(clauses[0].trigger).toBe('on_any_char_ko');
+    expect(clauses[0].action.kind).toBe('sequence');
+    const seq = clauses[0].action as { kind: 'sequence'; actions: Array<{ kind: string; magnitude: number }> };
+    expect(seq.actions[0].kind).toBe('draw');
+    expect(seq.actions[0].magnitude).toBe(1);
+    expect(seq.actions[1].kind).toBe('discard_from_hand');
+    expect(seq.actions[1].magnitude).toBe(1);
   });
 
-  it('discard clause: trashes 1 card from hand', () => {
+  it('sequence resolves: +1 hand from draw, -1 hand and +1 trash from discard (net 0 hand, +1 trash)', () => {
     const s = boot();
-    const before = s.players.A.hand.length;
+    const handBefore = s.players.A.hand.length;
     const trashBefore = s.players.A.trash.length;
-    applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, discardClause.action, []);
-    expect(s.players.A.hand.length).toBe(before - 1);
+    applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, clauses[0].action, []);
+    expect(s.players.A.hand.length).toBe(handBefore);
     expect(s.players.A.trash.length).toBe(trashBefore + 1);
   });
 });

@@ -46,6 +46,7 @@ export type EffectTriggerV2 =
   | 'on_take_damage'            // OP15-070 etc. — when source takes damage in battle
   | 'on_any_opp_char_ko'        // OP01-061 Kaido — "when your opponent's Character is K.O.'d" (any source)
   | 'on_any_char_ko'            // EB01-047 Laboon — "when a Character is K.O.'d" (any side)
+  | 'on_opp_char_bounce_by_me'   // EB02-023 Crocodile — when opp char is returned to hand by your effect
   | 'on_attack_deal_damage'      // OP03-040 Nami mill — when source's attack deals damage to opp's Life
   ;
 
@@ -94,6 +95,7 @@ export type EffectConditionV2 =
   | { type: 'if_opp_chars_min_cost'; n: number; minCost: number }       // opp has ≥N chars with cost ≥ minCost
   | { type: 'if_opp_chars_max_cost'; n: number; maxCost: number }       // opp has ≥N chars with cost ≤ maxCost (EB01-045 "cost of 0")
   | { type: 'if_attached_don_min'; n: number }                          // [DON!! xN] — DON attached to SOURCE card
+  | { type: 'if_don_returned_count_min'; n: number }                    // EB02-035 — ≥ n DON returned in current on_own_don_returned emission
   | { type: 'is_opp_turn' }                                             // EB02-003 [Opponent's Turn] gate
   | { type: 'is_own_turn' }                                             // mirror
   | { type: 'if_only_chars_with_trait'; trait: string }                 // EB02-010 — every char on your field has this trait

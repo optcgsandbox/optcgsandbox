@@ -182,6 +182,10 @@ export function evaluateConditionV2(
       if (!inst) return false;
       return inst.attachedDon.length >= cond.n;
     }
+    case 'if_don_returned_count_min': {
+      const n = (state as any).pendingDonReturned?.[controller] ?? 0;
+      return n >= cond.n;
+    }
     case 'is_opp_turn':
       return state.activePlayer !== controller;
     case 'is_own_turn':
@@ -1164,6 +1168,7 @@ export function applyActionV2(
     }
     case 'removal_bounce': {
       const sourceInst = state.instances[ctx.sourceInstanceId];
+      let bouncedOppChar = false;
       for (const tid of targets) {
         for (const pid of ['A', 'B'] as PlayerId[]) {
           const pl = state.players[pid];
@@ -1182,9 +1187,14 @@ export function applyActionV2(
             // Reset summoning-sick + perTurn so it plays cleanly later.
             state.instances[removed.instanceId].summoningSick = false;
             state.instances[removed.instanceId].rested = false;
+            if (pid !== ctx.controller && removedCard?.kind === 'character') bouncedOppChar = true;
             break;
           }
         }
+      }
+      if (bouncedOppChar) {
+        // EB02-023 Crocodile: when opp char is bounced by your effect.
+        state = broadcastTriggerToOwnField(state, 'on_opp_char_bounce_by_me', ctx.controller);
       }
       return state;
     }
@@ -1242,7 +1252,11 @@ export function applyActionV2(
       // F2: dispatch on_own_don_returned to OPP's field (their DON came back).
       if (moved > 0) {
         const oppPid: PlayerId = ctx.controller === 'A' ? 'B' : 'A';
+        const anyState = state as any;
+        anyState.pendingDonReturned = anyState.pendingDonReturned ?? {};
+        anyState.pendingDonReturned[oppPid] = moved;
         state = broadcastTriggerToOwnField(state, 'on_own_don_returned', oppPid);
+        delete anyState.pendingDonReturned[oppPid];
       }
       return state;
     }
