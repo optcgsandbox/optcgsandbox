@@ -49456,14 +49456,20 @@
     "effectText": "[On Play] If you have 2 or more {Amazon Lily} or {Kuja Pirates} type Characters on your field, return up to 1 of your opponent's Characters with a cost of 3 or less to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "condition": {
-            "type": "if_own_chars_min_with_trait",
+            "type": "if_own_chars_min_filter",
             "n": 2,
-            "trait": "Amazon Lily"
+            "filter": {
+              "traitsAny": [
+                "Amazon Lily",
+                "Kuja Pirates"
+              ],
+              "kind": "character"
+            }
           },
           "action": {
             "kind": "removal_bounce"
@@ -49561,14 +49567,20 @@
     "effectText": "[On Play] If you have 2 or more {Amazon Lily} or {Kuja Pirates} type Characters on your field, place up to 1 Character with a cost of 2 or less at the bottom of the owner's deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "condition": {
-            "type": "if_own_chars_min_with_trait",
+            "type": "if_own_chars_min_filter",
             "n": 2,
-            "trait": "Amazon Lily"
+            "filter": {
+              "traitsAny": [
+                "Amazon Lily",
+                "Kuja Pirates"
+              ],
+              "kind": "character"
+            }
           },
           "action": {
             "kind": "bottom_of_deck_to_opp_deck"
@@ -56020,7 +56032,8 @@
             "filter": {
               "kind": "character",
               "nameIs": "Charlotte Katakuri",
-              "costMin": 3
+              "costMin": 3,
+              "costMaxFromCount": "opp_don_count"
             }
           },
           "verified": "flagged"
@@ -56029,7 +56042,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60118,13 +60131,14 @@
             "trait": "ODYSSEY"
           },
           "action": {
-            "kind": "self_immune_to_opp_effects"
+            "kind": "grant_keyword_to_self",
+            "keyword": "cannot_be_ko_in_battle_by_leader"
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -61391,12 +61405,30 @@
             "kind": "opp_character"
           },
           "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "not",
+            "condition": {
+              "type": "if_own_chars_min_filter",
+              "n": 5,
+              "filter": {
+                "costMin": 5,
+                "kind": "character"
+              }
+            }
+          },
+          "action": {
+            "kind": "bottom_of_deck_self"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -64372,7 +64404,7 @@
     "effectText": "[On Play] If you and your opponent have a total of 5 or less Life cards, K.O. up to 1 of your opponent's Characters with 2000 power or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -111724,10 +111756,17 @@
           }
         }
       ],
-      "continuous": [],
+      "continuous": [
+        {
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "cannot_be_ko_in_battle_by_leader"
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {

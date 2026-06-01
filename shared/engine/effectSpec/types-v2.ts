@@ -307,6 +307,8 @@ export type EffectActionV2 =
   | { kind: 'trash_own_life_until'; n: number }
   // OP14-115 Rindo — "you take N damage" (controller's own life flips to hand N times).
   | { kind: 'take_damage_self'; magnitude: number }
+  // OP09-051 Buggy etc. — "place this Character at the bottom of the owner's deck" as ACTION
+  | { kind: 'bottom_of_deck_self' }
   // OP06-116 Reject — "deal N damage to your opponent" (opp life flips to hand N times).
   | { kind: 'deal_damage_opp'; magnitude: number }
   // EB01-038 — defensive: redirect opp's pending attack to a chosen own char.

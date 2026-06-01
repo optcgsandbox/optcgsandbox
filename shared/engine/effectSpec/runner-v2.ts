@@ -1210,6 +1210,21 @@ export function applyActionV2(
       }
       return state;
     }
+    case 'bottom_of_deck_self': {
+      const srcId = ctx.sourceInstanceId;
+      const inst = srcId ? state.instances[srcId] : undefined;
+      if (!inst || !srcId) return state;
+      for (const pid of ['A', 'B'] as PlayerId[]) {
+        const pl = state.players[pid];
+        const idx = pl.field.findIndex((i) => i.instanceId === srcId);
+        if (idx !== -1) {
+          pl.field.splice(idx, 1);
+          pl.deck.push(srcId);
+          return state;
+        }
+      }
+      return state;
+    }
     case 'deal_damage_opp': {
       for (let i = 0; i < action.magnitude && opp.life.length > 0; i++) {
         opp.hand.push(opp.life.shift()!);
