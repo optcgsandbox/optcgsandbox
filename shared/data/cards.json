@@ -56112,7 +56112,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character but text says \"Place up to 1 Character\" (any character)"
     }
   },
   {
@@ -56164,7 +56165,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "trigger on_own_char_removed_by_opp_effect is opp-only; text \"removed from the field by an effect\" includes own/opp; missing trait filter for Whitebeard Pirates; second clause uses peek_and_reorder_own_deck for \"place 1 from hand at top or bottom of deck\" (wrong action); missing is_own_turn for [Your Turn]"
     }
   },
   {
@@ -56792,7 +56794,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause add_to_opp_life_top with no position field; text says \"to the top or bottom of your opponent's Life cards face-up\" — bottom option missing"
     }
   },
   {
@@ -56895,7 +56898,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek lookCount:99 + playInsteadOfHand:true is a hack for \"Play from your deck\"; missing \"Then, shuffle your deck\" at the end"
     }
   },
   {
@@ -56980,7 +56984,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek lookCount:99 + playInsteadOfHand:true is a hack for \"Play from your deck\"; missing \"Then, shuffle your deck\" at the end"
     }
   },
   {
@@ -57024,7 +57029,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only ramps 5 rested; missing \"Then, at the end of this turn, return DON!! cards from your field to your DON!! deck until you have the same number of DON!! cards on your field as your opponent\" — entire delayed end-of-turn effect not encoded"
     }
   },
   {
@@ -57569,7 +57575,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes the [Activate: Main] clause; missing \"This Character gains +4 cost.\" continuous self_cost_buff +4"
     }
   },
   {
@@ -57629,7 +57636,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost donCost:1 paid; text \"[DON!! x1] [When Attacking]\" — DON!! x1 is a condition, not a 1-DON pay cost"
     }
   },
   {
@@ -58027,7 +58035,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "only on_play (Main) trigger; text reads [Main]/[Counter] — counter branch missing"
     }
   },
   {
@@ -58129,7 +58138,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause power_buff +5000 fires unconditionally; text gates with \"If the trashed card has a cost of 6 or more\" — missing if_trashed_card_cost_min:6 condition"
     }
   },
   {
@@ -58255,7 +58265,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause life_to_hand fires whenever [DON!! x1][When Attacking] triggers; text says \"If you do, add 1 card from the top of your Life cards to your hand\" — must be gated on the previous play succeeding"
     }
   },
   {
@@ -58373,7 +58384,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "add_to_own_life_top fires immediately on activate_main; text says \"add 1 card from the top of your deck to the top of your Life cards AT THE END OF THIS TURN\" — delayed end-of-turn timing not encoded"
     }
   },
   {
@@ -58571,7 +58583,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "trigger on_life_changed fires on any side's life change; text specifies \"When a card is removed from your OPPONENT's Life cards\" — needs on_opp_life_changed"
     }
   },
   {
@@ -58871,7 +58884,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost donCost:1 paid; text \"[DON!! x1] [When Attacking]\" — DON!! x1 is a condition, not a 1-DON pay cost"
     }
   },
   {
@@ -59016,7 +59030,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause trigger on_play + cost donCost:1 — text \"[DON!! x1] If you have less Life cards than your opponent, this Character cannot be K.O.'d in battle by <Slash>\" is a continuous condition-gated effect, not an on-play one-shot"
     }
   },
   {
