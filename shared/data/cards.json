@@ -74113,7 +74113,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause target your_leader_or_character (any); text \"that card gains an additional +2000\" must reference the same card from clause 1"
     }
   },
   {
@@ -74186,7 +74187,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -74203,7 +74204,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action removal_bounce returns to hand; text \"Place up to 1 of your opponent's Characters with a base cost of 4 or less AT THE BOTTOM OF THE OWNER'S DECK\" — needs bottom_of_deck_to_opp_deck"
     }
   },
   {
@@ -74397,7 +74399,7 @@
     "effectText": "If you have a purple {Big Mom Pirates} type Character other than [Charlotte Anana], this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -74411,7 +74413,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition only if_owned_other_with_name:\"Charlotte Anana\" (checks for another Anana); text \"if you have a PURPLE {Big Mom Pirates} type Character other than [Charlotte Anana]\" needs filter colors:purple + trait:\"Big Mom Pirates\" + nameExcludes:Anana"
     }
   },
   {
@@ -74537,7 +74540,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause target your_character missing count:2; text \"Set up to 2 of your {Big Mom Pirates} type Characters with a cost of 3 or more as active\""
     }
   },
   {
@@ -74589,7 +74593,7 @@
     "effectText": "[On Play] You may add 1 card from the top of your Life cards to your hand: If your Leader has the {Big Mom Pirates} type, add up to 1 DON!! card from your DON!! deck and set it as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -74608,7 +74612,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action ramp magnitude:1 with no rested specifier; text \"add up to 1 DON!! card from your DON!! deck and SET IT AS ACTIVE\" — needs rested:false"
     }
   },
   {
@@ -74696,7 +74701,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -74730,7 +74735,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "spec has TWO separate clauses with choose_cost_reveal_opp_match (two reveals); text is one reveal that, if matched, fires BOTH effects (draw 1 AND ramp 1 active) — needs single choose_cost_reveal with chained_actions then"
     }
   },
   {
@@ -75280,7 +75286,7 @@
     "effectText": "[Activate: Main] You may trash this Character: If your Leader has the {Navy} type, up to 1 of your {Navy} type Characters can also attack active Characters during this turn. Then, trash 2 cards from the top of your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -75317,7 +75323,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause (mill_self 2) has no condition; text \"If your Leader has the {Navy} type\" gates everything including \"Then, trash 2 cards from the top of your deck\" — both effects must share the leader-trait condition"
     }
   },
   {
@@ -75516,7 +75523,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause has cost:discardHand:1 AND action:discard_from_hand:1 — this would discard 2 cards total; text \"Trash 1 card from your hand\" is a single discard effect with no cost"
     }
   },
   {
@@ -75689,7 +75697,7 @@
     "effectText": "[On Play] Your opponent places 3 Events from their trash at the bottom of their deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -75701,7 +75709,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action opp_bottom_of_deck_from_trash:3 with no filter; text restricts to \"3 EVENTS from their trash\" — needs filter kind:event"
     }
   },
   {
@@ -75731,7 +75740,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -75763,7 +75772,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "spec only has draw + play; missing delayed \"place the 1 Character played by this effect at the bottom of the owner's deck AT THE END OF THIS TURN\""
     }
   },
   {
@@ -75842,7 +75852,7 @@
     "effectText": "[On Play] You may place 3 {Navy} type cards from your trash at the bottom of your deck in any order: Give up to 1 rested DON!! card to 1 of your Leader. Then, if there is a Character with a cost of 9 or more, K.O. up to 1 of your opponent's Characters with a cost of 7 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -75882,7 +75892,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost bottomOfDeckFromTrash:3 has no filter; text \"place 3 {Navy} type cards from your trash at the bottom of your deck\""
     }
   },
   {
@@ -75908,7 +75919,7 @@
     "effectText": "If you have a black {Navy} type Character other than [Ripper], this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -75922,7 +75933,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition only if_owned_other_with_name:\"Ripper\"; text \"if you have a BLACK {Navy} type Character other than [Ripper]\" needs filter colors:black + trait:Navy + nameExcludes:Ripper"
     }
   },
   {
@@ -76037,7 +76049,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause action mill_self:3 fires regardless; text \"You may trash 3 cards from the top of your deck: K.O. ...\" — the mill is a COST (with cost form, KO only fires if cost paid), not a separate effect"
     }
   },
   {
@@ -76066,7 +76079,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -76083,7 +76096,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek default disposes rest to bottom; text says \"Then, trash the rest\" — trash-rest semantics not encoded"
     }
   },
   {
@@ -76191,7 +76205,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "replacement action add_to_own_life_top from:\"top_of_deck\" — text \"you may add IT (the would-be-removed Character) to the top of your Life cards face-down INSTEAD\" — source should be the targeted character, not top of deck"
     }
   },
   {
@@ -76220,7 +76235,7 @@
     "effectText": "[Your Turn] [Once Per Turn] This effect can be activated when your opponent activates an Event or [Trigger]. If your opponent has 2 or more Life cards, trash 1 card from the top of each of your and your opponent's Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_opp_activate_event",
@@ -76250,7 +76265,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "trigger only on_opp_activate_event; text \"When your opponent activates an Event OR [Trigger]\" — needs on_opp_activate_event_or_trigger; also missing is_own_turn for [Your Turn]"
     }
   },
   {
@@ -76355,7 +76371,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek with default bottom-of-deck disposal; text \"place the rest at the TOP OR BOTTOM of the deck in any order\" — top option missing"
     }
   },
   {
@@ -76409,7 +76426,7 @@
     "effectText": "[On Play] You may add 1 card from the top or bottom of your Life cards to your hand: K.O. up to 1 of your opponent's Characters with a cost of 5 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -76429,7 +76446,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost flipLife:1 flips a life card face-down/up; text \"add 1 card from the top OR BOTTOM of your Life cards TO YOUR HAND\" — needs lifeToHand:1"
     }
   },
   {
@@ -76485,7 +76503,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "action set_active fires immediately; text \"Set this Character as active AT THE END OF THIS TURN\" — delayed end-of-turn timing not encoded"
     }
   },
   {
@@ -76634,7 +76653,7 @@
     "effectText": "If this Character would be K.O.'d, you may rest 1 of your [Fish-Man Island] or your [Shirahoshi] Leader instead.<br>[On Play] You may add 1 card from the top or bottom of your Life cards to your hand: K.O. up to 1 of your opponent's Characters with a cost of 1 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -76669,7 +76688,8 @@
             "restSelf": true
           }
         }
-      ]
+      ],
+      "auditNote": "replacement target your_leader (rest leader); text \"rest 1 of your [Fish-Man Island] OR your [Shirahoshi] Leader\" — the [Fish-Man Island] alternate (stage) cost branch missing"
     }
   },
   {
@@ -76851,7 +76871,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause condition if_own_life_min:3; text \"If you and your opponent have a TOTAL of 5 or more Life cards\" — sum constraint (own + opp ≥ 5)"
     }
   },
   {
@@ -76880,7 +76901,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -76900,7 +76921,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target your_leader; text \"Up to 1 of your Leader or Character cards\" — needs your_leader_or_character"
     }
   },
   {
@@ -76927,7 +76949,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -76946,7 +76968,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "add_to_own_life_top with no position field; text \"to the top or bottom of the owner's Life cards\" — bottom option missing"
     }
   },
   {
@@ -76976,7 +76999,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -77002,7 +77025,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target filter typeIncludes:Neptunian only; text \"{Neptunian}, {Fish-Man}, OR {Merfolk} type Characters\" — needs traitsAny:[\"Neptunian\",\"Fish-Man\",\"Merfolk\"]"
     }
   },
   {
