@@ -64,6 +64,7 @@ export type EffectConditionV2 =
   | { type: 'if_opp_don_min'; n: number }                               // EB02-061 — opp DON in donCostArea ≥ n
   | { type: 'if_opp_don_max'; n: number }                               // mirror
   | { type: 'if_own_don_le_opp' }                                       // (gap #67)
+  | { type: 'if_own_life_lt_opp' }                                      // "if you have less Life cards than your opponent"
   | { type: 'if_own_life_max'; n: number }
   | { type: 'if_own_life_min'; n: number }
   | { type: 'if_opp_life_max'; n: number }

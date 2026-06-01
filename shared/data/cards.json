@@ -29022,8 +29022,7 @@
                 "n": 1
               },
               {
-                "type": "if_own_life_max",
-                "n": 3
+                "type": "if_own_life_lt_opp"
               }
             ]
           },
@@ -29041,8 +29040,7 @@
                 "n": 1
               },
               {
-                "type": "if_own_life_max",
-                "n": 3
+                "type": "if_own_life_lt_opp"
               }
             ]
           },
@@ -29054,7 +29052,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -29552,15 +29550,14 @@
           },
           "verified": "human-reviewed",
           "condition": {
-            "type": "if_own_life_max",
-            "n": 3
+            "type": "if_own_life_lt_opp"
           }
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34795,8 +34792,7 @@
                 "n": 1
               },
               {
-                "type": "if_own_life_max",
-                "n": 3
+                "type": "if_own_life_lt_opp"
               }
             ]
           },
@@ -34807,7 +34803,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -51661,13 +51657,12 @@
     "effectText": "If you have less Life cards than your opponent, this Character cannot be K.O.'d in battle.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
           "condition": {
-            "type": "if_own_life_max",
-            "n": 3
+            "type": "if_own_life_lt_opp"
           },
           "action": {
             "kind": "grant_keyword_to_self",
@@ -58234,8 +58229,7 @@
                 "n": 1
               },
               {
-                "type": "if_own_life_max",
-                "n": 3
+                "type": "if_own_life_lt_opp"
               }
             ]
           },
@@ -58256,8 +58250,7 @@
                 "n": 1
               },
               {
-                "type": "if_own_life_max",
-                "n": 3
+                "type": "if_own_life_lt_opp"
               }
             ]
           },
@@ -58269,7 +58262,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -99992,7 +99985,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -100005,8 +99998,7 @@
         {
           "trigger": "on_play",
           "condition": {
-            "type": "if_own_life_max",
-            "n": 3
+            "type": "if_own_life_lt_opp"
           },
           "action": {
             "kind": "discard_from_hand",

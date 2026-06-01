@@ -84,6 +84,8 @@ export function evaluateConditionV2(
       return opp.donCostArea.length <= cond.n;
     case 'if_own_don_le_opp':
       return me.donCostArea.length <= opp.donCostArea.length;
+    case 'if_own_life_lt_opp':
+      return me.life.length < opp.life.length;
 
     case 'if_own_life_max':
       return me.life.length <= cond.n;
