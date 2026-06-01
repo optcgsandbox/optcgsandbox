@@ -500,7 +500,7 @@
           "target": {
             "kind": "opp_character",
             "filter": {
-              "powerMax": 6000
+              "basePowerMax": 6000
             }
           },
           "verified": "human-reviewed"

@@ -368,6 +368,14 @@ function matchesFilter(state: GameState, inst: CardInstance, filter: TargetFilte
   if (typeof filter.powerMin === 'number') {
     if (effectivePower(state, inst) < filter.powerMin) return false;
   }
+  if (typeof filter.basePowerMax === 'number') {
+    const base = (card as { power?: number }).power ?? 0;
+    if (base > filter.basePowerMax) return false;
+  }
+  if (typeof filter.basePowerMin === 'number') {
+    const base = (card as { power?: number }).power ?? 0;
+    if (base < filter.basePowerMin) return false;
+  }
   if (filter.trait) {
     if (!Array.isArray(card.traits) || !card.traits.includes(filter.trait)) return false;
   }

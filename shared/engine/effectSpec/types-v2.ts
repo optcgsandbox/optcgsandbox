@@ -123,8 +123,13 @@ export type EffectConditionV2 =
 export interface TargetFilter {
   costMax?: number;
   costMin?: number;
+  /** powerMax/powerMin compare against EFFECTIVE power (printed + DON + buffs). */
   powerMax?: number;
   powerMin?: number;
+  /** basePowerMax/basePowerMin compare against PRINTED power only.
+   *  Use for cards whose text says "X base power or less" (EB01-010 etc.). */
+  basePowerMax?: number;
+  basePowerMin?: number;
   trait?: string;
   typeIncludes?: string;
   colors?: CardColor[];
