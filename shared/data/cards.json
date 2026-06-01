@@ -119050,7 +119050,7 @@
     "effectText": "[DON!! x1] [Opponent's Turn] This Character gains +4 cost.<br>[Activate: Main] [Once Per Turn] You may place 1 card from your trash at the bottom of your deck: Give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -119088,7 +119088,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause give_don_to_target target your_leader; text \"your Leader or 1 of your Characters\" — needs your_leader_or_character"
     }
   },
   {
@@ -119226,7 +119227,7 @@
     "effectText": "[Once Per Turn] If this Character would be K.O.'d by an effect, you may trash 1 card from the top of your Life cards instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -119243,7 +119244,8 @@
           "conditional": true,
           "verified": "flagged"
         }
-      ]
+      ],
+      "auditNote": "replacement cost flipLife:1; text \"you may TRASH 1 card from the top of your Life cards\" — trash differs from flip (trash removes life card, flip changes its facing)"
     }
   },
   {
@@ -119294,7 +119296,7 @@
     "effectText": "[On Play] You may add 1 card from the top of your Life cards to your hand: Set up to 1 of your {Big Mom Pirates} type Characters with a cost of 3 or less as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -119315,7 +119317,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost flipLife:1; text \"you may ADD 1 card from the top of your Life cards TO YOUR HAND\" — needs lifeToHand:1 (life-to-hand, not flip)"
     }
   },
   {
@@ -119341,7 +119344,7 @@
     "effectText": "[On Play] You may trash 1 card from your hand: Your opponent chooses one:<br>• Your opponent trashes 2 cards from their hand.<br>• Trash 1 card from the top of your opponent's Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -119375,7 +119378,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action choose_one defaults to YOU choosing; text \"YOUR OPPONENT chooses one\" — opponent's choice, not player's"
     }
   },
   {
@@ -120167,7 +120171,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -120203,7 +120207,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause action bottom_of_deck_from_hand:1 places to bottom of deck; text \"place the revealed card AT THE TOP OF YOUR DECK\" — needs top-of-deck placement"
     }
   },
   {
@@ -120383,7 +120388,7 @@
     "effectText": "If this Character would be removed from the field by your opponent's effect, you may trash 2 cards from your hand instead.<br>[Activate: Main] [Once Per Turn] You may rest 3 of your DON!! cards and return 1 of your Characters other than this Character to the owner's hand: Set this Character as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -120418,7 +120423,8 @@
           "conditional": true,
           "verified": "flagged"
         }
-      ]
+      ],
+      "auditNote": "activate_main cost returnSelfChar with no filter; text \"return 1 of your Characters OTHER THAN THIS CHARACTER to the owner's hand\" — needs nameExcludes:\"Kouzuki Oden\" filter on cost"
     }
   },
   {
@@ -120639,7 +120645,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -120666,7 +120672,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "on_play clause missing is_own_turn condition for [Your Turn]"
     }
   },
   {
@@ -120822,7 +120829,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -120870,7 +120877,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "third clause power_buff fires whenever Whitebeard Pirates leader; text \"you may add 1 card from the top or bottom of your Life cards to your hand. IF YOU DO, up to 1 of your Leader gains +2000 power\" — Leader buff is gated by the optional life-to-hand happening, not by leader trait alone"
     }
   },
   {
@@ -120950,7 +120958,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -120991,7 +120999,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause action bottom_of_deck_to_opp_deck with target opp_character; text \"place up to 1 Character with a cost of 5 or less at the bottom of the owner's deck\" (any character)"
     }
   },
   {
@@ -121444,7 +121453,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -121475,7 +121484,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause action rest_lock_until_phase only prevents next refresh; text \"Rest up to 1 of your opponent's Characters AND that Character will not become active in your opponent's next Refresh Phase\" — needs both rest action AND rest_lock"
     }
   },
   {
@@ -121503,7 +121513,7 @@
     "effectText": "[On Play] If your Leader has the {Supernovas} type, rest up to 1 of your opponent's Characters with a cost of 5 or less. Then, set up to 1 of your DON!! cards as active at the end of this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -121536,7 +121546,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause action set_active_don:1 fires immediately; text \"set up to 1 of your DON!! cards as active AT THE END OF THIS TURN\" — delayed end-of-turn timing not encoded"
     }
   },
   {
@@ -121701,7 +121712,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -121749,7 +121760,8 @@
           "conditional": true,
           "verified": "flagged"
         }
-      ]
+      ],
+      "auditNote": "second clause cost discardHand:1 + action play_for_free; text \"Draw 2 cards AND trash 1 card from your hand. THEN, play up to 1 {Cross Guild}...\" — the trash is a sequential effect after draw 2, not a cost for the play; play is unconditional after the trash-1 effect resolves"
     }
   },
   {
@@ -122019,7 +122031,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "rest_target target opp_character only with cost filter; text \"Rest up to 1 of your opponent's DON!! cards OR Characters with a cost of 1 or less\" — DON option missing (needs opp_don_or_character)"
     }
   },
   {
@@ -122059,7 +122072,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "action ramp magnitude:1 with no rested specifier; text \"add up to 1 DON!! card from your DON!! deck and SET IT AS ACTIVE\" — needs rested:false"
     }
   },
   {
@@ -122103,7 +122117,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character missing count:2; text \"Give up to 2 of your opponent's Characters\""
     }
   },
   {
@@ -122129,7 +122144,7 @@
     "effectText": "[On Play]/[When Attacking] DON!! −2 (You may return the specified number of DON!! cards from your field to your DON!! deck.): If your Leader is multicolored and your opponent has 5 or more DON!! cards on their field, your {Straw Hat Crew} type Leader's base power becomes 7000 until the end of your opponent's next End Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -122187,7 +122202,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "set_base_power target your_leader has no trait filter; text \"YOUR {STRAW HAT CREW} TYPE Leader's base power becomes 7000\" — leader must be Straw Hat Crew type (filter typeIncludes:\"Straw Hat Crew\" on the target)"
     }
   },
   {
@@ -122410,7 +122426,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes on_play discard_from_hand clause; missing the continuous \"If your Leader has the {Blackbeard Pirates} type, this Character gains [Blocker] AND +1 cost for every 4 cards in your trash\""
     }
   },
   {
@@ -122458,7 +122475,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "activate_main target opp_character; text \"K.O. up to 1 Character with a cost of 3 or less\" (any character); also missing [On K.O.] \"Add up to 1 black card from your trash to your hand\" clause"
     }
   },
   {
@@ -122633,7 +122651,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -122689,7 +122707,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost donCost:2 rests DON from cost area; text \"return 2 total of your CURRENTLY GIVEN DON!! cards to your cost area rested\" — this is a different cost (move 2 attached DON back to cost area rested, not pay 2 from cost area); also continuous aura_power_buff filter:character applies to chars — text \"your LEADER gains +1000 power\" affects only leader"
     }
   },
   {
@@ -123079,7 +123098,7 @@
     "effectText": "If your {Egghead} type Character would be K.O.'d by your opponent's effect, you may turn 1 card from the top of your Life cards face-up instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -123098,7 +123117,8 @@
           },
           "appliesToFiltered": true
         }
-      ]
+      ],
+      "auditNote": "replacement action grant_immunity has no cost; text \"you may TURN 1 CARD FROM THE TOP OF YOUR LIFE CARDS FACE-UP instead\" — needs cost flipLife:1"
     }
   },
   {
@@ -123464,7 +123484,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes [Counter] +3000 leader; missing [Main] clause \"Your [Monkey.D.Luffy] Leader gains [Unblockable] during this turn\""
     }
   },
   {
