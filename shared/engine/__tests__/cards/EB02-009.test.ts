@@ -83,10 +83,10 @@ describe('EB02-009 — Thousand Sunny', () => {
     const s = boot();
     placeStage(s);
     placeSHChar(s);
-    // Attach 1 DON to leader.
+    // Attach 1 DON to leader. (per-zone struct and instances map share the
+    // same CardInstance ref, so one push covers both.)
     const donId = s.players.A.donCostArea.shift()!;
     s.players.A.leader.attachedDon.push(donId);
-    s.instances[s.players.A.leader.instanceId].attachedDon.push(donId);
     applyActionV2(s, { sourceInstanceId: 'ts', controller: 'A' }, clause.action, ['sh']);
     expect(s.instances['sh'].attachedDon).toContain(donId);
     expect(s.players.A.leader.attachedDon).not.toContain(donId);
