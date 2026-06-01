@@ -21536,7 +21536,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: 2nd clause cost discardHand:1 + action discard_from_hand:3 — discard-1 is effect not cost, and \"up to 3\" magnitude"
     }
   },
   {
@@ -21606,7 +21607,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: restrict_opp_blocker action exists schema-side; clause flagged for downstream engine firing"
     }
   },
   {
@@ -21813,7 +21815,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: bottom_of_deck_self captures self EOT-bottom; original clause still flagged"
     }
   },
   {
@@ -22055,7 +22058,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: 2nd clause draw:2 fixed; text says \"draw cards so you have 2 in hand\" (draw-to)"
     }
   },
   {
@@ -22117,7 +22121,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: chained discard_from_hand 1 + 3 — second discard should be discard up-to-3, not exactly 3"
     }
   },
   {
@@ -22919,7 +22924,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_leader_or_character no count; text says \"up to a total of 2\""
     }
   },
   {
@@ -23452,7 +23458,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: restrict_opp_blocker schema; firing/blocker silencing engine path pending"
     }
   },
   {
