@@ -167,6 +167,7 @@ export interface EffectCostV2 {
   restSelf?: boolean;           // many cards
   restLeader?: boolean;         // OP04-082/088/091 etc. — "rest your 1 Leader"
   restLeaderOrStageFilter?: { filter?: TargetFilter }; // OP10-043+ — "rest 1 of your {Dressrosa} type Leader or Stage cards"
+  restOwnCharFilter?: { count: number; filter?: TargetFilter }; // OP05-026, OP07-036, OP08-037/038 — "rest N of your Characters (matching filter)"
   trashSelf?: boolean;          // EB01-013 etc.
   revealHand?: { count: number; filter?: TargetFilter };  // (gap #90)
   koSelfCharacter?: { filter?: TargetFilter };            // (gap #54)

@@ -107,6 +107,27 @@ function canPayCost(
     const stageEligible = me.stage && !me.stage.rested && (!trait || state.cardLibrary[me.stage.cardId]?.traits?.includes(trait));
     if (!leaderEligible && !stageEligible) return false;
   }
+  if (cost.restOwnCharFilter) {
+    const need = cost.restOwnCharFilter.count;
+    const filter = cost.restOwnCharFilter.filter;
+    const matches = me.field.filter((inst) => {
+      if (inst.rested) return false;
+      if (!filter) return true;
+      const card = state.cardLibrary[inst.cardId];
+      if (!card) return false;
+      if (typeof filter.costMin === 'number') {
+        const c = typeof card.cost === 'number' ? card.cost + (inst.costModifier ?? 0) : -1;
+        if (c < 0 || c < filter.costMin) return false;
+      }
+      if (typeof filter.costMax === 'number') {
+        const c = typeof card.cost === 'number' ? card.cost + (inst.costModifier ?? 0) : -1;
+        if (c < 0 || c > filter.costMax) return false;
+      }
+      if (filter.trait && !card.traits?.includes(filter.trait)) return false;
+      return true;
+    });
+    if (matches.length < need) return false;
+  }
   if (cost.trashSelf) {
     const inst = state.instances[sourceInstanceId];
     if (!inst) return false;
@@ -210,6 +231,32 @@ function payCost(
       me.leader.rested = true;
       const inst = state.instances[me.leader.instanceId];
       if (inst) inst.rested = true;
+    }
+  }
+  if (cost.restOwnCharFilter) {
+    const need = cost.restOwnCharFilter.count;
+    const filter = cost.restOwnCharFilter.filter;
+    let rested = 0;
+    for (const inst of me.field) {
+      if (rested >= need) break;
+      if (inst.rested) continue;
+      if (filter) {
+        const card = state.cardLibrary[inst.cardId];
+        if (!card) continue;
+        if (typeof filter.costMin === 'number') {
+          const c = typeof card.cost === 'number' ? card.cost + (inst.costModifier ?? 0) : -1;
+          if (c < 0 || c < filter.costMin) continue;
+        }
+        if (typeof filter.costMax === 'number') {
+          const c = typeof card.cost === 'number' ? card.cost + (inst.costModifier ?? 0) : -1;
+          if (c < 0 || c > filter.costMax) continue;
+        }
+        if (filter.trait && !card.traits?.includes(filter.trait)) continue;
+      }
+      inst.rested = true;
+      const ref = state.instances[inst.instanceId];
+      if (ref) ref.rested = true;
+      rested++;
     }
   }
   if (cost.trashSelf) {

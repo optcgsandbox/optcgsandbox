@@ -15692,13 +15692,18 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "human-reviewed"
+          "verified": "human-reviewed",
+          "cost": {
+            "restOwnCharFilter": {
+              "count": 2
+            }
+          }
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36556,7 +36561,8 @@
             "n": 1
           },
           "cost": {
-            "koSelfCharacter": {
+            "restOwnCharFilter": {
+              "count": 1,
               "filter": {
                 "costMin": 3
               }
@@ -36573,7 +36579,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -48536,7 +48542,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -48553,7 +48559,8 @@
         {
           "trigger": "on_play",
           "cost": {
-            "koSelfCharacter": {
+            "restOwnCharFilter": {
+              "count": 1,
               "filter": {
                 "costMin": 3
               }
@@ -54462,7 +54469,8 @@
         {
           "trigger": "on_play",
           "cost": {
-            "koSelfCharacter": {
+            "restOwnCharFilter": {
+              "count": 1,
               "filter": {
                 "trait": "Minks"
               }
@@ -54480,7 +54488,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -54510,8 +54518,8 @@
         {
           "trigger": "on_play",
           "cost": {
-            "koSelfCharacter": {
-              "filter": {}
+            "restOwnCharFilter": {
+              "count": 2
             }
           },
           "action": {
@@ -54528,7 +54536,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -89680,7 +89688,9 @@
         {
           "trigger": "on_play",
           "cost": {
-            "restSelf": true
+            "restOwnCharFilter": {
+              "count": 3
+            }
           },
           "action": {
             "kind": "removal_ko"
@@ -89710,7 +89720,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -89747,7 +89757,9 @@
         {
           "trigger": "on_play",
           "cost": {
-            "restSelf": true
+            "restOwnCharFilter": {
+              "count": 2
+            }
           },
           "action": {
             "kind": "chained_actions",
@@ -89785,7 +89797,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
