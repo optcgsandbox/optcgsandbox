@@ -494,6 +494,11 @@ export function resolveTargetV2(
         .filter((inst) => matchesFilter(state, inst, target.filter))
         .map((inst) => inst.instanceId);
 
+    case 'all_characters':
+      return [...me.field, ...opp.field]
+        .filter((inst) => matchesFilter(state, inst, target.filter))
+        .map((inst) => inst.instanceId);
+
     case 'own_life_top':
       return me.life.length > 0 ? [me.life[0]] : [];
 

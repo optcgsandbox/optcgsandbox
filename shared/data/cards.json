@@ -16022,11 +16022,33 @@
     "life": 5,
     "effectText": "[DON!! x1] [Your Turn] [Once Per Turn] When your opponent's Character is K.O.'d, add up to 1 DON!! card from your DON!! deck and set it as active.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_any_opp_char_ko",
+          "opt": true,
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_attached_don_min",
+                "n": 1
+              },
+              {
+                "type": "is_own_turn"
+              }
+            ]
+          },
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -17471,35 +17493,18 @@
             "kind": "removal_ko"
           },
           "target": {
-            "kind": "all_opp_characters"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCostReturnToDeck": 6
-          },
-          "condition": {
-            "type": "if_leader_has_trait",
-            "trait": "Animal Kingdom Pirates"
-          },
-          "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "all_your_characters",
+            "kind": "all_characters",
             "filter": {
               "nameExcludes": "Kaido"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -22913,11 +22918,27 @@
     ],
     "effectText": "[DON!! x1] [Once Per Turn] When this Character battles and K.O.'s your opponent's Character, set this Character as active.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_battle_ko",
+          "opt": true,
+          "condition": {
+            "type": "if_attached_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "set_active"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -33921,9 +33942,31 @@
       "draw": 2
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_battle_ko",
+          "condition": {
+            "type": "if_attached_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "chained_actions",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 2
+              },
+              {
+                "kind": "discard_from_hand",
+                "magnitude": 1
+              }
+            ]
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58644,7 +58687,7 @@
             "kind": "removal_ko"
           },
           "target": {
-            "kind": "all_opp_characters",
+            "kind": "all_characters",
             "filter": {
               "nameExcludes": "Kaido & Linlin"
             }
@@ -58680,7 +58723,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -107500,8 +107543,24 @@
     "effectText": "[DON!! x1] [Once Per Turn] [Your Turn] If this Character battles your opponent's Character, set this card as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
-      "clauses": [],
+      "verified": "human-reviewed",
+      "clauses": [
+        {
+          "trigger": "on_battle_ko",
+          "opt": true,
+          "condition": {
+            "type": "if_attached_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "set_active"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [],
       "replacements": []
     }
@@ -111381,8 +111440,24 @@
     "effectText": "[Your Turn] When a Character is K.O.'d, give up to 1 rested DON!! card to this Leader.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
-      "clauses": [],
+      "verified": "human-reviewed",
+      "clauses": [
+        {
+          "trigger": "on_any_opp_char_ko",
+          "condition": {
+            "type": "is_own_turn"
+          },
+          "action": {
+            "kind": "give_don_to_target",
+            "magnitude": 1,
+            "rested": true
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [],
       "replacements": []
     }
@@ -111526,7 +111601,7 @@
     "effectText": "[On Play] You may trash 1 card from your hand: K.O. all Characters with a cost of 1 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -111537,7 +111612,7 @@
             "kind": "removal_ko"
           },
           "target": {
-            "kind": "all_opp_characters",
+            "kind": "all_characters",
             "filter": {
               "costMax": 1
             }
@@ -111822,8 +111897,28 @@
     "effectText": "[DON!! x1] At the end of a battle in which this Character battles your opponent's Character, you may K.O. the opponent’s Character you battled with. If you do, K.O. this Character.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
-      "clauses": [],
+      "verified": "human-reviewed",
+      "clauses": [
+        {
+          "trigger": "on_battle_ko",
+          "condition": {
+            "type": "if_attached_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "chained_actions",
+            "actions": [
+              {
+                "kind": "removal_ko"
+              },
+              {
+                "kind": "self_trash_at_end_of_turn"
+              }
+            ]
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [],
       "replacements": []
     }

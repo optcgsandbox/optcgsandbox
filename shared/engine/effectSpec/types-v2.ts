@@ -42,6 +42,9 @@ export type EffectTriggerV2 =
   | 'on_opp_activate_event'      // OP01-004 Usopp — opp plays an event
   | 'on_self_activate_event'     // OP04-053 Page One — fires when controller plays an Event
   | 'on_own_char_removed_by_opp_effect' // OP09-080 / OP08-056 / OP10-042 / OP13-078 — fires when own char leaves field due to opp's effect
+  | 'on_battle_ko'              // OP02-094 / OP04-086 / ST02-010 / ST08-013 — "when this Character battles and K.O.'s your opponent's Character"
+  | 'on_take_damage'            // OP15-070 etc. — when source takes damage in battle
+  | 'on_any_opp_char_ko'        // OP01-061 Kaido — "when your opponent's Character is K.O.'d" (any source)
   | 'on_attack_deal_damage'      // OP03-040 Nami mill — when source's attack deals damage to opp's Life
   ;
 
@@ -156,6 +159,8 @@ export type EffectTargetV2 =
   | { kind: 'top_of_opp_deck' }
   // Mass targets (gap #12, #55)
   | { kind: 'all_your_characters'; filter?: TargetFilter }
+  // OP05-058, OP08-119, ST08-005, ST09-009 — "all Characters" (both sides) targeted.
+  | { kind: 'all_characters'; filter?: TargetFilter }
   | { kind: 'all_opp_characters'; filter?: TargetFilter }
   // Life-area targets (gaps #5, #71, #72)
   | { kind: 'own_life_top' }
