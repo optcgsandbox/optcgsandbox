@@ -32618,7 +32618,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek missing nameExcludes:\"Who's.Who\"; text says \"other than [Who's.Who]\""
     }
   },
   {
@@ -32793,7 +32794,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost only discardHandFilter:Ice Oni; missing second cost \"place 1 Character with a cost of 4 or less at the bottom of the owner's deck\""
     }
   },
   {
@@ -32831,7 +32833,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character but text says \"Place up to 1 Character\" (any, no opp restriction)"
     }
   },
   {
@@ -32890,7 +32893,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause target opp_character but text says \"Place up to 1 Character with a cost of 1 or less\" (any character)"
     }
   },
   {
@@ -33047,7 +33051,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause only encodes draw 1; missing sequential \"and trash 1 card from your hand\""
     }
   },
   {
@@ -33268,7 +33273,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "attack_lock_until_phase until:this_turn; text says \"until the start of your next turn\" (need until end of opp's turn / opp_next_end_phase)"
     }
   },
   {
@@ -33442,7 +33448,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "set_base_power_copy_from source:opp_character (any) but text says \"your opponent's attacking Leader or Character\" — must be the attacker"
     }
   },
   {
@@ -33634,7 +33641,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost uses koSelfCharacter but text says \"trash this Character and 1 of your Characters\" (trash not KO); action ramp magnitude omits rested:false despite text \"set it as active\""
     }
   },
   {
@@ -33929,7 +33937,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "opt:true on the third clause \"Then, K.O. 1 of your {Dressrosa} type Characters\" — text has no \"up to\" so this is mandatory; also cost_reduction action missing duration field"
     }
   },
   {
@@ -34108,7 +34117,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "replacement cost only restLeader:true; text says \"rest your Leader OR 1 [Corrida Coliseum]\" — Corrida Coliseum cost branch missing; grant_immunity against:opp_removal is too broad (should be the specific would-be-KO instance)"
     }
   },
   {
@@ -34169,7 +34179,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "continuous aura_immunity is permanent; text \"None of your Characters can be K.O.'d by effects until the start of your next turn\" is time-scoped (one-shot until opp_next_end_phase); also draw/trash uses cost form vs sequential effects"
     }
   },
   {
@@ -34212,7 +34223,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek with playInsteadOfHand; text \"Then, trash the rest\" — trash-rest semantics not encoded"
     }
   },
   {
@@ -34347,7 +34359,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "chained_actions discards 1 from hand; text says \"trash 2 cards from your hand\""
     }
   },
   {
@@ -34618,7 +34631,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek default disposes rest to bottom; text says \"Then, trash the rest\""
     }
   },
   {
@@ -34686,7 +34700,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause give_keyword target your_character (any Dressrosa); text \"that card gains [Double Attack]\" must reference the same character that received the +6000"
     }
   },
   {
@@ -34744,7 +34759,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause fires additionally; text says \"instead of a Character with a cost of 4 or less\" — mutually exclusive choice, not cumulative"
     }
   },
   {
@@ -34805,7 +34821,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause power_buff target your_leader_or_character (any); text \"that card gains an additional +2000\" must reference the same card from clause 1"
     }
   },
   {
@@ -35038,7 +35055,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "on_play clause missing is_own_turn condition; text gates effect with [Your Turn]"
     }
   },
   {
@@ -35436,7 +35454,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "add_to_opp_life_top with no position; text says \"to the top or bottom of your opponent's Life cards\" — bottom-of-life option missing"
     }
   },
   {
