@@ -2215,7 +2215,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -3322,7 +3322,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -3675,7 +3675,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -3955,7 +3955,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Double Attack",
+            "keyword": "double_attack",
             "duration": "this_turn"
           },
           "target": {
@@ -4710,7 +4710,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -5716,7 +5716,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Rush"
+            "keyword": "rush"
           }
         }
       ],
@@ -32970,7 +32970,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Blocker",
+            "keyword": "blocker",
             "duration": "this_turn"
           },
           "target": {
@@ -33519,7 +33519,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Blocker",
+            "keyword": "blocker",
             "duration": "this_battle"
           },
           "target": {
@@ -34681,7 +34681,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Double Attack",
+            "keyword": "double_attack",
             "duration": "this_turn"
           },
           "target": {
@@ -35343,7 +35343,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Banish"
+            "keyword": "banish"
           }
         }
       ],
@@ -35645,7 +35645,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Double Attack",
+            "keyword": "double_attack",
             "duration": "this_turn"
           },
           "target": {
@@ -35814,7 +35814,7 @@
               "nameExcludes": "Nefeltari Vivi",
               "kind": "character"
             },
-            "keyword": "Rush"
+            "keyword": "rush"
           }
         }
       ],
@@ -36043,7 +36043,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Rush"
+            "keyword": "rush"
           }
         }
       ],
@@ -38816,7 +38816,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -39170,7 +39170,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Rush"
+            "keyword": "rush"
           }
         }
       ],
@@ -39614,7 +39614,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Double Attack",
+            "keyword": "double_attack",
             "duration": "this_battle"
           },
           "target": {
@@ -39881,7 +39881,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -41641,7 +41641,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Banish"
+            "keyword": "banish"
           }
         }
       ],
@@ -41990,7 +41990,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -48633,7 +48633,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Blocker",
+            "keyword": "blocker",
             "duration": "this_turn"
           },
           "target": {
@@ -48828,7 +48828,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -48880,7 +48880,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -51567,7 +51567,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Banish",
+            "keyword": "banish",
             "duration": "this_turn"
           },
           "target": {
@@ -53311,7 +53311,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -55789,7 +55789,7 @@
             },
             "thenAction": {
               "kind": "give_keyword",
-              "keyword": "Rush",
+              "keyword": "rush",
               "duration": "this_turn"
             }
           },
@@ -70065,7 +70065,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Banish",
+            "keyword": "banish",
             "duration": "this_turn"
           },
           "target": {
@@ -70203,7 +70203,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Blocker",
+            "keyword": "blocker",
             "duration": "opp_next_turn"
           },
           "target": {
@@ -70622,7 +70622,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -70864,7 +70864,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Rush"
+            "keyword": "rush"
           }
         }
       ],
@@ -72521,7 +72521,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Rush"
+            "keyword": "rush"
           }
         }
       ],
@@ -72728,7 +72728,7 @@
           "trigger": "activate_main",
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -73305,7 +73305,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -73999,7 +73999,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -74403,7 +74403,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -74852,7 +74852,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Rush"
+            "keyword": "rush"
           }
         }
       ],
@@ -75923,7 +75923,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -84368,7 +84368,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -85433,7 +85433,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Banish",
+            "keyword": "banish",
             "duration": "this_turn"
           },
           "target": {
@@ -86909,7 +86909,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Rush"
+            "keyword": "rush"
           }
         },
         {
@@ -87441,7 +87441,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -88282,7 +88282,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -88467,7 +88467,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -88844,7 +88844,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Rush"
+            "keyword": "rush"
           }
         }
       ],
@@ -89091,7 +89091,7 @@
         {
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Rush"
+            "keyword": "rush"
           }
         }
       ],
@@ -91511,7 +91511,7 @@
         {
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Rush"
+            "keyword": "rush"
           },
           "condition": {
             "type": "always"
@@ -93773,7 +93773,7 @@
         {
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Rush"
+            "keyword": "rush"
           },
           "condition": {
             "type": "or",
@@ -95876,7 +95876,7 @@
           "trigger": "on_play",
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -96063,7 +96063,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         },
         {
@@ -96795,7 +96795,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -97726,7 +97726,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -98487,7 +98487,7 @@
           "trigger": "on_play",
           "action": {
             "kind": "give_keyword",
-            "keyword": "Double Attack",
+            "keyword": "double_attack",
             "duration": "this_turn"
           },
           "target": {
@@ -98744,7 +98744,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Blocker",
+            "keyword": "blocker",
             "duration": "opp_next_end_phase"
           },
           "target": {
@@ -99202,7 +99202,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -99289,7 +99289,7 @@
         {
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Unblockable"
+            "keyword": "unblockable"
           }
         },
         {
@@ -99298,7 +99298,7 @@
             "filter": {
               "nameIs": "Shura"
             },
-            "keyword": "Unblockable"
+            "keyword": "unblockable"
           }
         },
         {
@@ -99359,7 +99359,7 @@
         {
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Double Attack"
+            "keyword": "double_attack"
           }
         },
         {
@@ -99368,7 +99368,7 @@
             "filter": {
               "nameIs": "Ohm"
             },
-            "keyword": "Double Attack"
+            "keyword": "double_attack"
           }
         },
         {
@@ -100349,7 +100349,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "verified": "auto",
@@ -100691,7 +100691,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -101041,7 +101041,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -101617,7 +101617,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -102137,7 +102137,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Rush"
+            "keyword": "rush"
           }
         }
       ],
@@ -102346,7 +102346,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Banish",
+            "keyword": "banish",
             "duration": "this_turn"
           },
           "target": {
@@ -106378,7 +106378,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -106525,7 +106525,7 @@
           "trigger": "activate_main",
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -107398,7 +107398,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         }
       ],
@@ -109816,7 +109816,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -110881,7 +110881,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Double Attack",
+            "keyword": "double_attack",
             "duration": "this_turn"
           },
           "target": {
@@ -111310,7 +111310,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Double Attack"
+            "keyword": "double_attack"
           }
         }
       ],
@@ -111986,7 +111986,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -112036,7 +112036,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Banish",
+            "keyword": "banish",
             "duration": "this_battle"
           },
           "target": {
@@ -112351,7 +112351,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Banish",
+            "keyword": "banish",
             "duration": "this_turn"
           },
           "target": {
@@ -112428,7 +112428,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Double Attack",
+            "keyword": "double_attack",
             "duration": "this_turn"
           },
           "target": {
@@ -114096,7 +114096,7 @@
           "trigger": "on_play",
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -116470,7 +116470,7 @@
           },
           "action": {
             "kind": "give_keyword",
-            "keyword": "Rush",
+            "keyword": "rush",
             "duration": "this_turn"
           },
           "target": {
@@ -117562,7 +117562,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Rush"
+            "keyword": "rush"
           }
         }
       ],
@@ -118074,7 +118074,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Rush"
+            "keyword": "rush"
           }
         }
       ],
@@ -119507,7 +119507,7 @@
           "trigger": "on_play",
           "action": {
             "kind": "give_keyword",
-            "keyword": "Blocker-Off",
+            "keyword": "blocker_off",
             "duration": "this_turn"
           },
           "target": {
@@ -120058,7 +120058,7 @@
           "trigger": "on_play",
           "action": {
             "kind": "give_keyword",
-            "keyword": "Blocker-Off",
+            "keyword": "blocker_off",
             "duration": "this_turn"
           },
           "target": {
@@ -121650,7 +121650,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         },
         {
@@ -121869,7 +121869,7 @@
           },
           "action": {
             "kind": "grant_keyword_to_self",
-            "keyword": "Blocker"
+            "keyword": "blocker"
           }
         },
         {
@@ -122557,7 +122557,7 @@
           "trigger": "on_play",
           "action": {
             "kind": "give_keyword",
-            "keyword": "Banish",
+            "keyword": "banish",
             "duration": "this_turn"
           },
           "target": {
