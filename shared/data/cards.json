@@ -2516,14 +2516,9 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "mill_self",
-            "magnitude": 2
+          "cost": {
+            "millSelf": 2
           },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
           "action": {
             "kind": "removal_ko"
           },
@@ -2539,8 +2534,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged",
-      "auditNote": "mill 2 was the COST not a separate effect; spec has it as a separate on_play clause"
+      "verified": "human-reviewed"
     }
   },
   {
