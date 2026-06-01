@@ -41468,7 +41468,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -41501,7 +41501,12 @@
         {
           "trigger": "on_opp_attack",
           "cost": {
-            "discardHand": 1
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "typeIncludes": "FILM"
+              }
+            }
           },
           "action": {
             "kind": "power_buff",
@@ -41514,7 +41519,7 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
           "verified": "flagged"
         }
@@ -41566,11 +41571,12 @@
               "kind": "character"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -41599,7 +41605,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "returnSelfChar": {}
+            "bottomOfDeckSelf": true
           },
           "action": {
             "kind": "power_buff",
@@ -41613,7 +41619,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -41648,7 +41654,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "power_buff",
@@ -41656,13 +41662,13 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -41700,14 +41706,16 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
           "condition": {
-            "type": "always"
+            "type": "if_opp_chars_min_power",
+            "n": 1,
+            "minPower": 7000
           },
           "action": {
             "kind": "power_buff",
@@ -41715,13 +41723,13 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -41763,7 +41771,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -41872,11 +41880,12 @@
               }
             ]
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -41905,7 +41914,25 @@
     "life": 5,
     "effectText": "[Double Attack] (This card deals 2 damage.)<br>[Activate: Main] [Once Per Turn] If your opponent has 3 or less Life cards, give up to 2 rested DON!! cards to 1 of your Characters.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "opt": true,
+          "condition": {
+            "type": "if_opp_life_max",
+            "n": 3
+          },
+          "action": {
+            "kind": "give_don_to_target",
+            "magnitude": 2,
+            "rested": true
+          },
+          "target": {
+            "kind": "your_character"
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -41916,7 +41943,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -41962,7 +41989,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -42020,7 +42047,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -42126,7 +42153,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -42163,7 +42190,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -42173,7 +42200,7 @@
             ]
           },
           "action": {
-            "kind": "ramp",
+            "kind": "set_active_don",
             "magnitude": 1
           },
           "verified": "auto"
@@ -42184,7 +42211,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -42209,7 +42236,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -42226,7 +42253,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -42263,7 +42290,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -42278,7 +42305,8 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true
         },
         {
           "trigger": "when_attacking",
@@ -42286,7 +42314,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -42303,7 +42331,8 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true
         },
         {
           "trigger": "when_attacking",
@@ -42311,7 +42340,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -42324,11 +42353,12 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -42358,7 +42388,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -42469,7 +42499,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -42500,7 +42530,12 @@
         {
           "trigger": "on_play",
           "cost": {
-            "discardHand": 1
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "typeIncludes": "Fish-Man"
+              }
+            }
           },
           "action": {
             "kind": "removal_ko"
@@ -42546,7 +42581,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -42559,7 +42594,8 @@
               "costMax": 4
             }
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true
         },
         {
           "trigger": "activate_main",
@@ -42571,7 +42607,8 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true
         },
         {
           "trigger": "activate_main",
@@ -42579,7 +42616,8 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -42611,7 +42649,26 @@
     ],
     "effectText": "[Rush] (This card can attack on the turn in which it is played.)<br>[On Play] Rest up to a total of 2 of your opponent's Characters or DON!! cards. Then, add 1 card from the top of your Life cards to your hand.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "life_to_hand",
+            "magnitude": 1
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -42650,7 +42707,7 @@
     "effectText": "[On Play]/[On K.O.] K.O. up to 1 of your opponent's rested Characters with a cost of 4 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -42746,7 +42803,7 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
           "verified": "flagged"
         }
@@ -42754,7 +42811,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -42785,15 +42842,43 @@
           "trigger": "on_play",
           "action": {
             "kind": "choose_one",
-            "options": []
+            "options": [
+              {
+                "trigger": "on_play",
+                "action": {
+                  "kind": "rest_target"
+                },
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 6
+                  }
+                },
+                "verified": "human-reviewed"
+              },
+              {
+                "trigger": "on_play",
+                "action": {
+                  "kind": "removal_ko"
+                },
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 6,
+                    "rested": true
+                  }
+                },
+                "verified": "human-reviewed"
+              }
+            ]
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -42838,7 +42923,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -42863,7 +42948,7 @@
     "effectText": "[On Play] Rest all of your opponent's Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -42910,7 +42995,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_own_don_returned",
@@ -42918,7 +43003,8 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -42953,7 +43039,24 @@
       "power_buff": 3000
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "opt": true,
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "flagged"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -42992,7 +43095,17 @@
     "effectSpecV2": {
       "schemaVersion": 2,
       "verified": "flagged",
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_opp_activate_event",
+          "opt": true,
+          "action": {
+            "kind": "mill_opp",
+            "magnitude": 1
+          },
+          "verified": "flagged"
+        }
+      ],
       "continuous": [],
       "replacements": []
     }
@@ -43022,7 +43135,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -43030,15 +43143,15 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
           "action": {
-            "kind": "bottom_of_deck_from_trash",
+            "kind": "bottom_of_deck_from_hand",
             "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -43070,7 +43183,7 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "removal_bounce"
+            "kind": "bottom_of_deck_to_opp_deck"
           },
           "target": {
             "kind": "opp_character",
@@ -43078,13 +43191,13 @@
               "costMax": 2
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -43221,7 +43334,8 @@
             "lookCount": 5,
             "addCount": 1,
             "filter": {
-              "trait": "Navy"
+              "trait": "Navy",
+              "nameExcludes": "Tashigi"
             }
           },
           "verified": "auto"
@@ -43230,7 +43344,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -43255,7 +43369,7 @@
     "effectText": "[On Play] You may trash 2 cards from your hand: Your opponent returns 1 of their Characters to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -43305,7 +43419,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
