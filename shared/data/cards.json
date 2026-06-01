@@ -13241,7 +13241,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "add_to_own_life_top no Egghead filter; text restricts hand-picked card to Egghead type"
     }
   },
   {
@@ -13428,7 +13429,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "play_for_free filter missing \"different color than returned Character\" constraint"
     }
   },
   {
@@ -13780,7 +13782,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: trigger \"trigger\" is placeholder for Trigger-from-Life reactive trigger gap"
     }
   },
   {
@@ -14090,7 +14093,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher filter missing nameExcludes:Nami; text says \"other than [Nami]\""
     }
   },
   {
@@ -14353,7 +14357,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character no count; text says \"up to 2 opp Chars\""
     }
   },
   {
