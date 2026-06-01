@@ -57219,7 +57219,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -57253,7 +57253,7 @@
             "kind": "mill_self",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -57263,7 +57263,7 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
           "verified": "flagged"
         }
@@ -57334,7 +57334,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -57377,7 +57377,11 @@
               "trait": "Shandian Warrior"
             }
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "condition": {
+            "type": "if_attached_don_min",
+            "n": 1
+          }
         },
         {
           "trigger": "when_attacking",
@@ -57388,7 +57392,11 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "condition": {
+            "type": "if_attached_don_min",
+            "n": 1
+          }
         }
       ],
       "continuous": [],
@@ -57456,15 +57464,16 @@
             "filter": {
               "kind": "stage",
               "nameIs": "Upper Yard"
-            }
+            },
+            "lookCount": 7
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -57504,7 +57513,8 @@
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -57585,7 +57595,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "power_buff",
@@ -57595,13 +57605,14 @@
           "target": {
             "kind": "your_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -57664,21 +57675,47 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_attached_don_min",
+                "n": 1
+              },
+              {
+                "type": "is_own_turn"
+              }
+            ]
+          },
+          "opt": true
         },
         {
           "trigger": "on_life_changed",
           "action": {
-            "kind": "mill_self",
+            "kind": "discard_from_hand",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_attached_don_min",
+                "n": 1
+              },
+              {
+                "type": "is_own_turn"
+              }
+            ]
+          },
+          "opt": true
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -57711,7 +57748,12 @@
         {
           "trigger": "on_play",
           "cost": {
-            "discardHand": 1
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "hasTrigger": true
+              }
+            }
           },
           "action": {
             "kind": "removal_ko"
@@ -57727,7 +57769,12 @@
         {
           "trigger": "on_play",
           "cost": {
-            "discardHand": 1
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "hasTrigger": true
+              }
+            }
           },
           "condition": {
             "type": "if_hand_max",
@@ -57743,7 +57790,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -57778,16 +57825,23 @@
             "restSelf": true
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_turn"
           },
-          "verified": "flagged"
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "nameIs": "Charlotte Pudding"
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -57866,7 +57920,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -57903,7 +57957,7 @@
               "nameIs": "Upper Yard"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -57915,13 +57969,13 @@
               "nameIs": "Upper Yard"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -57953,8 +58007,7 @@
             "donCost": 1
           },
           "action": {
-            "kind": "restrict_effect_type",
-            "effectKind": "character_set_active"
+            "kind": "restrict_opp_attack"
           },
           "verified": "flagged"
         }
@@ -58007,7 +58060,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58067,21 +58120,39 @@
             "donCost": 1
           },
           "condition": {
-            "type": "if_own_life_max",
-            "n": -1
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_attached_don_min",
+                "n": 1
+              },
+              {
+                "type": "if_own_life_max",
+                "n": 3
+              }
+            ]
           },
           "action": {
             "kind": "damage_immunity_attribute",
             "attribute": "Slash"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
         {
           "condition": {
-            "type": "if_own_life_max",
-            "n": -1
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_attached_don_min",
+                "n": 1
+              },
+              {
+                "type": "if_own_life_max",
+                "n": 3
+              }
+            ]
           },
           "action": {
             "kind": "self_power_buff",
@@ -58132,9 +58203,9 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -58146,16 +58217,17 @@
             "kind": "play_for_free",
             "from": "hand",
             "filter": {
-              "nameIs": "Upper Yard"
+              "nameIs": "Upper Yard",
+              "kind": "stage"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58193,15 +58265,33 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "cost": {
+            "lifeToHand": 1
+          },
+          "action": {
+            "kind": "add_to_own_life_top",
+            "faceUp": true,
+            "from": "hand"
+          },
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "trait": "Shandian Warrior"
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58248,7 +58338,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58316,7 +58406,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58355,7 +58445,10 @@
             "kind": "removal_ko"
           },
           "target": {
-            "kind": "all_opp_characters"
+            "kind": "all_opp_characters",
+            "filter": {
+              "nameExcludes": "Kaido & Linlin"
+            }
           },
           "verified": "flagged"
         },
@@ -58369,7 +58462,7 @@
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "when_attacking",
@@ -58382,7 +58475,7 @@
           "target": {
             "kind": "opp_life_top"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -58427,15 +58520,16 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_leader_or_character"
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58476,7 +58570,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58517,7 +58611,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58550,6 +58644,13 @@
           "action": {
             "kind": "grant_keyword_to_self",
             "keyword": "rush"
+          }
+        },
+        {
+          "action": {
+            "kind": "aura_power_buff",
+            "filter": {},
+            "magnitude": -1000
           }
         }
       ],
@@ -58585,7 +58686,24 @@
       "draw": 2
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_opp_chars_min_power",
+            "n": 2,
+            "minPower": 5000
+          },
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 2
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -58596,7 +58714,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58651,7 +58769,23 @@
       "power_buff": 1000
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 1000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "your_leader",
+            "filter": {
+              "powerMax": 4000
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -58662,7 +58796,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58692,7 +58826,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "returnSelfChar": {}
+            "bottomOfDeckSelf": true
           },
           "action": {
             "kind": "power_buff",
@@ -58702,13 +58836,13 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58750,7 +58884,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58788,7 +58922,7 @@
               "nameIs": "Monster"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "when_attacking",
@@ -58803,13 +58937,17 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "condition": {
+            "type": "if_attached_don_min",
+            "n": 1
+          }
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58841,17 +58979,25 @@
           "cost": {
             "restSelf": true
           },
-          "action": {
-            "kind": "draw",
-            "magnitude": 0
+          "condition": {
+            "type": "if_leader_has_trait",
+            "trait": "Red-Haired Pirates"
           },
-          "verified": "flagged"
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -2000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58894,11 +59040,11 @@
             "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58930,9 +59076,21 @@
     "effectSpecV2": {
       "clauses": [
         {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 1000,
+            "duration": "opp_next_turn"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "human-reviewed"
+        },
+        {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_have_given_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -58943,13 +59101,13 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58977,14 +59135,7 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "restrict_effect_type",
-            "effectKind": "character_set_active"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "powerMax": 4000
-            }
+            "kind": "restrict_opp_attack"
           },
           "verified": "flagged"
         }
@@ -59018,7 +59169,25 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On K.O.] If your Leader has the {Red-Haired Pirates} type, K.O. up to 1 of your opponent's Characters with a base power of 6000 or less.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "condition": {
+            "type": "if_leader_has_trait",
+            "trait": "Red-Haired Pirates"
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "powerMax": 6000
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -59029,7 +59198,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
