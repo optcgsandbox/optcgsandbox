@@ -90,6 +90,26 @@ export function applyContinuousEffectsV2ToInstance(
         }
         break;
       }
+      case 'opp_aura_power_buff': {
+        const delta = eff.action.magnitude;
+        const filter = eff.action.filter;
+        for (const inst of opp.field) {
+          if (!matchesFilterMinimal(state, inst, filter)) continue;
+          inst.powerModifier = (inst.powerModifier ?? 0) + delta;
+          state.instances[inst.instanceId].powerModifier = inst.powerModifier;
+        }
+        break;
+      }
+      case 'opp_aura_cost_modifier': {
+        const delta = eff.action.delta;
+        const filter = eff.action.filter;
+        for (const inst of opp.field) {
+          if (!matchesFilterMinimal(state, inst, filter)) continue;
+          inst.costModifier = (inst.costModifier ?? 0) + delta;
+          state.instances[inst.instanceId].costModifier = inst.costModifier;
+        }
+        break;
+      }
       case 'aura_immunity': {
         const filter = eff.action.filter;
         for (const inst of me.field) {

@@ -10539,15 +10539,17 @@
             "trait": "Minks"
           },
           "action": {
-            "kind": "aura_cost_modifier",
-            "filter": {},
+            "kind": "opp_aura_cost_modifier",
+            "filter": {
+              "kind": "character"
+            },
             "delta": -1
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -17318,15 +17320,17 @@
             "n": 10
           },
           "action": {
-            "kind": "aura_power_buff",
-            "filter": {},
+            "kind": "opp_aura_power_buff",
+            "filter": {
+              "kind": "character"
+            },
             "magnitude": -1000
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -17814,7 +17818,7 @@
             "donCostReturnToDeck": 1
           },
           "action": {
-            "kind": "mill_opp",
+            "kind": "opp_discard_from_hand",
             "magnitude": 1
           },
           "verified": "flagged"
@@ -17823,7 +17827,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -18285,7 +18289,7 @@
             "donCostReturnToDeck": 1
           },
           "action": {
-            "kind": "mill_opp",
+            "kind": "opp_discard_from_hand",
             "magnitude": 1
           },
           "verified": "flagged"
@@ -18294,7 +18298,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -24056,15 +24060,20 @@
       "continuous": [
         {
           "action": {
-            "kind": "aura_cost_modifier",
-            "filter": {},
+            "kind": "opp_aura_cost_modifier",
+            "filter": {
+              "kind": "character"
+            },
             "delta": -5
+          },
+          "condition": {
+            "type": "is_own_turn"
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {

@@ -267,6 +267,8 @@ export type EffectActionV2 =
   | { kind: 'play_for_free'; from: 'hand' | 'trash' | 'hand_or_trash'; filter?: TargetFilter; count?: number; uniqueByName?: boolean; rested?: boolean }
   // EB01-047 — mandatory discard from hand (not a cost). Distinct from cost.discardHand.
   | { kind: 'discard_from_hand'; magnitude: number }
+  // Opp-side mirror — "your opponent trashes 1 card from their hand" (random pick).
+  | { kind: 'opp_discard_from_hand'; magnitude: number }
   // EB01-059 / EB01-060 — trash from top of own life until N remain.
   | { kind: 'trash_own_life_until'; n: number }
   // EB01-038 — defensive: redirect opp's pending attack to a chosen own char.
@@ -317,6 +319,8 @@ export interface ContinuousEffectV2 {
     | { kind: 'grant_keyword_to_self'; keyword: string }                     // (gap #34)
     | { kind: 'aura_power_buff'; filter: TargetFilter; magnitude: number }   // OP12-073
     | { kind: 'aura_cost_modifier'; filter: TargetFilter; delta: number }    // OP10-042
+    | { kind: 'opp_aura_power_buff'; filter: TargetFilter; magnitude: number } // mirror — affects opp.field
+    | { kind: 'opp_aura_cost_modifier'; filter: TargetFilter; delta: number }  // mirror — affects opp.field
     | { kind: 'aura_counter_buff'; filter: TargetFilter; magnitude: number } // EB01-001 — chars without a counter chip gain +N counter
     | { kind: 'aura_immunity'; filter: TargetFilter; against: 'opp_effects' | 'opp_removal' } // EB04-057 — chars matching filter become immune
     | { kind: 'self_cost_buff'; magnitude: number | MagnitudeFormula }       // EB04-048 — own cost scales by formula (mirrors self_power_buff)

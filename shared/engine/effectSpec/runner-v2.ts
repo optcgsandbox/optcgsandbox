@@ -1061,6 +1061,13 @@ export function applyActionV2(
       }
       return state;
     }
+    case 'opp_discard_from_hand': {
+      const n = action.magnitude;
+      for (let i = 0; i < n && opp.hand.length > 0; i++) {
+        opp.trash.push(opp.hand.shift()!);
+      }
+      return state;
+    }
     case 'trash_own_life_until': {
       const target = action.n;
       while (me.life.length > target) {
