@@ -107860,7 +107860,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target your_leader; text \"your Leader or 1 of your Characters\" — needs your_leader_or_character"
     }
   },
   {
@@ -107979,7 +107980,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target your_leader; text \"your Leader or 1 of your Characters\" — needs your_leader_or_character"
     }
   },
   {
@@ -108031,7 +108033,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "action restrict_effect_type effectKind:character_set_active; text \"Your opponent cannot activate [Blocker] during this battle\" — needs restrict_opp_blocker"
     }
   },
   {
@@ -108058,7 +108061,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -108072,7 +108075,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition if_don_min:1 (total DON); text \"[DON!! x1]\" needs if_attached_don_min:1"
     }
   },
   {
@@ -108117,7 +108121,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target your_leader; text \"your Leader or Character cards\" — needs your_leader_or_character"
     }
   },
   {
@@ -108187,7 +108192,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -108199,7 +108204,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action restrict_opp_blocker fires for any attack; text \"Your opponent cannot activate [Blocker] IF THAT [selected] Leader or Character attacks during this turn\" — restriction scoped to selected target attacking"
     }
   },
   {
@@ -108227,7 +108233,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -108249,7 +108255,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target your_character; text \"Up to 1 {Straw Hat Crew} type Leader or Character card on your field\" — needs your_leader_or_character"
     }
   },
   {
@@ -108349,7 +108356,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -108372,7 +108379,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition if_don_min:1; text \"[DON!! x1]\" needs if_attached_don_min:1"
     }
   },
   {
@@ -108551,7 +108559,7 @@
     "effectText": "[DON!! x1] [When Attacking] Rest up to 1 of your opponent's DON!! cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -108567,7 +108575,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "condition if_don_min:1; text \"[DON!! x1]\" needs if_attached_don_min:1"
     }
   },
   {
@@ -108593,7 +108602,7 @@
     "effectText": "[On Play] Set up to 1 of your {Supernovas} or {Heart Pirates} type rested Characters with a cost of 5 or less as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -108612,7 +108621,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target filter trait:\"Supernovas\"; text \"{Supernovas} OR {Heart Pirates} type\" — needs traitsAny:[\"Supernovas\",\"Heart Pirates\"]"
     }
   },
   {
@@ -108639,7 +108649,7 @@
     "effectText": "[DON!! x1] [Once Per Turn] [Your Turn] If this Character battles your opponent's Character, set this card as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_battle_ko",
@@ -108658,7 +108668,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "on_battle_ko clause missing is_own_turn condition for [Your Turn]"
     }
   },
   {
@@ -108869,7 +108880,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes +2000 power_buff (target your_leader); missing \"Then, set up to 1 of your DON!! cards as active\" — set_active_don clause; also target your_leader misses \"or Character\""
     }
   },
   {
@@ -108915,7 +108927,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes +4000 power_buff (target your_leader); missing \"Then, set up to 1 of your DON!! cards as active\" — set_active_don clause; also target your_leader misses \"or Character\""
     }
   },
   {
@@ -108984,7 +108997,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] DON!! −4 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Return up to 1 Character with a cost of 5 or less to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -109004,7 +109017,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "bounce target opp_character; text \"Return up to 1 Character with a cost of 5 or less\" (any character)"
     }
   },
   {
@@ -109085,7 +109099,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "place target opp_character; text \"Place up to 1 Character with a cost of 2 or less at the bottom of the owner's deck\" (any character)"
     }
   },
   {
@@ -109111,7 +109126,7 @@
     "effectText": "[On Play] Add up to 1 {The Seven Warlords of the Sea} or {Thriller Bark Pirates} type Character with a cost of 4 or less other than [Gecko Moria] from your trash to your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -109128,7 +109143,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "recursion filter trait:\"The Seven Warlords of the Sea\"; text \"{The Seven Warlords of the Sea} OR {Thriller Bark Pirates} type\" — needs traitsAny"
     }
   },
   {
@@ -109157,7 +109173,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -109176,7 +109192,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "condition if_don_min:1; text \"[DON!! x1]\" needs if_attached_don_min:1; also cost discardHand:2 + draw:2 vs text \"Draw 2 cards AND trash 2 cards from your hand\" (sequential)"
     }
   },
   {
@@ -109231,7 +109248,7 @@
     "effectText": "[DON!! x1] [Activate: Main] [Once Per Turn] ➁ (You may rest the specified number of DON!! cards in your cost area.): Play up to 1 [Pacifista] with a cost of 4 or less from your deck, then shuffle your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -109258,7 +109275,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "condition if_don_min:1; text \"[DON!! x1]\" needs if_attached_don_min:1; also searcher_peek lookCount:99 hack with no shuffle — text \"play... from your deck, then SHUFFLE your deck\""
     }
   },
   {
@@ -109337,7 +109355,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "bounce target opp_character; text \"Return up to 1 Character with a cost of 7 or less\" (any character)"
     }
   },
   {
@@ -109508,7 +109527,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "bounce target opp_character; text \"Return up to 1 Character with a cost of 3 or less\" (any character)"
     }
   },
   {
@@ -109535,7 +109555,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -109552,7 +109572,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "bounce target opp_character; text \"Return up to 1 Character with a cost of 7 or less\" (any character)"
     }
   },
   {
@@ -109578,7 +109599,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -109595,7 +109616,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "bounce target opp_character; text \"Return up to 1 Character with a cost of 3 or less\" (any character)"
     }
   },
   {
@@ -109683,7 +109705,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] DON!! −7 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Trash up to 1 of your opponent's Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -109701,7 +109723,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action mill_opp:1 (mills opp deck top); text \"Trash up to 1 of your opponent's LIFE CARDS\" — needs trash_face_up_life or similar on opp_life target"
     }
   },
   {
@@ -110029,7 +110052,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "action ramp magnitude:1 with no rested specifier; text \"Add up to 1 DON!! card from your DON!! deck and SET IT AS ACTIVE\" — needs rested:false"
     }
   },
   {
@@ -110220,7 +110244,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -110240,7 +110264,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause ramp magnitude:1 with no rested specifier; text \"set it as active\" — needs rested:false"
     }
   },
   {
@@ -110267,7 +110292,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -110292,7 +110317,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause ramp magnitude:1 with no rested specifier; text \"set it as active\" — needs rested:false"
     }
   },
   {
