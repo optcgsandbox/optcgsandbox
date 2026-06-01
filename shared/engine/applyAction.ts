@@ -18,7 +18,7 @@ import type { Card, CharacterCard, LeaderCard } from './cards/Card';
 import { fireEffects } from './cards/effects/dispatch';
 import type { CardInstance, GameEvent, GameState, PlayerId, PendingAttack } from './GameState';
 import { applyMulligan, chooseFirstPlayer, dealLifeCards, rollDice } from './phases/setup';
-import { endTurn as runEndTurn } from './phases/turn';
+import { endTurn as runEndTurn, broadcastTriggerToOwnField } from './phases/turn';
 import { Random } from './Random';
 import { publishTrigger } from './effectSpec/triggerBus-v2';
 
@@ -368,8 +368,10 @@ function playCard(
     const after = fireEffects(next, instanceId, 'on_play', player);
     Object.assign(next, after);
     // A.3.9: publish on_opp_play_character so reactive cards on the
-    // opposite side can respond. No-op in V0 (no subscribers).
+    // opposite side can respond.
     publishTrigger('on_opp_play_character', next, { opp: player, instanceId, cardId: card.id });
+    const oppOfPlayer: PlayerId = player === 'A' ? 'B' : 'A';
+    Object.assign(next, broadcastTriggerToOwnField(next, 'on_opp_play_character', oppOfPlayer));
   }
 
   return { state: next, events: next.history.slice(start) };
@@ -491,10 +493,10 @@ function declareAttack(
   Object.assign(next, after);
 
   // A.3.9: publish on_opp_attack to the v2 trigger bus so reactive cards
-  // owned by the defender can respond. V0 has no subscribers — the publish
-  // is a no-op until A.3.10 wires the runner up.
+  // owned by the defender can respond.
   const defender: PlayerId = player === 'A' ? 'B' : 'A';
   publishTrigger('on_opp_attack', next, { attacker: attackerId, target: targetId, defender });
+  Object.assign(next, broadcastTriggerToOwnField(next, 'on_opp_attack', defender));
 
   return { state: next, events: next.history.slice(start) };
 }
@@ -730,9 +732,12 @@ function flipLifeCards(
 
     next.history.push({ type: 'LIFE_TAKEN', player: defenderId, instanceId: lifeId });
 
-    // A.3.9: publish on_damage_taken + on_life_changed. No subscribers in V0.
+    // A.3.9: publish on_damage_taken + on_life_changed and dispatch to
+    // the defender's field cards (reactive triggers).
     publishTrigger('on_damage_taken', next, { player: defenderId, lifeId });
     publishTrigger('on_life_changed', next, { player: defenderId, delta: -1, lifeId });
+    Object.assign(next, broadcastTriggerToOwnField(next, 'on_damage_taken', defenderId));
+    Object.assign(next, broadcastTriggerToOwnField(next, 'on_life_changed', defenderId));
 
     // D7 (CR §10-1-3): when the attacker has [Banish], the life card is
     // trashed without revealing and Trigger does NOT fire. Short-circuit

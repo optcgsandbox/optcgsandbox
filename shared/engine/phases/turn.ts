@@ -12,8 +12,10 @@ const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
 /** Walk `controller`'s field+leader+stage and fire any effectSpecV2 clauses
  *  whose trigger matches. Used at phase boundaries to honor
- *  `at_end_of_turn_self` etc. on cards already in play. */
-function broadcastTriggerToOwnField(
+ *  `at_end_of_turn_self` etc. on cards already in play.
+ *  Exported so applyAction.ts can use the same dispatch for reactive triggers
+ *  (on_opp_attack, on_damage_taken, on_life_changed, etc.). */
+export function broadcastTriggerToOwnField(
   state: GameState,
   trigger: EffectTriggerV2,
   controller: PlayerId,
@@ -26,11 +28,29 @@ function broadcastTriggerToOwnField(
     const clauses = card?.effectSpecV2?.clauses ?? [];
     for (const clause of clauses) {
       if (clause.trigger !== trigger) continue;
+      // OPT (`once_per_turn`) gating per CR §10-2-13: skip if this card has
+      // the keyword AND already fired this trigger this turn. Mark fired
+      // after successful condition evaluation but before applying the action.
+      const inner = card as { keywords?: string[] } | undefined;
+      const isOpt = !!inner?.keywords?.includes('once_per_turn');
+      if (isOpt && inst.perTurn.effectsUsed.includes(trigger)) continue;
       if (clause.condition && !evaluateConditionV2(state, controller, clause.condition, inst.instanceId)) continue;
       const targets = resolveTargetV2(state, controller, inst.instanceId, clause.target);
       state = applyActionV2(state, { sourceInstanceId: inst.instanceId, controller }, clause.action, targets);
+      if (isOpt && !inst.perTurn.effectsUsed.includes(trigger)) inst.perTurn.effectsUsed.push(trigger);
     }
   }
+  return state;
+}
+
+/** Fire `trigger` on BOTH players' fields. For events that affect both sides
+ *  symmetrically (at_end_of_turn, on_life_changed in some contexts). */
+export function broadcastTriggerToBothFields(
+  state: GameState,
+  trigger: EffectTriggerV2,
+): GameState {
+  state = broadcastTriggerToOwnField(state, trigger, 'A');
+  state = broadcastTriggerToOwnField(state, trigger, 'B');
   return state;
 }
 
@@ -45,11 +65,13 @@ function broadcastTriggerToOwnField(
  *  caused the opponent to visually see the leader without its attached DON
  *  during their turn — a visible (not cosmetic) divergence. */
 export function runRefreshPhase(state: GameState): GameState {
-  const next: GameState = structuredClone(state);
+  let next: GameState = structuredClone(state);
   const p = next.players[next.activePlayer];
   // A.3.9: opp's view of "their refresh starting" — publish at_opp_refresh
-  // to the v2 bus. No subscribers in V0.
+  // to the v2 bus AND dispatch matching clauses to the OPPONENT's field
+  // (the player who is NOT refreshing — they observe their opp's refresh).
   publishTrigger('at_opp_refresh', next, { refreshingPlayer: next.activePlayer });
+  next = broadcastTriggerToOwnField(next, 'at_opp_refresh', OTHER[next.activePlayer]);
 
   // D5 (CR §6-2-3): detach attached DON BEFORE the rest→active flip so the
   // returning DON itself comes back active this Refresh (consistent with §6-2-4
@@ -209,6 +231,9 @@ export function endTurn(state: GameState): GameState {
   // cards currently in play. TriggerBus has no spec-side subscribers, so
   // dispatch directly to field instances here.
   next = broadcastTriggerToOwnField(next, 'at_end_of_turn_self', next.activePlayer);
+  // at_end_of_turn fires on BOTH sides (it's an end-of-any-turn trigger
+  // per the EffectTriggerV2 doc comment "fires at end of any turn").
+  next = broadcastTriggerToBothFields(next, 'at_end_of_turn');
   next.activePlayer = OTHER[next.activePlayer];
   next.turn += 1;
   next.phase = 'refresh';
