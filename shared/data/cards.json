@@ -120350,18 +120350,43 @@
     "effectSpecV2": {
       "clauses": [
         {
+          "trigger": "activate_main",
+          "opt": true,
+          "cost": {
+            "restOwnCharFilter": {
+              "count": 1,
+              "filter": {
+                "nameIs": "Fullalead"
+              }
+            }
+          },
+          "condition": {
+            "type": "if_leader_has_type",
+            "typeString": "Blackbeard Pirates"
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 4000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "human-reviewed"
+        },
+        {
           "trigger": "on_ko",
           "action": {
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -120392,18 +120417,37 @@
     "effectSpecV2": {
       "clauses": [
         {
+          "trigger": "activate_main",
+          "cost": {
+            "trashSelf": true
+          },
+          "condition": {
+            "type": "if_leader_has_type",
+            "typeString": "Blackbeard Pirates"
+          },
+          "action": {
+            "kind": "removal_cost_reduce",
+            "magnitude": 1,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "human-reviewed"
+        },
+        {
           "trigger": "on_ko",
           "action": {
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -120430,7 +120474,22 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On K.O.] Play up to 1 {Blackbeard Pirates} type Character card with a cost of 5 or less from your trash rested.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "action": {
+            "kind": "play_for_free",
+            "from": "trash",
+            "filter": {
+              "trait": "Blackbeard Pirates",
+              "costMax": 5,
+              "kind": "character"
+            },
+            "rested": true
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -120441,7 +120500,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -120518,10 +120577,15 @@
             "restSelf": true
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "removal_ko"
           },
-          "verified": "flagged"
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 3
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -120609,11 +120673,27 @@
     ],
     "effectText": "[DON!! x2] This Character gains [Blocker].<br>[On Play] Your {Land of Wano} type Leader gains [Banish] during this turn.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "give_keyword",
+            "keyword": "Banish",
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "your_leader",
+            "filter": {
+              "trait": "Land of Wano"
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "condition": {
-            "type": "if_have_given_don_min",
+            "type": "if_attached_don_min",
             "n": 2
           },
           "action": {
@@ -120624,7 +120704,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -120924,13 +121004,16 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
           "action": {
             "kind": "self_power_buff",
             "magnitude": 1000
+          },
+          "condition": {
+            "type": "if_own_life_le_opp"
           }
         }
       ],
@@ -121327,12 +121410,17 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
           "cost": {
-            "discardHand": 1
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "hasTrigger": true
+              }
+            }
           },
           "action": {
             "kind": "draw",
@@ -121343,7 +121431,12 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "discardHand": 1
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "hasTrigger": true
+              }
+            }
           },
           "action": {
             "kind": "give_don_to_target",
@@ -121351,7 +121444,7 @@
             "rested": true
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
           "verified": "flagged"
         }

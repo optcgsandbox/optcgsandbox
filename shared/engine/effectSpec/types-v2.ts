@@ -65,6 +65,7 @@ export type EffectConditionV2 =
   | { type: 'if_opp_don_max'; n: number }                               // mirror
   | { type: 'if_own_don_le_opp' }                                       // (gap #67)
   | { type: 'if_own_life_lt_opp' }                                      // "if you have less Life cards than your opponent"
+  | { type: 'if_own_life_le_opp' }                                      // "if your Life cards are equal to or less than your opponent's"
   | { type: 'if_own_life_max'; n: number }
   | { type: 'if_own_life_min'; n: number }
   | { type: 'if_opp_life_max'; n: number }
