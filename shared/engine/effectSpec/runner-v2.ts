@@ -1435,12 +1435,19 @@ export function applyActionV2(
       return state;
     }
     case 'transfer_attached_don': {
-      // Pick a source instance to pull DON from. fromKind:'your_leader' pulls
-      // from leader's attachedDon; 'your_character' pulls from first own field
-      // member with attachedDon; 'self' pulls from this card's attached DON.
+      // Pick a source instance to pull DON from. fromKind:
+      //   'your_leader'    → leader's attachedDon
+      //   'self'           → this card's attached DON
+      //   'your_character' → first own field member with attachedDon
+      //   'any_own'        → F11 (EB02-009 Thousand Sunny etc.) — leader OR
+      //                       any field char OR stage that has DON attached
       let sourceInst: { attachedDon: string[] } | undefined;
       if (action.fromKind === 'your_leader') sourceInst = me.leader;
       else if (action.fromKind === 'self') sourceInst = state.instances[ctx.sourceInstanceId];
+      else if (action.fromKind === 'any_own') {
+        const candidates = [me.leader, ...me.field, ...(me.stage ? [me.stage] : [])];
+        sourceInst = candidates.find((i) => i.attachedDon.length > 0);
+      }
       else sourceInst = me.field.find((i) => i.attachedDon.length > 0);
       if (!sourceInst || sourceInst.attachedDon.length === 0) return state;
       const n = action.magnitude;

@@ -3468,7 +3468,7 @@
           "action": {
             "kind": "transfer_attached_don",
             "magnitude": 1,
-            "fromKind": "your_leader"
+            "fromKind": "any_own"
           },
           "target": {
             "kind": "your_character",

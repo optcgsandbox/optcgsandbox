@@ -353,7 +353,7 @@ export type EffectActionV2 =
   | { kind: 'set_base_power_copy_from_target'; duration: EffectDuration }
   // EB02-009 Thousand Sunny — transfer an already-attached DON from one own
   // instance to another (rather than pulling from donCostArea).
-  | { kind: 'transfer_attached_don'; magnitude: number; fromKind: 'your_leader' | 'your_character' | 'self' }
+  | { kind: 'transfer_attached_don'; magnitude: number; fromKind: 'your_leader' | 'your_character' | 'self' | 'any_own' }
   // EB01-029 Sorry. I'm a Goner — reveal top, if it matches a cost gate,
   // run the inner action (bounce). Otherwise no-op. Card goes to bottom.
   | { kind: 'reveal_top_then_if_cost_min'; minCost: number; thenAction: EffectActionV2 }
