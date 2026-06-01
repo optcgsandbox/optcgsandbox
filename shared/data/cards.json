@@ -102306,13 +102306,13 @@
               "costMax": 3
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -102338,7 +102338,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -102394,7 +102394,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -102419,7 +102419,7 @@
     "effectText": "[On Play] You may place all cards in your hand at the bottom of your deck in any order. If you do, draw cards equal to the number you placed at the bottom of your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -102463,7 +102463,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -102484,7 +102484,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -102532,7 +102532,7 @@
             ]
           },
           "action": {
-            "kind": "bottom_of_deck_from_trash",
+            "kind": "discard_from_hand",
             "magnitude": 1
           },
           "verified": "flagged"
@@ -102570,13 +102570,13 @@
             "kind": "peek_and_reorder_own_deck",
             "count": 5
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -102611,11 +102611,33 @@
             "kind": "grant_keyword_to_self",
             "keyword": "blocker"
           }
+        },
+        {
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_attached_don_min",
+                "n": 1
+              },
+              {
+                "type": "is_own_turn"
+              },
+              {
+                "type": "if_hand_max",
+                "n": 3
+              }
+            ]
+          },
+          "action": {
+            "kind": "self_power_buff",
+            "magnitude": 4000
+          }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -102643,7 +102665,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -102660,7 +102682,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -102692,7 +102714,7 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -102726,7 +102748,7 @@
     "effectText": "[On Play] If you have 3 or less cards in your hand, return up to 1 of your opponent's Characters with a cost of 3 or less to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -102743,7 +102765,7 @@
               "costMax": 3
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -102777,7 +102799,7 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -102811,7 +102833,7 @@
     "effectText": "[On Play] You may trash 2 cards from your hand: Your opponent places 1 of their Characters at the bottom of the owner's deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -102825,7 +102847,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -102874,7 +102896,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -102901,7 +102923,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -102920,7 +102942,7 @@
               "rested": true
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -102951,7 +102973,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -103002,7 +103024,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -103032,7 +103054,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -103063,7 +103085,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -103078,7 +103100,7 @@
             "kind": "rest_opp_don",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -103142,7 +103164,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -103155,7 +103177,7 @@
               "costMax": 4
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "activate_main",
@@ -103167,7 +103189,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "activate_main",
@@ -103175,7 +103197,7 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -103216,13 +103238,13 @@
               "costMax": 1
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -103251,14 +103273,14 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_own_chars_min_cost",
+            "type": "if_opp_chars_max_cost",
             "n": 1,
-            "minCost": 0
+            "maxCost": 0
           },
           "action": {
             "kind": "power_buff",
@@ -103268,7 +103290,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -103298,7 +103320,7 @@
     "effectText": "[Activate: Main] You may trash this Character: Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -103309,7 +103331,7 @@
             "kind": "peek_and_reorder_own_deck",
             "count": 5
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -103349,13 +103371,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -103390,7 +103412,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -103415,7 +103437,7 @@
     "effectText": "[On K.O.] You may add this Character card to your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -103426,7 +103448,7 @@
               "nameIs": "Marco"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -103461,7 +103483,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -103472,7 +103494,7 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "activate_main",
@@ -103484,7 +103506,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -103513,7 +103535,7 @@
     "effectText": "[Activate: Main] You may return this Character to the owner's hand: Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -103524,7 +103546,7 @@
             "kind": "peek_and_reorder_own_deck",
             "count": 5
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -103569,13 +103591,29 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_own_chars_min_cost",
+            "n": 1,
+            "minCost": 8
+          },
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -103603,7 +103641,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] You may trash 1 {Navy} type card from your hand: Give up to 1 of your opponent's Characters －1 cost during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -103618,7 +103656,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -103649,7 +103687,7 @@
     "effectText": "[Once Per Turn] When 2 or more DON!! cards on your field are returned to your DON!! deck, add up to 1 DON!! card from your DON!! deck and rest it. Then, set up to 1 of your purple Stages as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_own_don_returned",
@@ -103658,7 +103696,8 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         },
         {
           "trigger": "on_own_don_returned",
@@ -103674,7 +103713,8 @@
               ]
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -103707,7 +103747,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -103758,7 +103798,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -103785,7 +103825,7 @@
     "effectText": "[Activate: Main] You may return this Character to the owner's hand: If you have 3 or more blue {Cross Guild} type Characters, play up to 1 {Cross Guild} type Character card with a cost of 5 from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -103835,7 +103875,7 @@
     "effectText": "[Your Turn] [On Play] If your Leader has the {Cross Guild} type or a type including \"Baroque Works\", place up to 1 of your opponent's Characters with 2000 power or less at the bottom of the owner's deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -103862,7 +103902,7 @@
               "powerMax": 2000
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -103896,7 +103936,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -103915,7 +103955,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "when_attacking",
@@ -103927,7 +103967,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -103970,13 +104010,27 @@
               "kind": "character"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
         {
           "action": {
             "kind": "restrict_self_attack"
+          }
+        },
+        {
+          "condition": {
+            "type": "if_leader_is",
+            "name": "Buggy"
+          },
+          "action": {
+            "kind": "aura_power_buff",
+            "filter": {
+              "costMin": 3,
+              "costMax": 4
+            },
+            "magnitude": 0
           }
         }
       ],
@@ -104006,7 +104060,7 @@
     "effectText": "[On Play] If your Leader has the {Supernovas} type and the number of your Life cards is equal to or less than the number of your opponent's Life cards, add up to 1 of your opponent's Characters with a cost of 4 or less to the top or bottom of the owner's Life cards face-up.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -104032,7 +104086,7 @@
               "costMax": 4
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
