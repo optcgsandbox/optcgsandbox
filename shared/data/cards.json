@@ -7939,7 +7939,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "action activate_event_from_hand but text reads \"from your trash\" — source mismatch"
     }
   },
   {
@@ -8107,7 +8108,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: chained_actions has bottom_of_deck_from_hand; text says TOP of deck from hand"
     }
   },
   {
@@ -8254,7 +8256,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target all_your_characters; text says \"all your ODYSSEY Leader AND Character cards\" — leader excluded"
     }
   },
   {
@@ -8391,7 +8394,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "discard 1 from hand is a separate EFFECT (after draw); spec treats it as cost for play"
     }
   },
   {
@@ -8542,7 +8546,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: filter only Rev Army trait+nameExcludes Koala; \"or Nico Robin\" branch missing"
     }
   },
   {
@@ -8597,7 +8602,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: cost.bottomOfDeckFromTrash:2 lacks CP-type filter; text requires CP-trait trash cards"
     }
   },
   {
@@ -8731,7 +8737,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "on_play give_don target your_leader only; text says \"Leader or 1 of your Characters\""
     }
   },
   {
@@ -8925,7 +8932,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: chained_actions with two actions sharing no inter-action target context"
     }
   },
   {
@@ -8995,7 +9003,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "play count:2 with costMax:6 — text requires 1 char ≤6 AND 1 char ≤4 (different filters)"
     }
   },
   {
@@ -9090,7 +9099,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: missing condition \"if you have a face-up Life card\" on the KO clause"
     }
   },
   {
@@ -9320,7 +9330,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause add_to_own_life_top has no count; text says \"up to 2 cards\". Plus 2nd opp-turn-KO clause missing entirely (deal 1 damage)"
     }
   },
   {
