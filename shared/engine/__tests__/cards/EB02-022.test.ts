@@ -88,6 +88,8 @@ describe('EB02-022 — Usopp (blue)', () => {
 
   it('plays a vanilla 6000-power char from hand', () => {
     const s = boot();
+    // Empty A's hand of any other random char so v6 is the only candidate.
+    s.players.A.hand = [];
     addVanillaToHand(s, 'v6', 6000);
     applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, clause.action, []);
     expect(s.players.A.field.some((i: { instanceId: string }) => i.instanceId === 'v6')).toBe(true);
