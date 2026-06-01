@@ -88756,10 +88756,10 @@
     "effectText": "[Your Turn] When this Character becomes rested, you may add 1 card from the top of your Life cards to your hand. If you do, up to 1 of your opponent's rested Characters or Stages will not become active in your opponent's next Refresh Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
-          "trigger": "on_life_changed",
+          "trigger": "on_become_rested",
           "opt": true,
           "cost": {
             "lifeToHand": 1
@@ -89004,12 +89004,20 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
           "condition": {
-            "type": "is_opp_turn"
+            "type": "and",
+            "conditions": [
+              {
+                "type": "is_opp_turn"
+              },
+              {
+                "type": "if_self_rested"
+              }
+            ]
           },
           "action": {
             "kind": "self_power_buff",
@@ -89048,10 +89056,10 @@
     "effectText": "[Your Turn] When this Character becomes rested, rest up to 1 of your opponent's Characters with 7000 base power or less.<br>[Opponent's Turn] If this Character is rested, give all of your opponent's Characters −1000 power.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
-          "trigger": "on_life_changed",
+          "trigger": "on_become_rested",
           "action": {
             "kind": "rest_target"
           },
@@ -89067,12 +89075,22 @@
       "continuous": [
         {
           "action": {
-            "kind": "aura_power_buff",
-            "filter": {},
+            "kind": "opp_aura_power_buff",
+            "filter": {
+              "kind": "character"
+            },
             "magnitude": -1000
           },
           "condition": {
-            "type": "is_opp_turn"
+            "type": "and",
+            "conditions": [
+              {
+                "type": "is_opp_turn"
+              },
+              {
+                "type": "if_self_rested"
+              }
+            ]
           }
         }
       ],
@@ -89102,10 +89120,10 @@
     "effectText": "[Your Turn] When this Character becomes rested, K.O. up to 1 of your opponent's rested Characters with a cost of 2 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
-          "trigger": "on_life_changed",
+          "trigger": "on_become_rested",
           "action": {
             "kind": "removal_ko"
           },
@@ -89269,7 +89287,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -89296,10 +89314,10 @@
     "effectText": "[Your Turn] When this Character becomes rested, rest up to 1 of your opponent's Characters with a cost of 4 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
-          "trigger": "on_life_changed",
+          "trigger": "on_become_rested",
           "action": {
             "kind": "rest_target"
           },
@@ -89477,10 +89495,10 @@
     "effectText": "[Your Turn] When this Character becomes rested, up to 1 of your opponent's rested Characters with a cost of 4 or less will not become active in your opponent's next Refresh Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
-          "trigger": "on_life_changed",
+          "trigger": "on_become_rested",
           "action": {
             "kind": "rest_lock_until_phase",
             "until": "opp_next_end_phase"
@@ -90077,7 +90095,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -90280,7 +90298,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -90994,7 +91012,7 @@
     "effectText": "[On K.O.] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): K.O. or rest up to 1 of your opponent's Characters with a base power of 6000 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -91333,7 +91351,7 @@
     "effectText": "[On Play] DON!! −3: Choose one:<br>• If your Leader has the {Donquixote Pirates} type, K.O. up to 1 of your opponent's Characters with a cost of 8 or less.<br>• Up to 3 of your opponent's Characters with a cost of 7 or less cannot be rested until the end of your opponent's next End Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -91899,7 +91917,7 @@
     "effectText": "All of your opponent's Characters cannot be removed from the field by your effects.<br>[Activate: Main] [Once Per Turn] You may K.O. 1 of your Characters with a type including \"Baroque Works\": Give up to 1 of your opponent's Characters −10 cost during this turn. Then, you may trash 2 cards from the top of your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -91911,8 +91929,9 @@
             }
           },
           "action": {
-            "kind": "cost_reduction",
-            "magnitude": 10
+            "kind": "removal_cost_reduce",
+            "magnitude": 10,
+            "duration": "this_turn"
           },
           "target": {
             "kind": "opp_character"
@@ -94016,10 +94035,10 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
-          "trigger": "on_life_changed",
+          "trigger": "on_become_rested",
           "action": {
             "kind": "rest_lock_until_phase",
             "until": "opp_next_end_phase"

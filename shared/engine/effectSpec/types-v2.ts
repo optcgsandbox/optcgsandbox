@@ -31,6 +31,8 @@ export type EffectTriggerV2 =
   | 'at_end_of_turn'             // (gap #50) — fires at end of any turn
   | 'on_opp_attack'              // (gap #36) — reactive when opp declares an attack
   | 'on_life_changed'            // (gap #37) — reactive on life-card move
+  | 'on_become_rested'           // OP14-021/027/028/032/035/119 — fires when source transitions active→rested
+  | 'on_hand_trashed_by_effect'  // OP14-045/049/056 — fires when own hand discard happens via an effect
   | 'at_opp_refresh'             // (gap #38) — reactive at opp's refresh phase
   | 'on_damage_taken'            // (gap #84) — when YOU take damage (life flip)
   | 'on_own_don_returned'        // (gap #88) — when own DON returns to deck
