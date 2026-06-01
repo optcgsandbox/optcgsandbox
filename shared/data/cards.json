@@ -95518,7 +95518,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -95571,7 +95571,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first/second clause cost discardHandFilter count:1 + filter only event; text \"trash any number of Event OR Stage cards\" — needs variable count and traitsAny/kindsAny [event,stage]"
     }
   },
   {
@@ -95721,7 +95722,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -95741,7 +95742,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "condition if_have_given_don_min:1 checks own given DON; text \"If YOUR OPPONENT has any DON!! cards given\" — needs if_opp_have_given_don_min:1"
     }
   },
   {
@@ -95771,7 +95773,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -95785,7 +95787,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition if_trash_min:4 counts any cards; text \"If you have 4 or more EVENTS in your trash\" — needs event-filtered trash count"
     }
   },
   {
@@ -95862,7 +95865,7 @@
     "effectText": "[On Play] Give up to 3 of your opponent's rested DON!! cards to 1 of your opponent's Characters. Then, this Character gains [Rush] during this turn.<br>[Activate: Main] [Once Per Turn] If this Character was played on this turn, give all of your opponent's Characters −1000 power during this turn for every DON!! card given to that Character.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95904,7 +95907,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "third clause action power_buff magnitude:-1000 fixed; text \"give all of your opponent's Characters −1000 power during this turn FOR EVERY DON!! card given to that Character\" — needs per_count magnitude based on DON given to the target"
     }
   },
   {
@@ -96273,7 +96277,7 @@
     "effectText": "[On Play] Give up to 1 of your opponent's rested DON!! cards to 1 of your opponent's Characters. Then, give −1000 power during this turn to up to 1 of your opponent's Characters with a DON!! card given.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -96300,7 +96304,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause target opp_character without filter; text \"give −1000 power during this turn to up to 1 of your opponent's Characters WITH A DON!! CARD GIVEN\" — needs filter attachedDonMin:1"
     }
   },
   {
@@ -96596,7 +96601,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -96623,7 +96628,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition if_trash_min:4 counts any cards; text \"If you have 4 or more EVENTS in your trash\" — needs event-filtered trash count; also only on_play (Main) trigger, missing [Counter] branch"
     }
   },
   {
@@ -96772,7 +96778,7 @@
     "effectText": "[Opponent's Turn] This Character cannot be rested by your opponent's Leader and Character effects and gains [Blocker].<br>[On K.O.] Rest up to 1 of your opponent's Leader or Character cards with a cost of 7 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -96799,7 +96805,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous only grants Blocker on opp turn; text \"This Character cannot be RESTED by your opponent's Leader and Character effects\" rest-immunity not encoded; also on_ko target opp_character — text \"your opponent's Leader or Character cards\" needs opp_leader_or_character"
     }
   },
   {
@@ -96948,7 +96955,7 @@
     "effectText": "[On Play] Rest up to 1 of your opponent's Characters with a DON!! card given.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -96966,7 +96973,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "condition if_have_given_don_min:1 checks own given DON state; text \"Rest up to 1 of your opponent's Characters WITH A DON!! CARD GIVEN\" — needs target filter attachedDonMin:1, not a condition on own DON"
     }
   },
   {
@@ -97037,7 +97045,7 @@
     "effectText": "[On Play] Up to 1 of your opponent's Characters with a cost of 5 or less cannot be rested until the end of your opponent's next End Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -97055,7 +97063,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action rest_lock_until_phase prevents becoming active in refresh; text \"cannot be RESTED until the end of your opponent's next End Phase\" prevents resting (needs rest_immunity)"
     }
   },
   {
@@ -97276,7 +97285,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -97295,7 +97304,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "on_play clause missing is_own_turn condition for [Your Turn]"
     }
   },
   {
@@ -97320,7 +97330,7 @@
     "effectText": "If your Character with 7000 base power or less would be removed from the field by your opponent's effect, you may rest 2 of your cards instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -97347,7 +97357,8 @@
           },
           "appliesToFiltered": true
         }
-      ]
+      ],
+      "auditNote": "replacement cost restSelf:true (rests this character only); text \"you may REST 2 OF YOUR CARDS instead\" — any 2 of own cards (chars + DON), needs restOwnCardsFilter:2 or restOwnCharFilter:{count:2}"
     }
   },
   {
@@ -98201,7 +98212,7 @@
     "effectText": "If your Character with 7000 base power or less would be removed from the field by your opponent's effect, you may place 1 of your Characters at the bottom of the owner's deck instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -98225,7 +98236,8 @@
           },
           "appliesToFiltered": true
         }
-      ]
+      ],
+      "auditNote": "replacement action bottom_of_deck_to_opp_deck places to opp's deck; text \"you may place 1 of YOUR Characters at the bottom of the OWNER'S DECK instead\" — owner of own char is you, needs bottom_of_deck_own_self_deck"
     }
   },
   {
@@ -98311,7 +98323,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -98365,7 +98377,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "choose_one has 3 options (draw, play, bounce); text first option combines \"Draw 2 cards AND trash 1 card from your hand. Then, play up to 1 {Dressrosa}...\" into one option (chained), second option is the stage-bounce — needs 2 options not 3"
     }
   },
   {
@@ -98540,7 +98553,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -98572,7 +98585,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause cost discardHand:1; text \"rest this Stage AND trash 1 Event OR Stage card from your hand\" — discardHandFilter needs filter kindsAny [event,stage]; also target your_character — text \"Leader or Character cards\" needs your_leader_or_character"
     }
   },
   {
@@ -98599,7 +98613,7 @@
     "effectText": "Under the rules of this game, your DON!! deck consists of 6 cards.<br>[Activate: Main] [Once Per Turn] If it is your second turn or later, add up to 1 DON!! card from your DON!! deck and set it as active, and add up to 4 additional DON!! cards and rest them. Then, give up to 4 rested DON!! cards to 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -98636,7 +98650,8 @@
       "replacements": [],
       "rules": {
         "donDeckSize": 6
-      }
+      },
+      "auditNote": "activate_main clauses fire on any turn; text \"If it is your SECOND TURN OR LATER\" — missing condition if_not_first_turn"
     }
   },
   {
@@ -98660,7 +98675,7 @@
     "effectText": "[On Your Opponent's Attack] You may rest this Character: Your opponent may return 1 of their active DON!! cards to their DON!! deck. If they do not, give up to 1 of your opponent's Leader or Character cards −2000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_opp_attack",
@@ -98693,7 +98708,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause action return_opp_don_to_deck:1 forces opp to return DON; text \"YOUR OPPONENT MAY return 1 of their active DON!! cards\" — opp's choice; second clause should fire \"If they do not\" — needs branching on opp's choice"
     }
   },
   {
