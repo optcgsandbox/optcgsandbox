@@ -44151,7 +44151,7 @@
     "effectText": "[On K.O.] Place up to 1 Character with a cost of 2 or less at the bottom of the owner's deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -44168,7 +44168,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target opp_character but text says \"Place up to 1 Character\" (any character)"
     }
   },
   {
@@ -44400,7 +44401,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -44417,7 +44418,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target opp_character but text says \"Place up to 2 Characters\" (any character); also missing count:2"
     }
   },
   {
@@ -45137,7 +45139,7 @@
     "effectText": "If your Leader has the {GERMA 66} type and the number of DON!! cards on your field is at least 2 less than the number on your opponent's field, this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -45159,7 +45161,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "condition uses if_own_don_le_opp (≤) — text requires \"the number of DON!! cards on your field is AT LEAST 2 LESS than the number on your opponent's field\" (opp_don - own_don ≥ 2)"
     }
   },
   {
@@ -45217,7 +45220,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "on_play uses cost:discardHand:1 + draw 1 — text is sequential \"draw 1 card and trash 1 card from your hand\" not cost+effect"
     }
   },
   {
@@ -45244,7 +45248,7 @@
     "effectText": "[On Play] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Negate the effect of up to 1 of your opponent's Characters during this turn. Then, if that Character has 5000 power or less, K.O. it.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -45278,7 +45282,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause target opp_character with powerMax:5000 (any opp char ≤5000); text \"Then, if that Character has 5000 power or less, K.O. it\" must reference the same character that was negated in clause 1"
     }
   },
   {
@@ -45324,7 +45329,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character missing count:2; text says \"Rest up to 2 of your opponent's Characters\""
     }
   },
   {
@@ -45608,7 +45614,7 @@
     "effectText": "[On Play] You may return 2 cards from your trash to the bottom of your deck in any order: K.O. up to 1 Character with a cost of 2 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -45628,7 +45634,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target opp_character but text says \"K.O. up to 1 Character\" (any character)"
     }
   },
   {
@@ -45980,7 +45987,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -46002,7 +46009,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition pairs is_own_turn with leader-has-Dressrosa; text says \"If your Leader has the {Dressrosa} type and IS ACTIVE\" — active means leader.rested == false, not \"your turn\""
     }
   },
   {
@@ -46315,7 +46323,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -46343,7 +46351,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "only two unconditional Leader +1000 clauses; missing the koSelfCharacter cost (KO any number of own Thriller Bark chars ≤2) gating the second +1000, missing per_count multiplier, and missing [Counter] trigger branch"
     }
   },
   {
@@ -46368,7 +46377,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -46390,7 +46399,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "grant_immunity against:opp_removal duration:this_turn; text says \"cannot be K.O.'d IN BATTLE during this turn\" — battle-damage immunity, not effect-removal immunity"
     }
   },
   {
@@ -46506,7 +46516,7 @@
     "effectText": "[On Play] Look at up to 1 card from the top of your or your opponent's Life cards and place it at the top or bottom of the Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -46517,7 +46527,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "peek_and_reorder_opp_life only; text says \"your or your opponent's Life cards\" — missing own-life branch"
     }
   },
   {
@@ -46691,7 +46702,7 @@
     "effectText": "[When Attacking] You may trash 2 cards from your hand: Add up to 1 of your Characters with 0 power to the top or bottom of the owner's Life cards face-up.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -46713,7 +46724,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "add_to_own_life_top with no position field; text says \"to the top or bottom of the owner's Life cards\" — bottom option missing"
     }
   },
   {
@@ -46892,7 +46904,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "add_to_own_life_top with no position field; text says \"to the top or bottom of the owner's Life cards\" — bottom option missing"
     }
   },
   {
