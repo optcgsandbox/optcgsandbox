@@ -5,54 +5,13 @@
 import type { GameState, PlayerId } from '../GameState';
 import { RULES } from '../GameState';
 import { publishTrigger } from '../effectSpec/triggerBus-v2';
-import { applyActionV2, evaluateConditionV2, resolveTargetV2 } from '../effectSpec/runner-v2';
-import type { EffectClauseV2, EffectTriggerV2 } from '../effectSpec/types-v2';
+import { broadcastTriggerToOwnField, broadcastTriggerToBothFields } from '../effectSpec/runner-v2';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
-/** Walk `controller`'s field+leader+stage and fire any effectSpecV2 clauses
- *  whose trigger matches. Used at phase boundaries to honor
- *  `at_end_of_turn_self` etc. on cards already in play.
- *  Exported so applyAction.ts can use the same dispatch for reactive triggers
- *  (on_opp_attack, on_damage_taken, on_life_changed, etc.). */
-export function broadcastTriggerToOwnField(
-  state: GameState,
-  trigger: EffectTriggerV2,
-  controller: PlayerId,
-): GameState {
-  const pl = state.players[controller];
-  const candidates = [pl.leader, ...pl.field, ...(pl.stage ? [pl.stage] : [])];
-  for (const inst of candidates) {
-    const card = state.cardLibrary[inst.cardId] as
-      | { effectSpecV2?: { clauses?: EffectClauseV2[] } } | undefined;
-    const clauses = card?.effectSpecV2?.clauses ?? [];
-    for (const clause of clauses) {
-      if (clause.trigger !== trigger) continue;
-      // OPT (`once_per_turn`) gating per CR §10-2-13: skip if this card has
-      // the keyword AND already fired this trigger this turn. Mark fired
-      // after successful condition evaluation but before applying the action.
-      const inner = card as { keywords?: string[] } | undefined;
-      const isOpt = !!inner?.keywords?.includes('once_per_turn');
-      if (isOpt && inst.perTurn.effectsUsed.includes(trigger)) continue;
-      if (clause.condition && !evaluateConditionV2(state, controller, clause.condition, inst.instanceId)) continue;
-      const targets = resolveTargetV2(state, controller, inst.instanceId, clause.target);
-      state = applyActionV2(state, { sourceInstanceId: inst.instanceId, controller }, clause.action, targets);
-      if (isOpt && !inst.perTurn.effectsUsed.includes(trigger)) inst.perTurn.effectsUsed.push(trigger);
-    }
-  }
-  return state;
-}
-
-/** Fire `trigger` on BOTH players' fields. For events that affect both sides
- *  symmetrically (at_end_of_turn, on_life_changed in some contexts). */
-export function broadcastTriggerToBothFields(
-  state: GameState,
-  trigger: EffectTriggerV2,
-): GameState {
-  state = broadcastTriggerToOwnField(state, trigger, 'A');
-  state = broadcastTriggerToOwnField(state, trigger, 'B');
-  return state;
-}
+// broadcastTriggerToOwnField + broadcastTriggerToBothFields live in
+// effectSpec/runner-v2.ts (re-imported above) so applyAction.ts and
+// runner-v2.ts itself can use them without circular-import issues.
 
 /** Active player un-rests their leader, characters, and all DON.
  *

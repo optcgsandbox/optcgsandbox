@@ -45,6 +45,7 @@ export type EffectTriggerV2 =
   | 'on_battle_ko'              // OP02-094 / OP04-086 / ST02-010 / ST08-013 — "when this Character battles and K.O.'s your opponent's Character"
   | 'on_take_damage'            // OP15-070 etc. — when source takes damage in battle
   | 'on_any_opp_char_ko'        // OP01-061 Kaido — "when your opponent's Character is K.O.'d" (any source)
+  | 'on_any_char_ko'            // EB01-047 Laboon — "when a Character is K.O.'d" (any side)
   | 'on_attack_deal_damage'      // OP03-040 Nami mill — when source's attack deals damage to opp's Life
   ;
 

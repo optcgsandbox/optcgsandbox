@@ -18,7 +18,10 @@ import type { Card, CharacterCard, LeaderCard } from './cards/Card';
 import { fireEffects } from './cards/effects/dispatch';
 import type { CardInstance, GameEvent, GameState, PlayerId, PendingAttack } from './GameState';
 import { applyMulligan, chooseFirstPlayer, dealLifeCards, rollDice } from './phases/setup';
-import { endTurn as runEndTurn, broadcastTriggerToOwnField } from './phases/turn';
+import { endTurn as runEndTurn } from './phases/turn';
+import { broadcastTriggerToOwnField, broadcastTriggerToBothFields } from './effectSpec/runner-v2';
+import { tryApplyReplacement } from './effectSpec/replacements-v2';
+import type { ReplacementEffectV2 } from './effectSpec/types-v2';
 import { Random } from './Random';
 import { publishTrigger } from './effectSpec/triggerBus-v2';
 
@@ -649,6 +652,29 @@ function resolveDamage(state: GameState): { state: GameState; events: GameEvent[
     }
   } else if (targetCard.kind === 'character') {
     if (attackerPower >= targetPower) {
+      // F3 (CR §8-1-3-4 — V2 replacement hook): consult would_be_ko BEFORE
+      // splice. If the target has an effectSpecV2.replacement that succeeds,
+      // it returns { replaced: true } and the KO is skipped entirely.
+      const targetInstNow = next.instances[pa.targetInstanceId];
+      const targetCardForReps = targetInstNow ? next.cardLibrary[targetInstNow.cardId] as
+        | { effectSpecV2?: { replacements?: ReplacementEffectV2[] } } | undefined : undefined;
+      const reps = targetCardForReps?.effectSpecV2?.replacements ?? [];
+      if (reps.length > 0 && targetInstNow) {
+        const result = tryApplyReplacement(
+          next,
+          { sourceInstanceId: pa.targetInstanceId, controller: targetInstNow.controller },
+          'would_be_ko',
+          reps,
+        );
+        if (result.replaced) {
+          Object.assign(next, result.state);
+          next.pendingAttack = null;
+          next.phase = 'main';
+          next.history.push({ type: 'PHASE_CHANGED', phase: 'main' });
+          return { state: next, events: next.history.slice(start) };
+        }
+      }
+
       const idx = defenderSide.field.findIndex((i) => i.instanceId === pa.targetInstanceId);
       if (idx !== -1) {
         const removed = defenderSide.field.splice(idx, 1)[0];
@@ -677,6 +703,12 @@ function resolveDamage(state: GameState): { state: GameState; events: GameEvent[
           // state.instances which is keyed by instanceId, not zone.
           const after = fireEffects(next, removed.instanceId, 'on_ko', koedController);
           Object.assign(next, after);
+
+          // F2 (EB01-047 Laboon etc.): on_any_char_ko + on_any_opp_char_ko
+          // dispatch via spec-clause broadcast.
+          Object.assign(next, broadcastTriggerToBothFields(next, 'on_any_char_ko'));
+          const opp: PlayerId = koedController === 'A' ? 'B' : 'A';
+          Object.assign(next, broadcastTriggerToOwnField(next, 'on_any_opp_char_ko', opp));
         }
       }
     }

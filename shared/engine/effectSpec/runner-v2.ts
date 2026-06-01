@@ -7,7 +7,7 @@
 
 import type { CardInstance, GameState, PlayerId } from '../GameState';
 import type { Card } from '../cards/Card';
-import type { EffectActionV2, EffectConditionV2, EffectTargetV2, ReplacementEffectV2, TargetFilter } from './types-v2';
+import type { EffectActionV2, EffectClauseV2, EffectConditionV2, EffectTargetV2, EffectTriggerV2, ReplacementEffectV2, TargetFilter } from './types-v2';
 import { tryApplyReplacement } from './replacements-v2';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
@@ -1131,6 +1131,7 @@ export function applyActionV2(
             }
           }
         }
+        let koedSide: PlayerId | null = null;
         for (const pid of ['A', 'B'] as PlayerId[]) {
           const pl = state.players[pid];
           const idx = pl.field.findIndex((i) => i.instanceId === tid);
@@ -1138,8 +1139,18 @@ export function applyActionV2(
             const removed = pl.field.splice(idx, 1)[0];
             while (removed.attachedDon.length > 0) pl.donRested.push(removed.attachedDon.shift()!);
             pl.trash.push(removed.instanceId);
+            koedSide = pid;
             break;
           }
+        }
+        if (koedSide) {
+          // Broadcast on_any_char_ko to BOTH players' field cards
+          // (EB01-047 Laboon fires when ANY character is KO'd).
+          state = broadcastTriggerToBothFields(state, 'on_any_char_ko');
+          // Also broadcast on_any_opp_char_ko to the side whose opp's char was KO'd
+          // (i.e., the OTHER side from the KO'd char's controller).
+          const opp: PlayerId = koedSide === 'A' ? 'B' : 'A';
+          state = broadcastTriggerToOwnField(state, 'on_any_opp_char_ko', opp);
         }
       }
       return state;
@@ -1542,4 +1553,42 @@ export function applyActionV2(
       // Action kinds handled by later sub-phases fall through.
       return state;
   }
+}
+
+/** Walk `controller`'s field+leader+stage and fire any effectSpecV2 clauses
+ *  whose trigger matches. Honors OPT (`once_per_turn`) gating.
+ *  Used by phase boundaries (at_end_of_turn_self, at_opp_refresh, etc.) and
+ *  reactive event sites (on_opp_attack, on_damage_taken, on_any_char_ko). */
+export function broadcastTriggerToOwnField(
+  state: GameState,
+  trigger: EffectTriggerV2,
+  controller: PlayerId,
+): GameState {
+  const pl = state.players[controller];
+  const candidates = [pl.leader, ...pl.field, ...(pl.stage ? [pl.stage] : [])];
+  for (const inst of candidates) {
+    const card = state.cardLibrary[inst.cardId] as
+      | { effectSpecV2?: { clauses?: EffectClauseV2[] }; keywords?: string[] } | undefined;
+    const clauses = card?.effectSpecV2?.clauses ?? [];
+    const isOpt = !!card?.keywords?.includes('once_per_turn');
+    for (const clause of clauses) {
+      if (clause.trigger !== trigger) continue;
+      if (isOpt && inst.perTurn.effectsUsed.includes(trigger)) continue;
+      if (clause.condition && !evaluateConditionV2(state, controller, clause.condition, inst.instanceId)) continue;
+      const targets = resolveTargetV2(state, controller, inst.instanceId, clause.target);
+      state = applyActionV2(state, { sourceInstanceId: inst.instanceId, controller }, clause.action, targets);
+      if (isOpt && !inst.perTurn.effectsUsed.includes(trigger)) inst.perTurn.effectsUsed.push(trigger);
+    }
+  }
+  return state;
+}
+
+/** Broadcast trigger to BOTH players' fields. */
+export function broadcastTriggerToBothFields(
+  state: GameState,
+  trigger: EffectTriggerV2,
+): GameState {
+  state = broadcastTriggerToOwnField(state, trigger, 'A');
+  state = broadcastTriggerToOwnField(state, trigger, 'B');
+  return state;
 }
