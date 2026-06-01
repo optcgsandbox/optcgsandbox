@@ -193,14 +193,14 @@ function matchesFilterMinimal(
   inst: CardInstance,
   filter:
     | { cost_max?: number; cost_min?: number; trait?: string; typeIncludes?: string; kind?: 'character' | 'event' | 'stage' }
-    | { costMax?: number; costMin?: number; trait?: string; typeIncludes?: string; kind?: 'character' | 'event' | 'stage' }
+    | { costMax?: number; costMin?: number; powerMax?: number; powerMin?: number; trait?: string; typeIncludes?: string; kind?: 'character' | 'event' | 'stage' }
     | undefined,
 ): boolean {
   if (!filter) return true;
   const card = state.cardLibrary[inst.cardId];
   if (!card) return false;
   // Both naming conventions accepted (runner uses costMax/costMin).
-  const f = filter as { costMax?: number; costMin?: number; trait?: string; typeIncludes?: string; kind?: string };
+  const f = filter as { costMax?: number; costMin?: number; powerMax?: number; powerMin?: number; trait?: string; typeIncludes?: string; kind?: string };
   if (typeof f.costMax === 'number') {
     const c = typeof card.cost === 'number' ? card.cost + (inst.costModifier ?? 0) : -1;
     if (c < 0 || c > f.costMax) return false;
@@ -208,6 +208,16 @@ function matchesFilterMinimal(
   if (typeof f.costMin === 'number') {
     const c = typeof card.cost === 'number' ? card.cost + (inst.costModifier ?? 0) : -1;
     if (c < 0 || c < f.costMin) return false;
+  }
+  // Power filters in aura context read BASE power (printed) — current power could
+  // mutate during the same evaluation pass and create non-idempotent feedback.
+  if (typeof f.powerMax === 'number') {
+    const p = typeof card.power === 'number' ? card.power : -1;
+    if (p < 0 || p > f.powerMax) return false;
+  }
+  if (typeof f.powerMin === 'number') {
+    const p = typeof card.power === 'number' ? card.power : -1;
+    if (p < 0 || p < f.powerMin) return false;
   }
   if (f.trait && !card.traits.includes(f.trait)) return false;
   if (f.typeIncludes && !card.traits.some((t) => t.includes(f.typeIncludes!))) return false;
