@@ -59255,12 +59255,8 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
-              },
-              {
-                "type": "if_leader_power_max",
-                "n": 99999
               },
               {
                 "type": "if_leader_has_type",
@@ -59363,7 +59359,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -59373,6 +59369,11 @@
               {
                 "type": "if_leader_has_trait",
                 "trait": "Red-Haired Pirates"
+              },
+              {
+                "type": "if_opp_chars_min_power",
+                "n": 1,
+                "minPower": 5000
               }
             ]
           },
@@ -59380,13 +59381,13 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -59431,7 +59432,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -59480,7 +59481,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -59519,7 +59520,8 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         },
         {
           "trigger": "activate_main",
@@ -59535,7 +59537,8 @@
               "costMax": 5
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [
@@ -59587,12 +59590,13 @@
             "trait": "ODYSSEY"
           },
           "action": {
-            "kind": "set_active"
+            "kind": "set_active_don",
+            "magnitude": 3
           },
           "target": {
             "kind": "your_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_opp_attack",
@@ -59605,15 +59609,16 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -59653,7 +59658,7 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -59662,16 +59667,19 @@
             "n": 2
           },
           "action": {
-            "kind": "mill_self",
-            "magnitude": 2
+            "kind": "draw",
+            "magnitude": 0
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "cost": {
+            "discardHand": 2
+          }
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -59758,7 +59766,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -59798,13 +59806,14 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -59841,17 +59850,21 @@
             "from": "trash",
             "filter": {
               "kind": "character",
-              "trait": "ODYSSEY",
-              "costMax": 4
-            }
+              "costMax": 4,
+              "traitsAny": [
+                "ODYSSEY",
+                "Straw Hat Crew"
+              ]
+            },
+            "rested": true
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -59897,7 +59910,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -59940,13 +59953,13 @@
               "nameExcludes": "Trafalgar Law"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -59975,7 +59988,22 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[End of Your Turn] If you have 2 or more rested Characters, set this Character as active.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "at_end_of_turn_self",
+          "condition": {
+            "type": "if_own_chars_min",
+            "n": 2
+          },
+          "action": {
+            "kind": "set_active"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -59986,7 +60014,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60013,7 +60041,19 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Your Opponent's Attack] [Once Per Turn] Set this Character as active.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_opp_attack",
+          "opt": true,
+          "action": {
+            "kind": "set_active"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -60024,7 +60064,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60059,7 +60099,13 @@
           "action": {
             "kind": "grant_immunity",
             "against": "opp_effects",
-            "duration": "opp_next_turn"
+            "duration": "opp_next_turn",
+            "filter": {
+              "traitsAny": [
+                "ODYSSEY",
+                "Straw Hat Crew"
+              ]
+            }
           },
           "target": {
             "kind": "all_your_characters",
@@ -60067,13 +60113,13 @@
               "trait": "ODYSSEY"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60106,7 +60152,12 @@
             "lookCount": 5,
             "addCount": 1,
             "filter": {
-              "nameIs": "Dracule Mihawk"
+              "namesAny": [
+                "Dracule Mihawk"
+              ],
+              "traitsAny": [
+                "Thriller Bark Pirates"
+              ]
             }
           },
           "verified": "flagged"
@@ -60117,7 +60168,7 @@
             "kind": "mill_self",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -60171,7 +60222,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60213,7 +60264,7 @@
               "costMax": 6
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -60257,13 +60308,27 @@
               "trait": "ODYSSEY"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "at_end_of_turn_self",
+          "condition": {
+            "type": "if_own_chars_min",
+            "n": 3
+          },
+          "action": {
+            "kind": "set_active"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60341,7 +60406,7 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
           "verified": "auto"
         }
@@ -60349,7 +60414,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60398,7 +60463,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60436,7 +60501,30 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_leader_has_trait",
+                "trait": "ODYSSEY"
+              },
+              {
+                "type": "if_own_chars_min",
+                "n": 2
+              }
+            ]
+          },
+          "action": {
+            "kind": "set_active"
+          },
+          "target": {
+            "kind": "your_character"
           },
           "verified": "flagged"
         }
@@ -60444,7 +60532,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "flagged"
     }
   },
   {
@@ -60485,13 +60573,14 @@
               "trait": "Cross Guild"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60531,13 +60620,13 @@
               "nameExcludes": "Alvida"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60570,10 +60659,13 @@
             "lookCount": 5,
             "addCount": 1,
             "filter": {
-              "trait": "Land of Wano"
+              "traitsAny": [
+                "Land of Wano",
+                "Whitebeard Pirates"
+              ]
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "when_attacking",
@@ -60581,13 +60673,13 @@
             "kind": "mill_self",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60628,8 +60720,7 @@
             ]
           },
           "action": {
-            "kind": "grant_keyword_to_self",
-            "keyword": "cannot_be_ko_in_battle"
+            "kind": "self_immune_to_opp_effects"
           }
         }
       ],
@@ -60668,18 +60759,21 @@
             "kind": "play_for_free",
             "from": "hand",
             "filter": {
-              "kind": "character",
-              "trait": "Cross Guild",
-              "costMax": 5
+              "traitsAny": [
+                "Cross Guild",
+                "Baroque Works"
+              ],
+              "costMax": 5,
+              "kind": "character"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60709,7 +60803,19 @@
       "draw": 2
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 2
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -60720,7 +60826,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60750,7 +60856,19 @@
       "draw": 2
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 2
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -60761,7 +60879,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60831,7 +60949,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60860,13 +60978,12 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "bottom_of_deck_from_trash",
-            "magnitude": 1
+            "kind": "bottom_of_deck_to_opp_deck"
           },
           "target": {
             "kind": "opp_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -60904,7 +61021,7 @@
         {
           "trigger": "would_be_ko",
           "condition": {
-            "type": "during_opp_turn"
+            "type": "is_opp_turn"
           },
           "cost": {
             "discardHand": 1
@@ -60917,11 +61034,11 @@
             }
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60956,7 +61073,7 @@
               "nameIs": "Richie"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -60967,13 +61084,13 @@
               "nameIs": "Richie"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -61009,7 +61126,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
