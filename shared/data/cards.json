@@ -77094,7 +77094,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first chained removal_bounce target opp_character; text says \"1 Character\" (any character); second chained give_don_to_target target your_leader missing \"or 1 of your Characters\""
     }
   },
   {
@@ -77125,7 +77126,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -77156,7 +77157,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause target your_character only; text says \"up to 1 of your Leader or Character cards gains +1000\" — needs your_leader_or_character"
     }
   },
   {
@@ -77186,7 +77188,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -77218,7 +77220,8 @@
         "deckRestrictions": {
           "bannedEventCostMin": 5
         }
-      }
+      },
+      "auditNote": "rules.deckRestrictions bannedEventCostMin:5 only bans events; text \"you cannot include CARDS with a cost of 5 or more in your deck\" applies to all cards (any kind)"
     }
   },
   {
@@ -77403,7 +77406,7 @@
     "effectText": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 [Monkey.D.Luffy] or 1 red Event and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -77419,7 +77422,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek filter only nameIs:\"Monkey.D.Luffy\"; text \"[Monkey.D.Luffy] OR 1 red Event\" — red-Event branch missing"
     }
   },
   {
@@ -77724,7 +77728,7 @@
     "effectText": "[Activate: Main] You may rest this Character and reveal 2 Events from your hand: Give up to 2 rested DON!! cards to your Leader or 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -77749,7 +77753,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target your_leader; text says \"your Leader or 1 of your Characters\" — needs your_leader_or_character"
     }
   },
   {
@@ -77777,7 +77782,7 @@
     "effectText": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 [Monkey.D.Luffy] or red Event and add it to your hand. Then, place the rest at the bottom of your deck in any order.<br>[Activate: Main] You may trash this Character: Give up to 2 rested DON!! cards to your Leader or 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -77808,7 +77813,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause searcher_peek filter only nameIs:\"Monkey.D.Luffy\" — text \"[Monkey.D.Luffy] or red Event\" missing red-Event branch; second clause target your_leader missing \"or 1 of your Characters\""
     }
   },
   {
@@ -77839,7 +77845,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -77897,7 +77903,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause give_don_to_target target your_leader; text says \"your Leader or 1 of your Characters\""
     }
   },
   {
@@ -77944,7 +77951,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes the [Counter] +2000 clause; missing [Main] clause \"give 2 active DON to your [Silvers Rayleigh]: Your opponent cannot activate [Blocker] when the card given these DON attacks during this turn\""
     }
   },
   {
@@ -77971,7 +77979,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -77990,7 +77998,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "spec only encodes searcher_peek for red Event; missing the cost \"give 1 active DON!! card to 1 of your [Silvers Rayleigh]\" and the OR-branch \"up to 1 Character card with a cost of 3 or more\""
     }
   },
   {
@@ -78018,7 +78027,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -78058,7 +78067,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second and third clauses (-1000 to opp chars + opp leader) fire unconditionally; text gates with \"you may rest 1 of your DON!! cards. If you do, ...\" — missing donCost gate"
     }
   },
   {
@@ -78117,7 +78127,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause missing cost \"give 1 active DON!! card to 1 of your [Silvers Rayleigh]\" — currently fires unconditionally on play"
     }
   },
   {
@@ -78145,7 +78156,7 @@
     "effectText": "[DON!! x3] [Activate: Main] [Once Per Turn] If this Leader battles your opponent's Character during this turn, set this Leader as active. Then, this Leader cannot attack your opponent's Characters with a base cost of 7 or less during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -78164,7 +78175,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "spec only encodes set_active; missing \"Then, this Leader cannot attack your opponent's Characters with a base cost of 7 or less during this turn\" attack restriction"
     }
   },
   {
@@ -78217,7 +78229,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "continuous self_immune_to_opp_effects (covers all effects); text \"this Character cannot be RESTED by your opponent's effects\" — only rest immunity, not KO/etc."
     }
   },
   {
@@ -78322,7 +78335,7 @@
     "effectText": "If this Character is active, this Character cannot be K.O.'d by your opponent's effects.<br>[When Attacking] If you have a total of 3 or more given DON!! cards, rest up to 1 of your opponent's Characters with a base cost of 6 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -78349,7 +78362,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous self_immune_to_opp_effects has no condition; text gates with \"If this Character is active\" — needs condition if_self_active"
     }
   },
   {
@@ -78529,7 +78543,7 @@
     "effectText": "[Activate: Main] You may rest 1 of your DON!! cards and this Character: If your Leader is [Roronoa Zoro], look at 5 cards from the top of your deck; reveal up to 1 <Slash> attribute card or green Event and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -78551,7 +78565,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek filter:{} empty; text restricts to \"<Slash> attribute card or green Event\" — needs OR-filter"
     }
   },
   {
@@ -78691,7 +78706,7 @@
     "effectText": "[On Play] Rest up to 1 of your opponent's Characters with a base cost of 6 or less. Then, give up to 3 rested DON!! cards to your [Roronoa Zoro] Leader.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -78720,7 +78735,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause give_don_to_target target your_leader has no filter; text restricts to \"your [Roronoa Zoro] Leader\""
     }
   },
   {
@@ -78825,7 +78841,7 @@
     "effectText": "[On Play] If your Leader has the <Slash> attribute, look at 5 cards from the top of your deck; reveal up to 1 <Slash> attribute card or green Event and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -78843,7 +78859,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek filter:{} empty; text restricts to \"<Slash> attribute card or green Event\" — needs OR-filter"
     }
   },
   {
@@ -78897,7 +78914,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -78911,7 +78928,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "spec only encodes +1000 power_buff if Slash leader; missing \"this Character cannot be K.O.'d in battle by <Slash> attribute cards\" battle-attribute immunity; also missing \"This card in your hand cannot be played by effects\" rule"
     }
   },
   {
@@ -79110,7 +79128,7 @@
     "effectText": "When a card is trashed from your hand by your {Navy} type card's effect, draw cards equal to the number of cards trashed.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_hand_trashed_by_effect",
@@ -79123,7 +79141,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action draw:1 fixed; text \"draw cards EQUAL TO THE NUMBER OF CARDS TRASHED\" needs per_count magnitude scaling with cards trashed"
     }
   },
   {
@@ -79208,7 +79227,7 @@
     "effectText": "If you have 2 or more Characters with a base cost of 5 or more, this Character gains +1 cost.<br>[On Play] Place up to 1 of your opponent's Characters with a base cost of 1 or less at the bottom of the owner's deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -79241,7 +79260,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "on_play action bottom_of_deck_from_trash (places from trash); text \"Place up to 1 of your opponent's Characters ... at the bottom of the owner's deck\" — needs bottom_of_deck_to_opp_deck; also continuous aura_cost_modifier filter nameIs:Alvida applies to other Alvidas — text \"this Character gains +1 cost\" needs cost_modifier_in_hand"
     }
   },
   {
@@ -79266,7 +79286,7 @@
     "effectText": "If you have 5 or more cards in your hand, this Character gains +1 cost.<br>[On Play] You may trash 1 card from your hand: Up to 1 of your opponent's Characters cannot attack until the end of your opponent's next End Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -79298,7 +79318,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous aura_cost_modifier filter nameIs:Kuzan applies to other Kuzans; text \"this Character gains +1 cost\" affects this card in hand — needs cost_modifier_in_hand"
     }
   },
   {
@@ -79361,7 +79382,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause give_don_to_target target your_leader; text \"your Leader or 1 of your Characters\""
     }
   },
   {
@@ -79442,7 +79464,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause removal_bounce target opp_character; text \"Return up to 1 Character with a cost of 5 or less\" (any character)"
     }
   },
   {
@@ -79486,7 +79509,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek filter trait:\"Navy\" missing nameExcludes:\"Sengoku\"; text says \"other than [Sengoku]\""
     }
   },
   {
@@ -79511,7 +79535,7 @@
     "effectText": "[Opponent's Turn] If your blue {Navy} type Character would be removed from the field by your opponent's effect, you may rest this Character and trash 1 card from your hand instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -79532,7 +79556,8 @@
           "conditional": true,
           "verified": "human-reviewed"
         }
-      ]
+      ],
+      "auditNote": "replacement has no filter; text scopes to \"your BLUE {Navy} type Character\" — needs filter colors:blue + trait:Navy on the would_be_removed target"
     }
   },
   {
@@ -79621,7 +79646,7 @@
     "effectText": "[Activate: Main] You may rest this Character and trash 1 card from your hand: Up to 1 of your opponent's Characters with a base cost of 4 or less cannot activate [Blocker] during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -79643,7 +79668,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action restrict_effect_type effectKind:character_set_active blocks setting characters active; text \"cannot activate [Blocker] during this turn\" — needs restrict_opp_blocker (with target filter)"
     }
   },
   {
@@ -79777,7 +79803,7 @@
     "effectText": "[On Play] If your Leader has the {The Seven Warlords of the Sea} type, return up to 1 Character with a cost of 1 or less other than this Character to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -79799,7 +79825,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "removal_bounce target opp_character; text \"Return up to 1 Character with a cost of 1 or less other than this Character\" — any character (subject to nameExcludes)"
     }
   },
   {
@@ -79956,7 +79983,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -79976,7 +80003,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "reveal_top_and_conditional_play encodes the play; missing the conditional tail \"If you do, that Character gains [Rush] during this turn\""
     }
   },
   {
