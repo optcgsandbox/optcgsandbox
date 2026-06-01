@@ -1,0 +1,452 @@
+[
+  {
+    "id": "ST02-008",
+    "kind": "character",
+    "name": "Scratchmen Apoo",
+    "effect_text": "[DON!! x1] [When Attacking] Rest up to 1 of your opponent's DON!! cards."
+  },
+  {
+    "id": "ST02-009",
+    "kind": "character",
+    "name": "Trafalgar Law",
+    "effect_text": "[On Play] Set up to 1 of your {Supernovas} or {Heart Pirates} type rested Characters with a cost of 5 or less as active."
+  },
+  {
+    "id": "ST02-010",
+    "kind": "character",
+    "name": "Basil Hawkins",
+    "effect_text": "[DON!! x1] [Once Per Turn] [Your Turn] If this Character battles your opponent's Character, set this card as active."
+  },
+  {
+    "id": "ST02-014",
+    "kind": "character",
+    "name": "X.Drake",
+    "effect_text": "[DON!! x1] [Your Turn] If this Character is rested, your {Supernovas} or {Navy} type Leaders and Characters gain +1000 power."
+  },
+  {
+    "id": "ST02-017",
+    "kind": "event",
+    "name": "Straw Sword",
+    "effect_text": "[Main] Rest up to 1 of your opponent's Characters."
+  },
+  {
+    "id": "ST03-001",
+    "kind": "leader",
+    "name": "Crocodile",
+    "effect_text": "[Activate: Main] [Once Per Turn] DON!! −4 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Return up to 1 Character with a cost of 5 or less to the owner's hand."
+  },
+  {
+    "id": "ST03-004",
+    "kind": "character",
+    "name": "Gecko Moria",
+    "effect_text": "[On Play] Add up to 1 {The Seven Warlords of the Sea} or {Thriller Bark Pirates} type Character with a cost of 4 or less other than [Gecko Moria] from your trash to your hand."
+  },
+  {
+    "id": "ST03-005",
+    "kind": "character",
+    "name": "Dracule Mihawk",
+    "effect_text": "[DON!! x1] [When Attacking] Draw 2 cards and trash 2 cards from your hand."
+  },
+  {
+    "id": "ST03-007",
+    "kind": "character",
+    "name": "Sentomaru",
+    "effect_text": "[DON!! x1] [Activate: Main] [Once Per Turn] ➁ (You may rest the specified number of DON!! cards in your cost area.): Play up to 1 [Pacifista] with a cost of 4 or less from your deck, then shuffle your deck."
+  },
+  {
+    "id": "ST03-010",
+    "kind": "character",
+    "name": "Bartholomew Kuma",
+    "effect_text": "[On Play] Look at 3 cards from the top of your deck and return them to the top or bottom of the deck in any order."
+  },
+  {
+    "id": "ST03-015",
+    "kind": "event",
+    "name": "Sables",
+    "effect_text": "[Main] Return up to 1 Character with a cost of 7 or less to the owner's hand."
+  },
+  {
+    "id": "ST03-016",
+    "kind": "event",
+    "name": "Thrust Pad Cannon",
+    "effect_text": "[Counter] Return up to 1 Character with a cost of 3 or less to the owner's hand."
+  },
+  {
+    "id": "ST04-001",
+    "kind": "leader",
+    "name": "Kaido",
+    "effect_text": "[Activate: Main] [Once Per Turn] DON!! −7 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Trash up to 1 of your opponent's Life cards."
+  },
+  {
+    "id": "ST04-002",
+    "kind": "character",
+    "name": "Ulti",
+    "effect_text": "[On Play] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Play up to 1 [Page One] card with a cost of 4 or less from your hand."
+  },
+  {
+    "id": "ST04-003",
+    "kind": "character",
+    "name": "Kaido",
+    "effect_text": "[On Play] DON!! −5 (You may return the specified number of DON!! cards from your field to your DON!! deck.): K.O. up to 1 of your opponent's Characters with a cost of 6 or less. This Character gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)"
+  },
+  {
+    "id": "ST04-014",
+    "kind": "event",
+    "name": "Lead Performer \"Disaster\"",
+    "effect_text": "[Main] Draw 1 card, then add up to 1 DON!! card from your DON!! deck and set it as active."
+  },
+  {
+    "id": "ST04-015",
+    "kind": "event",
+    "name": "Brachio Bomber",
+    "effect_text": "[Main] K.O. up to 1 of your opponent's Characters with a cost of 6 or less, then add up to 1 DON!! card from your DON!! deck and set it as active."
+  },
+  {
+    "id": "ST04-017",
+    "kind": "stage",
+    "name": "Onigashima Island",
+    "effect_text": "[Activate: Main] You may rest this Stage: If your Leader has the {Animal Kingdom Pirates} type, add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "ST05-001",
+    "kind": "leader",
+    "name": "Shanks",
+    "effect_text": "[Activate: Main] [Once Per Turn] DON!! −3 (You may return the specified number of DON!! cards from your field to your DON!! deck.): All of your {FILM} type Characters gain +2000 power during this turn."
+  },
+  {
+    "id": "ST05-005",
+    "kind": "character",
+    "name": "Carina",
+    "effect_text": "[Activate: Main] [Once Per Turn] You may rest this Character and trash 1 {FILM} type card from your hand: If your opponent has more DON!! cards on their field than you, add 2 DON!! cards from your DON!! deck and rest them."
+  },
+  {
+    "id": "ST05-008",
+    "kind": "character",
+    "name": "Shiki",
+    "effect_text": "If you have 8 or more DON!! cards on your field, this Character cannot be K.O.'d in battle."
+  },
+  {
+    "id": "ST05-010",
+    "kind": "character",
+    "name": "Zephyr",
+    "effect_text": "When this Character battles ＜Strike＞ attribute Characters, this Character gains +3000 power during this turn.<br>[Activate: Main] [Once Per Turn] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): This Character gains +2000 power during this turn."
+  },
+  {
+    "id": "ST05-011",
+    "kind": "character",
+    "name": "Douglas Bullet",
+    "effect_text": "[Activate: Main] [Once Per Turn] DON!! −4 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Rest up to 2 of your opponent's Characters with a cost of 6 or less. Then, this Character gains [Double Attack] during this turn.<br>(This card deals 2 damage.)"
+  },
+  {
+    "id": "ST05-017",
+    "kind": "event",
+    "name": "Union Armada",
+    "effect_text": "[Counter] Up to 1 of your {FILM} type Leader or Character cards gains +4000 power during this battle. If that card is a Character, that Character cannot be K.O.'d during this turn."
+  },
+  {
+    "id": "ST06-001",
+    "kind": "leader",
+    "name": "Sakazuki",
+    "effect_text": "[Activate: Main] [Once Per Turn] ③ (You may rest the specified number of DON!! cards in your cost area.) You may trash 1 card from your hand: K.O. up to 1 of your opponent's Characters with a cost of 0."
+  },
+  {
+    "id": "ST06-002",
+    "kind": "character",
+    "name": "Koby",
+    "effect_text": "[On Play] You may trash 1 card from your hand: K.O. up to 1 of your opponent's Characters with a cost of 0."
+  },
+  {
+    "id": "ST06-004",
+    "kind": "character",
+    "name": "Smoker",
+    "effect_text": "This Character cannot be K.O.'d by effects.<br>[DON!! x1] If there is a Character with a cost of 0, this Character gains [Double Attack].<br>(This card deals 2 damage.)"
+  },
+  {
+    "id": "ST06-012",
+    "kind": "character",
+    "name": "Monkey.D.Garp",
+    "effect_text": "[Activate: Main] You may trash 1 card from your hand and rest this Character: K.O. up to 1 of your opponent's Characters with a cost of 4 or less."
+  },
+  {
+    "id": "ST06-015",
+    "kind": "event",
+    "name": "Great Eruption",
+    "effect_text": "[Main] Draw 1 card. Then, give up to 1 of your opponent's Characters −2 cost during this turn."
+  },
+  {
+    "id": "ST07-001",
+    "kind": "leader",
+    "name": "Charlotte Linlin",
+    "effect_text": "[DON!! x2] [When Attacking] You may add 1 card from the top or bottom of your Life cards to your hand: If you have 2 or less Life cards, add up to 1 card from your hand to the top of your Life cards."
+  },
+  {
+    "id": "ST07-003",
+    "kind": "character",
+    "name": "Charlotte Katakuri",
+    "effect_text": "[On Play] Look at up to 1 card from the top of your or your opponent's Life cards, and place it at the top or bottom of the Life cards. Then, if you have less Life cards than your opponent, this Character gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)"
+  },
+  {
+    "id": "ST07-004",
+    "kind": "character",
+    "name": "Charlotte Snack",
+    "effect_text": "[DON!! x1] [When Attacking] You may add 1 card from the top or bottom of your Life cards to your hand: This Character gains [Banish] and +1000 power during this battle.<br>(When this card deals damage, the target card is trashed without activating its Trigger.)"
+  },
+  {
+    "id": "ST07-005",
+    "kind": "character",
+    "name": "Charlotte Daifuku",
+    "effect_text": "[DON!! x1] [When Attacking] You may add 1 card from the top or bottom of your Life cards to your hand: Add up to 1 card from the top of your deck to the top of your Life cards."
+  },
+  {
+    "id": "ST07-008",
+    "kind": "character",
+    "name": "Charlotte Pudding",
+    "effect_text": "[On Play] Look at up to 1 card from the top of your or your opponent's Life cards, and place it at the top or bottom of the Life cards."
+  },
+  {
+    "id": "ST07-009",
+    "kind": "character",
+    "name": "Charlotte Mont-d'or",
+    "effect_text": "[Activate: Main] You may rest this Character and add 1 card from the top or bottom of your Life cards to your hand: K.O. up to 1 of your opponent's Characters with a cost of 3 or less."
+  },
+  {
+    "id": "ST07-010",
+    "kind": "character",
+    "name": "Charlotte Linlin",
+    "effect_text": "[On Play] Your opponent chooses one:<br>- Trash 1 card from the top of your opponent's Life cards.<br>- Add 1 card from the top of your deck to the top of your Life cards."
+  },
+  {
+    "id": "ST07-015",
+    "kind": "event",
+    "name": "Soul Pocus",
+    "effect_text": "[Main] Your opponent chooses one:<br>- Trash 1 card from the top of your opponent's Life cards.<br>- Add 1 card from the top of your deck to the top of your Life cards."
+  },
+  {
+    "id": "ST07-016",
+    "kind": "event",
+    "name": "Power Mochi",
+    "effect_text": "[Counter] Look at up to 1 card from the top of your or your opponent's Life cards, and place it at the top or bottom of the Life cards. Then, up to 1 of your Leader or Character cards gains +2000 power during this battle."
+  },
+  {
+    "id": "ST07-017",
+    "kind": "stage",
+    "name": "Queen Mama Chanter",
+    "effect_text": "[Activate: Main] You may rest this Stage and add 1 card from the top or bottom of your Life cards to your hand: Add up to 1 of your Characters with a cost of 3 to the top of the owner's Life cards face-up."
+  },
+  {
+    "id": "ST08-001",
+    "kind": "leader",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[Your Turn] When a Character is K.O.'d, give up to 1 rested DON!! card to this Leader."
+  },
+  {
+    "id": "ST08-005",
+    "kind": "character",
+    "name": "Shanks",
+    "effect_text": "[On Play] You may trash 1 card from your hand: K.O. all Characters with a cost of 1 or less."
+  },
+  {
+    "id": "ST08-009",
+    "kind": "character",
+    "name": "Makino",
+    "effect_text": "[On Play] If there is a Character with a cost of 0, draw 1 card."
+  },
+  {
+    "id": "ST08-013",
+    "kind": "character",
+    "name": "Mr.2.Bon.Kurei(Bentham)",
+    "effect_text": "[DON!! x1] At the end of a battle in which this Character battles your opponent's Character, you may K.O. the opponent’s Character you battled with. If you do, K.O. this Character."
+  },
+  {
+    "id": "ST08-014",
+    "kind": "event",
+    "name": "Gum-Gum Bell",
+    "effect_text": "[Main] You may add 1 card from the top of your Life cards to your hand: Give up to 1 of your opponent's Characters −7 cost during this turn."
+  },
+  {
+    "id": "ST09-001",
+    "kind": "leader",
+    "name": "Yamato",
+    "effect_text": "[DON!! x1] [Opponent's Turn] If you have 2 or less Life cards, this Leader gains +1000 power."
+  },
+  {
+    "id": "ST09-004",
+    "kind": "character",
+    "name": "Kaido",
+    "effect_text": "[DON!! x1] If you have 2 or less Life cards, this Character cannot be K.O.'d in battle."
+  },
+  {
+    "id": "ST09-008",
+    "kind": "character",
+    "name": "Shimotsuki Ushimaru",
+    "effect_text": "[DON!! x1] [When Attacking] You may add 1 card from the top or bottom of your Life cards to your hand: Play up to 1 yellow {Land of Wano} type Character card with a cost of 4 or less from your hand."
+  },
+  {
+    "id": "ST09-010",
+    "kind": "character",
+    "name": "Portgas.D.Ace",
+    "effect_text": "[Once Per Turn] If this Character would be K.O.'d, you may trash 1 card from the top or bottom of your Life cards instead."
+  },
+  {
+    "id": "ST09-012",
+    "kind": "character",
+    "name": "Yamato",
+    "effect_text": "[When Attacking] You may add 1 card from the top or bottom of your Life cards to your hand: This Character gains +2000 power until the start of your next turn."
+  },
+  {
+    "id": "ST09-014",
+    "kind": "event",
+    "name": "Narikabura Arrow",
+    "effect_text": "[Counter] If you have 2 or less Life cards, give up to 1 of your opponent's Leader or Character cards −3000 power during this turn."
+  },
+  {
+    "id": "ST10-001",
+    "kind": "leader",
+    "name": "Trafalgar Law",
+    "effect_text": "[Activate: Main] [Once Per Turn] DON!! −3 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Place up to 1 of your opponent's Characters with 3000 power or less at the bottom of the owner's deck, and play up to 1 Character card with a cost of 4 or less from your hand."
+  },
+  {
+    "id": "ST10-002",
+    "kind": "leader",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[Activate: Main] [Once Per Turn] If you have 0 DON!! cards on your field or 8 or more DON!! cards on your field, add up to 1 DON!! card from your DON!! deck and set it as active."
+  },
+  {
+    "id": "ST10-003",
+    "kind": "leader",
+    "name": "Eustass\"Captain\"Kid",
+    "effect_text": "[Your Turn] If you have 4 or more Life cards, give this Leader −1000 power.<br>[When Attacking] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): This Leader gains +2000 power during this turn."
+  },
+  {
+    "id": "ST10-004",
+    "kind": "character",
+    "name": "Sanji",
+    "effect_text": "[On Play] If your opponent has a Character with 5000 or more power, this Character gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)"
+  },
+  {
+    "id": "ST10-007",
+    "kind": "character",
+    "name": "Killer",
+    "effect_text": "[Your Turn] [Once Per Turn] When a DON!! card on your field is returned to your DON!! deck, K.O. up to 1 of your opponent's rested Characters with a cost of 3 or less."
+  },
+  {
+    "id": "ST10-008",
+    "kind": "character",
+    "name": "Shachi & Penguin",
+    "effect_text": "[On Play] If you have 3 or less DON!! cards on your field, add up to 2 DON!! cards from your DON!! deck and rest them."
+  },
+  {
+    "id": "ST10-011",
+    "kind": "character",
+    "name": "Heat",
+    "effect_text": "[Your Turn] [Once Per Turn] When a DON!! card on your field is returned to your DON!! deck, this Character gains +2000 power until the start of your next turn."
+  },
+  {
+    "id": "ST10-012",
+    "kind": "character",
+    "name": "Bepo",
+    "effect_text": "[On Play]/[When Attacking] If your opponent has more DON!! cards on their field than you, add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "ST10-013",
+    "kind": "character",
+    "name": "Eustass\"Captain\"Kid",
+    "effect_text": "[On Play]/[When Attacking] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Up to 1 of your Leader gains +1000 power until the start of your next turn."
+  },
+  {
+    "id": "ST10-015",
+    "kind": "event",
+    "name": "Gum-Gum Giant Sumo Slap",
+    "effect_text": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle, and K.O. up to 1 of your opponent's Characters with 2000 power or less."
+  },
+  {
+    "id": "ST10-016",
+    "kind": "event",
+    "name": "Gum-Gum Kong Gatling",
+    "effect_text": "[Main] K.O. up to 1 of your opponent's Characters with 7000 power or less."
+  },
+  {
+    "id": "ST10-017",
+    "kind": "event",
+    "name": "Punk Vise",
+    "effect_text": "[Main] Rest up to 1 of your opponent's Characters with a cost of 2 or less, and add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "ST11-001",
+    "kind": "leader",
+    "name": "Uta",
+    "effect_text": "[DON!! x1] [When Attacking] [Once Per Turn] Reveal 1 card from the top of your deck and add up to 1 {FILM} type card to your hand. Then, place the rest at the bottom of your deck."
+  },
+  {
+    "id": "ST11-003",
+    "kind": "event",
+    "name": "Backlight",
+    "effect_text": "[Main] If your Leader is [Uta], choose one:<br>• Rest up to 1 of your opponent's Characters with a cost of 5 or less.<br>• K.O. up to 1 of your opponent's rested Characters with a cost of 5 or less."
+  },
+  {
+    "id": "ST11-004",
+    "kind": "event",
+    "name": "New Genesis",
+    "effect_text": "[Main] If your Leader is [Uta], look at 3 cards from the top of your deck; reveal up to 1 {FILM} type card other than [New Genesis] and add it to your hand. Then, place the rest at the bottom of your deck in any order and set up to 1 of your DON!! cards as active."
+  },
+  {
+    "id": "ST11-005",
+    "kind": "event",
+    "name": "I'm invincible",
+    "effect_text": "[Main] Set up to 1 of your [Uta] Leader as active."
+  },
+  {
+    "id": "ST12-001",
+    "kind": "leader",
+    "name": "Roronoa Zoro & Sanji",
+    "effect_text": "[DON!! x1] [When Attacking] [Once Per Turn] You may return 1 of your Characters with a cost of 2 or more to the owner's hand: Set up to 1 of your Characters with 7000 power or less as active."
+  },
+  {
+    "id": "ST12-003",
+    "kind": "character",
+    "name": "Dracule Mihawk",
+    "effect_text": "[On Play] If you have 2 or less Characters, play up to 1 {Muggy Kingdom} type or <Slash> attribute Character card with a cost of 4 or less other than [Dracule Mihawk] from your hand rested."
+  },
+  {
+    "id": "ST12-006",
+    "kind": "character",
+    "name": "Yosaku & Johnny",
+    "effect_text": "[DON!! x1] [When Attacking] Choose one:<br>• Rest up to 1 of your opponent's Characters with a cost of 2 or less.<br>• K.O. up to 1 of your opponent's rested Characters with a cost of 2 or less."
+  },
+  {
+    "id": "ST12-007",
+    "kind": "character",
+    "name": "Rika",
+    "effect_text": "[On Play] ➁ (You may rest the specified number of DON!! cards in your cost area.): If your opponent has 3 or more Life cards, set up to 1 of your <Slash> attribute Characters with a cost of 4 or less as active."
+  },
+  {
+    "id": "ST12-008",
+    "kind": "character",
+    "name": "Roronoa Zoro",
+    "effect_text": "[DON!! x1] [When Attacking] Rest up to 1 of your opponent's Characters with a cost of 6 or less."
+  },
+  {
+    "id": "ST12-010",
+    "kind": "character",
+    "name": "Emporio.Ivankov",
+    "effect_text": "[On Play] Reveal 1 card from the top of your deck and play up to 1 Character card with a cost of 2. Then, place the rest at the top or bottom of your deck.<br>[When Attacking] [Once Per Turn] Draw 1 card if you have 6 or less cards in your hand."
+  },
+  {
+    "id": "ST12-011",
+    "kind": "character",
+    "name": "Sanji",
+    "effect_text": "[DON!! x1] [When Attacking] If you have 5 or less cards in your hand, this Character gains +2000 power until the start of your next turn."
+  },
+  {
+    "id": "ST12-012",
+    "kind": "character",
+    "name": "Charlotte Pudding",
+    "effect_text": "[Activate: Main] Return this Character to the owner's hand."
+  },
+  {
+    "id": "ST12-016",
+    "kind": "event",
+    "name": "Lion Strike",
+    "effect_text": "[Main]/[Counter] Rest up to 1 of your opponent's Leader or Character cards with a cost of 4 or less."
+  }
+]

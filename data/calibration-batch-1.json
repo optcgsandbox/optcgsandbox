@@ -1,0 +1,42 @@
+[
+  {
+    "id": "EB01-005",
+    "effect_text": "-"
+  },
+  {
+    "id": "EB01-018",
+    "effect_text": "-"
+  },
+  {
+    "id": "EB01-025",
+    "effect_text": "-"
+  },
+  {
+    "id": "OP02-039",
+    "effect_text": "-"
+  },
+  {
+    "id": "OP03-082",
+    "effect_text": "-"
+  },
+  {
+    "id": "OP01-018",
+    "effect_text": "-"
+  },
+  {
+    "id": "OP02-007",
+    "effect_text": "-"
+  },
+  {
+    "id": "OP02-031",
+    "effect_text": "If you have a [Kouzuki Oden] Character, this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+  },
+  {
+    "id": "OP01-021",
+    "effect_text": "[DON!! x1] This Character can also attack your opponent's active Characters."
+  },
+  {
+    "id": "OP04-027",
+    "effect_text": "[DON!! x1] [End of Your Turn] Set this Character as active."
+  }
+]

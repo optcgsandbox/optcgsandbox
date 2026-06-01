@@ -1,0 +1,452 @@
+[
+  {
+    "id": "OP03-036",
+    "kind": "event",
+    "name": "Out-of-the-Bag",
+    "effect_text": "[Main] You may rest 1 of your {East Blue} type Characters: Set up to 1 of your [Kuro] cards as active."
+  },
+  {
+    "id": "OP03-037",
+    "kind": "event",
+    "name": "Tooth Attack",
+    "effect_text": "[Main] You may rest 1 of your {East Blue} type Characters: K.O. up to 1 of your opponent's rested Characters with a cost of 3 or less."
+  },
+  {
+    "id": "OP03-039",
+    "kind": "event",
+    "name": "One, Two, Jango",
+    "effect_text": "[Main] Rest up to 1 of your opponent's Characters with a cost of 1 or less. Then, up to 1 of your Characters gains +1000 power during this turn."
+  },
+  {
+    "id": "OP03-040",
+    "kind": "leader",
+    "name": "Nami",
+    "effect_text": "When your deck is reduced to 0, you win the game instead of losing, according to the rules.<br>[DON!! x1] When this Leader's attack deals damage to your opponent's Life, you may trash 1 card from the top of your deck."
+  },
+  {
+    "id": "OP03-042",
+    "kind": "character",
+    "name": "Usopp's Pirate Crew",
+    "effect_text": "[On Play] Add up to 1 blue [Usopp] from your trash to your hand."
+  },
+  {
+    "id": "OP03-043",
+    "kind": "character",
+    "name": "Gaimon",
+    "effect_text": "When you deal damage to your opponent's Life, you may trash 3 cards from the top of your deck. If you do, trash this Character."
+  },
+  {
+    "id": "OP03-047",
+    "kind": "character",
+    "name": "Zeff",
+    "effect_text": "[DON!! x1] When this Character's attack deals damage to your opponent's Life, you may trash 7 cards from the top of your deck.<br>[On Play] Return up to 1 Character with a cost of 3 or less to the owner's hand, and you may trash 2 cards from the top of your deck."
+  },
+  {
+    "id": "OP03-048",
+    "kind": "character",
+    "name": "Nojiko",
+    "effect_text": "[On Play] If your Leader is [Nami], return up to 1 of your opponent's Characters with a cost of 5 or less to the owner's hand."
+  },
+  {
+    "id": "OP03-049",
+    "kind": "character",
+    "name": "Patty",
+    "effect_text": "[On Play] If you have 20 or less cards in your deck, return up to 1 Character with a cost of 3 or less to the owner's hand."
+  },
+  {
+    "id": "OP03-051",
+    "kind": "character",
+    "name": "Bell-mère",
+    "effect_text": "[DON!! x1] When this Character's attack deals damage to your opponent's Life, you may trash 7 cards from the top of your deck.<br>[On K.O.] You may trash 3 cards from the top of your deck."
+  },
+  {
+    "id": "OP03-053",
+    "kind": "character",
+    "name": "Yosaku & Johnny",
+    "effect_text": "[DON!! x1] If you have 20 or less cards in your deck, this Character gains +2000 power."
+  },
+  {
+    "id": "OP03-057",
+    "kind": "event",
+    "name": "Three Thousand Worlds",
+    "effect_text": "[Main] Place up to 1 Character with a cost of 5 or less at the bottom of the owner's deck."
+  },
+  {
+    "id": "OP03-059",
+    "kind": "character",
+    "name": "Kaku",
+    "effect_text": "[When Attacking] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): This Character gains [Banish] during this battle.<br>(When this card deals damage, the target card is trashed without activating its Trigger.)"
+  },
+  {
+    "id": "OP03-060",
+    "kind": "character",
+    "name": "Kalifa",
+    "effect_text": "[When Attacking] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Draw 2 cards and trash 1 card from your hand."
+  },
+  {
+    "id": "OP03-064",
+    "kind": "character",
+    "name": "Tilestone",
+    "effect_text": "[On K.O.] If your Leader has the {Galley-La Company} type, add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "OP03-066",
+    "kind": "character",
+    "name": "Paulie",
+    "effect_text": "[On Play] ➁ (You may rest the specified number of DON!! cards in your cost area.): Add up to 1 DON!! card from your DON!! deck and set it as active. Then, if you have 8 or more DON!! cards on your field, K.O. up to 1 of your opponent's Characters with a cost of 4 or less."
+  },
+  {
+    "id": "OP03-067",
+    "kind": "character",
+    "name": "Peepley Lulu",
+    "effect_text": "[DON!! x1] [When Attacking] If your Leader has the {Galley-La Company} type, add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "OP03-069",
+    "kind": "character",
+    "name": "Minorhinoceros",
+    "effect_text": "[On K.O.] If your Leader has the {Impel Down} type, draw 2 cards and trash 1 card from your hand."
+  },
+  {
+    "id": "OP03-070",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[On Play] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.) You may trash 1 Character card with a cost of 5 from your hand: This Character gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)"
+  },
+  {
+    "id": "OP03-071",
+    "kind": "character",
+    "name": "Rob Lucci",
+    "effect_text": "[When Attacking] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Rest up to 1 of your opponent's Characters with a cost of 5 or less."
+  },
+  {
+    "id": "OP03-073",
+    "kind": "event",
+    "name": "Hull Dismantler Slash",
+    "effect_text": "[Main] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): If your Leader has the {Water Seven} type, K.O. up to 1 of your opponent's Characters with a cost of 2 or less."
+  },
+  {
+    "id": "OP03-074",
+    "kind": "event",
+    "name": "Top Knot",
+    "effect_text": "[Main] DON!! −2 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Place up to 1 of your opponent's Characters with a cost of 4 or less at the bottom of the owner's deck."
+  },
+  {
+    "id": "OP03-075",
+    "kind": "stage",
+    "name": "Galley-La Company",
+    "effect_text": "[Activate: Main] You may rest this Stage: If your Leader is [Iceburg], add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "OP03-076",
+    "kind": "leader",
+    "name": "Rob Lucci",
+    "effect_text": "[Your Turn] [Once Per Turn] You may trash 2 cards from your hand: When your opponent's Character is K.O.'d, set this Leader as active."
+  },
+  {
+    "id": "OP03-077",
+    "kind": "leader",
+    "name": "Charlotte Linlin",
+    "effect_text": "[DON!! x2] [When Attacking] ② (You may rest the specified number of DON!! cards in your cost area.) You may trash 1 card from your hand: If you have 1 or less Life cards, add up to 1 card from the top of your deck to the top of your Life cards."
+  },
+  {
+    "id": "OP03-079",
+    "kind": "character",
+    "name": "Vergo",
+    "effect_text": "[DON!! x1] This Character cannot be K.O.'d in battle."
+  },
+  {
+    "id": "OP03-081",
+    "kind": "character",
+    "name": "Kalifa",
+    "effect_text": "[On Play] Draw 2 cards and trash 2 cards from your hand. Then, give up to 1 of your opponent's Characters −2 cost during this turn."
+  },
+  {
+    "id": "OP03-083",
+    "kind": "character",
+    "name": "Corgy",
+    "effect_text": "[On Play] Look at 5 cards from the top of your deck and trash up to 2 cards. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP03-086",
+    "kind": "character",
+    "name": "Spandam",
+    "effect_text": "[On Play] If your Leader's type includes \"CP\", look at 3 cards from the top of your deck; reveal up to 1 card with a type including \"CP\" other than [Spandam] and add it to your hand. Then, trash the rest."
+  },
+  {
+    "id": "OP03-089",
+    "kind": "character",
+    "name": "Brannew",
+    "effect_text": "[On Play] Look at 3 cards from the top of your deck; reveal up to 1 {Navy} type card other than [Brannew] and add it to your hand. Then, trash the rest."
+  },
+  {
+    "id": "OP03-091",
+    "kind": "character",
+    "name": "Helmeppo",
+    "effect_text": "[On Play] Set the cost of up to 1 of your opponent's Characters with no base effect to 0 during this turn."
+  },
+  {
+    "id": "OP03-093",
+    "kind": "character",
+    "name": "Wanze",
+    "effect_text": "[On Play] You may trash 1 card from your hand: If your Leader's type includes \"CP\", K.O. up to 1 of your opponent's Characters with a cost of 1 or less."
+  },
+  {
+    "id": "OP03-094",
+    "kind": "event",
+    "name": "Air Door",
+    "effect_text": "[Main] If your Leader's type includes \"CP\", look at 5 cards from the top of your deck; play up to 1 Character card with a type including \"CP\" and a cost of 5 or less. Then, trash the rest."
+  },
+  {
+    "id": "OP03-095",
+    "kind": "event",
+    "name": "Soap Sheep",
+    "effect_text": "[Main] Give up to 2 of your opponent's Characters −2 cost during this turn."
+  },
+  {
+    "id": "OP03-096",
+    "kind": "event",
+    "name": "Tempest Kick Sky Slicer",
+    "effect_text": "[Main] K.O. up to 1 of your opponent's Characters with a cost of 0 or your opponent's Stages with a cost of 3 or less."
+  },
+  {
+    "id": "OP03-098",
+    "kind": "stage",
+    "name": "Enies Lobby",
+    "effect_text": "[Activate: Main] You may rest this Stage: If your Leader's type includes \"CP\", give up to 1 of your opponent's Characters −2 cost during this turn."
+  },
+  {
+    "id": "OP03-099",
+    "kind": "leader",
+    "name": "Charlotte Katakuri",
+    "effect_text": "[DON!! x1] [When Attacking] Look at up to 1 card from the top of your or your opponent's Life cards, and place it at the top or bottom of the Life cards. Then, this Leader gains +1000 power during this battle."
+  },
+  {
+    "id": "OP03-102",
+    "kind": "character",
+    "name": "Sanji",
+    "effect_text": "[DON!! x2] [When Attacking] You may add 1 card from the top or bottom of your Life cards to your hand: Add up to 1 card from the top of your deck to the top of your Life cards."
+  },
+  {
+    "id": "OP03-105",
+    "kind": "character",
+    "name": "Charlotte Oven",
+    "effect_text": "[DON!! x1] [When Attacking] You may trash 1 card with a [Trigger] from your hand: This Character gains +3000 power during this battle."
+  },
+  {
+    "id": "OP03-108",
+    "kind": "character",
+    "name": "Charlotte Cracker",
+    "effect_text": "[DON!! x1] If you have less Life cards than your opponent, this Character gains [Double Attack] and +1000 power.<br>(This card deals 2 damage.)"
+  },
+  {
+    "id": "OP03-109",
+    "kind": "character",
+    "name": "Charlotte Chiffon",
+    "effect_text": "[On Play] You may trash 1 card from the top or bottom of your Life cards: Add up to 1 card from the top of your deck to the top of your Life cards."
+  },
+  {
+    "id": "OP03-110",
+    "kind": "character",
+    "name": "Charlotte Smoothie",
+    "effect_text": "[When Attacking] You may add 1 card from the top or bottom of your Life cards to your hand: This Character gains +2000 power during this battle."
+  },
+  {
+    "id": "OP03-112",
+    "kind": "character",
+    "name": "Charlotte Pudding",
+    "effect_text": "[On Play] Look at 4 cards from the top of your deck; reveal up to 1 [Sanji] or {Big Mom Pirates} type card other than [Charlotte Pudding] and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP03-113",
+    "kind": "character",
+    "name": "Charlotte Perospero",
+    "effect_text": "[On K.O.] Look at 3 cards from the top of your deck; reveal up to 1 {Big Mom Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP03-114",
+    "kind": "character",
+    "name": "Charlotte Linlin",
+    "effect_text": "[On Play] If your Leader has the {Big Mom Pirates} type, add up to 1 card from the top of your deck to the top of your Life cards. Then, trash up to 1 card from the top of your opponent's Life cards."
+  },
+  {
+    "id": "OP03-115",
+    "kind": "character",
+    "name": "Streusen",
+    "effect_text": "[On Play] You may trash 1 card with a [Trigger] from your hand: K.O. up to 1 of your opponent's Characters with a cost of 1 or less."
+  },
+  {
+    "id": "OP03-119",
+    "kind": "event",
+    "name": "Buzz Cut Mochi",
+    "effect_text": "[Main] If you have less Life cards than your opponent, K.O. up to 1 of your opponent's Characters with a cost of 4 or less."
+  },
+  {
+    "id": "OP03-120",
+    "kind": "event",
+    "name": "Tropical Torment",
+    "effect_text": "[Main] If your opponent has 4 or more Life cards, trash up to 1 card from the top of your opponent's Life cards."
+  },
+  {
+    "id": "OP03-121",
+    "kind": "event",
+    "name": "Thunder Bolt",
+    "effect_text": "[Main] You may trash 1 card from the top of your Life cards: K.O. up to 1 of your opponent's Characters with a cost of 5 or less."
+  },
+  {
+    "id": "OP03-122",
+    "kind": "character",
+    "name": "Sogeking",
+    "effect_text": "Also treat this card's name as [Usopp] according to the rules.<br>[On Play] Return up to 1 Character with a cost of 6 or less to the owner's hand. Then, draw 2 cards and trash 2 cards from your hand."
+  },
+  {
+    "id": "OP03-123",
+    "kind": "character",
+    "name": "Charlotte Katakuri",
+    "effect_text": "[On Play] Add up to 1 Character with a cost of 8 or less to the top or bottom of the owner's Life cards face-up."
+  },
+  {
+    "id": "OP04-002",
+    "kind": "character",
+    "name": "Igaram",
+    "effect_text": "[Activate: Main] You may rest this Character and give your 1 active Leader −5000 power during this turn: Look at 5 cards from the top of your deck; reveal up to 1 {Alabasta} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP04-003",
+    "kind": "character",
+    "name": "Usopp",
+    "effect_text": "[On K.O.] K.O. up to 1 of your opponent's Characters with 5000 base power or less."
+  },
+  {
+    "id": "OP04-005",
+    "kind": "character",
+    "name": "Kung Fu Jugon",
+    "effect_text": "If you have a [Kung Fu Jugon] other than this Character, this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+  },
+  {
+    "id": "OP04-006",
+    "kind": "character",
+    "name": "Koza",
+    "effect_text": "[When Attacking] You may give your 1 active Leader −5000 power during this turn: This Character gains +2000 power until the start of your next turn."
+  },
+  {
+    "id": "OP04-008",
+    "kind": "character",
+    "name": "Chaka",
+    "effect_text": "[DON!! x1] [When Attacking] If your Leader is [Nefeltari Vivi], give up to 1 of your opponent's Characters −3000 power during this turn. Then, K.O. up to 1 of your opponent's Characters with 0 power or less."
+  },
+  {
+    "id": "OP04-009",
+    "kind": "character",
+    "name": "Super Spot-Billed Duck Troops",
+    "effect_text": "[When Attacking] You may give your 1 active Leader −5000 power during this turn: Return this Character to the owner's hand at the end of this turn."
+  },
+  {
+    "id": "OP04-010",
+    "kind": "character",
+    "name": "Tony Tony.Chopper",
+    "effect_text": "[On Play] Play up to 1 {Animal} type Character card with 3000 power or less from your hand."
+  },
+  {
+    "id": "OP04-011",
+    "kind": "character",
+    "name": "Nami",
+    "effect_text": "[When Attacking] Reveal 1 card from the top of your deck. If the revealed card is a Character card with 6000 power or more, this Character gains +3000 power during this turn. Then, place the revealed card at the bottom of your deck."
+  },
+  {
+    "id": "OP04-012",
+    "kind": "character",
+    "name": "Nefeltari Cobra",
+    "effect_text": "[Your Turn] All of your {Alabasta} type Characters other than this Character gain +1000 power."
+  },
+  {
+    "id": "OP04-017",
+    "kind": "event",
+    "name": "Happiness Punch",
+    "effect_text": "[Counter] Give up to 1 of your opponent's Leader or Character cards −2000 power during this turn. Then, if your Leader is active, give up to 1 of your opponent's Leader or Character cards −1000 power during this turn."
+  },
+  {
+    "id": "OP04-018",
+    "kind": "event",
+    "name": "Enchanting Vertigo Dance",
+    "effect_text": "[Main] If your Leader has the {Alabasta} type, give up to 2 of your opponent's Characters −2000 power during this turn."
+  },
+  {
+    "id": "OP04-021",
+    "kind": "character",
+    "name": "Viola",
+    "effect_text": "[On Your Opponent's Attack] ➁ (You may rest the specified number of DON!! cards in your cost area.): Rest up to 1 of your opponent's DON!! cards."
+  },
+  {
+    "id": "OP04-025",
+    "kind": "character",
+    "name": "Giolla",
+    "effect_text": "[On Your Opponent's Attack] ➁ (You may rest the specified number of DON!! cards in your cost area.): Rest up to 1 of your opponent's Characters with a cost of 4 or less."
+  },
+  {
+    "id": "OP04-026",
+    "kind": "character",
+    "name": "Senor Pink",
+    "effect_text": "[When Attacking] ➀ (You may rest the specified number of DON!! cards in your cost area.): If your Leader has the {Donquixote Pirates} type, rest up to 1 of your opponent's Characters with a cost of 4 or less. Then, set up to 1 of your DON!! cards as active at the end of this turn."
+  },
+  {
+    "id": "OP04-027",
+    "kind": "character",
+    "name": "Daddy Masterson",
+    "effect_text": "[DON!! x1] [End of Your Turn] Set this Character as active."
+  },
+  {
+    "id": "OP04-031",
+    "kind": "character",
+    "name": "Donquixote Doflamingo",
+    "effect_text": "[On Play] Up to a total of 3 of your opponent's rested Leader and Character cards will not become active in your opponent's next Refresh Phase."
+  },
+  {
+    "id": "OP04-032",
+    "kind": "character",
+    "name": "Baby 5",
+    "effect_text": "[End of Your Turn] You may trash this Character: Set up to 2 of your DON!! cards as active."
+  },
+  {
+    "id": "OP04-033",
+    "kind": "character",
+    "name": "Machvise",
+    "effect_text": "[On Play] If your Leader has the {Donquixote Pirates} type, rest up to 1 of your opponent's Characters with a cost of 5 or less. Then, set up to 1 of your DON!! cards as active at the end of this turn."
+  },
+  {
+    "id": "OP04-034",
+    "kind": "character",
+    "name": "Lao.G",
+    "effect_text": "[End of Your Turn] If you have 3 or more active DON!! cards, K.O. up to 1 of your opponent's rested Characters with a cost of 3 or less."
+  },
+  {
+    "id": "OP04-036",
+    "kind": "event",
+    "name": "Donquixote Family",
+    "effect_text": "[Counter] Look at 5 cards from the top of your deck; reveal up to 1 {Donquixote Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP04-037",
+    "kind": "event",
+    "name": "Flapping Thread",
+    "effect_text": "[Counter] If your Leader has the {Donquixote Pirates} type, up to 1 of your Leader or Character cards gains +2000 power during this turn."
+  },
+  {
+    "id": "OP04-038",
+    "kind": "event",
+    "name": "The Weak Do Not Have the Right to Choose How They Die!!!",
+    "effect_text": "[Main]/[Counter] Rest up to 1 of your opponent's Leader or Character cards. Then, K.O. up to 1 of your opponent's rested Characters with a cost of 6 or less."
+  },
+  {
+    "id": "OP04-040",
+    "kind": "leader",
+    "name": "Queen",
+    "effect_text": "[DON!! x1] [When Attacking] If you have a total of 4 or less cards in your Life area and hand, draw 1 card. If you have a Character with a cost of 8 or more, you may add up to 1 card from the top of your deck to the top of your Life cards instead of drawing 1 card."
+  },
+  {
+    "id": "OP04-042",
+    "kind": "character",
+    "name": "Ipponmatsu",
+    "effect_text": "[On Play] Up to 1 of your"
+  }
+]

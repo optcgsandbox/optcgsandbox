@@ -1,0 +1,452 @@
+[
+  {
+    "id": "EB02-057",
+    "kind": "character",
+    "name": "Mad Treasure",
+    "effect_text": "[When Attacking] You may add 1 card from the top or bottom of your Life cards to your hand: Add up to 1 of your opponent's Characters with a cost of 3 or less to the top or bottom of your opponent's Life cards face-up."
+  },
+  {
+    "id": "EB02-058",
+    "kind": "event",
+    "name": "UUUUUS!",
+    "effect_text": "[Main] Look at 4 cards from the top of your deck; reveal up to 1 card with a cost of 4 or more and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "EB02-060",
+    "kind": "stage",
+    "name": "Merry Go",
+    "effect_text": "[Activate: Main] You may rest this Stage and turn 1 card from the top of your Life cards face-up: Up to 1 of your {Straw Hat Crew} type Characters gains +1000 power until the end of your opponent's next turn."
+  },
+  {
+    "id": "EB02-061",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "If your Leader is multicolored and your opponent has 5 or more DON!! cards on their field, this Character gains [Rush].<br>[When Attacking] [Once Per Turn] You may return 2 of your active DON!! cards to your DON!! deck: Set this Character as active. Then, add 1 card from the top of your Life cards to your hand."
+  },
+  {
+    "id": "EB03-001",
+    "kind": "leader",
+    "name": "Nefeltari Vivi",
+    "effect_text": "[Once Per Turn] If your Character with a base cost of 4 or more would be K.O.'d, you may trash 1 card from your hand instead.<br>[Activate: Main] You may rest this Leader: Give up to 1 of your opponent's Characters −2000 power during this turn. Then, up to 1 of your Characters without a [When Attacking] effect gains [Rush] during this turn."
+  },
+  {
+    "id": "EB03-003",
+    "kind": "character",
+    "name": "Uta",
+    "effect_text": "[On Play] If your Leader is [Uta], draw 2 cards. Then, play up to 1 Character card with 6000 power or less and no base effect from your hand."
+  },
+  {
+    "id": "EB03-005",
+    "kind": "character",
+    "name": "Sugar",
+    "effect_text": "[On Play] If your Leader is [Sugar], play up to 1 {Donquixote Pirates} type Character card with 6000 power or less from your hand rested."
+  },
+  {
+    "id": "EB03-006",
+    "kind": "character",
+    "name": "Nami",
+    "effect_text": "[On Play] You may give your active Leader −5000 power during this turn: Draw 1 card.<br>[Activate: Main] [Once Per Turn] If your Leader has the {Alabasta} type, give up to 1 of your opponent's Characters −1000 power during this turn."
+  },
+  {
+    "id": "EB03-008",
+    "kind": "character",
+    "name": "Hibari",
+    "effect_text": "[On Play]/[When Attacking] Up to 1 of your {SWORD} type Leader or Character cards can also attack active Characters during this turn.<br>[Activate: Main] [Once Per Turn] Give up to 1 of your opponent's Characters −1000 power during this turn."
+  },
+  {
+    "id": "EB03-011",
+    "kind": "event",
+    "name": "But If We Ever See Each Other Again... Will You Call Me Your Shipmate?!!",
+    "effect_text": "[Counter] If your Leader is [Nefeltari Vivi], up to 1 of your Leader or Character cards gains +4000 power during this battle."
+  },
+  {
+    "id": "EB03-013",
+    "kind": "character",
+    "name": "Carrot",
+    "effect_text": "[Activate: Main] [Once Per Turn] If this Character was played on this turn, K.O. up to 1 of your opponent's rested Characters with a cost of 5 or less. Then, play up to 1 [Zou] from your hand."
+  },
+  {
+    "id": "EB03-016",
+    "kind": "character",
+    "name": "Kouzuki Hiyori",
+    "effect_text": "[On Play] If your Leader is [Kouzuki Oden], draw 1 card.<br>[Activate: Main] You may trash this Character: Give up to 1 rested DON!! card to your {Land of Wano} type Leader."
+  },
+  {
+    "id": "EB03-017",
+    "kind": "character",
+    "name": "Jewelry Bonney",
+    "effect_text": "[On Play] If your Leader has the {Supernovas} type, set up to 1 of your DON!! cards as active. Then, up to 1 of your opponent's Characters with a cost of 8 or less cannot be rested until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "EB03-018",
+    "kind": "character",
+    "name": "Tashigi",
+    "effect_text": "[Opponent's Turn] This Character cannot be K.O.'d by your opponent's effects and gains [Blocker].<br>[End of Your Turn] You may rest 1 of your DON!! cards and trash 1 card from your hand: Set this Character as active."
+  },
+  {
+    "id": "EB03-021",
+    "kind": "character",
+    "name": "Alvida",
+    "effect_text": "[On Play] You may trash 1 card from your hand: Place up to 1 of your opponent's Characters with 4000 base power or less and up to 1 Character with a base cost of 3 or less at the bottom of the owner's deck."
+  },
+  {
+    "id": "EB03-025",
+    "kind": "character",
+    "name": "Hina",
+    "effect_text": "[On Play] You may trash 1 card from your hand: Return up to 1 Character with 6000 base power to the owner's hand."
+  },
+  {
+    "id": "EB03-026",
+    "kind": "character",
+    "name": "Boa Hancock",
+    "effect_text": "[On Play] If your opponent has 5 or more cards in their hand, your opponent places 1 card from their hand at the bottom of their deck.<br>[Activate: Main] [Once Per Turn] You may place 1 of your Characters at the bottom of the owner's deck: Give your Leader and 1 Character up to 1 rested DON!! card each."
+  },
+  {
+    "id": "EB03-027",
+    "kind": "character",
+    "name": "Marguerite",
+    "effect_text": "[On Play] Return up to 1 Character with 7000 base power to the owner's hand."
+  },
+  {
+    "id": "EB03-029",
+    "kind": "event",
+    "name": "Insolent Fool!! Stand Down!!",
+    "effect_text": "[Main] You may rest 4 of your DON!! cards: If your Leader is [Boa Hancock], play up to 1 {Amazon Lily} or {Kuja Pirates} type Character card with a cost of 6 or less from your hand.<br>[Counter] Up to 1 of your [Boa Hancock] cards gains +3000 power during this battle."
+  },
+  {
+    "id": "EB03-031",
+    "kind": "character",
+    "name": "Vinsmoke Reiju",
+    "effect_text": "[Your Turn] [On Play] DON!! −1: If your Leader is [Sanji], activate the [Main] effect of up to 1 Event card with a cost of 7 or less in your trash."
+  },
+  {
+    "id": "EB03-032",
+    "kind": "character",
+    "name": "Charlotte Flampe",
+    "effect_text": "[Your Turn] [On Play] Up to 1 of your [Charlotte Katakuri] cards gains +2000 power during this turn."
+  },
+  {
+    "id": "EB03-033",
+    "kind": "character",
+    "name": "Charlotte Brulee",
+    "effect_text": "[Opponent's Turn] [Once Per Turn] When a DON!! card on your field is returned to your DON!! deck by your effect, if your Leader has the {Big Mom Pirates} type, add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "EB03-034",
+    "kind": "character",
+    "name": "Charlotte Linlin",
+    "effect_text": "[On Play] Draw 1 card and place 1 card from your hand at the top of your deck. Then, add up to 1 DON!! card from your DON!! deck and set it as active.<br>[On K.O.] DON!! −1: Add up to 1 card from the top of your deck to the top of your Life cards."
+  },
+  {
+    "id": "EB03-036",
+    "kind": "character",
+    "name": "Baby 5",
+    "effect_text": "[On Play] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): K.O. up to 2 of your opponent's Characters with a base cost of 3 or less."
+  },
+  {
+    "id": "EB03-037",
+    "kind": "character",
+    "name": "Lim",
+    "effect_text": "[On Play] If you have 7 or more DON!! cards on your field, all of your {ODYSSEY} type Leader and Character cards gain +1000 power until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "EB03-039",
+    "kind": "character",
+    "name": "Ulti",
+    "effect_text": "[On Play] If your Leader has the {Animal Kingdom Pirates} type, draw 1 card and trash 1 card from your hand. Then, play up to 1 Character card with 6000 power or less and no base effect from your trash."
+  },
+  {
+    "id": "EB03-041",
+    "kind": "character",
+    "name": "Kujyaku",
+    "effect_text": "[Opponent's Turn] All of your {SWORD} type Characters with a cost of 6 or less gain +2000 power.<br>[On Play] You may trash 1 {Navy} type card from your hand: Draw 2 cards."
+  },
+  {
+    "id": "EB03-044",
+    "kind": "character",
+    "name": "Black Maria",
+    "effect_text": "If your Leader is multicolored, this Character gains [Blocker].<br>[On Play] Look at 5 cards from the top of your deck; reveal up to 1 [Onigashima Island] and add it to your hand. Then, place the rest at the bottom of your deck in any order and play up to 1 [Onigashima Island] from your hand."
+  },
+  {
+    "id": "EB03-046",
+    "kind": "character",
+    "name": "Miss Doublefinger(Zala)",
+    "effect_text": "[On Play] If there is a Character with a cost of 0 or with a cost of 8 or more, draw 1 card.<br>[On K.O.] Trash 2 cards from the top of your deck."
+  },
+  {
+    "id": "EB03-050",
+    "kind": "character",
+    "name": "Conis",
+    "effect_text": "[On Play] Up to 1 of your {Sky Island} type Characters gains [Double Attack] during this turn.<br>(This card deals 2 damage.)<br>"
+  },
+  {
+    "id": "EB03-051",
+    "kind": "character",
+    "name": "Charlotte Smoothie",
+    "effect_text": "[On Play] If you have a face-up Life card, K.O. up to 1 of your opponent's Characters with a cost of 2 or less. Then, turn all of your Life cards face-down."
+  },
+  {
+    "id": "EB03-052",
+    "kind": "character",
+    "name": "Shirahoshi",
+    "effect_text": "[Activate: Main] You may trash this Character: If your Leader is [Shirahoshi], add 1 card from the top of your deck to the top of your Life cards. Then, all of your {Neptunian} type Characters gain +1000 power during this turn."
+  },
+  {
+    "id": "EB03-053",
+    "kind": "character",
+    "name": "Nami",
+    "effect_text": "[On Play] Give up to 1 rested DON!! card to your Leader. Then, if your opponent has 3 or more Life cards, add up to 1 card from the top of your opponent's Life cards to the owner's hand.<br>[On K.O.] You may turn 1 card from the top of your Life cards face-up: Play up to 1 Character card with 6000 power or less from your hand."
+  },
+  {
+    "id": "EB03-054",
+    "kind": "character",
+    "name": "Nico Robin",
+    "effect_text": "[On Play] You may trash 1 card from the top of your Life cards: Add up to 1 card from the top of your deck to the top of your Life cards."
+  },
+  {
+    "id": "EB03-055",
+    "kind": "character",
+    "name": "Nico Robin",
+    "effect_text": "[On Play] You may trash 1 card from the top of your Life cards: If your Leader has the {Straw Hat Crew} type, add up to 2 cards from the top of your deck to the top of your Life cards.<br>[Opponent's Turn] [On K.O.] You may deal 1 damage to your opponent."
+  },
+  {
+    "id": "EB03-056",
+    "kind": "character",
+    "name": "Belo Betty",
+    "effect_text": "[On Play] You may turn 1 card from the top of your Life cards face-up: K.O. up to 1 of your opponent's Characters with a base cost of 3 or less."
+  },
+  {
+    "id": "EB03-057",
+    "kind": "character",
+    "name": "Yamato",
+    "effect_text": "[On Play] Give up to 3 rested DON!! cards to your {Land of Wano} type Leader.<br>[On K.O.] Trash up to 1 card from the top of your opponent's Life cards."
+  },
+  {
+    "id": "EB03-058",
+    "kind": "character",
+    "name": "Lilith",
+    "effect_text": "[Your Turn] [On Play] If you have 2 or less Life cards, draw 1 card."
+  },
+  {
+    "id": "EB03-059",
+    "kind": "character",
+    "name": "S-Snake",
+    "effect_text": "[On Play] If your Leader has the {Egghead} type and you have 2 or more Life cards, add up to 1 Character card with a [Trigger] from your hand to the top of your Life cards face-up."
+  },
+  {
+    "id": "EB03-060",
+    "kind": "event",
+    "name": "Will You Be My Servant?",
+    "effect_text": "[Main] If your Leader is [Nami], look at 4 cards from the top of your deck; reveal up to 1 card with a cost of 2 to 8 and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "EB03-061",
+    "kind": "character",
+    "name": "Uta",
+    "effect_text": "[Activate: Main] [Once Per Turn] Set up to 1 of your DON!! cards as active. Then, rest up to 1 of your opponent's DON!! cards or Characters with a cost of 4 or less.<br>[End of Your Turn] You may rest 1 of your DON!! cards: Set up to 1 of your {FILM} type Characters as active."
+  },
+  {
+    "id": "EB04-001",
+    "kind": "leader",
+    "name": "Jewelry Bonney",
+    "effect_text": "[Opponent's Turn] If you have 1 or less Life cards, this Leader gains +2000 power.<br>[Activate: Main] [Once Per Turn] Give up to 1 of your opponent's Characters −1000 power during this turn. Then, if you have 2 or more Life cards, you may add 1 card from the top of your Life cards to your hand."
+  },
+  {
+    "id": "EB04-002",
+    "kind": "character",
+    "name": "Jewelry Bonney",
+    "effect_text": "[On Play] Look at 4 cards from the top of your deck; reveal up to 1 {Egghead} or {Straw Hat Crew} type card other than [Jewelry Bonney] and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "EB04-004",
+    "kind": "character",
+    "name": "Zeff",
+    "effect_text": "[When Attacking] Your Leader's base power becomes 7000 until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "EB04-005",
+    "kind": "character",
+    "name": "Trafalgar Law",
+    "effect_text": "This Character cannot attack unless your opponent has 2 or more Characters with a base power of 5000 or more."
+  },
+  {
+    "id": "EB04-006",
+    "kind": "character",
+    "name": "Moda",
+    "effect_text": "[On Play] Look at 7 cards from the top of your deck; reveal up to 1 [Lulucia Kingdom] and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "EB04-007",
+    "kind": "character",
+    "name": "Roronoa Zoro",
+    "effect_text": "[On Play] Your Leader gains +2000 power until the end of your opponent's next End Phase.<br>[Activate: Main] [Once Per Turn] If your opponent has a Character with 8000 power or more, this Character gains [Rush: Character] during this turn."
+  },
+  {
+    "id": "EB04-010",
+    "kind": "stage",
+    "name": "Lulucia Kingdom",
+    "effect_text": "[Opponent's Turn] All of your Characters with a base cost of 1 gain +5000 power.<br>[On Play] Set the power of up to 1 of your opponent's Characters to 0 during this turn."
+  },
+  {
+    "id": "EB04-011",
+    "kind": "character",
+    "name": "Scaled Neptunian",
+    "effect_text": "[Rush: Character] (This card can attack Characters on the turn in which it is played.)<br>[On Play] Draw a card for each of your {Neptunian} type Characters. Then, trash the same number of cards from your hand.<br>"
+  },
+  {
+    "id": "EB04-012",
+    "kind": "character",
+    "name": "Kikunojo",
+    "effect_text": "[Activate: Main] [Once Per Turn] If this Character was played on this turn, set your {Land of Wano} type Leader as active."
+  },
+  {
+    "id": "EB04-013",
+    "kind": "character",
+    "name": "Carrot",
+    "effect_text": "[On Play] If your Leader has the {Minks} type, set up to 2 of your {Minks} type Characters and your Leader as active."
+  },
+  {
+    "id": "EB04-016",
+    "kind": "character",
+    "name": "Bird Neptunian",
+    "effect_text": "[Activate: Main] Set up to 1 of your DON!! cards as active. Then, you cannot set DON!! cards as active using Character effects during this turn.<br>[When Attacking] If you have 3 or more {Neptunian} type Characters, rest up to 1 of your opponent's Characters with a cost of 8 or less."
+  },
+  {
+    "id": "EB04-017",
+    "kind": "character",
+    "name": "Mystoms",
+    "effect_text": "[Your Turn] If you have 3 or more {Minks} type Characters, give all of your opponent's Characters −1 cost.<br>[On Play] If your Leader has the {Minks} type, play up to 1 {Minks} type Character card with a cost of 5 or less from your hand."
+  },
+  {
+    "id": "EB04-018",
+    "kind": "character",
+    "name": "Megalo",
+    "effect_text": "[On Play] You may rest this Character: K.O. up to 1 of your opponent's rested Characters with 8000 power or less."
+  },
+  {
+    "id": "EB04-019",
+    "kind": "event",
+    "name": "Eleclaw",
+    "effect_text": "[Main] You may rest 1 of your cards: If your Leader has the {Minks} type, give up to 1 of your opponent's Characters −3 cost during this turn.<br>[Counter] Up to 1 of your {Minks} type Leader or Character cards gains +3000 power during this battle."
+  },
+  {
+    "id": "EB04-022",
+    "kind": "character",
+    "name": "Issho",
+    "effect_text": "[On Play] You may trash 2 cards from your hand: If your opponent has 6 or more cards in their hand, your opponent places 2 cards from their hand at the bottom of their deck in any order.<br>[DON!! x1] [When Attacking] You may trash 1 card from your hand: Give up to 1 of your opponent's Characters −2000 power during this turn."
+  },
+  {
+    "id": "EB04-024",
+    "kind": "character",
+    "name": "Terracotta",
+    "effect_text": "[Activate: Main] You may rest this Character and trash 1 card from your hand: Up to 1 of your {Alabasta} type Characters gains [Unblockable] during this turn.<br>(This card cannot be blocked.)"
+  },
+  {
+    "id": "EB04-025",
+    "kind": "character",
+    "name": "Nefeltari Vivi",
+    "effect_text": "[On Play] Play up to 1 {Alabasta} type Character card with a cost of 8 or less other than [Nefeltari Vivi] from your hand. Then, your opponent places 1 card from their hand at the bottom of their deck."
+  },
+  {
+    "id": "EB04-026",
+    "kind": "character",
+    "name": "Bluegrass",
+    "effect_text": "[On Play] Place up to 1 of your opponent's Characters with a cost of 1 or less at the bottom of the owner's deck.<br>[When Attacking] Draw 1 card and trash 1 card from your hand."
+  },
+  {
+    "id": "EB04-028",
+    "kind": "event",
+    "name": "Ice Time",
+    "effect_text": "[Main] You may trash 1 card from your hand: If your Leader has the {Navy} type, up to 2 of your opponent's Characters with 10000 power or less cannot attack until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "EB04-029",
+    "kind": "event",
+    "name": "I Heard the Sound...of a Lady's Teardrops Falling",
+    "effect_text": "[Main] If your Leader is [Sanji], look at 3 cards from the top of your deck; reveal up to 1 [Sanji] or Event card and add it to your hand. Then, trash the rest.<br>[Counter] You may trash 1 card from your hand: Up to 1 of your [Sanji] cards gains +4000 power during this battle."
+  },
+  {
+    "id": "EB04-030",
+    "kind": "character",
+    "name": "Kaido",
+    "effect_text": "If this Character would be K.O.'d, you may return 1 DON!! card from your field to your DON!! deck instead.<br>[On Play] DON!! −2: If your Leader has the {Animal Kingdom Pirates} type, this Character gains [Rush] during this turn. Then, rest up to 1 of your opponent's Characters with a cost of 7 or less."
+  },
+  {
+    "id": "EB04-031",
+    "kind": "character",
+    "name": "King",
+    "effect_text": "If this Character would be K.O.'d, you may return 1 DON!! card from your field to your DON!! deck instead.<br>[Activate: Main] [Once Per Turn] If your Leader has the {Animal Kingdom Pirates} type and you have no other [King] Characters, add up to 1 DON!! card from your DON!! deck and set it as active, and add up to 1 additional DON!! card and rest it."
+  },
+  {
+    "id": "EB04-032",
+    "kind": "character",
+    "name": "Queen",
+    "effect_text": "[On Play] You may trash 1 {Animal Kingdom Pirates} type card from your hand: Draw 2 cards.<br>[Activate: Main] [Once Per Turn] You may rest 2 of your DON!! cards: If your Leader has the {Animal Kingdom Pirates} type, add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "EB04-033",
+    "kind": "character",
+    "name": "Groggy Monsters",
+    "effect_text": "[On Play] DON!! −1: If you have 3 or more {Foxy Pirates} type Characters, K.O. up to 1 of your opponent's Characters with 6000 base power or less."
+  },
+  {
+    "id": "EB04-036",
+    "kind": "character",
+    "name": "Foxy",
+    "effect_text": "[On Play] DON!! −1: If your Leader has the {Foxy Pirates} type, draw 2 cards and trash 1 card from your hand. Then, rest up to 1 of your opponent's Characters with a cost of 9 or less.<br>[Activate: Main] [Once Per Turn] Add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "EB04-037",
+    "kind": "character",
+    "name": "Porche",
+    "effect_text": "[On Play] If your Leader has the {Foxy Pirates} type, look at 5 cards from the top of your deck; reveal up to 1 {Foxy Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "EB04-041",
+    "kind": "event",
+    "name": "Stealth Black",
+    "effect_text": "[Main] If your Leader is [Sanji] and you have 4 or more DON!! cards on your field, play up to 1 [Sanji] with 6000 power or less from your hand or trash."
+  },
+  {
+    "id": "EB04-042",
+    "kind": "character",
+    "name": "Alpha",
+    "effect_text": "[On Play] You may trash 3 cards from the top of your deck: Give up to 1 of your opponent's Characters −1 cost during this turn."
+  },
+  {
+    "id": "EB04-044",
+    "kind": "character",
+    "name": "Koby",
+    "effect_text": "[Once Per Turn] If your Leader's type includes \"Navy\" and this Character would be removed from the field, you may trash 1 card from your hand instead.<br>[Your Turn] [Once Per Turn] When your opponent's Character is K.O.'d, draw 1 card."
+  },
+  {
+    "id": "EB04-047",
+    "kind": "character",
+    "name": "Helmeppo",
+    "effect_text": "[Activate: Main] You may trash this Character: Play up to 1 {SWORD} type Character card with a cost of 3 or less other than [Helmeppo] from your hand or trash."
+  },
+  {
+    "id": "EB04-048",
+    "kind": "character",
+    "name": "Rob Lucci",
+    "effect_text": "If your Leader's type includes \"CP\", this Character gains +1000 power and +2 cost for every 5 cards in your trash.<br>[On Play] You may trash 1 of your Characters: Draw 1 card."
+  },
+  {
+    "id": "EB04-049",
+    "kind": "event",
+    "name": "Finger Pistol Yellow Lotus",
+    "effect_text": "[Main] You may trash 2 cards from the top of your deck: K.O. up to 1 of your opponent's Characters with a base cost of 5 or less."
+  },
+  {
+    "id": "EB04-051",
+    "kind": "character",
+    "name": "Emet",
+    "effect_text": "This Character cannot attack unless there is a Character with 12000 base power or more."
+  },
+  {
+    "id": "EB04-052",
+    "kind": "character",
+    "name": "Sanji",
+    "effect_text": "[When Attacking] This Character's base power becomes the same as your opponent's Leader during this turn.<br>[On K.O.] If you have 2 or less Life cards, play up to 1 yellow Character card with 6000 power or less from your hand."
+  }
+]

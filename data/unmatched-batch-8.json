@@ -1,0 +1,452 @@
+[
+  {
+    "id": "OP06-030",
+    "kind": "character",
+    "name": "Dosun",
+    "effect_text": "[When Attacking] If your Leader has the {New Fish-Man Pirates} type, this Character cannot be K.O.'d in battle and gains +2000 power until the start of your next turn. Then, add 1 card from the top of your Life cards to your hand."
+  },
+  {
+    "id": "OP06-033",
+    "kind": "character",
+    "name": "Vander Decken IX",
+    "effect_text": "[On Play] You may trash 1 {Fish-Man} type card from your hand or 1 [The Ark Noah] from your hand or field: K.O. up to 1 of your opponent's rested Characters."
+  },
+  {
+    "id": "OP06-034",
+    "kind": "character",
+    "name": "Hyouzou",
+    "effect_text": "[Activate: Main] [Once Per Turn] Rest up to 1 of your opponent's Characters with a cost of 4 or less and this Character gains +1000 power during this turn. Then, add 1 card from the top of your Life cards to your hand."
+  },
+  {
+    "id": "OP06-036",
+    "kind": "character",
+    "name": "Ryuma",
+    "effect_text": "[On Play]/[On K.O.] K.O. up to 1 of your opponent's rested Characters with a cost of 4 or less."
+  },
+  {
+    "id": "OP06-041",
+    "kind": "stage",
+    "name": "The Ark Noah",
+    "effect_text": "[On Play] Rest all of your opponent's Characters."
+  },
+  {
+    "id": "OP06-042",
+    "kind": "leader",
+    "name": "Vinsmoke Reiju",
+    "effect_text": "[Your Turn] [Once Per Turn] When a DON!! card on your field is returned to your DON!! deck, draw 1 card."
+  },
+  {
+    "id": "OP06-044",
+    "kind": "character",
+    "name": "Gion",
+    "effect_text": "[Your Turn] [Once Per Turn] When your opponent activates an Event, your opponent must place 1 card from their hand at the bottom of their deck."
+  },
+  {
+    "id": "OP06-045",
+    "kind": "character",
+    "name": "Kuzan",
+    "effect_text": "[On Play] Draw 2 cards and place 2 cards from your hand at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP06-047",
+    "kind": "character",
+    "name": "Charlotte Pudding",
+    "effect_text": "[On Play] Your opponent returns all cards in their hand to their deck and shuffles their deck. Then, your opponent draws 5 cards."
+  },
+  {
+    "id": "OP06-048",
+    "kind": "character",
+    "name": "Zeff",
+    "effect_text": "[Your Turn] When your opponent activates [Blocker] or an Event, if your Leader has the {East Blue} type, you may trash 4 cards from the top of your deck."
+  },
+  {
+    "id": "OP06-051",
+    "kind": "character",
+    "name": "Tsuru",
+    "effect_text": "[On Play] You may trash 2 cards from your hand: Your opponent returns 1 of their Characters to the owner's hand."
+  },
+  {
+    "id": "OP06-052",
+    "kind": "character",
+    "name": "Tokikake",
+    "effect_text": "[DON!! x1] If you have 4 or less cards in your hand, this Character cannot be K.O.'d in battle."
+  },
+  {
+    "id": "OP06-053",
+    "kind": "character",
+    "name": "Jaguar.D.Saul",
+    "effect_text": "[On K.O.] Place up to 1 Character with a cost of 2 or less at the bottom of the owner's deck."
+  },
+  {
+    "id": "OP06-054",
+    "kind": "character",
+    "name": "Borsalino",
+    "effect_text": "If you have 5 or less cards in your hand, this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+  },
+  {
+    "id": "OP06-055",
+    "kind": "character",
+    "name": "Monkey.D.Garp",
+    "effect_text": "[DON!! x2] [When Attacking] If you have 4 or less cards in your hand, your opponent cannot activate [Blocker] during this battle."
+  },
+  {
+    "id": "OP06-056",
+    "kind": "event",
+    "name": "Ama no Murakumo Sword",
+    "effect_text": "[Main] Place up to 1 of your opponent's Characters with a cost of 2 or less and up to 1 of your opponent's Characters with a cost of 1 or less at the bottom of the owner's deck in any order."
+  },
+  {
+    "id": "OP06-057",
+    "kind": "event",
+    "name": "But I Will Never Doubt a Woman's Tears!!!!",
+    "effect_text": "[Main] Up to 1 of your Leader or Character cards gains +1000 power during this turn. Then, reveal 1 card from the top of your deck, play up to 1 Character card with a cost of 2, and place the rest at the top or bottom of your deck."
+  },
+  {
+    "id": "OP06-058",
+    "kind": "event",
+    "name": "Gravity Blade Raging Tiger",
+    "effect_text": "[Main] Place up to 2 Characters with a cost of 6 or less at the bottom of the owner's deck in any order."
+  },
+  {
+    "id": "OP06-059",
+    "kind": "event",
+    "name": "White Snake",
+    "effect_text": "[Counter] Up to 1 of your Leader or Character cards gains +1000 power during this turn, and draw 1 card."
+  },
+  {
+    "id": "OP06-060",
+    "kind": "character",
+    "name": "Vinsmoke Ichiji",
+    "effect_text": "[Activate: Main] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.) You may trash this Character: If your Leader has the {GERMA 66} type, play up to 1 [Vinsmoke Ichiji] with a cost of 7 from your hand or trash."
+  },
+  {
+    "id": "OP06-061",
+    "kind": "character",
+    "name": "Vinsmoke Ichiji",
+    "effect_text": "[On Play] If the number of DON!! cards on your field is equal to or less than the number on your opponent's field, give up to 1 of your opponent's Characters −2000 power during this turn and this Character gains [Rush].<br>(This card can attack on the turn in which it is played.)"
+  },
+  {
+    "id": "OP06-062",
+    "kind": "character",
+    "name": "Vinsmoke Judge",
+    "effect_text": "[On Play] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.) You may trash 2 cards from your hand: Play up to 4 {GERMA 66} type Character cards with different card names and 4000 power or less from your trash.<br>[Activate: Main] [Once Per Turn] DON!! −1: Rest up to 1 of your opponent's DON!! cards."
+  },
+  {
+    "id": "OP06-063",
+    "kind": "character",
+    "name": "Vinsmoke Sora",
+    "effect_text": "[On Play] You may trash 1 card from your hand: If the number of DON!! cards on your field is equal to or less than the number on your opponent's field, add up to 1 {The Vinsmoke Family} type Character card with 4000 power or less from your trash to your hand."
+  },
+  {
+    "id": "OP06-064",
+    "kind": "character",
+    "name": "Vinsmoke Niji",
+    "effect_text": "[Activate: Main] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.) You may trash this Character: If your Leader has the {GERMA 66} type, play up to 1 [Vinsmoke Niji] with a cost of 5 from your hand or trash."
+  },
+  {
+    "id": "OP06-065",
+    "kind": "character",
+    "name": "Vinsmoke Niji",
+    "effect_text": "[On Play] If the number of DON!! cards on your field is equal to or less than the number on your opponent's field, choose one:<br>• K.O. up to 1 of your opponent's Characters with a cost of 2 or less.<br>• Return up to 1 of your opponent's Characters with a cost of 4 or less to the owner's hand."
+  },
+  {
+    "id": "OP06-066",
+    "kind": "character",
+    "name": "Vinsmoke Yonji",
+    "effect_text": "[Activate: Main] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.) You may trash this Character: If your Leader has the {GERMA 66} type, play up to 1 [Vinsmoke Yonji] with a cost of 4 from your hand or trash."
+  },
+  {
+    "id": "OP06-068",
+    "kind": "character",
+    "name": "Vinsmoke Reiju",
+    "effect_text": "[Activate: Main] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.) You may trash this Character: If your Leader has the {GERMA 66} type, play up to 1 [Vinsmoke Reiju] with a cost of 4 from your hand or trash."
+  },
+  {
+    "id": "OP06-069",
+    "kind": "character",
+    "name": "Vinsmoke Reiju",
+    "effect_text": "[On Play] If the number of DON!! cards on your field is equal to or less than the number on your opponent's field and you have 5 or less cards in your hand, draw 2 cards."
+  },
+  {
+    "id": "OP06-071",
+    "kind": "character",
+    "name": "Gild Tesoro",
+    "effect_text": "[On Play] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): If your Leader has the {FILM} type, add up to 2 {FILM} type Character cards with a cost of 4 or less from your trash to your hand."
+  },
+  {
+    "id": "OP06-072",
+    "kind": "character",
+    "name": "Cosette",
+    "effect_text": "If your Leader has the {GERMA 66} type and the number of DON!! cards on your field is at least 2 less than the number on your opponent's field, this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+  },
+  {
+    "id": "OP06-074",
+    "kind": "character",
+    "name": "Zephyr (Navy)",
+    "effect_text": "[On Play] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Negate the effect of up to 1 of your opponent's Characters during this turn. Then, if that Character has 5000 power or less, K.O. it."
+  },
+  {
+    "id": "OP06-076",
+    "kind": "character",
+    "name": "Hitokiri Kamazo",
+    "effect_text": "[Your Turn] [Once Per Turn] When a DON!! card on your field is returned to your DON!! deck, K.O. up to 1 of your opponent's Characters with a cost of 2 or less."
+  },
+  {
+    "id": "OP06-077",
+    "kind": "event",
+    "name": "Black Bug",
+    "effect_text": "[Main] If the number of DON!! cards on your field is equal to or less than the number on your opponent's field,  place up to 1 of your opponent's Characters with a cost of 5 or less at the bottom of the owner's deck."
+  },
+  {
+    "id": "OP06-078",
+    "kind": "event",
+    "name": "GERMA 66",
+    "effect_text": "[Main] Look at 5 cards from the top of your deck; reveal up to 1 card with a type including \"GERMA\" other than [GERMA 66] and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP06-079",
+    "kind": "stage",
+    "name": "Kingdom of GERMA",
+    "effect_text": "[Activate: Main] You may trash 1 card from your hand and rest this Stage: Look at 3 cards from the top of your deck; reveal up to 1 card with a type including \"GERMA\" and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP06-080",
+    "kind": "leader",
+    "name": "Gecko Moria",
+    "effect_text": "[DON!! x1] [When Attacking] ➁ (You may rest the specified number of DON!! cards in your cost area.) You may trash 1 card from your hand: Trash 2 cards from the top of your deck and play up to 1 {Thriller Bark Pirates} type Character card with a cost of 4 or less from your trash."
+  },
+  {
+    "id": "OP06-081",
+    "kind": "character",
+    "name": "Absalom",
+    "effect_text": "[On Play] You may return 2 cards from your trash to the bottom of your deck in any order: K.O. up to 1 Character with a cost of 2 or less."
+  },
+  {
+    "id": "OP06-082",
+    "kind": "character",
+    "name": "Inuppe",
+    "effect_text": "[On Play]/[On K.O.] If your Leader has the {Thriller Bark Pirates} type, draw 2 cards and trash 2 cards from your hand."
+  },
+  {
+    "id": "OP06-083",
+    "kind": "character",
+    "name": "Oars",
+    "effect_text": "This Character cannot attack.<br>[Activate: Main] You may K.O. 1 of your {Thriller Bark Pirates} type Characters: This Character's effect is negated during this turn."
+  },
+  {
+    "id": "OP06-084",
+    "kind": "character",
+    "name": "Jigoro of the Wind",
+    "effect_text": "[On K.O.] Up to 1 of your Leader or Character cards gains +1000 power during this turn."
+  },
+  {
+    "id": "OP06-085",
+    "kind": "character",
+    "name": "Kumacy",
+    "effect_text": "[DON!! x2] [Your Turn] This Character gains +1000 power for every 5 cards in your trash."
+  },
+  {
+    "id": "OP06-086",
+    "kind": "character",
+    "name": "Gecko Moria",
+    "effect_text": "[On Play] Choose up to 1 Character card with a cost of 4 or less and up to 1 Character card with a cost of 2 or less from your trash. Play 1 card and play the other card rested."
+  },
+  {
+    "id": "OP06-088",
+    "kind": "character",
+    "name": "Sai",
+    "effect_text": "If your Leader has the {Dressrosa} type and is active, this Character gains +2000 power."
+  },
+  {
+    "id": "OP06-089",
+    "kind": "character",
+    "name": "Taralan",
+    "effect_text": "[On Play]/[On K.O.] Trash 3 cards from the top of your deck."
+  },
+  {
+    "id": "OP06-090",
+    "kind": "character",
+    "name": "Dr. Hogback",
+    "effect_text": "[On Play] You may return 2 cards from your trash to the bottom of your deck in any order: Add up to 1 {Thriller Bark Pirates} type card other than [Dr. Hogback] from your trash to your hand."
+  },
+  {
+    "id": "OP06-091",
+    "kind": "character",
+    "name": "Victoria Cindry",
+    "effect_text": "[On Play] If your Leader has the {Thriller Bark Pirates} type, trash 5 cards from the top of your deck."
+  },
+  {
+    "id": "OP06-092",
+    "kind": "character",
+    "name": "Brook",
+    "effect_text": "[On Play] Choose one:<br>• Trash up to 1 of your opponent's Characters with a cost of 4 or less.<br>• Your opponent places 3 cards from their trash at the bottom of their deck in any order."
+  },
+  {
+    "id": "OP06-093",
+    "kind": "character",
+    "name": "Perona",
+    "effect_text": "[On Play] If your opponent has 5 or more cards in their hand, choose one:<br>• Your opponent trashes 1 card from their hand.<br>• Give up to 1 of your opponent's Characters −3 cost during this turn."
+  },
+  {
+    "id": "OP06-095",
+    "kind": "event",
+    "name": "Shadows Asgard",
+    "effect_text": "[Main]/[Counter] Your Leader gains +1000 power during this turn. Then, you may K.O. any number of your {Thriller Bark Pirates} type Characters with a cost of 2 or less. Your Leader gains an additional +1000 power during this turn for every Character K.O.'d."
+  },
+  {
+    "id": "OP06-096",
+    "kind": "event",
+    "name": "...Nothing...at All!!!",
+    "effect_text": "[Counter] You may add 1 card from the top of your Life cards to your hand: Your Characters with a cost of 7 or less cannot be K.O.'d in battle during this turn."
+  },
+  {
+    "id": "OP06-097",
+    "kind": "event",
+    "name": "Negative Hollow",
+    "effect_text": "[Main] Trash 1 card from your opponent's hand."
+  },
+  {
+    "id": "OP06-098",
+    "kind": "stage",
+    "name": "Thriller Bark",
+    "effect_text": "[Activate: Main] ➀ (You may rest the specified number of DON!! cards in your cost area.) You may rest this Stage: If your Leader has the {Thriller Bark Pirates} type, play up to 1 {Thriller Bark Pirates} type Character card with a cost of 2 or less from your trash rested."
+  },
+  {
+    "id": "OP06-099",
+    "kind": "character",
+    "name": "Aisa",
+    "effect_text": "[On Play] Look at up to 1 card from the top of your or your opponent's Life cards and place it at the top or bottom of the Life cards."
+  },
+  {
+    "id": "OP06-100",
+    "kind": "character",
+    "name": "Inuarashi",
+    "effect_text": "[DON!! x2] [When Attacking] You may trash 1 card from your hand: K.O. up to 1 of your opponent's Characters with a cost equal to or less than the number of your opponent's Life cards."
+  },
+  {
+    "id": "OP06-101",
+    "kind": "character",
+    "name": "O-Nami",
+    "effect_text": "[On Play] Up to 1 of your Leader or Character cards gains [Banish] during this turn.<br>(When this card deals damage, the target card is trashed without activating its Trigger.)"
+  },
+  {
+    "id": "OP06-102",
+    "kind": "character",
+    "name": "Kamakiri",
+    "effect_text": "[Activate: Main] [Once Per Turn] You may place 1 Stage with a cost of 1 at the bottom of the owner's deck: K.O. up to 1 of your opponent's Characters with a cost of 2 or less."
+  },
+  {
+    "id": "OP06-103",
+    "kind": "character",
+    "name": "Kawamatsu",
+    "effect_text": "[When Attacking] You may trash 2 cards from your hand: Add up to 1 of your Characters with 0 power to the top or bottom of the owner's Life cards face-up."
+  },
+  {
+    "id": "OP06-104",
+    "kind": "character",
+    "name": "Kikunojo",
+    "effect_text": "[On K.O.] If your opponent has 3 or less Life cards, add up to 1 card from the top of your deck to the top of your Life cards."
+  },
+  {
+    "id": "OP06-106",
+    "kind": "character",
+    "name": "Kouzuki Hiyori",
+    "effect_text": "[On Play] You may add 1 card from the top or bottom of your Life cards to your hand: Add up to 1 card from your hand to the top of your Life cards."
+  },
+  {
+    "id": "OP06-109",
+    "kind": "character",
+    "name": "Denjiro",
+    "effect_text": "[DON!! x2] If your opponent has 3 or less Life cards, this Character cannot be K.O.'d by effects."
+  },
+  {
+    "id": "OP06-111",
+    "kind": "character",
+    "name": "Braham",
+    "effect_text": "[Activate: Main] [Once Per Turn] You may place 1 Stage with a cost of 1 at the bottom of the owner's deck: Rest up to 1 of your opponent's Characters with a cost of 4 or less."
+  },
+  {
+    "id": "OP06-112",
+    "kind": "character",
+    "name": "Raizo",
+    "effect_text": "[When Attacking] You may trash 1 card from your hand: Rest up to 1 of your opponent's DON!! cards."
+  },
+  {
+    "id": "OP06-113",
+    "kind": "character",
+    "name": "Raki",
+    "effect_text": "If you have a {Shandian Warrior} type Character other than [Raki], this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+  },
+  {
+    "id": "OP06-114",
+    "kind": "character",
+    "name": "Wyper",
+    "effect_text": "[On Play] You may place 1 Stage with a cost of 1 at the bottom of the owner's deck: Look at 5 cards from the top of your deck; reveal up to 1 [Upper Yard] or {Shandian Warrior} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP06-117",
+    "kind": "stage",
+    "name": "The Ark Maxim",
+    "effect_text": "[Activate: Main] [Once Per Turn] You may rest this card and 1 of your [Enel] cards: K.O. all of your opponent's Characters with a cost of 2 or less."
+  },
+  {
+    "id": "OP06-118",
+    "kind": "character",
+    "name": "Roronoa Zoro",
+    "effect_text": "[When Attacking] [Once Per Turn] ➀ (You may rest the specified number of DON!! cards in your cost area.): Set this Character as active.<br>[Activate: Main] [Once Per Turn] ➁ (You may rest the specified number of DON!! cards in your cost area.): Set this Character as active."
+  },
+  {
+    "id": "OP06-119",
+    "kind": "character",
+    "name": "Sanji",
+    "effect_text": "[On Play] Reveal 1 card from the top of your deck and play up to 1 Character with a cost of 9 or less other than [Sanji]. Then, place the rest at the bottom of your deck."
+  },
+  {
+    "id": "OP07-001",
+    "kind": "leader",
+    "name": "Monkey.D.Dragon",
+    "effect_text": "[Activate: Main] [Once Per Turn] Give up to 2 total of your currently given DON!! cards to 1 of your Characters."
+  },
+  {
+    "id": "OP07-002",
+    "kind": "character",
+    "name": "Ain",
+    "effect_text": "[On Play] Set the power of up to 1 of your opponent's Characters to 0 during this turn."
+  },
+  {
+    "id": "OP07-003",
+    "kind": "character",
+    "name": "Outlook III",
+    "effect_text": "[Activate: Main] You may trash this Character: Give up to 2 of your opponent's Characters −2000 power during this turn."
+  },
+  {
+    "id": "OP07-004",
+    "kind": "character",
+    "name": "Curly.Dadan",
+    "effect_text": "[On Play] You may trash 1 card from your hand: Look at 5 cards from the top of your deck; reveal up to 1 Character card with 2000 power or less and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP07-006",
+    "kind": "character",
+    "name": "Sterry",
+    "effect_text": "[On Play] You may give your 1 active Leader −5000 power during this turn: Draw 1 card and trash 1 card from your hand."
+  },
+  {
+    "id": "OP07-009",
+    "kind": "character",
+    "name": "Dogura & Magura",
+    "effect_text": "[On Play] Up to 1 of your red Characters with a cost of 1 gains [Double Attack] during this turn.<br>(This card deals 2 damage.)"
+  },
+  {
+    "id": "OP07-013",
+    "kind": "character",
+    "name": "Masked Deuce",
+    "effect_text": "[On Play] If your Leader is [Portgas.D.Ace], look at 5 cards from the top of your deck; reveal up to 1 [Portgas.D.Ace] or red Event and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP07-014",
+    "kind": "character",
+    "name": "Moda",
+    "effect_text": "[Your Turn] [On Play] Up to 1 of your [Portgas.D.Ace] cards gains +2000 power during this turn."
+  }
+]

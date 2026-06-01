@@ -1,0 +1,452 @@
+[
+  {
+    "id": "OP04-043",
+    "kind": "character",
+    "name": "Ulti",
+    "effect_text": "[DON!! x1] [When Attacking] Return up to 1 Character with a cost of 2 or less to the owner's hand or the bottom of their deck."
+  },
+  {
+    "id": "OP04-044",
+    "kind": "character",
+    "name": "Kaido",
+    "effect_text": "[On Play] Return up to 1 Character with a cost of 8 or less and up to 1 Character with a cost of 3 or less to the owner's hand."
+  },
+  {
+    "id": "OP04-046",
+    "kind": "character",
+    "name": "Queen",
+    "effect_text": "[On Play] If your Leader has the {Animal Kingdom Pirates} type, look at 7 cards from the top of your deck; reveal a total of up to 2 [Plague Rounds] or [Ice Oni] cards and add them to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP04-047",
+    "kind": "character",
+    "name": "Ice Oni",
+    "effect_text": "[Your Turn] At the end of a battle in which this Character battles your opponent's Character with a cost of 5 or less, place the opponent's Character you battled with at the bottom of the owner's deck."
+  },
+  {
+    "id": "OP04-048",
+    "kind": "character",
+    "name": "Sasaki",
+    "effect_text": "[On Play] Return all cards in your hand to your deck and shuffle your deck. Then, draw cards equal to the number you returned to your deck."
+  },
+  {
+    "id": "OP04-050",
+    "kind": "character",
+    "name": "Hanger",
+    "effect_text": "[Activate: Main] You may trash 1 card from your hand and rest this Character: Draw 1 card."
+  },
+  {
+    "id": "OP04-053",
+    "kind": "character",
+    "name": "Page One",
+    "effect_text": "[DON!! x1] [Once Per Turn] When you activate an Event, draw 1 card. Then, place 1 card from your hand at the bottom of your deck."
+  },
+  {
+    "id": "OP04-055",
+    "kind": "event",
+    "name": "Plague Rounds",
+    "effect_text": "[Main] You may trash 1 [Ice Oni] from your hand and place 1 Character with a cost of 4 or less at the bottom of the owner's deck: Play 1 [Ice Oni] from your trash."
+  },
+  {
+    "id": "OP04-056",
+    "kind": "event",
+    "name": "Gum-Gum Red Roc",
+    "effect_text": "[Main] Place up to 1 Character at the bottom of the owner's deck."
+  },
+  {
+    "id": "OP04-058",
+    "kind": "leader",
+    "name": "Crocodile",
+    "effect_text": "[Opponent's Turn] [Once Per Turn] When a DON!! card on your field is returned to your DON!! deck by your effect, add up to 1 DON!! card from your DON!! deck and set it as active."
+  },
+  {
+    "id": "OP04-059",
+    "kind": "character",
+    "name": "Iceburg",
+    "effect_text": "[On Your Opponent's Attack] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): If your Leader has the {Water Seven} type, this Character gains [Blocker] during this turn.<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+  },
+  {
+    "id": "OP04-060",
+    "kind": "character",
+    "name": "Crocodile",
+    "effect_text": "[On Play] DON!! −2 (You may return the specified number of DON!! cards from your field to your DON!! deck.): If your Leader's type includes \"Baroque Works\", add up to 1 card from the top of your deck to the top of your Life cards.<br>[On Your Opponent's Attack] [Once Per Turn] DON!! −1: Draw 1 card and trash 1 card from your hand."
+  },
+  {
+    "id": "OP04-061",
+    "kind": "character",
+    "name": "Tom",
+    "effect_text": "[Activate: Main] You may trash this Character: If your Leader has the {Water Seven} type, add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "OP04-063",
+    "kind": "character",
+    "name": "Franky",
+    "effect_text": "[On Your Opponent's Attack] [Once Per Turn] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): If your Leader has the {Water Seven} type, up to 1 of your Leader or Character cards gains +1000 power during this battle."
+  },
+  {
+    "id": "OP04-064",
+    "kind": "character",
+    "name": "Ms. All Sunday",
+    "effect_text": "[On Play] Add up to 1 DON!! card from your DON!! deck and rest it. Then, if you have 6 or more DON!! cards on your field, draw 1 card."
+  },
+  {
+    "id": "OP04-065",
+    "kind": "character",
+    "name": "Miss.Goldenweek(Marianne)",
+    "effect_text": "[On Play] If your Leader's type includes \"Baroque Works\", up to 1 of your opponent's Characters with a cost of 5 or less cannot attack until the start of your next turn."
+  },
+  {
+    "id": "OP04-066",
+    "kind": "character",
+    "name": "Miss.Valentine(Mikita)",
+    "effect_text": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 card with a type including \"Baroque Works\" and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP04-069",
+    "kind": "character",
+    "name": "Mr.2.Bon.Kurei(Bentham)",
+    "effect_text": "[On Your Opponent's Attack] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): This Character's base power becomes the same as the power of your opponent's attacking Leader or Character during this turn."
+  },
+  {
+    "id": "OP04-070",
+    "kind": "character",
+    "name": "Mr.3(Galdino)",
+    "effect_text": "[On Your Opponent's Attack] [Once Per Turn] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Give up to 1 of your opponent's Characters −1000 power during this turn."
+  },
+  {
+    "id": "OP04-071",
+    "kind": "character",
+    "name": "Mr.4(Babe)",
+    "effect_text": "[On Your Opponent's Attack] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): This Character gains [Blocker] and +1000 power during this battle.<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+  },
+  {
+    "id": "OP04-072",
+    "kind": "character",
+    "name": "Mr.5(Gem)",
+    "effect_text": "[On Your Opponent's Attack] [Once Per Turn] DON!! −2 (You may return the specified number of DON!! cards from your field to your DON!! deck.) You may rest this Character: K.O. up to 1 of your opponent's Characters with a cost of 4 or less."
+  },
+  {
+    "id": "OP04-073",
+    "kind": "character",
+    "name": "Mr.13 & Ms.Friday",
+    "effect_text": "[Activate: Main] You may trash this Character and 1 of your Characters with a type including \"Baroque Works\": Add up to 1 DON!! card from your DON!! deck and set it as active."
+  },
+  {
+    "id": "OP04-076",
+    "kind": "event",
+    "name": "Weakness...Is an Unforgivable Sin.",
+    "effect_text": "[Counter] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Up to 1 of your Leader or Character cards gains +1000 power during this turn."
+  },
+  {
+    "id": "OP04-079",
+    "kind": "character",
+    "name": "Orlumbus",
+    "effect_text": "[Activate: Main] [Once Per Turn] Give up to 1 of your opponent's Characters −4 cost during this turn and trash 2 cards from the top of your deck. Then, K.O. 1 of your {Dressrosa} type Characters."
+  },
+  {
+    "id": "OP04-080",
+    "kind": "character",
+    "name": "Gyats",
+    "effect_text": "[On Play] Up to 1 of your {Dressrosa} type Characters can also attack active Characters during this turn."
+  },
+  {
+    "id": "OP04-081",
+    "kind": "character",
+    "name": "Cavendish",
+    "effect_text": "[DON!! x1] This Character can also attack active Characters.<br>[When Attacking] You may rest your Leader: K.O. up to 1 of your opponent's Characters with a cost of 1 or less. Then, trash 2 cards from the top of your deck."
+  },
+  {
+    "id": "OP04-082",
+    "kind": "character",
+    "name": "Kyros",
+    "effect_text": "If this Character would be K.O.'d, you may rest your Leader or 1 [Corrida Coliseum] instead.<br>[On Play] If your Leader is [Rebecca], K.O. up to 1 of your opponent's Characters with a cost of 1 or less. Then, trash 1 card from the top of your deck."
+  },
+  {
+    "id": "OP04-084",
+    "kind": "character",
+    "name": "Stussy",
+    "effect_text": "[On Play] Look at 3 cards from the top of your deck and play up to 1 Character card with a type including \"CP\" other than [Stussy] and a cost of 2 or less. Then, trash the rest."
+  },
+  {
+    "id": "OP04-085",
+    "kind": "character",
+    "name": "Suleiman",
+    "effect_text": "[On Play]/[When Attacking] If your Leader has the {Dressrosa} type, give up to 1 of your opponent's Characters −2 cost during this turn. Then, trash 1 card from the top of your deck."
+  },
+  {
+    "id": "OP04-086",
+    "kind": "character",
+    "name": "Chinjao",
+    "effect_text": "[DON!! x1] When this Character battles and K.O.'s your opponent's Character, draw 2 cards and trash 2 cards from your hand."
+  },
+  {
+    "id": "OP04-088",
+    "kind": "character",
+    "name": "Hajrudin",
+    "effect_text": "[Activate: Main] You may rest your 1 Leader: Give up to 1 of your opponent's Characters −4 cost during this turn."
+  },
+  {
+    "id": "OP04-090",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "This Character can also attack active Characters.<br>[Activate: Main] [Once Per Turn] You may return 7 cards from your trash to the bottom of your deck in any order: Set this Character as active. Then, this Character will not become active in your next Refresh Phase."
+  },
+  {
+    "id": "OP04-091",
+    "kind": "character",
+    "name": "Leo",
+    "effect_text": "[On Play] You may rest your 1 Leader: If your Leader has the {Dressrosa} type, K.O. up to 1 of your opponent's Characters with a cost of 1 or less. Then, trash 2 cards from the top of your deck."
+  },
+  {
+    "id": "OP04-092",
+    "kind": "character",
+    "name": "Rebecca",
+    "effect_text": "[On Play] Look at 3 cards from the top of your deck; reveal up to 1 {Dressrosa} type card other than [Rebecca] and add it to your hand. Then, trash the rest."
+  },
+  {
+    "id": "OP04-093",
+    "kind": "event",
+    "name": "Gum-Gum King Kong Gun",
+    "effect_text": "[Main] Up to 1 of your {Dressrosa} type Characters gains +6000 power during this turn. Then, if you have 15 or more cards in your trash, that card gains [Double Attack] during this turn.<br>(This card deals 2 damage.)"
+  },
+  {
+    "id": "OP04-094",
+    "kind": "event",
+    "name": "Trueno Bastardo",
+    "effect_text": "[Main] Choose up to 1 of your opponent's Characters with a cost of 4 or less and K.O. it. If you have 15 or more cards in your trash, choose up to 1 of your opponent's Characters with a cost of 6 or less instead of a Character with a cost of 4 or less."
+  },
+  {
+    "id": "OP04-096",
+    "kind": "stage",
+    "name": "Corrida Coliseum",
+    "effect_text": "If your Leader has the {Dressrosa} type, your {Dressrosa} type Characters can attack Characters on the turn in which they are played."
+  },
+  {
+    "id": "OP04-097",
+    "kind": "character",
+    "name": "Otama",
+    "effect_text": "[On Play] Add up to 1 of your opponent's {Animal} or {SMILE} type Characters with a cost of 3 or less to the top of your opponent's Life cards face-up."
+  },
+  {
+    "id": "OP04-098",
+    "kind": "character",
+    "name": "Toko",
+    "effect_text": "[On Play] You may trash 2 {Land of Wano} type cards from your hand: If you have 1 or less Life cards, add 1 card from the top of your deck to the top of your Life cards."
+  },
+  {
+    "id": "OP04-099",
+    "kind": "character",
+    "name": "Olin",
+    "effect_text": "Also treat this card's name as [Charlotte Linlin] according to the rules."
+  },
+  {
+    "id": "OP04-101",
+    "kind": "character",
+    "name": "Carmel",
+    "effect_text": "[Your Turn] [On Play] Draw 1 card."
+  },
+  {
+    "id": "OP04-102",
+    "kind": "character",
+    "name": "Kin'emon",
+    "effect_text": "[Activate: Main] [Once Per Turn] ➀ (You may rest the specified number of DON!! cards in your cost area.) You may add 1 card from the top or bottom of your Life cards to your hand: Set this Character as active."
+  },
+  {
+    "id": "OP04-103",
+    "kind": "character",
+    "name": "Kouzuki Hiyori",
+    "effect_text": "[On Play] Up to 1 of your {Land of Wano} type Leader or Character cards gains +1000 power during this turn."
+  },
+  {
+    "id": "OP04-105",
+    "kind": "character",
+    "name": "Charlotte Amande",
+    "effect_text": "[Activate: Main] [Once Per Turn] You may trash 1 card with a [Trigger] from your hand: Rest up to 1 of your opponent's Characters with a cost of 2 or less."
+  },
+  {
+    "id": "OP04-106",
+    "kind": "character",
+    "name": "Charlotte Bavarois",
+    "effect_text": "[DON!! x1] If you have less Life cards than your opponent, this Character gains +1000 power."
+  },
+  {
+    "id": "OP04-108",
+    "kind": "character",
+    "name": "Charlotte Moscato",
+    "effect_text": "[DON!! x1] This Character gains [Banish].<br>(When this card deals damage, the target card is trashed without activating its Trigger.)"
+  },
+  {
+    "id": "OP04-109",
+    "kind": "character",
+    "name": "Tonoyasu",
+    "effect_text": "[Activate: Main] You may trash this Character: Up to 1 of your {Land of Wano} type Leader or Character cards gains +3000 power during this turn."
+  },
+  {
+    "id": "OP04-111",
+    "kind": "character",
+    "name": "Hera",
+    "effect_text": "[Activate: Main] You may trash 1 of your {Homies} type Characters other than this Character and rest this Character: Set up to 1 of your [Charlotte Linlin] Characters as active."
+  },
+  {
+    "id": "OP04-112",
+    "kind": "character",
+    "name": "Yamato",
+    "effect_text": "[On Play] K.O. up to 1 of your opponent's Characters with a cost equal to or less than the total of your and your opponent's Life cards. Then, if you have 1 or less Life cards, add up to 1 card from the top of your deck to the top of your Life cards."
+  },
+  {
+    "id": "OP04-115",
+    "kind": "event",
+    "name": "Gun Modoki",
+    "effect_text": "[Main] You may add 1 card from the top or bottom of your Life cards to your hand: Up to 1 of your {Land of Wano} type Characters gains [Double Attack] during this turn.<br>(This card deals 2 damage.)"
+  },
+  {
+    "id": "OP04-117",
+    "kind": "event",
+    "name": "Heavenly Fire",
+    "effect_text": "[Main] Add up to 1 of your opponent's Characters with a cost of 3 or less to the top or bottom of your opponent's Life cards face-up."
+  },
+  {
+    "id": "OP04-118",
+    "kind": "character",
+    "name": "Nefeltari Vivi",
+    "effect_text": "All of your red Characters with a cost of 3 or more other than this Character gain [Rush].<br>(This card can attack on the turn in which it is played.)"
+  },
+  {
+    "id": "OP04-119",
+    "kind": "character",
+    "name": "Donquixote Rosinante",
+    "effect_text": "[Opponent's Turn] If this Character is rested, your active Characters with a base cost of 5 cannot be K.O.'d by effects.<br>[On Play] You may rest this Character: Play up to 1 green Character card with a cost of 5 from your hand."
+  },
+  {
+    "id": "OP05-001",
+    "kind": "leader",
+    "name": "Sabo",
+    "effect_text": "[DON!! x1] [Opponent's Turn] [Once Per Turn] If your Character with 5000 power or more would be K.O.'d, you may give that Character −1000 power during this turn instead of that Character being K.O.'d."
+  },
+  {
+    "id": "OP05-002",
+    "kind": "leader",
+    "name": "Belo Betty",
+    "effect_text": "[Activate: Main] [Once Per Turn] You may trash 1 {Revolutionary Army} type card from your hand: Up to 3 of your {Revolutionary Army} type Characters or Characters with a [Trigger] gain +3000 power during this turn."
+  },
+  {
+    "id": "OP05-003",
+    "kind": "character",
+    "name": "Inazuma",
+    "effect_text": "If you have a Character with 7000 power or more other than this Character, this Character gains [Rush].<br>(This card can attack on the turn in which it is played.)"
+  },
+  {
+    "id": "OP05-004",
+    "kind": "character",
+    "name": "Emporio.Ivankov",
+    "effect_text": "[Activate: Main] [Once Per Turn] If this Character has 7000 power or more, play up to 1 {Revolutionary Army} type Character card with 5000 power or less other than [Emporio.Ivankov] from your hand."
+  },
+  {
+    "id": "OP05-005",
+    "kind": "character",
+    "name": "Karasu",
+    "effect_text": "[On Play] If your Leader has the {Revolutionary Army} type, give up to 1 of your opponent's Leader or Character cards −1000 power during this turn.<br>[When Attacking] If this Character has 7000 power or more, give up to 1 of your opponent's Leader or Character cards −1000 power during this turn."
+  },
+  {
+    "id": "OP05-006",
+    "kind": "character",
+    "name": "Koala",
+    "effect_text": "[On Play] If your Leader has the {Revolutionary Army} type, give up to 1 of your opponent's Characters −3000 power during this turn."
+  },
+  {
+    "id": "OP05-007",
+    "kind": "character",
+    "name": "Sabo",
+    "effect_text": "[On Play] K.O. up to 2 of your opponent's Characters with a total power of 4000 or less."
+  },
+  {
+    "id": "OP05-008",
+    "kind": "character",
+    "name": "Chaka",
+    "effect_text": "[DON!! x1] [Activate: Main] [Once Per Turn] Give up to 2 rested DON!! cards to your Leader or 1 of your Characters."
+  },
+  {
+    "id": "OP05-009",
+    "kind": "character",
+    "name": "Toh-Toh",
+    "effect_text": "[On Play] Draw 1 card if your Leader has 0 power or less."
+  },
+  {
+    "id": "OP05-016",
+    "kind": "character",
+    "name": "Morley",
+    "effect_text": "[When Attacking] If this Character has 7000 power or more, your opponent cannot activate [Blocker] during this battle."
+  },
+  {
+    "id": "OP05-017",
+    "kind": "character",
+    "name": "Lindbergh",
+    "effect_text": "[When Attacking] If this Character has 7000 power or more, K.O. up to 1 of your opponent's Characters with 3000 power or less."
+  },
+  {
+    "id": "OP05-019",
+    "kind": "event",
+    "name": "Fire Fist",
+    "effect_text": "[Main] Give up to 1 of your opponent's Characters −4000 power during this turn. Then, if you have 2 or less Life cards, K.O. up to 1 of your opponent's Characters with 0 power or less."
+  },
+  {
+    "id": "OP05-020",
+    "kind": "event",
+    "name": "Four Thousand-Brick Fist",
+    "effect_text": "[Main] Up to 1 of your Leader or Character cards gains +2000 power during this turn. Then, K.O. up to 1 of your opponent's Characters with 2000 power or less."
+  },
+  {
+    "id": "OP05-021",
+    "kind": "stage",
+    "name": "Revolutionary Army HQ",
+    "effect_text": "[Activate: Main] You may trash 1 card from your hand and rest this Stage: Look at 3 cards from the top of your deck; reveal up to 1 {Revolutionary Army} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP05-023",
+    "kind": "character",
+    "name": "Vergo",
+    "effect_text": "[DON!! x1] [When Attacking] K.O. up to 1 of your opponent's rested Characters with a cost of 3 or less."
+  },
+  {
+    "id": "OP05-026",
+    "kind": "character",
+    "name": "Sarquiss",
+    "effect_text": "[DON!! x1] [When Attacking] [Once Per Turn] You may rest 1 of your Characters with a cost of 3 or more: Set this Character as active."
+  },
+  {
+    "id": "OP05-027",
+    "kind": "character",
+    "name": "Trafalgar Law",
+    "effect_text": "[Activate: Main] You may trash this Character: Rest up to 1 of your opponent's Characters with a cost of 3 or less."
+  },
+  {
+    "id": "OP05-028",
+    "kind": "character",
+    "name": "Donquixote Doflamingo",
+    "effect_text": "[Activate: Main] You may trash this Character: K.O. up to 1 of your opponent's rested Characters with a cost of 2 or less."
+  },
+  {
+    "id": "OP05-029",
+    "kind": "character",
+    "name": "Donquixote Doflamingo",
+    "effect_text": "[On Your Opponent's Attack] [Once Per Turn] ➀ (You may rest the specified number of DON!! cards in your cost area.): Rest up to 1 of your opponent's Characters with a cost of 6 or less."
+  },
+  {
+    "id": "OP05-031",
+    "kind": "character",
+    "name": "Buffalo",
+    "effect_text": "[When Attacking] [Once Per Turn] If you have 2 or more rested Characters, set up to 1 of your rested Characters with a cost of 1 as active."
+  },
+  {
+    "id": "OP05-032",
+    "kind": "character",
+    "name": "Pica",
+    "effect_text": "[End of Your Turn] ①: Set this Character as active.<br>[Once Per Turn] If this Character would be K.O.'d, you may rest up to 1 of your Characters with a cost of 3 or more other than [Pica] instead."
+  },
+  {
+    "id": "OP05-040",
+    "kind": "stage",
+    "name": "Birdcage",
+    "effect_text": "If your Leader is [Donquixote Doflamingo], all Characters with a cost of 5 or less do not become active in your and your opponent's Refresh Phases.<br>[End of Your Turn] If you have 10 DON!! cards on your field, K.O. all rested Characters with a cost of 5 or less. Then, trash this Stage."
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "EB03-003",
+    "effect_text": "[On Play] If your Leader is [Uta], draw 2 cards. Then, play up to 1 Character card with 6000 power or less and no base effect from your hand."
+  },
+  {
+    "id": "EB03-005",
+    "effect_text": "[On Play] If your Leader is [Sugar], play up to 1 {Donquixote Pirates} type Character card with 6000 power or less from your hand rested."
+  },
+  {
+    "id": "EB03-016",
+    "effect_text": "[On Play] If your Leader is [Kouzuki Oden], draw 1 card.<br>[Activate: Main] You may trash this Character: Give up to 1 rested DON!! card to your {Land of Wano} type Leader."
+  },
+  {
+    "id": "EB04-021",
+    "effect_text": "[On Play] If your Leader is [Nefeltari Vivi], draw 2 cards and trash 1 card from your hand.<br>[Activate: Main] [Once Per Turn] You may trash 1 card from your hand: Give up to 1 rested DON!! card to your Leader or 1 of your Characters."
+  },
+  {
+    "id": "OP01-040",
+    "effect_text": "[On Play] If your Leader is [Kouzuki Oden], play up to 1 {The Akazaya Nine} type Character card with a cost of 3 or less from your hand.<br>[DON!! x1] [When Attacking] [Once Per Turn] Set up to 1 of your {The Akazaya Nine} type Character cards with a cost of 3 or less as active."
+  },
+  {
+    "id": "OP02-013",
+    "effect_text": "[On Play] Give up to 2 of your opponent's Characters −3000 power during this turn. Then, if your Leader's type includes \"Whitebeard Pirates\", this Character gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)"
+  },
+  {
+    "id": "OP04-038",
+    "effect_text": "[Main]/[Counter] Rest up to 1 of your opponent's Leader or Character cards. Then, K.O. up to 1 of your opponent's rested Characters with a cost of 6 or less."
+  },
+  {
+    "id": "OP05-009",
+    "effect_text": "[On Play] Draw 1 card if your Leader has 0 power or less."
+  },
+  {
+    "id": "EB01-046",
+    "effect_text": "[On Play]/[When Attacking] Give up to 1 of your opponent's Characters −1 cost during this turn. Then, K.O. up to 1 of your opponent's Characters with a cost of 0."
+  },
+  {
+    "id": "EB02-011",
+    "effect_text": "[On Play] If your Leader has the {Fish-Man} or {East Blue} type, give up to 1 rested DON!! card to 1 of your Leader. Then, up to 1 of your opponent's Characters with a cost of 5 or less cannot be rested until the end of your opponent's next turn."
+  }
+]

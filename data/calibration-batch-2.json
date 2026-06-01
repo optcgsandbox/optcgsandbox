@@ -1,0 +1,42 @@
+[
+  {
+    "id": "EB01-023",
+    "effect_text": "[On Play] Draw 1 card."
+  },
+  {
+    "id": "OP04-045",
+    "effect_text": "[On Play] Draw 1 card."
+  },
+  {
+    "id": "OP07-044",
+    "effect_text": "[On Play] Draw 1 card."
+  },
+  {
+    "id": "EB01-049",
+    "effect_text": "[On Play] K.O. up to 1 of your opponent's Characters with a cost of 2 or less."
+  },
+  {
+    "id": "OP01-016",
+    "effect_text": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 {Straw Hat Crew} type card other than [Nami] and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP03-008",
+    "effect_text": "This Character cannot be K.O.'d in battle by <Slash> attribute cards.<br>[On Play] Look at 5 cards from the top of your deck; reveal up to 1 red Event and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP06-013",
+    "effect_text": "[On Play] Look at 3 cards from the top of your deck; reveal up to 1 {FILM} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "EB02-017",
+    "effect_text": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 {Straw Hat Crew} type card other than [Nami] and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP07-016",
+    "effect_text": "[Main] Up to 1 of your {Revolutionary Army} type Characters gains +2000 power during this turn. Then, give up to 1 of your opponent's Characters −1000 power during this turn."
+  },
+  {
+    "id": "OP03-027",
+    "effect_text": "[On Play] If your Leader has the {East Blue} type, rest up to 1 of your opponent's Characters with a cost of 2 or less and, if you don't have [Buchi], play up to 1 [Buchi] from your hand."
+  }
+]

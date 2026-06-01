@@ -1,0 +1,452 @@
+[
+  {
+    "id": "OP08-111",
+    "kind": "character",
+    "name": "S-Shark",
+    "effect_text": "[DON!! x1] [When Attacking] Your opponent cannot activate [Blocker] during this battle."
+  },
+  {
+    "id": "OP08-112",
+    "kind": "character",
+    "name": "S-Snake",
+    "effect_text": "[On Play] Up to 1 of your opponent's Characters with a cost of 6 or less other than [Monkey.D.Luffy] cannot attack until the end of your opponent's next turn."
+  },
+  {
+    "id": "OP08-114",
+    "kind": "character",
+    "name": "S-Hawk",
+    "effect_text": "[DON!! x1] If you have less Life cards than your opponent, this Character cannot be K.O.'d in battle by <Slash> attribute cards and gains +2000 power."
+  },
+  {
+    "id": "OP08-115",
+    "kind": "event",
+    "name": "The Earth Will Not Lose!",
+    "effect_text": "[Counter] If your Leader has the {Shandian Warrior} type, up to 1 of your Leader or Character cards gains +3000 power during this battle. Then, play up to 1 [Upper Yard] from your hand."
+  },
+  {
+    "id": "OP08-117",
+    "kind": "event",
+    "name": "Burn Blade",
+    "effect_text": "[Main] You may trash 1 card from the top of your Life cards: K.O. up to 1 of your opponent's Characters with a cost of 7 or less."
+  },
+  {
+    "id": "OP08-118",
+    "kind": "character",
+    "name": "Silvers Rayleigh",
+    "effect_text": "[On Play] Select up to 2 of your opponent's Characters, and give 1 Character −3000 power and the other −2000 power until the end of your opponent's next turn. Then, K.O. up to 1 of your opponent's Characters with 3000 power or less."
+  },
+  {
+    "id": "OP08-119",
+    "kind": "character",
+    "name": "Kaido & Linlin",
+    "effect_text": "[When Attacking] DON!! −10: K.O. all Characters other than this Character. Then, add up to 1 card from the top of your deck to the top of your Life cards and trash up to 1 card from the top of your opponent's Life cards."
+  },
+  {
+    "id": "OP09-001",
+    "kind": "leader",
+    "name": "Shanks",
+    "effect_text": "[Once Per Turn] This effect can be activated when your opponent attacks. Give up to 1 of your opponent's Leader or Character cards −1000 power during this turn."
+  },
+  {
+    "id": "OP09-008",
+    "kind": "character",
+    "name": "Building Snake",
+    "effect_text": "[Activate: Main] You may place this Character at the bottom of the owner's deck: Give up to 1 of your opponent's Characters −3000 power during this turn."
+  },
+  {
+    "id": "OP09-009",
+    "kind": "character",
+    "name": "Benn.Beckman",
+    "effect_text": "[On Play] Trash up to 1 of your opponent's Characters with 6000 power or less."
+  },
+  {
+    "id": "OP09-010",
+    "kind": "character",
+    "name": "Bonk Punch",
+    "effect_text": "[On Play] Play up to 1 [Monster] from your hand.<br>[DON!! x1] [When Attacking] This Character gains +2000 power during this turn."
+  },
+  {
+    "id": "OP09-012",
+    "kind": "character",
+    "name": "Monster",
+    "effect_text": "If your Character [Bonk Punch] would be K.O.'d by an effect, you may trash this Character instead."
+  },
+  {
+    "id": "OP09-014",
+    "kind": "character",
+    "name": "Limejuice",
+    "effect_text": "[On Play] Your opponent cannot activate up to 1 [Blocker] Character that has 4000 power or less during this turn."
+  },
+  {
+    "id": "OP09-017",
+    "kind": "character",
+    "name": "Wire",
+    "effect_text": "[DON!! x1] If your Leader has 7000 power or more and the {Kid Pirates} type, this Character gains [Rush]."
+  },
+  {
+    "id": "OP09-018",
+    "kind": "event",
+    "name": "Get Out of Here!",
+    "effect_text": "[Main] K.O. up to 2 of your opponent's Characters with a total power of 4000 or less."
+  },
+  {
+    "id": "OP09-019",
+    "kind": "event",
+    "name": "Nobody Hurts a Friend of Mine!!!!",
+    "effect_text": "[Main] If your Leader has the {Red-Haired Pirates} type, give up to 1 of your opponent's Characters −3000 power during this turn. Then, if your opponent has a Character with 5000 or more power, draw 1 card."
+  },
+  {
+    "id": "OP09-020",
+    "kind": "event",
+    "name": "Come On!! We'll Fight You!!",
+    "effect_text": "[Main] Look at 5 cards from the top of your deck; reveal up to 1 {Red-Haired Pirates} type card other than [Come On!! We'll Fight You!!] and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP09-021",
+    "kind": "stage",
+    "name": "Red Force",
+    "effect_text": "[Activate: Main] You may rest this Stage: If your Leader has the {Red-Haired Pirates} type, give up to 1 of your opponent's Characters −1000 power during this turn."
+  },
+  {
+    "id": "OP09-022",
+    "kind": "leader",
+    "name": "Lim",
+    "effect_text": "Your Character cards are played rested.<br>[Activate: Main] [Once Per Turn] You may rest 3 of your DON!! cards: Add up to 1 DON!! card from your DON!! deck and rest it, and play up to 1 {ODYSSEY} type Character card with a cost of 5 or less from your hand."
+  },
+  {
+    "id": "OP09-023",
+    "kind": "character",
+    "name": "Adio",
+    "effect_text": "[On Play] If your Leader has the {ODYSSEY} type, set up to 3 of your DON!! cards as active.<br>[On Your Opponent's Attack] [Once Per Turn] You may rest 1 of your DON!! cards: Up to 1 of your Leader or Character cards gains +2000 power during this battle."
+  },
+  {
+    "id": "OP09-024",
+    "kind": "character",
+    "name": "Usopp",
+    "effect_text": "[On Play] If you have 2 or more rested Characters, draw 2 cards and trash 2 cards from your hand."
+  },
+  {
+    "id": "OP09-025",
+    "kind": "character",
+    "name": "Crocodile",
+    "effect_text": "If your Leader has the {ODYSSEY} type, this Character cannot be K.O.'d in battle by Leaders."
+  },
+  {
+    "id": "OP09-026",
+    "kind": "character",
+    "name": "Sakazuki",
+    "effect_text": "[On Play] If you have 2 or more rested Characters, K.O. up to 1 of your opponent's Characters with a cost of 5 or less."
+  },
+  {
+    "id": "OP09-027",
+    "kind": "character",
+    "name": "Sabo",
+    "effect_text": "[When Attacking] [Once Per Turn] If you have 3 or more rested Characters, draw 1 card."
+  },
+  {
+    "id": "OP09-028",
+    "kind": "character",
+    "name": "Sanji",
+    "effect_text": "[On K.O.] You may add 1 card from the top or bottom of your Life cards to your hand: Play up to 1 {ODYSSEY} or {Straw Hat Crew} type Character card with a cost of 4 or less from your trash rested."
+  },
+  {
+    "id": "OP09-029",
+    "kind": "character",
+    "name": "Tony Tony.Chopper",
+    "effect_text": "[End of Your Turn] Set up to 1 of your {ODYSSEY} type Characters with a cost of 4 or less as active."
+  },
+  {
+    "id": "OP09-030",
+    "kind": "character",
+    "name": "Trafalgar Law",
+    "effect_text": "[On Play] You may return 1 of your Characters to the owner's hand: Play up to 1 {ODYSSEY} type Character card with a cost of 3 or less other than [Trafalgar Law] from your hand."
+  },
+  {
+    "id": "OP09-033",
+    "kind": "character",
+    "name": "Nico Robin",
+    "effect_text": "[On Play] If you have 2 or more rested Characters, none of your {ODYSSEY} or {Straw Hat Crew} type Characters can be K.O.'d by effects until the end of your opponent's next turn."
+  },
+  {
+    "id": "OP09-034",
+    "kind": "character",
+    "name": "Perona",
+    "effect_text": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 [Dracule Mihawk] or {Thriller Bark Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order and trash 1 card from your hand."
+  },
+  {
+    "id": "OP09-035",
+    "kind": "character",
+    "name": "Portgas.D.Ace",
+    "effect_text": "[On Play] If you have 2 or more rested Characters, rest up to 1 of your opponent's Characters with a cost of 5 or less."
+  },
+  {
+    "id": "OP09-036",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[On Play] If you have 2 or more rested Characters, rest up to 1 of your opponent's DON!! cards or Characters with a cost of 6 or less."
+  },
+  {
+    "id": "OP09-039",
+    "kind": "event",
+    "name": "Gum-Gum Cuatro Jet Cross Shock Bazooka",
+    "effect_text": "[Counter] If your Leader has the {ODYSSEY} type and you have 2 or more rested Characters, up to 1 of your Leader or Character cards gains +2000 power during this turn."
+  },
+  {
+    "id": "OP09-040",
+    "kind": "event",
+    "name": "Thunder Lance Flip Caliber Phoenix Shot",
+    "effect_text": "[Main] If you have 2 or more rested Characters, K.O. up to 1 of your opponent's Characters with a cost of 4 or less."
+  },
+  {
+    "id": "OP09-042",
+    "kind": "leader",
+    "name": "Buggy",
+    "effect_text": "[Activate: Main] You may rest 5 of your DON!! cards and trash 1 card from your hand: Play up to 1 {Cross Guild} type Character card from your hand."
+  },
+  {
+    "id": "OP09-043",
+    "kind": "character",
+    "name": "Alvida",
+    "effect_text": "[On K.O.] If your Leader has the {Cross Guild} type, play up to 1 Character card with a cost of 5 or less other than [Alvida] from your hand."
+  },
+  {
+    "id": "OP09-044",
+    "kind": "character",
+    "name": "Izo",
+    "effect_text": "[When Attacking] Look at 5 cards from the top of your deck; reveal up to 1 {Land of Wano} type card or card with a type including \"Whitebeard Pirates\" and add it to your hand. Then, place the rest at the bottom of your deck in any order and trash 1 card from your hand."
+  },
+  {
+    "id": "OP09-045",
+    "kind": "character",
+    "name": "Cabaji",
+    "effect_text": "If you have a [Buggy] or [Mohji] Character, this Character cannot be K.O.'d in battle."
+  },
+  {
+    "id": "OP09-046",
+    "kind": "character",
+    "name": "Crocodile",
+    "effect_text": "[On Play] Play up to 1 {Cross Guild} type Character card or Character card with a type including \"Baroque Works\" with a cost of 5 or less from your hand."
+  },
+  {
+    "id": "OP09-050",
+    "kind": "character",
+    "name": "Nami",
+    "effect_text": "[When Attacking] Look at 5 cards from the top of your deck; reveal up to 1 blue Event and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP09-051",
+    "kind": "character",
+    "name": "Buggy",
+    "effect_text": "[On Play] Place up to 1 of your opponent's Characters at the bottom of the owner's deck. Then, if you do not have 5 Characters with a cost of 5 or more, place this Character at the bottom of the owner's deck."
+  },
+  {
+    "id": "OP09-052",
+    "kind": "character",
+    "name": "Marco",
+    "effect_text": "[Opponent's Turn] You may trash 1 card from your hand: When this Character is K.O.'d by your opponent's effect, play this Character card from your trash rested."
+  },
+  {
+    "id": "OP09-053",
+    "kind": "character",
+    "name": "Mohji",
+    "effect_text": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 [Richie] and add it to your hand. Then, place the rest at the bottom of your deck in any order and play up to 1 [Richie] from your hand."
+  },
+  {
+    "id": "OP09-056",
+    "kind": "character",
+    "name": "Mr.3(Galdino)",
+    "effect_text": "[On Play] Look at 4 cards from the top of your deck; reveal up to 1 {Cross Guild} type card or card with a type including \"Baroque Works\" other than [Mr.3(Galdino)] and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP09-057",
+    "kind": "event",
+    "name": "Cross Guild",
+    "effect_text": "[Main] Look at 4 cards from the top of your deck; reveal up to 1 {Cross Guild} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP09-058",
+    "kind": "event",
+    "name": "Special Muggy Ball",
+    "effect_text": "[Main] Return up to 1 of your opponent's Characters with a cost of 6 or less to the owner's hand."
+  },
+  {
+    "id": "OP09-060",
+    "kind": "stage",
+    "name": "Emptee Bluffs Island",
+    "effect_text": "[Activate: Main] You may place 2 cards from your hand at the bottom of your deck in any order and rest this Stage: If your Leader has the {Cross Guild} type, draw 2 cards."
+  },
+  {
+    "id": "OP09-061",
+    "kind": "leader",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[DON!! x1] All of your Characters gain +1 cost.<br>[Your Turn] [Once Per Turn] When 2 or more DON!! cards on your field are returned to your DON!! deck, add up to 1 DON!! card from your DON!! deck and set it as active, and add up to 1 additional DON!! card and rest it."
+  },
+  {
+    "id": "OP09-064",
+    "kind": "character",
+    "name": "Killer",
+    "effect_text": "[On Play] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Set up to 1 of your {Kid Pirates} type Leader as active."
+  },
+  {
+    "id": "OP09-065",
+    "kind": "character",
+    "name": "Sanji",
+    "effect_text": "[On Play] You may return 1 or more DON!! cards from your field to your DON!! deck: This Character gains [Rush] during this turn. Then, rest up to 1 of your opponent's Characters with a cost of 6 or less."
+  },
+  {
+    "id": "OP09-066",
+    "kind": "character",
+    "name": "Jean Bart",
+    "effect_text": "[On Play] If your opponent has more DON!! cards on their field than you, K.O. up to 1 of your opponent's Characters with a cost of 3 or less."
+  },
+  {
+    "id": "OP09-068",
+    "kind": "character",
+    "name": "Tony Tony.Chopper",
+    "effect_text": "[End of Your Turn] You may return 1 or more DON!! cards from your field to your DON!! deck: Set this Character as active. Then, this Character gains [Blocker] until the end of your opponent's next turn."
+  },
+  {
+    "id": "OP09-069",
+    "kind": "character",
+    "name": "Trafalgar Law",
+    "effect_text": "[On Play] Look at 4 cards from the top of your deck; reveal up to 1 {Straw Hat Crew} or {Heart Pirates} type card with a cost of 2 or more and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP09-070",
+    "kind": "character",
+    "name": "Nami",
+    "effect_text": "[On Play] You may return 1 or more DON!! cards from your field to your DON!! deck: Give up to 2 rested DON!! cards to your Leader or 1 of your Characters."
+  },
+  {
+    "id": "OP09-073",
+    "kind": "character",
+    "name": "Brook",
+    "effect_text": "[When Attacking] You may return 1 or more DON!! cards from your field to your DON!! deck: Give up to 2 of your opponent's Characters −2000 power during this turn."
+  },
+  {
+    "id": "OP09-074",
+    "kind": "character",
+    "name": "Bepo",
+    "effect_text": "[Your Turn] [Once Per Turn] When a DON!! card on your field is returned to your DON!! deck, up to 1 of your Leader or Character cards gains +1000 power during this turn."
+  },
+  {
+    "id": "OP09-075",
+    "kind": "character",
+    "name": "Eustass\"Captain\"Kid",
+    "effect_text": "[On Play] You may add 1 card from the top of your Life cards to your hand: If your Leader has the {Kid Pirates} type, add up to 1 DON!! card from your DON!! deck and set it as active."
+  },
+  {
+    "id": "OP09-076",
+    "kind": "character",
+    "name": "Roronoa Zoro",
+    "effect_text": "[On Play] You may return 1 or more DON!! cards from your field to your DON!! deck: Add up to 1 DON!! card from your DON!! deck and set it as active."
+  },
+  {
+    "id": "OP09-077",
+    "kind": "event",
+    "name": "Gum-Gum Lightning",
+    "effect_text": "[Main] DON!! −2 (You may return the specified number of DON!! cards from your field to your DON!! deck.): K.O. up to 1 of your opponent's Characters with 6000 power or less."
+  },
+  {
+    "id": "OP09-078",
+    "kind": "event",
+    "name": "Gum-Gum Giant",
+    "effect_text": "[Counter] DON!! −2, You may trash 1 card from your hand: If your Leader has the {Straw Hat Crew} type, up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, draw 2 cards."
+  },
+  {
+    "id": "OP09-079",
+    "kind": "event",
+    "name": "Gum-Gum Jump Rope",
+    "effect_text": "[Main] DON!! −2 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Rest up to 1 of your opponent's Characters with a cost of 5 or less. Then, draw 1 card."
+  },
+  {
+    "id": "OP09-080",
+    "kind": "stage",
+    "name": "Thousand Sunny",
+    "effect_text": "[Opponent's Turn] You may rest this Stage: When your {Straw Hat Crew} type Character is removed from the field by your opponent's effect, add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "OP09-081",
+    "kind": "leader",
+    "name": "Marshall.D.Teach",
+    "effect_text": "Your [On Play] effects are negated.<br>[Activate: Main] You may trash 1 card from your hand: Your opponent's [On Play] effects are negated until the end of your opponent's next turn."
+  },
+  {
+    "id": "OP09-084",
+    "kind": "character",
+    "name": "Catarina Devon",
+    "effect_text": "[Activate: Main] [Once Per Turn] If your Leader has the {Blackbeard Pirates} type, this Character gains [Double Attack], [Banish] or [Blocker] until the end of your opponent's next turn."
+  },
+  {
+    "id": "OP09-085",
+    "kind": "character",
+    "name": "Gecko Moria",
+    "effect_text": "[On Play] Play up to 1 {Thriller Bark Pirates} type Character card with a cost of 2 or less from your trash rested."
+  },
+  {
+    "id": "OP09-086",
+    "kind": "character",
+    "name": "Jesus Burgess",
+    "effect_text": "This Character cannot be K.O.'d by your opponent's effects.<br>If your Leader has the {Blackbeard Pirates} type, this Character gains +1000 power for every 4 cards in your trash."
+  },
+  {
+    "id": "OP09-087",
+    "kind": "character",
+    "name": "Charlotte Pudding",
+    "effect_text": "[On Play] If your opponent has 5 or more cards in their hand, your opponent trashes 1 card from their hand."
+  },
+  {
+    "id": "OP09-088",
+    "kind": "character",
+    "name": "Shiryu",
+    "effect_text": "[DON!! x1] [When Attacking] You may trash 2 cards from your hand: Draw 2 cards."
+  },
+  {
+    "id": "OP09-089",
+    "kind": "character",
+    "name": "Stronger",
+    "effect_text": "[Activate: Main] You may trash 1 card from your hand and trash this Character: If your Leader has the {Blackbeard Pirates} type, draw 1 card. Then, give up to 1 of your opponent's Characters −2 cost during this turn."
+  },
+  {
+    "id": "OP09-095",
+    "kind": "character",
+    "name": "Laffitte",
+    "effect_text": "[Activate: Main] You may rest 1 of your DON!! cards and this Character: Look at 5 cards from the top of your deck; reveal up to 1 {Blackbeard Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP09-096",
+    "kind": "event",
+    "name": "My Era...Begins!!",
+    "effect_text": "[Main] Look at 3 cards from the top of your deck; reveal up to 1 {Blackbeard Pirates} type card other than [My Era...Begins!!] and add it to your hand. Then, trash the rest."
+  },
+  {
+    "id": "OP09-097",
+    "kind": "event",
+    "name": "Black Vortex",
+    "effect_text": "[Counter] Negate the effect of up to 1 of your opponent's Leader or Character cards and give that card −4000 power during this turn."
+  },
+  {
+    "id": "OP09-098",
+    "kind": "event",
+    "name": "Black Hole",
+    "effect_text": "[Main] If your Leader has the {Blackbeard Pirates} type, negate the effect of up to 1 of your opponent's Characters during this turn. Then, if that Character has a cost of 4 or less, K.O. it."
+  },
+  {
+    "id": "OP09-099",
+    "kind": "stage",
+    "name": "Fullalead",
+    "effect_text": "[Activate: Main] You may trash 1 card from your hand and rest this Stage: Look at 3 cards from the top of your deck; reveal up to 1 {Blackbeard Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP09-101",
+    "kind": "character",
+    "name": "Kuzan",
+    "effect_text": "[On Play] Place 1 of your opponent's Characters with a cost of 3 or less at the top or bottom of your opponent's Life cards face-up: Your opponent trashes 1 card from their hand."
+  },
+  {
+    "id": "OP09-102",
+    "kind": "character",
+    "name": "Professor Clover",
+    "effect_text": "[On Play] If your Leader is [Nico Robin], look at 3 cards from the top of your deck; reveal up to 1 card with a [Trigger] and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  }
+]

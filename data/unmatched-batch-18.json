@@ -1,0 +1,452 @@
+[
+  {
+    "id": "OP15-119",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "If you have 6 or more DON!! cards on your field, this Character gains [Rush].<br>When your opponent activates an Event or [Blocker], reveal up to 1 card from the top of your Life cards. This Character gains +1000 power during this turn per 1 cost on the revealed card."
+  },
+  {
+    "id": "P-002",
+    "kind": "event",
+    "name": "I Smell Adventure!!!",
+    "effect_text": "[Main] Return all cards in your hand to your deck and shuffle your deck. Then, draw cards equal to the number you returned to your deck."
+  },
+  {
+    "id": "P-005",
+    "kind": "character",
+    "name": "Kaido",
+    "effect_text": "[Activate: Main]  DON!! −2 (You may return the specified number of DON!! cards from your field to your DON!! deck.): This Character gains [Banish] during this turn.<br>(When this card deals damage, the target card is trashed without activating its Trigger.)"
+  },
+  {
+    "id": "P-006",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[DON!! x2] [Your Turn] This Character gains +2000 power."
+  },
+  {
+    "id": "P-007",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[DON!! x1] This Character cannot be K.O.'d in battle by ＜Strike＞ attribute Leaders or Characters."
+  },
+  {
+    "id": "P-009",
+    "kind": "character",
+    "name": "Trafalgar Law",
+    "effect_text": "[On Play] If your opponent has 6 or more cards in their hand, your opponent adds 1 card from their Life area to their hand."
+  },
+  {
+    "id": "P-010",
+    "kind": "character",
+    "name": "Kaido",
+    "effect_text": "[End of Your Turn] Add 1 DON!! card from your DON!! deck and set it as active."
+  },
+  {
+    "id": "P-011",
+    "kind": "leader",
+    "name": "Uta",
+    "effect_text": "[Activate: Main] [Once Per Turn] ① (You may rest the specified number of DON!! cards in your cost area.): Up to 1 of your Characters with no base effect gains +2000 power during this turn."
+  },
+  {
+    "id": "P-013",
+    "kind": "character",
+    "name": "Gordon",
+    "effect_text": "[Activate: Main] You may place this Character at the bottom of the owner's deck: Give up to 1 of your opponent's Characters −3000 power during this turn."
+  },
+  {
+    "id": "P-024",
+    "kind": "event",
+    "name": "I'm Gonna Be King of the Pirates!!",
+    "effect_text": "[Main] Your Leader gains +1000 power for each of your Characters during this turn."
+  },
+  {
+    "id": "P-025",
+    "kind": "character",
+    "name": "Smoker",
+    "effect_text": "[DON!! x1] This Character cannot be K.O.'d in battle by Characters without the <Special> attribute."
+  },
+  {
+    "id": "P-027",
+    "kind": "character",
+    "name": "General Franky",
+    "effect_text": "Also treat this card's name as [Franky] according to the rules.<br>[Opponent's Turn] All of your Characters with 3000 base power or less gain +1000 power."
+  },
+  {
+    "id": "P-029",
+    "kind": "character",
+    "name": "Bartolomeo",
+    "effect_text": "[End of Your Turn] You may rest this Character: Set up to 1 of your {FILM} type Characters other than [Bartolomeo] as active."
+  },
+  {
+    "id": "P-030",
+    "kind": "character",
+    "name": "Jinbe",
+    "effect_text": "[On K.O.] Place up to 1 Character with a cost of 3 or less at the bottom of the owner's deck."
+  },
+  {
+    "id": "P-033",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[Activate: Main] You may place this Character at the bottom of the owner's deck: Draw 1 card."
+  },
+  {
+    "id": "P-034",
+    "kind": "character",
+    "name": "Sanji",
+    "effect_text": "[DON!! x1] [Your Turn] If you have 2 or less Life cards, this Character gains +2000 power."
+  },
+  {
+    "id": "P-035",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[DON!! x1] [When Attacking] You may trash 1 card from your hand: K.O. up to 1 of your opponent's Characters with a cost of 0."
+  },
+  {
+    "id": "P-036",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[When Attacking] You may add 1 card from the top or bottom of your Life cards to your hand: This Character and up to 1 of your Leader gain +1000 power during this turn."
+  },
+  {
+    "id": "P-037",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[When Attacking] If you have 2 or more rested Characters, this Character gains +1000 power during this turn."
+  },
+  {
+    "id": "P-044",
+    "kind": "character",
+    "name": "Sabo",
+    "effect_text": "[DON!! x1] If you have 4 or less cards in your hand, this Character gains +2000 power."
+  },
+  {
+    "id": "P-046",
+    "kind": "character",
+    "name": "Yamato",
+    "effect_text": "[On Play] You may place all cards in your hand at the bottom of your deck in any order. If you do, draw cards equal to the number you placed at the bottom of your deck."
+  },
+  {
+    "id": "P-047",
+    "kind": "leader",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[DON!! x1] [When Attacking] Draw 1 card if you have 3 or less cards in your hand."
+  },
+  {
+    "id": "P-048",
+    "kind": "character",
+    "name": "Arlong",
+    "effect_text": "[DON!! x1] [When Attacking] If you have 4 or more Life cards, your opponent places 1 card from their hand at the bottom of their deck."
+  },
+  {
+    "id": "P-051",
+    "kind": "character",
+    "name": "Shanks",
+    "effect_text": "[When Attacking] You may trash any number of cards from your hand. This Character gains +1000 power during this battle for every card trashed."
+  },
+  {
+    "id": "P-052",
+    "kind": "character",
+    "name": "Dracule Mihawk",
+    "effect_text": "[DON!! x1] This Character cannot be K.O.'d in battle by <Slash> attribute cards."
+  },
+  {
+    "id": "P-053",
+    "kind": "character",
+    "name": "Nami",
+    "effect_text": "[On Play] If you have 3 or less cards in your hand, return up to 1 of your opponent's Characters with a cost of 3 or less to the owner's hand."
+  },
+  {
+    "id": "P-054",
+    "kind": "character",
+    "name": "Monkey.D.Garp",
+    "effect_text": "[DON!! x1] This Character cannot be K.O.'d in battle by <Strike> attribute cards."
+  },
+  {
+    "id": "P-055",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[On Play] You may trash 2 cards from your hand: Your opponent places 1 of their Characters at the bottom of the owner's deck."
+  },
+  {
+    "id": "P-057",
+    "kind": "event",
+    "name": "Fleeting Lullaby",
+    "effect_text": "[Main] If your Leader is [Uta], up to 2 of your opponent's rested Characters with a cost of 4 or less will not become active in your opponent's next Refresh Phase."
+  },
+  {
+    "id": "P-058",
+    "kind": "event",
+    "name": "Where the Wind Blows",
+    "effect_text": "[Main] If your Leader is [Uta], set all of your {FILM} type Characters as active at the end of this turn."
+  },
+  {
+    "id": "P-059",
+    "kind": "event",
+    "name": "The World's Continuation",
+    "effect_text": "[Counter] If your Leader is [Uta], you may return any number of Characters on your field to the owner's hand. Up to 1 of your Leader or Character cards gains +2000 power during this battle for every returned Character."
+  },
+  {
+    "id": "P-060",
+    "kind": "event",
+    "name": "Tot Musica",
+    "effect_text": "[Main] You may rest 1 of your [Uta] cards: Rest up to 2 of your opponent's DON!! cards.<br>"
+  },
+  {
+    "id": "P-062",
+    "kind": "character",
+    "name": "Hody & Hyouzou",
+    "effect_text": "[Activate: Main] [Once Per Turn] Rest up to 1 of your opponent's Characters with a cost of 4 or less and this Character gains +1000 power during this turn. Then, add 1 card from the top of your Life cards to your hand."
+  },
+  {
+    "id": "P-065",
+    "kind": "character",
+    "name": "Tony Tony.Chopper",
+    "effect_text": "[When Attacking] If your opponent has a Character with a cost of 0, this Character gains +2000 power until the start of your next turn."
+  },
+  {
+    "id": "P-068",
+    "kind": "character",
+    "name": "Sanji",
+    "effect_text": "[Activate: Main] You may trash this Character: Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order."
+  },
+  {
+    "id": "P-071",
+    "kind": "character",
+    "name": "Marco",
+    "effect_text": "[On K.O.] You may add this Character card to your hand."
+  },
+  {
+    "id": "P-073",
+    "kind": "character",
+    "name": "Sabo",
+    "effect_text": "[Activate: Main] [Once Per Turn] You may add 1 card from the top or bottom of your Life cards to your hand: This Character gains +1000 power during this turn."
+  },
+  {
+    "id": "P-074",
+    "kind": "character",
+    "name": "Portgas.D.Ace",
+    "effect_text": "[Activate: Main] You may return this Character to the owner's hand: Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order."
+  },
+  {
+    "id": "P-076",
+    "kind": "leader",
+    "name": "Sakazuki",
+    "effect_text": "[Activate: Main] [Once Per Turn] You may trash 1 {Navy} type card from your hand: Give up to 1 of your opponent's Characters －1 cost during this turn."
+  },
+  {
+    "id": "P-077",
+    "kind": "character",
+    "name": "Ulti",
+    "effect_text": "[Once Per Turn] When 2 or more DON!! cards on your field are returned to your DON!! deck, add up to 1 DON!! card from your DON!! deck and rest it. Then, set up to 1 of your purple Stages as active."
+  },
+  {
+    "id": "P-078",
+    "kind": "character",
+    "name": "Adio",
+    "effect_text": "If you have 2 or more rested {ODYSSEY} type Characters, this Character gains +1000 power."
+  },
+  {
+    "id": "P-081",
+    "kind": "character",
+    "name": "Dracule Mihawk",
+    "effect_text": "[Activate: Main] You may return this Character to the owner's hand: If you have 3 or more blue {Cross Guild} type Characters, play up to 1 {Cross Guild} type Character card with a cost of 5 from your hand."
+  },
+  {
+    "id": "P-082",
+    "kind": "character",
+    "name": "Crocodile",
+    "effect_text": "[Your Turn] [On Play] If your Leader has the {Cross Guild} type or a type including \"Baroque Works\", place up to 1 of your opponent's Characters with 2000 power or less at the bottom of the owner's deck."
+  },
+  {
+    "id": "P-083",
+    "kind": "character",
+    "name": "Shanks",
+    "effect_text": "[DON!! x1] [When Attacking] You may trash 1 Character card from your hand: Give up to 1 of your opponent's Characters −1000 power during this turn. Then, draw 1 card."
+  },
+  {
+    "id": "P-084",
+    "kind": "character",
+    "name": "Buggy",
+    "effect_text": "This Character cannot attack.<br>If your Leader is [Buggy], all Characters with a cost of 3 or 4 cannot attack.<br>[On Play] Play up to 1 {Cross Guild} type Character card with a cost of 6 or less from your hand."
+  },
+  {
+    "id": "P-085",
+    "kind": "character",
+    "name": "Jewelry Bonney",
+    "effect_text": "[On Play] If your Leader has the {Supernovas} type and the number of your Life cards is equal to or less than the number of your opponent's Life cards, add up to 1 of your opponent's Characters with a cost of 4 or less to the top or bottom of the owner's Life cards face-up."
+  },
+  {
+    "id": "P-090",
+    "kind": "character",
+    "name": "Charlotte Smoothie",
+    "effect_text": "[Opponent's Turn] [On K.O.] DON!! −1: Play up to 1 {Big Mom Pirates} type Character card with a cost equal to or less than the number of DON!! cards on your opponent's field other than [Charlotte Smoothie] from your hand."
+  },
+  {
+    "id": "P-092",
+    "kind": "character",
+    "name": "Koby",
+    "effect_text": "[Opponent's Turn] Give this Character −3000 power.<br>[When Attacking] If your Leader has the {Navy} type, your Leader's base power becomes 7000 until the end of your opponent's next turn."
+  },
+  {
+    "id": "P-097",
+    "kind": "character",
+    "name": "Shanks",
+    "effect_text": "[On Play]/[When Attacking] Your opponent cannot activate [Blocker] during this turn."
+  },
+  {
+    "id": "P-099",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[When Attacking] DON!! −10 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Set this Character as active."
+  },
+  {
+    "id": "P-100",
+    "kind": "character",
+    "name": "Marshall.D.Teach",
+    "effect_text": "[When Attacking] Negate the effects of your opponent's Leader and all of their Characters during this turn."
+  },
+  {
+    "id": "P-102",
+    "kind": "character",
+    "name": "Nami",
+    "effect_text": "[On Play] If your Leader has the {Straw Hat Crew} type, set up to 2 of your DON!! cards as active."
+  },
+  {
+    "id": "P-103",
+    "kind": "character",
+    "name": "Portgas.D.Ace",
+    "effect_text": "[On Play] Draw 2 cards and place 2 cards from your hand at the top or bottom of your deck in any order. Then, give up to 1 rested DON!! card to your Leader."
+  },
+  {
+    "id": "P-104",
+    "kind": "character",
+    "name": "Shanks",
+    "effect_text": "If either you or your opponent has 10 DON!! cards on the field, this Character cannot be removed from the field by your opponent's effects."
+  },
+  {
+    "id": "P-105",
+    "kind": "character",
+    "name": "Sabo",
+    "effect_text": "If your Leader has the {Revolutionary Army} type, this Character gains [Blocker] and +4 cost.<br>[On Play] You may add 1 card from the top or bottom of your Life cards to your hand: Give up to 1 rested DON!! card to your Leader or 1 of your Characters."
+  },
+  {
+    "id": "P-106",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[End of Your Turn] You may turn 1 card from the top of your Life cards face-up: Set up to 1 of your {Egghead} type Characters as active."
+  },
+  {
+    "id": "P-107",
+    "kind": "character",
+    "name": "Gol.D.Roger",
+    "effect_text": "[On Play] If either you or your opponent has 10 DON!! cards on the field, your Leader gains +2000 power until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "PRB01-001",
+    "kind": "leader",
+    "name": "Sanji",
+    "effect_text": "[Activate: Main] [Once Per Turn] Up to 1 of your Characters without an [On Play] effect and with a cost of 8 or less gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)"
+  },
+  {
+    "id": "PRB02-001",
+    "kind": "character",
+    "name": "Koby",
+    "effect_text": "[Opponent's Turn] If your Leader has the {Navy} type, this Character gains +1000 power.<br>[When Attacking] K.O. up to 1 of your opponent's Characters with 3000 base power or less. Then, if you have 6 or less cards in your hand, draw 1 card."
+  },
+  {
+    "id": "PRB02-005",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[Your Turn] [On Play] If your Leader is multicolored and your opponent has 7 or less DON!! cards on their field, your opponent rests 1 of their active DON!! cards at the start of their next Main Phase."
+  },
+  {
+    "id": "PRB02-010",
+    "kind": "character",
+    "name": "Charlotte Pudding",
+    "effect_text": "[On Play] DON!! −2: If your Leader has the {Big Mom Pirates} type and your opponent has 6 or more DON!! cards on their field, draw 2 cards. Then, play up to 1 {Big Mom Pirates} type Character card with 6000 to 8000 power from your hand."
+  },
+  {
+    "id": "PRB02-013",
+    "kind": "character",
+    "name": "Gecko Moria",
+    "effect_text": "[On Play] If your Leader has the {Thriller Bark Pirates} type, play up to 1 Character card with a cost of 4 or less from your trash rested. Then, give up to 1 rested DON!! card to your Leader or 1 of your Characters."
+  },
+  {
+    "id": "PRB02-015",
+    "kind": "character",
+    "name": "Shiryu",
+    "effect_text": "If your Leader has the {Blackbeard Pirates} type, this Character gains [Blocker] and +4 cost.<br>[On K.O.] If your Leader has the {Blackbeard Pirates} type, K.O. up to 1 of your opponent's Characters with a base cost of 4 or less."
+  },
+  {
+    "id": "PRB02-016",
+    "kind": "character",
+    "name": "Otama",
+    "effect_text": "[Activate: Main] You may rest this Character and add 1 card from the top or bottom of your Life cards to your hand: Up to 1 of your Leader or Character cards gains +3000 power during this turn."
+  },
+  {
+    "id": "PRB02-017",
+    "kind": "character",
+    "name": "Boa Hancock",
+    "effect_text": "[On Play] You may trash 1 card with a [Trigger] from your hand: Your opponent's rested Leader or up to 1 of your opponent's Characters other than [Monkey.D.Luffy] cannot attack until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "PRB02-018",
+    "kind": "character",
+    "name": "Portgas.D.Ace",
+    "effect_text": "[On Play] If you have a face-up Life card, play up to 1 [Sabo], [Portgas.D.Ace], or [Monkey.D.Luffy] with a cost of 2 from your hand or trash."
+  },
+  {
+    "id": "ST01-001",
+    "kind": "leader",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[Activate: Main] [Once Per Turn] Give this Leader or 1 of your Characters up to 1 rested DON!! card."
+  },
+  {
+    "id": "ST01-002",
+    "kind": "character",
+    "name": "Usopp",
+    "effect_text": "[DON!! x2] [When Attacking] Your opponent cannot activate a [Blocker] Character that has 5000 or more power during this battle."
+  },
+  {
+    "id": "ST01-005",
+    "kind": "character",
+    "name": "Jinbe",
+    "effect_text": "[DON!! x1] [When Attacking] Up to 1 of your Leader or Character cards other than this card gains +1000 power during this turn."
+  },
+  {
+    "id": "ST01-013",
+    "kind": "character",
+    "name": "Roronoa Zoro",
+    "effect_text": "[DON!! x1] This Character gains +1000 power."
+  },
+  {
+    "id": "ST01-015",
+    "kind": "event",
+    "name": "Gum-Gum Jet Pistol",
+    "effect_text": "[Main] K.O. up to 1 of your opponent's Characters with 6000 power or less."
+  },
+  {
+    "id": "ST01-016",
+    "kind": "event",
+    "name": "Diable Jambe",
+    "effect_text": "[Main] Select up to 1 of your {Straw Hat Crew} type Leader or Character cards. Your opponent cannot activate [Blocker] if that Leader or Character attacks during this turn."
+  },
+  {
+    "id": "ST01-017",
+    "kind": "stage",
+    "name": "Thousand Sunny",
+    "effect_text": "[Activate: Main] You may rest this Stage: Up to 1 {Straw Hat Crew} type Leader or Character card on your field gains +1000 power during this turn."
+  },
+  {
+    "id": "ST02-001",
+    "kind": "leader",
+    "name": "Eustass\"Captain\"Kid",
+    "effect_text": "[Activate: Main] [Once Per Turn]  ③ (You may rest the specified number of DON!! cards in your cost area.) You may trash 1 card from your hand: Set this Leader as active."
+  },
+  {
+    "id": "ST02-003",
+    "kind": "character",
+    "name": "Urouge",
+    "effect_text": "[DON!! x1] If you have 3 or more Characters, this card gains +2000 power."
+  }
+]

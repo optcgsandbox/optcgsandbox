@@ -1,0 +1,80 @@
+[
+  { "id": "OP04-006", "effectSpec": [] },
+  { "id": "OP05-026", "effectSpec": [] },
+  { "id": "OP06-009", "effectSpec": [] },
+  {
+    "id": "EB01-009",
+    "effectSpec": [
+      {
+        "trigger": "trigger",
+        "action": "searcher_peek",
+        "params": { "lookCount": 5, "playCount": 1, "traitFilter": "Animal", "costMax": 3 },
+        "verified": "auto"
+      }
+    ]
+  },
+  {
+    "id": "EB01-010",
+    "effectSpec": [
+      {
+        "trigger": "trigger",
+        "action": "removal_ko",
+        "target": "opp_character",
+        "params": { "basePowerMax": 6000 },
+        "verified": "auto"
+      }
+    ]
+  },
+  {
+    "id": "EB01-007",
+    "effectSpec": [
+      {
+        "trigger": "activate_main",
+        "action": "ramp",
+        "target": "your_leader",
+        "magnitude": 1,
+        "verified": "auto"
+      }
+    ]
+  },
+  {
+    "id": "EB01-011",
+    "effectSpec": [
+      {
+        "trigger": "activate_main",
+        "action": "draw",
+        "magnitude": 1,
+        "verified": "auto"
+      }
+    ]
+  },
+  {
+    "id": "EB01-013",
+    "effectSpec": [
+      {
+        "trigger": "activate_main",
+        "action": "play_for_free",
+        "params": { "traitFilter": "Land of Wano", "costMax": 5, "exclude": "Kouzuki Hiyori" },
+        "verified": "auto"
+      },
+      {
+        "trigger": "activate_main",
+        "action": "draw",
+        "magnitude": 1,
+        "verified": "auto"
+      }
+    ]
+  },
+  {
+    "id": "OP01-029",
+    "effectSpec": [
+      {
+        "trigger": "trigger",
+        "action": "power_buff",
+        "target": "your_character",
+        "magnitude": 2000,
+        "verified": "auto"
+      }
+    ]
+  }
+]

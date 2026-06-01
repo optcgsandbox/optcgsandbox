@@ -1,0 +1,452 @@
+[
+  {
+    "id": "OP15-005",
+    "kind": "character",
+    "name": "Cabaji",
+    "effect_text": "[When Attacking] If your opponent has any DON!! cards given, this Character gains +2000 power during this turn."
+  },
+  {
+    "id": "OP15-006",
+    "kind": "character",
+    "name": "Cavendish",
+    "effect_text": "If you have 4 or more Events in your trash, this Character gains +2000 power."
+  },
+  {
+    "id": "OP15-007",
+    "kind": "character",
+    "name": "Gin",
+    "effect_text": "[On Play] If your Leader has the {East Blue} type, play up to 1 Character card with a cost of 5 or less from your hand."
+  },
+  {
+    "id": "OP15-008",
+    "kind": "character",
+    "name": "Krieg",
+    "effect_text": "[On Play] Give up to 3 of your opponent's rested DON!! cards to 1 of your opponent's Characters. Then, this Character gains [Rush] during this turn.<br>[Activate: Main] [Once Per Turn] If this Character was played on this turn, give all of your opponent's Characters −1000 power during this turn for every DON!! card given to that Character."
+  },
+  {
+    "id": "OP15-009",
+    "kind": "character",
+    "name": "Koby",
+    "effect_text": "If your Character with 7000 base power or less would be removed from the field by your opponent's effect, you may give your Leader −2000 power during this turn instead."
+  },
+  {
+    "id": "OP15-010",
+    "kind": "character",
+    "name": "Nezumi",
+    "effect_text": "[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to its owner's Leader or 1 of their Characters."
+  },
+  {
+    "id": "OP15-011",
+    "kind": "character",
+    "name": "Pearl",
+    "effect_text": "[Opponent's Turn] If your Leader has the {East Blue} type, this Character gains [Blocker] and +2000 power.<br>[On K.O.] If your Leader has the {East Blue} type, K.O. up to 1 of your opponent's Characters with 6000 base power or less."
+  },
+  {
+    "id": "OP15-014",
+    "kind": "character",
+    "name": "Bartolomeo",
+    "effect_text": "If this Character would be K.O.'d, you may trash 1 Event from your hand instead.<br>[On Play] Activate up to 1 {Dressrosa} type Event with a base cost of 3 or less from your hand."
+  },
+  {
+    "id": "OP15-015",
+    "kind": "character",
+    "name": "Higuma",
+    "effect_text": "[On Play] Give up to 1 of your opponent's rested DON!! cards to 1 of your opponent's Characters. Then, give −1000 power during this turn to up to 1 of your opponent's Characters with a DON!! card given."
+  },
+  {
+    "id": "OP15-018",
+    "kind": "character",
+    "name": "Mohji",
+    "effect_text": "[When Attacking] K.O. up to 1 of your opponent's Characters with 3000 power or less with a DON!! card given."
+  },
+  {
+    "id": "OP15-019",
+    "kind": "event",
+    "name": "Barrier Bulls",
+    "effect_text": "[Main] Draw 1 card and your Leader gains +1000 power until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "OP15-020",
+    "kind": "event",
+    "name": "Fire Fist",
+    "effect_text": "[Main] Your Leader gains +3000 power during this turn and give up to 1 of your opponent's Characters −8000 power until the end of your opponent's next End Phase. Then, you may trash 2 cards from your hand. If you do, K.O. up to 1 of your opponent's Characters with 0 power or less."
+  },
+  {
+    "id": "OP15-021",
+    "kind": "event",
+    "name": "Just Watch Me, Ace!!!",
+    "effect_text": "If you have 4 or more Events in your trash, give this card in your hand −3 cost.<br>[Main]/[Counter] Give up to 1 of your opponent's Characters −3000 power during this turn."
+  },
+  {
+    "id": "OP15-022",
+    "kind": "leader",
+    "name": "Brook",
+    "effect_text": "Under the rules of this game, you do not lose when your deck has 0 cards. You lose at the end of the turn in which your deck becomes 0 cards.<br>[Activate: Main] [Once Per Turn] Trash 4 cards from the top of your deck. Then, if your deck has 0 cards, set up to 1 of your Characters as active."
+  },
+  {
+    "id": "OP15-023",
+    "kind": "character",
+    "name": "Arlong",
+    "effect_text": "[On K.O.] Up to 2 of your opponent's rested cards will not become active in your opponent's next Refresh Phase.<br>[Activate: Main] [Once Per Turn] You may give 1 of your opponent's rested DON!! cards to 1 of your opponent's Characters: Give up to 1 DON!! card from its owner's cost area to its owner's Leader or 1 of their Characters."
+  },
+  {
+    "id": "OP15-024",
+    "kind": "character",
+    "name": "Usopp",
+    "effect_text": "[Opponent's Turn] This Character cannot be rested by your opponent's Leader and Character effects and gains [Blocker].<br>[On K.O.] Rest up to 1 of your opponent's Leader or Character cards with a cost of 7 or less."
+  },
+  {
+    "id": "OP15-027",
+    "kind": "character",
+    "name": "Dracule Mihawk",
+    "effect_text": "[On Play] Rest up to 1 of your opponent's Characters with a DON!! card given."
+  },
+  {
+    "id": "OP15-028",
+    "kind": "character",
+    "name": "Meowban Brothers",
+    "effect_text": "[On Play] If your Leader has the {East Blue} type, give up to 1 DON!! card from your opponent's cost area to 1 of your opponent's Characters."
+  },
+  {
+    "id": "OP15-029",
+    "kind": "character",
+    "name": "Bartholomew Kuma",
+    "effect_text": "[On Play] Up to 1 of your opponent's Characters with a cost of 5 or less cannot be rested until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "OP15-031",
+    "kind": "character",
+    "name": "Purinpurin",
+    "effect_text": "[On Play] Select up to 1 of your opponent's rested Characters. If the chosen Character has a cost equal to the number of DON!! cards given to it, K.O. it."
+  },
+  {
+    "id": "OP15-032",
+    "kind": "character",
+    "name": "Brook",
+    "effect_text": "[On Play] Rest up to 1 of your opponent's cards.<br>[Activate: Main] You may trash this Character: If your Leader has the {Straw Hat Crew} type, set up to 1 of your Characters with a base cost of 8 or less as active."
+  },
+  {
+    "id": "OP15-033",
+    "kind": "character",
+    "name": "Hody Jones",
+    "effect_text": "[On Play] Set your {Fish-Man} type Leader as active. Then, add 1 card from the top of your Life cards to your hand."
+  },
+  {
+    "id": "OP15-034",
+    "kind": "character",
+    "name": "Yorki",
+    "effect_text": "[Your Turn] [On Play] Up to 1 of your [Brook] cards gains +2000 power during this turn."
+  },
+  {
+    "id": "OP15-035",
+    "kind": "character",
+    "name": "Laboon",
+    "effect_text": "If your Character with 7000 base power or less would be removed from the field by your opponent's effect, you may rest 2 of your cards instead."
+  },
+  {
+    "id": "OP15-036",
+    "kind": "character",
+    "name": "Ryuma",
+    "effect_text": "[On Play]/[When Attacking] K.O. up to 1 of your opponent's rested Characters with a cost of 4 or less."
+  },
+  {
+    "id": "OP15-037",
+    "kind": "event",
+    "name": "The Outcome Will Tell Us Who's Strong and Who's Weak",
+    "effect_text": "[Main] Look at 5 cards from the top of your deck; reveal up to 1 {East Blue} type card other than [The Outcome Will Tell Us Who's Strong and Who's Weak] and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP15-038",
+    "kind": "event",
+    "name": "It's an Order! Do Not Defy Me!!!",
+    "effect_text": "[Main] Up to 1 of your opponent's rested Characters with a cost of 8 or less that has 2 or more DON!! cards given will not become active in your opponent's next Refresh Phase.<br>[Counter] Up to 1 of your [Krieg] cards gains +4000 power during this battle."
+  },
+  {
+    "id": "OP15-042",
+    "kind": "character",
+    "name": "Kyros",
+    "effect_text": "[On Play] You may trash 1 card from your hand: If your Leader is [Rebecca], this Character gains [Rush] during this turn.<br>[On K.O.] Add this Character card from your trash to your hand."
+  },
+  {
+    "id": "OP15-043",
+    "kind": "character",
+    "name": "Kelly Funk",
+    "effect_text": "[On Play] Play up to 1 [Bobby Funk] from your hand."
+  },
+  {
+    "id": "OP15-048",
+    "kind": "character",
+    "name": "Chinjao",
+    "effect_text": "[On Play] You may trash 1 Event from your hand: Draw 2 cards.<br>[Opponent's Turn] [On K.O.] Your opponent places 1 card from their hand at the bottom of their deck."
+  },
+  {
+    "id": "OP15-050",
+    "kind": "character",
+    "name": "Bobby Funk",
+    "effect_text": "If you have [Kelly Funk], this Character gains +3000 power."
+  },
+  {
+    "id": "OP15-051",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[Opponent's Turn] If your Leader has the {Dressrosa} type, this Character gains +3000 power."
+  },
+  {
+    "id": "OP15-052",
+    "kind": "character",
+    "name": "Leo",
+    "effect_text": "If your Character with 7000 base power or less would be removed from the field by your opponent's effect, you may place 1 of your Characters at the bottom of the owner's deck instead."
+  },
+  {
+    "id": "OP15-054",
+    "kind": "event",
+    "name": "And No One Else Can Have It! It's Our Memento of Him",
+    "effect_text": "[Main] If your Leader is [Lucy], choose one:<br>• Draw 2 cards and trash 1 card from your hand. Then, play up to 1 {Dressrosa} type Character card with a cost of 4 or less from your hand.<br>• Return up to 1 Stage to the owner's hand."
+  },
+  {
+    "id": "OP15-056",
+    "kind": "event",
+    "name": "Would You Let Me Eat the Flame-Flame Fruit?",
+    "effect_text": "[Main] Draw 2 cards. Then, your [Lucy] Leader gains [Double Attack] and +3000 power during this turn.<br>(This card deals 2 damage.)"
+  },
+  {
+    "id": "OP15-057",
+    "kind": "stage",
+    "name": "Dressrosa Kingdom",
+    "effect_text": "[On Play] If your Leader has the {Dressrosa} type, draw 1 card.<br>[On Your Opponent's Attack] You may rest this Stage and trash 1 Event or Stage card from your hand: Up to 1 of your Leader or Character cards gains +2000 power during this battle."
+  },
+  {
+    "id": "OP15-058",
+    "kind": "leader",
+    "name": "Enel",
+    "effect_text": "Under the rules of this game, your DON!! deck consists of 6 cards.<br>[Activate: Main] [Once Per Turn] If it is your second turn or later, add up to 1 DON!! card from your DON!! deck and set it as active, and add up to 4 additional DON!! cards and rest them. Then, give up to 4 rested DON!! cards to 1 of your Characters."
+  },
+  {
+    "id": "OP15-059",
+    "kind": "character",
+    "name": "Amazon",
+    "effect_text": "[On Your Opponent's Attack] You may rest this Character: Your opponent may return 1 of their active DON!! cards to their DON!! deck. If they do not, give up to 1 of your opponent's Leader or Character cards −2000 power during this turn."
+  },
+  {
+    "id": "OP15-060",
+    "kind": "character",
+    "name": "Enel",
+    "effect_text": "If you have 6 or less DON!! cards on your field, this Character cannot be removed from the field by your opponent's effects and gains +2000 power.<br>[Activate: Main] DON!! −1: This Character gains [Blocker] until the end of your opponent's next End Phase. Then, trash 1 card from your hand."
+  },
+  {
+    "id": "OP15-064",
+    "kind": "character",
+    "name": "Kotori",
+    "effect_text": "[Activate: Main] DON!! −2, You may rest this Character: If you have [Satori] and [Hotori], rest up to 1 of your opponent's Characters with 5000 power or less."
+  },
+  {
+    "id": "OP15-065",
+    "kind": "character",
+    "name": "Goro",
+    "effect_text": "[On Play] Reveal 1 card from the top of your deck. If the revealed card has a cost of 2 or less, add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "OP15-068",
+    "kind": "character",
+    "name": "Heavenly Warriors",
+    "effect_text": "If you have 6 or less DON!! cards on your field, this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+  },
+  {
+    "id": "OP15-069",
+    "kind": "character",
+    "name": "Nola",
+    "effect_text": "If your Character with 7000 base power or less would be removed from the field by your opponent's effect, you may return 1 DON!! card from your field to your DON!! deck instead."
+  },
+  {
+    "id": "OP15-070",
+    "kind": "character",
+    "name": "Fuza",
+    "effect_text": "All of your [Shura] cards and this Character gain [Unblockable].<br>(This card cannot be blocked.)<br>[Opponent's Turn] All of your [Shura] cards' base power and this Character's base power become 6000."
+  },
+  {
+    "id": "OP15-071",
+    "kind": "character",
+    "name": "Holly",
+    "effect_text": "All of your [Ohm] cards and this Character gain [Double Attack].<br>(This card deals 2 damage.)<br>[Opponent's Turn] All of your [Ohm] cards' base power and this Character's base power become 6000."
+  },
+  {
+    "id": "OP15-072",
+    "kind": "character",
+    "name": "Hotori",
+    "effect_text": "[Activate: Main] DON!! −2, You may rest this Character: If you have [Kotori] and [Satori], give up to 1 of your opponent's Characters −3000 power during this turn."
+  },
+  {
+    "id": "OP15-074",
+    "kind": "event",
+    "name": "Varie",
+    "effect_text": "[Main] DON!! −1: If your Leader is [Enel], draw 1 card. Then, up to 1 of your Characters gains +2 cost until the end of your opponent's next End Phase.<br>[Counter] Up to 1 of your [Enel] cards gains +2000 power during this battle."
+  },
+  {
+    "id": "OP15-075",
+    "kind": "event",
+    "name": "El Thor",
+    "effect_text": "[Main] DON!! −1: If your Leader is [Enel], up to 1 of your Leader or Character cards gains +1000 power during this turn. Then, K.O. up to 1 of your opponent's Characters with 3000 power or less.<br>[Counter] Up to 1 of your [Enel] cards gains +2000 power during this battle."
+  },
+  {
+    "id": "OP15-076",
+    "kind": "event",
+    "name": "Lightning Beast Kiten",
+    "effect_text": "[Main] DON!! −1: If your Leader is [Enel], draw 1 card. Then, give up to 1 of your opponent's Characters −1000 power during this turn.<br>[Counter] Up to 1 of your [Enel] cards gains +2000 power during this battle."
+  },
+  {
+    "id": "OP15-077",
+    "kind": "event",
+    "name": "Lightning Dragon",
+    "effect_text": "[Main] DON!! −1: Draw 1 card. Then, up to 1 of your opponent's rested Characters with 6000 power or less will not become active in your opponent's next Refresh Phase."
+  },
+  {
+    "id": "OP15-079",
+    "kind": "character",
+    "name": "Absalom",
+    "effect_text": "[On K.O.] Add up to 1 {Thriller Bark Pirates} type card from your trash to your hand."
+  },
+  {
+    "id": "OP15-080",
+    "kind": "character",
+    "name": "Oars",
+    "effect_text": "If you have [Gecko Moria] with 10000 power or more on your field and there are no other [Oars] cards, this Character gains +7000 power.<br>[On K.O.] You may place 3 cards from your trash at the bottom of your deck in any order: Play this Character card from your trash."
+  },
+  {
+    "id": "OP15-081",
+    "kind": "character",
+    "name": "Sanji",
+    "effect_text": "[On Play] If your Leader has the {Straw Hat Crew} type, trash 5 cards from the top of your deck."
+  },
+  {
+    "id": "OP15-084",
+    "kind": "character",
+    "name": "Dr. Hogback",
+    "effect_text": "[On Play] If your Leader has the {Thriller Bark Pirates} type, trash 5 cards from the top of your deck.<br>[On K.O.] If you have 6 or less cards in your hand, draw 1 card."
+  },
+  {
+    "id": "OP15-086",
+    "kind": "character",
+    "name": "Nami",
+    "effect_text": "[On Play] If your Leader has the {Straw Hat Crew} type, play up to 1 {Straw Hat Crew} type Character with a cost of 7 or less from your trash. The Character played with this effect gains [Rush] during this turn."
+  },
+  {
+    "id": "OP15-088",
+    "kind": "character",
+    "name": "Pirates Docking Six",
+    "effect_text": "This Character gains +6 cost.<br>[On Play] You may trash 3 cards from the top of your deck: Play up to 1 {Straw Hat Crew} type Character card with a cost of 2 or less from your trash."
+  },
+  {
+    "id": "OP15-091",
+    "kind": "character",
+    "name": "Margarita",
+    "effect_text": "[On Play] Place up to 1 card from your opponent's trash at the bottom of the owner's deck."
+  },
+  {
+    "id": "OP15-092",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "Apply each of the following effects based on the number of cards in your trash:<br>• If there are 10 or more cards, this Character's base power becomes 9000 and it gains +10 cost.<br>• If you have 20 or more cards, during your opponent's turn, your Leader's base power becomes 7000.<br>• If you have 30 or more cards, this Character gains +1000 power."
+  },
+  {
+    "id": "OP15-093",
+    "kind": "character",
+    "name": "The Risky Brothers",
+    "effect_text": "[Activate: Main] You may trash this Character: If you have 15 or more cards in your trash, up to 1 of your [Monkey.D.Luffy] Characters gains [Rush: Character] and the <Slash> attribute during this turn."
+  },
+  {
+    "id": "OP15-095",
+    "kind": "event",
+    "name": "Gum-Gum Storm",
+    "effect_text": "[Main] You may rest 1 of your DON!! cards: If you have 15 or more cards in your trash, up to 1 of your {Straw Hat Crew} type Leader or Character cards gains +3000 power during this turn.<br>[Counter] If you have 15 or more cards in your trash, up to 1 of your Leader or Character cards gains +4000 power during this battle."
+  },
+  {
+    "id": "OP15-097",
+    "kind": "event",
+    "name": "I Find It Embarrassing as a Human Being",
+    "effect_text": "[Main] If you have 10 or more cards in your trash, up to 1 of your opponent's Characters with a base cost of 5 or less cannot attack until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "OP15-098",
+    "kind": "leader",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "If your {Sky Island} type Character with 6000 base power or more would be removed from the field by your opponent, you may add 1 card from the top of your Life cards to your hand instead."
+  },
+  {
+    "id": "OP15-099",
+    "kind": "character",
+    "name": "Urouge",
+    "effect_text": "[On Play] You may trash 1 {Supernovas} type card from your hand: This Character gains [Rush] during this turn.<br>[Activate: Main] You may turn 1 card from the top of your Life cards face-down: Give up to 1 rested DON!! card to your Leader or 1 of your Characters."
+  },
+  {
+    "id": "OP15-100",
+    "kind": "character",
+    "name": "Kamakiri",
+    "effect_text": "[On Play] You may trash this Character and add 1 card from the top of your Life cards to your hand: K.O. up to 1 of your opponent's Characters with a cost of 6 or less."
+  },
+  {
+    "id": "OP15-101",
+    "kind": "character",
+    "name": "Kalgara",
+    "effect_text": "[On Play] You may trash 1 card from your hand: Look at 5 cards from the top of your deck; reveal up to a total of 2 [Mont Blanc Noland] or {Shandian Warrior} type cards and add them to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP15-102",
+    "kind": "character",
+    "name": "Gan.Fall",
+    "effect_text": "If you have a {Sky Island} type Character with 7000 power or more, give this card in your hand −3 cost.<br>[On Play] Rest up to 1 of your opponent's Characters with a cost equal to or less than the number of your opponent's Life cards."
+  },
+  {
+    "id": "OP15-104",
+    "kind": "character",
+    "name": "Conis",
+    "effect_text": "[On Play] If you have less Life cards than your opponent, draw 2 cards and trash 2 cards from your hand."
+  },
+  {
+    "id": "OP15-105",
+    "kind": "character",
+    "name": "Jewelry Bonney",
+    "effect_text": "If your Character with 7000 base power or less would be removed from the field by your opponent's effect, you may add 1 card from the top of your Life cards to your hand instead."
+  },
+  {
+    "id": "OP15-109",
+    "kind": "character",
+    "name": "Nico Robin",
+    "effect_text": "[On Play] You may add 1 card from the top of your Life cards to your hand: If your Leader has the {Straw Hat Crew} type, add up to 1 card from the top of your deck to the top of your Life cards. Then, play up to 1 {Sky Island} type Character card with a cost of 5 or less from your hand."
+  },
+  {
+    "id": "OP15-110",
+    "kind": "character",
+    "name": "Braham",
+    "effect_text": "[On K.O.] If your Leader has the {Shandian Warrior} type, add up to 1 card from the top of your deck to the top of your Life cards."
+  },
+  {
+    "id": "OP15-111",
+    "kind": "character",
+    "name": "Mont Blanc Noland",
+    "effect_text": "[DON!! x1] [When Attacking] Up to 1 of your [Kalgara] cards gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)"
+  },
+  {
+    "id": "OP15-114",
+    "kind": "character",
+    "name": "Wyper",
+    "effect_text": "[On Play] You may turn 1 card from the top of your Life cards face-up: Give all of your opponent's Characters −2000 power during this turn. Then, K.O. all of your opponent's Characters with 0 power or less.<br>[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to 1 of your {Sky Island} type Leader or Character cards."
+  },
+  {
+    "id": "OP15-115",
+    "kind": "event",
+    "name": "Impact Dial",
+    "effect_text": "[Main] K.O. up to 1 of your opponent's Characters with a cost of 4 or less. Then, add 1 card from the top of your Life cards to your hand."
+  },
+  {
+    "id": "OP15-117",
+    "kind": "event",
+    "name": "Heso!!",
+    "effect_text": "[Main] Draw 1 card. Then, give up to 1 rested DON!! card to 1 of your {Sky Island} type Leader or Character cards."
+  },
+  {
+    "id": "OP15-118",
+    "kind": "character",
+    "name": "Enel",
+    "effect_text": "If you have 6 or less DON!! cards on your field, this Character cannot be removed from the field by your opponent's effects and gains +2000 power.<br>[On Play] DON!! −1: Look at 5 cards from the top of your deck and add up to 1 card to your hand. Then, place the rest at the bottom of your deck in any order, and trash 1 card from your hand."
+  }
+]

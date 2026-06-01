@@ -1,0 +1,133 @@
+[
+  {
+    "id": "EB02-013",
+    "effectSpec": [
+      {
+        "trigger": "on_play",
+        "condition": { "type": "if_don_min", "n": 3 },
+        "action": "searcher_peek",
+        "params": { "lookCount": 7, "addCount": 1, "nameFilter": "Zou" },
+        "verified": "auto"
+      },
+      {
+        "trigger": "on_play",
+        "condition": { "type": "if_don_min", "n": 3 },
+        "action": "play_for_free",
+        "params": { "nameFilter": "Zou", "fromZone": "hand" },
+        "magnitude": 1,
+        "verified": "auto"
+      }
+    ]
+  },
+  {
+    "id": "EB02-015",
+    "effectSpec": []
+  },
+  {
+    "id": "OP01-079",
+    "effectSpec": [
+      {
+        "trigger": "on_ko",
+        "condition": { "type": "if_leader_has_trait", "trait": "Baroque Works" },
+        "action": "recursion",
+        "target": "own_trash",
+        "magnitude": 1,
+        "params": { "cardType": "Event" },
+        "verified": "auto"
+      }
+    ]
+  },
+  {
+    "id": "OP02-082",
+    "effectSpec": [
+      {
+        "trigger": "activate_main",
+        "action": "power_buff",
+        "target": "self",
+        "magnitude": 792000,
+        "params": { "donCost": 8 },
+        "verified": "auto"
+      }
+    ]
+  },
+  {
+    "id": "OP04-094",
+    "effectSpec": [
+      {
+        "trigger": "activate_main",
+        "action": "removal_ko",
+        "target": "opp_character_cost_max",
+        "magnitude": 4,
+        "verified": "auto"
+      },
+      {
+        "trigger": "activate_main",
+        "condition": { "type": "if_trash_min", "n": 15 },
+        "action": "removal_ko",
+        "target": "opp_character_cost_max",
+        "magnitude": 6,
+        "verified": "auto"
+      }
+    ]
+  },
+  {
+    "id": "OP05-082",
+    "effectSpec": [
+      {
+        "trigger": "activate_main",
+        "action": "mill",
+        "target": "opp_hand",
+        "magnitude": 1,
+        "params": { "requires": "opp_hand_min_6", "cost": "rest_self_and_bottom_2_from_trash" },
+        "verified": "auto"
+      }
+    ]
+  },
+  {
+    "id": "OP05-020",
+    "effectSpec": [
+      {
+        "trigger": "activate_main",
+        "action": "power_buff",
+        "target": "your_character",
+        "magnitude": 2000,
+        "verified": "auto"
+      },
+      {
+        "trigger": "activate_main",
+        "action": "removal_ko",
+        "target": "opp_character",
+        "params": { "powerMax": 2000 },
+        "magnitude": 1,
+        "verified": "auto"
+      }
+    ]
+  },
+  {
+    "id": "OP01-009",
+    "effectSpec": [
+      {
+        "trigger": "trigger",
+        "action": "play_for_free",
+        "target": "self",
+        "verified": "auto"
+      }
+    ]
+  },
+  {
+    "id": "OP02-008",
+    "effectSpec": []
+  },
+  {
+    "id": "OP03-005",
+    "effectSpec": [
+      {
+        "trigger": "activate_main",
+        "action": "power_buff",
+        "target": "self",
+        "magnitude": 2000,
+        "verified": "auto"
+      }
+    ]
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "ST26-001",
+    "kind": "character",
+    "name": "Soba Mask",
+    "effect_text": "If you have a [San-Gorou] or [Sanji] Character with 7000 base power or more, give this card in your hand −5 cost.<br>[On Play] Return all of your [San-Gorou] and [Sanji] Characters to the owner's hand."
+  },
+  {
+    "id": "ST26-005",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[On Play]/[When Attacking] DON!! −2 (You may return the specified number of DON!! cards from your field to your DON!! deck.): If your Leader is multicolored and your opponent has 5 or more DON!! cards on their field, your {Straw Hat Crew} type Leader's base power becomes 7000 until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "ST28-001",
+    "kind": "character",
+    "name": "Ashura Doji",
+    "effect_text": "[On Play] If your Leader has the {Land of Wano} type and your opponent has 3 or more Life cards, K.O. up to 1 of your opponent's Characters with a base cost of 5 or less."
+  },
+  {
+    "id": "ST28-004",
+    "kind": "character",
+    "name": "Kouzuki Momonosuke",
+    "effect_text": "[Your Turn] If you have 2 or less Life cards, your Leader gains +1000 power.<br>[Activate: Main] [Once Per Turn] You may return 2 total of your currently given DON!! cards to your cost area rested: This Character gains [Rush] and +1000 power during this turn.<br>(This card can attack on the turn in which it is played.)"
+  },
+  {
+    "id": "ST28-005",
+    "kind": "character",
+    "name": "Yamato",
+    "effect_text": "[DON!! x2] [Your Turn] This Character gains +3000 power.<br>[On Play] Look at 5 cards from the top of your deck; reveal up to 1 {Land of Wano} type card with a cost of 2 or more and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "ST29-001",
+    "kind": "leader",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[When Attacking] If you have 2 or less Life cards, draw 1 card and trash 1 card from your hand."
+  },
+  {
+    "id": "ST29-002",
+    "kind": "character",
+    "name": "Usopp",
+    "effect_text": "[On Play]/[When Attacking] Rest up to 1 of your opponent's Characters with a cost equal to or less than the number of your opponent's Life cards."
+  },
+  {
+    "id": "ST29-003",
+    "kind": "character",
+    "name": "Kaku",
+    "effect_text": "If the number of your Life cards is equal to or less than the number of your opponent's Life cards, this Character gains +1000 power."
+  },
+  {
+    "id": "ST29-007",
+    "kind": "character",
+    "name": "Tony Tony.Chopper",
+    "effect_text": "[On K.O.] You may add 1 card from the top or bottom of your Life cards to your hand: Add up to 1 card from your hand to the top of your Life cards."
+  },
+  {
+    "id": "ST29-008",
+    "kind": "character",
+    "name": "Nami",
+    "effect_text": "If your {Egghead} type Character would be K.O.'d by your opponent's effect, you may turn 1 card from the top of your Life cards face-up instead."
+  },
+  {
+    "id": "ST29-012",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to 1 of your [Monkey.D.Luffy] cards."
+  },
+  {
+    "id": "ST29-014",
+    "kind": "character",
+    "name": "Roronoa Zoro",
+    "effect_text": "[Rush: Character] (This card can attack Characters on the turn in which it is played.)<br>[Activate: Main] [Once Per Turn] You may trash 1 card with a [Trigger] from your hand: Draw 1 card and give up to 1 rested DON!! card to your Leader or 1 of your Characters."
+  }
+]

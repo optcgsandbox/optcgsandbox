@@ -1,0 +1,63 @@
+[
+  {
+    "id": "EB01-023",
+    "effectSpec": [
+      { "trigger": "on_play", "action": "draw", "magnitude": 1, "verified": "auto" }
+    ]
+  },
+  {
+    "id": "OP04-045",
+    "effectSpec": [
+      { "trigger": "on_play", "action": "draw", "magnitude": 1, "verified": "auto" }
+    ]
+  },
+  {
+    "id": "OP07-044",
+    "effectSpec": [
+      { "trigger": "on_play", "action": "draw", "magnitude": 1, "verified": "auto" }
+    ]
+  },
+  {
+    "id": "EB01-049",
+    "effectSpec": [
+      { "trigger": "on_play", "action": "removal_ko", "target": "opp_character_cost_max", "magnitude": 2, "verified": "auto" }
+    ]
+  },
+  {
+    "id": "OP01-016",
+    "effectSpec": [
+      { "trigger": "on_play", "action": "searcher_peek", "params": { "lookCount": 5, "addCount": 1, "traitFilter": "Straw Hat Crew", "excludeName": "Nami" }, "verified": "auto" }
+    ]
+  },
+  {
+    "id": "OP03-008",
+    "effectSpec": [
+      { "trigger": "on_play", "action": "searcher_peek", "params": { "lookCount": 5, "addCount": 1, "cardTypeFilter": "Event", "colorFilter": "red" }, "verified": "auto" }
+    ]
+  },
+  {
+    "id": "OP06-013",
+    "effectSpec": [
+      { "trigger": "on_play", "action": "searcher_peek", "params": { "lookCount": 3, "addCount": 1, "traitFilter": "FILM" }, "verified": "auto" }
+    ]
+  },
+  {
+    "id": "EB02-017",
+    "effectSpec": [
+      { "trigger": "on_play", "action": "searcher_peek", "params": { "lookCount": 5, "addCount": 1, "traitFilter": "Straw Hat Crew", "excludeName": "Nami" }, "verified": "auto" }
+    ]
+  },
+  {
+    "id": "OP07-016",
+    "effectSpec": [
+      { "trigger": "activate_main", "action": "power_buff", "target": "your_character", "magnitude": 2000, "params": { "traitFilter": "Revolutionary Army", "duration": "this_turn" }, "verified": "auto" },
+      { "trigger": "activate_main", "action": "power_buff", "target": "opp_character", "magnitude": -1000, "params": { "duration": "this_turn" }, "verified": "auto" }
+    ]
+  },
+  {
+    "id": "OP03-027",
+    "effectSpec": [
+      { "trigger": "on_play", "condition": { "type": "if_leader_has_trait", "trait": "East Blue" }, "action": "rest_target", "target": "opp_character_cost_max", "magnitude": 2, "verified": "auto" }
+    ]
+  }
+]

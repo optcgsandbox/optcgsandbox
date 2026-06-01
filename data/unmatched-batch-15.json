@@ -1,0 +1,452 @@
+[
+  {
+    "id": "OP13-016",
+    "kind": "character",
+    "name": "Monkey.D.Garp",
+    "effect_text": "[On Play] If your Leader is [Sabo], [Portgas.D.Ace] or [Monkey.D.Luffy], look at 4 cards from the top of your deck; reveal up to 1 card with a cost of 3 or more and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP13-017",
+    "kind": "character",
+    "name": "Monkey.D.Dragon",
+    "effect_text": "[Once Per Turn] If your {Revolutionary Army} type Character would be removed from the field by your opponent's effect, you may give this Character −2000 power during this turn instead."
+  },
+  {
+    "id": "OP13-021",
+    "kind": "event",
+    "name": "Gum-Gum Gatling Gun",
+    "effect_text": "[Main] Give up to 1 rested DON!! card to 1 of your [Monkey.D.Luffy] cards. Then, give up to 1 of your opponent's Characters −2000 power during this turn."
+  },
+  {
+    "id": "OP13-022",
+    "kind": "stage",
+    "name": "Windmill Village",
+    "effect_text": "[Activate: Main] You may rest this Stage: Up to 1 of your Characters with 2000 base power or less gains +1000 power during this turn."
+  },
+  {
+    "id": "OP13-023",
+    "kind": "character",
+    "name": "Uta",
+    "effect_text": "[On Play] Set up to 2 of your DON!! cards as active. Then, you cannot play Character cards with a base cost of 5 or more during this turn.<br>[On K.O.] Play up to 1 Character card with a cost of 5 or less from your hand rested."
+  },
+  {
+    "id": "OP13-024",
+    "kind": "character",
+    "name": "Gordon",
+    "effect_text": "[On Play] You may reveal 1 {Music} or {FILM} type card from your hand: Set up to 2 of your DON!! cards as active at the end of this turn."
+  },
+  {
+    "id": "OP13-026",
+    "kind": "character",
+    "name": "Sunny-Kun",
+    "effect_text": "[Activate: Main] [Once Per Turn] You may rest 1 of your DON!! cards: This Character gains +2000 power until the end of your opponent's next turn."
+  },
+  {
+    "id": "OP13-027",
+    "kind": "character",
+    "name": "Sanji",
+    "effect_text": "[On Play] Set up to 2 of your DON!! cards as active.<br>[End of Your Turn] If your Leader has the {FILM} or {Straw Hat Crew} type, set up to 1 of your DON!! cards as active."
+  },
+  {
+    "id": "OP13-028",
+    "kind": "character",
+    "name": "Shanks",
+    "effect_text": "[On Play] Set all of your DON!! cards as active. Then, you cannot play cards from your hand during this turn."
+  },
+  {
+    "id": "OP13-030",
+    "kind": "character",
+    "name": "Tony Tony.Chopper",
+    "effect_text": "[On Play] Set up to 2 of your DON!! cards as active."
+  },
+  {
+    "id": "OP13-031",
+    "kind": "character",
+    "name": "Trafalgar Law",
+    "effect_text": "If you have 1 or less Life cards, this Character gains [Blocker].<br>[On Play] You may return 1 of your Characters to the owner's hand: Play up to 1 Character card with a cost of 5 or less from your hand rested."
+  },
+  {
+    "id": "OP13-032",
+    "kind": "character",
+    "name": "Nico Robin",
+    "effect_text": "[On Play] Up to 1 of your opponent's Characters with a cost of 8 or less cannot be rested until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "OP13-033",
+    "kind": "character",
+    "name": "Franky",
+    "effect_text": "[On K.O.] Rest up to 2 of your opponent's cards."
+  },
+  {
+    "id": "OP13-034",
+    "kind": "character",
+    "name": "Brook",
+    "effect_text": "[On Play] If your Leader has the {FILM} or {Straw Hat Crew} type, set up to 1 of your DON!! cards as active."
+  },
+  {
+    "id": "OP13-035",
+    "kind": "character",
+    "name": "Bepo",
+    "effect_text": "[End of Your Turn] Set this Character or up to 1 of your DON!! cards as active."
+  },
+  {
+    "id": "OP13-037",
+    "kind": "character",
+    "name": "Roronoa Zoro",
+    "effect_text": "[On Play] If your Leader has the {FILM} or {Straw Hat Crew} type, set up to 2 of your DON!! cards as active.<br>[End of Your Turn] Set this Character as active."
+  },
+  {
+    "id": "OP13-038",
+    "kind": "event",
+    "name": "Gum-Gum Elephant Gun",
+    "effect_text": "[Main] Rest up to 1 of your opponent's Characters with a cost of 5 or less. Then, set up to 2 of your DON!! cards as active at the end of this turn."
+  },
+  {
+    "id": "OP13-039",
+    "kind": "event",
+    "name": "Gum-Gum Snake Shot",
+    "effect_text": "[Counter] K.O. up to 1 of your opponent's rested Characters with a cost of 4 or less."
+  },
+  {
+    "id": "OP13-043",
+    "kind": "character",
+    "name": "Otama",
+    "effect_text": "[On Play] If you have 3 or less Life cards, draw 2 cards and trash 1 card from your hand."
+  },
+  {
+    "id": "OP13-045",
+    "kind": "character",
+    "name": "Haruta",
+    "effect_text": "[When Attacking] If you have 4 or less cards in your hand, draw 1 card."
+  },
+  {
+    "id": "OP13-047",
+    "kind": "character",
+    "name": "Fossa",
+    "effect_text": "If your Character with a type including \"Whitebeard Pirates\" would be K.O.'d by your opponent's effect, you may trash this Character instead."
+  },
+  {
+    "id": "OP13-050",
+    "kind": "character",
+    "name": "Boa Sandersonia",
+    "effect_text": "[On Play] If your Leader is [Boa Hancock], play up to 1 [Boa Hancock] with a cost of 3 or less from your hand."
+  },
+  {
+    "id": "OP13-051",
+    "kind": "character",
+    "name": "Boa Hancock",
+    "effect_text": "[On K.O.] If your Leader is [Boa Hancock] or multicolored, draw 2 cards."
+  },
+  {
+    "id": "OP13-053",
+    "kind": "character",
+    "name": "Marshall.D.Teach",
+    "effect_text": "[When Attacking] You may trash 1 of your Characters with a type including \"Whitebeard Pirates\": Draw 1 card and this Character gains [Banish] during this turn."
+  },
+  {
+    "id": "OP13-054",
+    "kind": "character",
+    "name": "Yamato",
+    "effect_text": "[On Play] If you have 3 or less Life cards, draw 2 cards. Then, give up to 1 rested DON!! card to your Leader."
+  },
+  {
+    "id": "OP13-055",
+    "kind": "character",
+    "name": "Rakuyo",
+    "effect_text": "[When Attacking] If you have 4 or less cards in your hand, all of your Characters with a type including \"Whitebeard Pirates\" gain +1000 power during this turn."
+  },
+  {
+    "id": "OP13-056",
+    "kind": "character",
+    "name": "LittleOars Jr.",
+    "effect_text": "[When Attacking] If your Leader's type includes \"Whitebeard Pirates\", draw 1 card."
+  },
+  {
+    "id": "OP13-059",
+    "kind": "event",
+    "name": "Brilliant Punk",
+    "effect_text": "[Main] You may return 1 of your Characters to the owner's hand: Return up to 1 Character with a cost of 6 or less to the owner's hand."
+  },
+  {
+    "id": "OP13-060",
+    "kind": "character",
+    "name": "Amatsuki Toki",
+    "effect_text": "If your Character with a type including \"Roger Pirates\" would be K.O.'d by your opponent's effect, you may trash this Character instead."
+  },
+  {
+    "id": "OP13-061",
+    "kind": "character",
+    "name": "Inuarashi",
+    "effect_text": "[On Play] If you have any DON!! cards given, add up to 1 DON!! card from your DON!! deck and rest it. Then, K.O. up to 1 of your opponent's Characters with a cost of 1 or less."
+  },
+  {
+    "id": "OP13-062",
+    "kind": "character",
+    "name": "Crocus",
+    "effect_text": "[On Play] If you have any DON!! cards given, add up to 1 DON!! card from your DON!! deck and set it as active.<br>[When Attacking] Return up to 1 of your opponent's Characters with a base power of 3000 or less to the owner's hand."
+  },
+  {
+    "id": "OP13-064",
+    "kind": "character",
+    "name": "Gol.D.Roger",
+    "effect_text": "Your Leader and all of your Characters that do not have a type including \"Roger Pirates\" have their effects negated.<br>[On Play] DON!! −3: Your Leader gains +2000 power until the end of your opponent's next End Phase. Then, give all of your opponent's Characters −2000 power until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "OP13-065",
+    "kind": "character",
+    "name": "Shanks",
+    "effect_text": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 card with a type including \"Roger Pirates\" other than [Shanks] and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP13-067",
+    "kind": "character",
+    "name": "Scopper Gaban",
+    "effect_text": "[On Play] If your Leader's type includes \"Roger Pirates\", draw 2 cards and trash 1 card from your hand. Then, add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "OP13-068",
+    "kind": "character",
+    "name": "Douglas Bullet",
+    "effect_text": "If you have 8 or more DON!! cards on your field, this Character gains +2000 power.<br>[On Play] If your Leader's type includes \"Roger Pirates\", add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "OP13-069",
+    "kind": "character",
+    "name": "Tom",
+    "effect_text": "[On Play] DON!! −1: Add up to 1 Stage card with a cost of 3 or less from your trash to your hand."
+  },
+  {
+    "id": "OP13-071",
+    "kind": "character",
+    "name": "Nekomamushi",
+    "effect_text": "[On Play] If you have 8 or more DON!! cards on your field, K.O. up to 1 of your opponent's Characters with 3000 base power or less."
+  },
+  {
+    "id": "OP13-072",
+    "kind": "character",
+    "name": "Buggy",
+    "effect_text": "[On Play] If your Leader's type includes \"Roger Pirates\" and you have any DON!! cards given, add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "OP13-074",
+    "kind": "character",
+    "name": "Hera",
+    "effect_text": "[On Play] Play up to 1 {Homies} type Character card with 3000 power or less from your hand."
+  },
+  {
+    "id": "OP13-078",
+    "kind": "stage",
+    "name": "Oro Jackson",
+    "effect_text": "[Once Per Turn] When your Character with a type including \"Roger Pirates\" is removed from the field by your opponent's effect, add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "OP13-079",
+    "kind": "leader",
+    "name": "Imu",
+    "effect_text": "Under the rules of this game, you cannot include Events with a cost of 2 or more in your deck and at the start of the game, play up to 1 {Mary Geoise} type Stage card from your deck.<br>[Activate: Main] [Once Per Turn] You may trash 1 of your {Celestial Dragons} type Characters or 1 card from your hand: Draw 1 card."
+  },
+  {
+    "id": "OP13-080",
+    "kind": "character",
+    "name": "St. Ethanbaron V. Nusjuro",
+    "effect_text": "If you have 7 or more cards in your trash, this Character cannot be removed from the field by your opponent's effects and gains [Rush].<br>[When Attacking] If you have 10 or more cards in your trash, give up to 1 of your opponent's Characters −2000 power during this turn."
+  },
+  {
+    "id": "OP13-082",
+    "kind": "character",
+    "name": "Five Elders",
+    "effect_text": "[Activate: Main] If your Leader is [Imu], you may rest 1 of your DON!! cards and trash 1 card from your hand: Trash all of your Characters and play up to 5 {Five Elders} type Character cards with 5000 power and different card names from your trash."
+  },
+  {
+    "id": "OP13-084",
+    "kind": "character",
+    "name": "St. Shepherd Ju Peter",
+    "effect_text": "If you have 7 or more cards in your trash, this Character cannot be removed from the field by your opponent's effects.<br>[Your Turn] If you have 10 or more cards in your trash, set the base power of all of your {Five Elders} type Characters to 7000."
+  },
+  {
+    "id": "OP13-086",
+    "kind": "character",
+    "name": "Saint Shalria",
+    "effect_text": "[On Play] Look at 3 cards from the top of your deck; reveal up to 1 {Celestial Dragons} type card other than [Saint Shalria] and add it to your hand. Then, trash the rest and trash 1 card from your hand."
+  },
+  {
+    "id": "OP13-091",
+    "kind": "character",
+    "name": "St. Marcus Mars",
+    "effect_text": "If you have 7 or more cards in your trash, this Character cannot be removed from the field by your opponent's effects and gains [Blocker].<br>[On Play] You may trash 1 card from your hand: K.O. up to 1 of your opponent's Characters with a base cost of 5 or less."
+  },
+  {
+    "id": "OP13-092",
+    "kind": "character",
+    "name": "Saint Mjosgard",
+    "effect_text": "[On Play] If you have 3 or less Life cards, play up to 1 {Mary Geoise} type Stage card with a cost of 1 from your trash."
+  },
+  {
+    "id": "OP13-094",
+    "kind": "character",
+    "name": "York",
+    "effect_text": "[On Play] Up to 1 of your {Celestial Dragons} type Characters gains +2000 power during this turn."
+  },
+  {
+    "id": "OP13-095",
+    "kind": "character",
+    "name": "Saint Rosward",
+    "effect_text": "[On Play] You may trash 1 card from your hand: If you only have {Celestial Dragons} type Characters, K.O. up to 2 of your opponent's Characters with a base cost of 3 or less."
+  },
+  {
+    "id": "OP13-096",
+    "kind": "event",
+    "name": "The Five Elders Are at Your Service!!!",
+    "effect_text": "[Main] Look at 3 cards from the top of your deck; reveal up to 1 {Celestial Dragons} type card other than [The Five Elders Are at Your Service!!!] and add it to your hand. Then, trash the rest."
+  },
+  {
+    "id": "OP13-098",
+    "kind": "event",
+    "name": "Never Existed... in the First Place...",
+    "effect_text": "[Main] You may rest 1 of your DON!! cards: If your Leader is [Imu], K.O. up to 1 of your opponent's Stages with a cost of 7.<br>[Counter] If your Leader is [Imu], up to 1 of your Leader or Character cards gains +4000 power during this battle."
+  },
+  {
+    "id": "OP13-099",
+    "kind": "stage",
+    "name": "The Empty Throne",
+    "effect_text": "[Your Turn] If you have 19 or more cards in your trash, your Leader gains +1000 power.<br>[Activate: Main] You may rest this card and 3 of your DON!! cards: Play up to 1 black {Five Elders} type Character card with a cost equal to or less than the number of DON!! cards on your field from your hand."
+  },
+  {
+    "id": "OP13-100",
+    "kind": "leader",
+    "name": "Jewelry Bonney",
+    "effect_text": "[Your Turn] [Once Per Turn] This effect can be activated when you play a Character with a [Trigger]. Give up to 2 rested DON!! cards to 1 of your Leader or Character cards."
+  },
+  {
+    "id": "OP13-102",
+    "kind": "character",
+    "name": "Edison",
+    "effect_text": "[Activate: Main] You may trash this Character: If the number of your Life cards is equal to or less than the number of your opponent's Life cards, draw 1 card. Then, rest up to 1 of your opponent's Characters with a cost of 3 or less."
+  },
+  {
+    "id": "OP13-105",
+    "kind": "character",
+    "name": "Kouzuki Momonosuke",
+    "effect_text": "[On Play] Look at all of your Life cards and place them back in your Life area in any order."
+  },
+  {
+    "id": "OP13-106",
+    "kind": "character",
+    "name": "Conney",
+    "effect_text": "[Opponent's Turn] When a [Trigger] activates, this Character gains [Blocker] during this turn."
+  },
+  {
+    "id": "OP13-108",
+    "kind": "character",
+    "name": "Jewelry Bonney",
+    "effect_text": "[On Play] If your Leader has the {Egghead} type, this Character gains [Rush] during this turn. Then, your opponent adds 1 card from the top of their Life cards to their hand."
+  },
+  {
+    "id": "OP13-109",
+    "kind": "character",
+    "name": "Jewelry Bonney",
+    "effect_text": "If this Character would be removed from the field by your opponent's effect, you may turn 1 card from the top of your Life cards face-up instead."
+  },
+  {
+    "id": "OP13-112",
+    "kind": "character",
+    "name": "Vegapunk",
+    "effect_text": "If you have a total of 2 or more given DON!! cards, this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+  },
+  {
+    "id": "OP13-113",
+    "kind": "character",
+    "name": "Lilith",
+    "effect_text": "[On Play] Look at 4 cards from the top of your deck; reveal up to 1 card with a [Trigger] other than [Lilith] and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP13-114",
+    "kind": "character",
+    "name": "S-Snake",
+    "effect_text": "[On Play]/[When Attacking] You may turn 1 card from the top of your Life cards face-up: Give up to 1 of your opponent's Characters −2000 power during this turn."
+  },
+  {
+    "id": "OP13-116",
+    "kind": "event",
+    "name": "The One Who Is the Most Free Is the Pirate King!!!",
+    "effect_text": "[Main] Look at 5 cards from the top of your deck; reveal up to 1 {Supernovas} type Character card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP13-117",
+    "kind": "event",
+    "name": "Gum-Gum Dawn Stamp",
+    "effect_text": "[Main] You may turn 1 card from the top of your Life cards face-up: K.O. up to 1 of your opponent's Characters with a base cost of 6 or less."
+  },
+  {
+    "id": "OP13-119",
+    "kind": "character",
+    "name": "Portgas.D.Ace",
+    "effect_text": "If you have 3 or less Life cards, this Character gains [Rush].<br>[On Play] Give up to 1 rested DON!! card to your Leader. Then, you may return up to 1 of your opponent's Characters with a cost of 5 or less to the owner's hand. If you do, your opponent plays up to 1 Character card with a cost of 4 or less from their hand."
+  },
+  {
+    "id": "OP14-001",
+    "kind": "leader",
+    "name": "Trafalgar Law",
+    "effect_text": "[Activate: Main] [Once Per Turn] Select 2 of your {Supernovas} or {Heart Pirates} type Characters. Swap the base power of the selected Characters with each other during this turn."
+  },
+  {
+    "id": "OP14-002",
+    "kind": "character",
+    "name": "Urouge",
+    "effect_text": "[When Attacking] If this Character has 5000 power or more, draw 1 card and K.O. up to 1 of your opponent's Characters with 3000 base power or less."
+  },
+  {
+    "id": "OP14-003",
+    "kind": "character",
+    "name": "Capone\"Gang\"Bege",
+    "effect_text": "This Character cannot be K.O.'d by effects of your opponent's Characters with 5000 base power or less."
+  },
+  {
+    "id": "OP14-004",
+    "kind": "character",
+    "name": "Cavendish",
+    "effect_text": "If this Character has 5000 power or more, this Character gains [Rush].<br>(This card can attack on the turn in which it is played.)"
+  },
+  {
+    "id": "OP14-006",
+    "kind": "character",
+    "name": "Shachi & Penguin",
+    "effect_text": "[When Attacking] If this Character has 5000 power or more, give up to 1 of your opponent's Characters −2000 power during this turn."
+  },
+  {
+    "id": "OP14-010",
+    "kind": "character",
+    "name": "Basil Hawkins",
+    "effect_text": "[On K.O.] Look at 5 cards from the top of your deck; play up to 1 {Supernovas} type Character card with 2000 power or less other than [Basil Hawkins]. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP14-012",
+    "kind": "character",
+    "name": "Bepo",
+    "effect_text": "[When Attacking] If this Character has 5000 power or more, give up to 2 rested DON!! cards to your Leader or 1 of your Characters."
+  },
+  {
+    "id": "OP14-017",
+    "kind": "event",
+    "name": "Chambres",
+    "effect_text": "[Main] Select 2 of your opponent's Characters with 9000 base power or less. Swap the base power of the selected Characters with each other during this turn."
+  },
+  {
+    "id": "OP14-018",
+    "kind": "event",
+    "name": "Time for the Counterattack",
+    "effect_text": "[Counter] If there is a Character with 8000 power or more, up to 1 of your Leader or Character cards gains +4000 power during this battle."
+  },
+  {
+    "id": "OP14-019",
+    "kind": "event",
+    "name": "I Have a Plan to Take Down One of the Four Emperors!!",
+    "effect_text": "[Main] Look at 4 cards from the top of your deck; reveal up to 1 {Supernovas} or {Straw Hat Crew} type Character card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP14-020",
+    "kind": "leader",
+    "name": "Dracule Mihawk",
+    "effect_text": "If your opponent's Leader has the <Slash> attribute, this Leader gains +1000 power.<br>[Activate: Main] [Once Per Turn] You may rest 1 of your cards: If there is a Character with a cost of 5 or more, set up to 3 of your DON!! cards as active. Then, you cannot play Character cards during this turn."
+  }
+]

@@ -1,0 +1,452 @@
+[
+  {
+    "id": "OP14-021",
+    "kind": "character",
+    "name": "Issho",
+    "effect_text": "[Your Turn] When this Character becomes rested, you may add 1 card from the top of your Life cards to your hand. If you do, up to 1 of your opponent's rested Characters or Stages will not become active in your opponent's next Refresh Phase."
+  },
+  {
+    "id": "OP14-022",
+    "kind": "character",
+    "name": "Usopp",
+    "effect_text": "[End of Your Turn] If your Leader has the {FILM} or {Straw Hat Crew} type, set up to 2 of your DON!! cards as active."
+  },
+  {
+    "id": "OP14-023",
+    "kind": "character",
+    "name": "Kikunojo",
+    "effect_text": "[End of Your Turn] Set this Character as active."
+  },
+  {
+    "id": "OP14-024",
+    "kind": "character",
+    "name": "Kin'emon",
+    "effect_text": "[On Play] Set up to 3 of your DON!! cards as active. Then, you cannot play Character cards during this turn.<br>[On K.O.] Rest up to 1 of your opponent's cards."
+  },
+  {
+    "id": "OP14-025",
+    "kind": "character",
+    "name": "Kuro",
+    "effect_text": "[On Play] If your Leader is [Kuro], play up to 1 {East Blue} type Character card with a cost of 6 or less from your hand."
+  },
+  {
+    "id": "OP14-026",
+    "kind": "character",
+    "name": "Kouzuki Oden",
+    "effect_text": "[Opponent's Turn] If this Character is rested, this Character gains +2000 power."
+  },
+  {
+    "id": "OP14-027",
+    "kind": "character",
+    "name": "Shanks",
+    "effect_text": "[Your Turn] When this Character becomes rested, rest up to 1 of your opponent's Characters with 7000 base power or less.<br>[Opponent's Turn] If this Character is rested, give all of your opponent's Characters −1000 power."
+  },
+  {
+    "id": "OP14-028",
+    "kind": "character",
+    "name": "Johnny",
+    "effect_text": "[Your Turn] When this Character becomes rested, K.O. up to 1 of your opponent's rested Characters with a cost of 2 or less."
+  },
+  {
+    "id": "OP14-029",
+    "kind": "character",
+    "name": "Tashigi",
+    "effect_text": "[Opponent's Turn] If this Character would be removed from the field by your opponent's effect, you may rest 1 of your cards instead.<br>[Activate: Main] [Once Per Turn] You may rest 2 of your cards: This Character gains +2000 power until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "OP14-032",
+    "kind": "character",
+    "name": "Humandrill",
+    "effect_text": "[Your Turn] When this Character becomes rested, rest up to 1 of your opponent's Characters with a cost of 4 or less."
+  },
+  {
+    "id": "OP14-033",
+    "kind": "character",
+    "name": "Perona",
+    "effect_text": "[On Play] Up to 2 of your opponent's Characters with a cost of 5 or less cannot be rested until the end of your opponent's next End Phase.<br>[On K.O.] You may rest 1 of your cards: Play up to 1 green Character card with a cost of 5 or less from your hand."
+  },
+  {
+    "id": "OP14-034",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "[Your Turn] All of your green {Straw Hat Crew} type Characters with a base cost of 4 or more gain +1000 power.<br>[Once Per Turn] If your {Straw Hat Crew} type Character would be K.O.'d by your opponent's effect, you may rest 1 of your Characters instead."
+  },
+  {
+    "id": "OP14-035",
+    "kind": "character",
+    "name": "Yosaku",
+    "effect_text": "[Your Turn] When this Character becomes rested, up to 1 of your opponent's rested Characters with a cost of 4 or less will not become active in your opponent's next Refresh Phase."
+  },
+  {
+    "id": "OP14-036",
+    "kind": "event",
+    "name": "Strive to Surpass me, Roronoa Zoro!!!",
+    "effect_text": "[Counter] You may rest 1 of your cards: Up to 1 of your Leader or Character cards gains +4000 power during this battle."
+  },
+  {
+    "id": "OP14-039",
+    "kind": "stage",
+    "name": "Coffin Boat",
+    "effect_text": "[On Play] If your Leader is [Dracule Mihawk], draw 1 card.<br>[End of Your Turn] If your Leader is [Dracule Mihawk], set up to 1 of your DON!! cards as active."
+  },
+  {
+    "id": "OP14-040",
+    "kind": "leader",
+    "name": "Jinbe",
+    "effect_text": "[Activate: Main] You may trash 1 card from your hand: Give up to 2 rested DON!! cards to 1 of your {Fish-Man} or {Merfolk} type Leader or Character cards."
+  },
+  {
+    "id": "OP14-041",
+    "kind": "leader",
+    "name": "Boa Hancock",
+    "effect_text": "[Opponent's Turn] When you play a Character, draw 1 card.<br>[DON!! x1] [Once Per Turn] When one of your {Amazon Lily} or {Kuja Pirates} type Characters with 5000 base power or more is K.O.'d, add up to 1 card from the top of your opponent's Life cards to the owner's hand."
+  },
+  {
+    "id": "OP14-042",
+    "kind": "character",
+    "name": "Arlong",
+    "effect_text": "[On Play] If your Leader has the {Fish-Man} type, look at 4 cards from the top of your deck; reveal up to 1 card with a cost of 2 or more and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP14-046",
+    "kind": "character",
+    "name": "Koala",
+    "effect_text": "[Activate: Main] You may trash this Character: Up to 1 of your {Fish-Man} or {Merfolk} type Leader or Character cards gains +2000 power during this turn."
+  },
+  {
+    "id": "OP14-048",
+    "kind": "character",
+    "name": "Shiryu",
+    "effect_text": "[On Play] Return up to 1 of your opponent's Characters to the owner's hand. Then, trash all cards from your hand."
+  },
+  {
+    "id": "OP14-049",
+    "kind": "character",
+    "name": "Jinbe",
+    "effect_text": "When a card is trashed from your hand by an effect, this Character gains [Rush] during this turn.<br>[On Play] You may rest 2 of your DON!! cards: Draw 2 cards and return up to 1 Character with a cost of 7 or less to the owner's hand."
+  },
+  {
+    "id": "OP14-050",
+    "kind": "character",
+    "name": "Chew",
+    "effect_text": "[On Play] If your Leader has the {Fish-Man} type, draw 1 card."
+  },
+  {
+    "id": "OP14-051",
+    "kind": "character",
+    "name": "Hatchan",
+    "effect_text": "[DON!! x2] [On K.O.] Draw 1 card."
+  },
+  {
+    "id": "OP14-054",
+    "kind": "character",
+    "name": "Fisher Tiger",
+    "effect_text": "[On Play] If your Leader has the {Fish-Man} type, draw 3 cards.<br>[End of Your Turn] Trash cards from your hand until you have 5 cards in your hand."
+  },
+  {
+    "id": "OP14-056",
+    "kind": "character",
+    "name": "Wadatsumi",
+    "effect_text": "This Character cannot attack.<br>When a card is trashed from your hand by an effect, this Character's effect is negated during this turn."
+  },
+  {
+    "id": "OP14-057",
+    "kind": "event",
+    "name": "Don't Worry!! I'm Here!!",
+    "effect_text": "[Main] All of your {Fish-Man} or {Merfolk} type Leader and Character cards gain +1000 power during this turn."
+  },
+  {
+    "id": "OP14-058",
+    "kind": "event",
+    "name": "Ocean Current Shoulder Throw",
+    "effect_text": "[Main] You may rest 3 of your DON!! cards: Play up to 1 {Fish-Man} type Character card with a cost of 3 or less from your hand. Then, return up to 1 Character with 6000 base power to the owner's hand.<br>[Counter] Draw 1 card and your Leader gains +3000 power during this battle."
+  },
+  {
+    "id": "OP14-059",
+    "kind": "event",
+    "name": "Please Take Me with You!! I Can Be of Great Help to You!!",
+    "effect_text": "[Main] If your Leader is [Jinbe] and you have 2 or less cards in your hand, draw 2 cards."
+  },
+  {
+    "id": "OP14-060",
+    "kind": "leader",
+    "name": "Donquixote Doflamingo",
+    "effect_text": "[On Your Opponent's Attack] [Once Per Turn] DON!! −1: Select your Leader or 1 of your {Donquixote Pirates} type Characters. Change the attack target to the selected card."
+  },
+  {
+    "id": "OP14-062",
+    "kind": "character",
+    "name": "Gladius",
+    "effect_text": "[On K.O.] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): K.O. or rest up to 1 of your opponent's Characters with a base power of 6000 or less."
+  },
+  {
+    "id": "OP14-064",
+    "kind": "character",
+    "name": "Giolla",
+    "effect_text": "[On K.O.] Add up to 1 DON!! card from your DON!! deck and rest it. Then, K.O. up to 1 of your opponent's Characters with a base power of 0."
+  },
+  {
+    "id": "OP14-065",
+    "kind": "character",
+    "name": "Senor Pink",
+    "effect_text": "[On K.O.] Your opponent returns 1 DON!! card from their field to their DON!! deck."
+  },
+  {
+    "id": "OP14-067",
+    "kind": "character",
+    "name": "Dellinger",
+    "effect_text": "[On K.O.] Add up to 1 DON!! card from your DON!! deck and rest it, look at 5 cards from the top of your deck; reveal up to 1 {Donquixote Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP14-068",
+    "kind": "character",
+    "name": "Trebol",
+    "effect_text": "[Opponent's Turn] [Once Per Turn] When a DON!! card on your field is returned to your DON!! deck, if your Leader has the {Donquixote Pirates} type, add up to 1 DON!! card from your DON!! deck and rest it."
+  },
+  {
+    "id": "OP14-069",
+    "kind": "character",
+    "name": "Donquixote Doflamingo",
+    "effect_text": "[On Play] DON!! −3: Choose one:<br>• If your Leader has the {Donquixote Pirates} type, K.O. up to 1 of your opponent's Characters with a cost of 8 or less.<br>• Up to 3 of your opponent's Characters with a cost of 7 or less cannot be rested until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "OP14-071",
+    "kind": "character",
+    "name": "Pica",
+    "effect_text": "[End of Your Turn] If your Leader has the {Donquixote Pirates} type, add up to 1 DON!! card from your DON!! deck and set it as active."
+  },
+  {
+    "id": "OP14-074",
+    "kind": "character",
+    "name": "Monet",
+    "effect_text": "[On Play] If your Leader has the {Donquixote Pirates} type, add up to 1 DON!! card from your DON!! deck and set it as active.<br>[On K.O.] Draw 2 cards and trash 1 card from your hand. Then, add up to 2 DON!! cards from your DON!! deck and rest them."
+  },
+  {
+    "id": "OP14-075",
+    "kind": "character",
+    "name": "Lao.G",
+    "effect_text": "[On K.O.] Add up to 1 DON!! card from your DON!! deck and rest it. Then, give up to 1 of your opponent's Characters −2000 power during this turn."
+  },
+  {
+    "id": "OP14-078",
+    "kind": "event",
+    "name": "Bullet String",
+    "effect_text": "[Counter] DON!! −1: If your Leader has the {Donquixote Pirates} type, up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, that card gains an additional +2000 power during this turn."
+  },
+  {
+    "id": "OP14-079",
+    "kind": "leader",
+    "name": "Crocodile",
+    "effect_text": "All of your opponent's Characters cannot be removed from the field by your effects.<br>[Activate: Main] [Once Per Turn] You may K.O. 1 of your Characters with a type including \"Baroque Works\": Give up to 1 of your opponent's Characters −10 cost during this turn. Then, you may trash 2 cards from the top of your deck."
+  },
+  {
+    "id": "OP14-080",
+    "kind": "leader",
+    "name": "Gecko Moria",
+    "effect_text": "[Activate: Main] [Once Per Turn] You may K.O. 1 of your {Thriller Bark Pirates} type Characters: Your Leader and all of your Characters gain +1000 power during this turn.<br>[When Attacking] You may trash 3 cards from your hand: Add up to 1 card from the top of your deck to the top of your Life cards."
+  },
+  {
+    "id": "OP14-082",
+    "kind": "character",
+    "name": "Oinkchuck",
+    "effect_text": "[On K.O.] All of your {Thriller Bark Pirates} type Characters gain +4 cost until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "OP14-083",
+    "kind": "character",
+    "name": "Ms. Wednesday",
+    "effect_text": "[Activate: Main] You may trash this Character: Give up to 1 of your opponent's 0 cost Characters −3000 power during this turn."
+  },
+  {
+    "id": "OP14-084",
+    "kind": "character",
+    "name": "Ms. All Sunday",
+    "effect_text": "[On Play] If your Leader's type includes \"Baroque Works\", play up to 1 Character card with a type including \"Baroque Works\" and a cost of 4 or less and up to 1 Character card with a type including \"Baroque Works\" and a cost of 1 from your trash."
+  },
+  {
+    "id": "OP14-085",
+    "kind": "character",
+    "name": "Miss.Goldenweek(Marianne)",
+    "effect_text": "[On K.O.] Draw 2 cards and trash 2 cards from your hand."
+  },
+  {
+    "id": "OP14-086",
+    "kind": "character",
+    "name": "Miss Doublefinger(Zala)",
+    "effect_text": "If you have 7 or more cards in your trash, this Character gains +1000 power, and all of your Characters with a type including \"Baroque Works\" gain +2 cost.<br>"
+  },
+  {
+    "id": "OP14-087",
+    "kind": "character",
+    "name": "Miss.Valentine(Mikita)",
+    "effect_text": "[On Play] If your Leader's type includes \"Baroque Works\", look at 4 cards from the top of your deck; reveal up to 1 card with a type including \"Baroque Works\" other than [Miss.Valentine(Mikita)] and add it to your hand. Then, trash the rest."
+  },
+  {
+    "id": "OP14-088",
+    "kind": "character",
+    "name": "Miss.MerryChristmas(Drophy)",
+    "effect_text": "[On K.O.] If your Leader's type includes \"Baroque Works\", draw 1 card and K.O. up to 1 of your opponent's Stages with a cost of 1."
+  },
+  {
+    "id": "OP14-089",
+    "kind": "character",
+    "name": "Ryuma",
+    "effect_text": "[On K.O.] Draw 2 cards and trash 2 cards from your hand."
+  },
+  {
+    "id": "OP14-090",
+    "kind": "character",
+    "name": "Mr.1(Daz.Bonez)",
+    "effect_text": "If there is a Character with a cost of 0 or with a cost of 8 or more, this Character can attack Characters on the turn in which it is played.<br>[On Play] Rest up to 1 of your opponent's Characters with a cost of 0."
+  },
+  {
+    "id": "OP14-091",
+    "kind": "character",
+    "name": "Mr.2.Bon.Kurei(Bentham)",
+    "effect_text": "[On K.O.] Play up to 1 Character card with a type including \"Baroque Works\" and a cost of 5 or less other than [Mr.2.Bon.Kurei(Bentham)] from your hand or trash."
+  },
+  {
+    "id": "OP14-092",
+    "kind": "character",
+    "name": "Mr.3(Galdino)",
+    "effect_text": "[Opponent's Turn] [Once Per Turn] If this Character would be K.O.'d, you may place 3 cards from your trash at the bottom of your deck in any order instead."
+  },
+  {
+    "id": "OP14-096",
+    "kind": "event",
+    "name": "Ground Death",
+    "effect_text": "[Main] You may rest 2 of your DON!! cards: Negate the effect of up to 1 of your opponent's Characters with a cost of 5 or less during this turn.<br>[Counter] If you have 10 or more cards in your trash, up to 1 of your Leader or Character cards gains +4000 power during this battle."
+  },
+  {
+    "id": "OP14-097",
+    "kind": "event",
+    "name": "Hurry Up and Make Me the Pirate King!",
+    "effect_text": "[Main] Look at 3 cards from the top of your deck; reveal up to 1 {Thriller Bark Pirates} type card other than [Hurry Up and Make Me the Pirate King!] and add it to your hand. Then, trash the rest."
+  },
+  {
+    "id": "OP14-099",
+    "kind": "event",
+    "name": "Disappointed?",
+    "effect_text": "[Main] Look at 3 cards from the top of your deck; reveal up to 1 card with a type including \"Baroque Works\" other than [Disappointed?] and add it to your hand. Then, trash the rest."
+  },
+  {
+    "id": "OP14-100",
+    "kind": "character",
+    "name": "Absalom",
+    "effect_text": "[On K.O.] Look at 3 cards from the top of your deck; reveal up to 1 {Thriller Bark Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP14-103",
+    "kind": "character",
+    "name": "Gloriosa (Grandma Nyon)",
+    "effect_text": "[On Play] You may add 1 card from the top or bottom of your Life cards to your hand: Add up to 1 card from your hand to the top of your Life cards."
+  },
+  {
+    "id": "OP14-104",
+    "kind": "character",
+    "name": "Gecko Moria",
+    "effect_text": "[On Play] Select up to 1 {Thriller Bark Pirates} type Character with a cost of 4 or less from your trash and play it or add it to the top of your Life cards face-up."
+  },
+  {
+    "id": "OP14-105",
+    "kind": "character",
+    "name": "Gorgon Sisters",
+    "effect_text": "[Activate: Main] [Once Per Turn] You may reveal 3 {Amazon Lily} or {Kuja Pirates} type cards from your hand: Give your Leader and all of your Characters up to 1 rested DON!! card each."
+  },
+  {
+    "id": "OP14-107",
+    "kind": "character",
+    "name": "Shakuyaku",
+    "effect_text": "[On Play] If your opponent has 3 or less Life cards, draw 2 cards and trash 2 cards from your hand."
+  },
+  {
+    "id": "OP14-108",
+    "kind": "character",
+    "name": "Silvers Rayleigh",
+    "effect_text": "[On Play] If your Leader is multicolored and your opponent has 3 or less Life cards, K.O. up to 1 of your opponent's Characters with 7000 base power or less."
+  },
+  {
+    "id": "OP14-110",
+    "kind": "character",
+    "name": "Dr. Hogback",
+    "effect_text": "[On K.O.] Play up to 1 Character card with a cost of 4 or less and a [Trigger] other than [Dr. Hogback] from your trash."
+  },
+  {
+    "id": "OP14-111",
+    "kind": "character",
+    "name": "Perona",
+    "effect_text": "[On Play]/[On K.O.] Up to 1 of your opponent's Characters with a cost of 6 or less cannot attack until the end of your opponent's next End Phase."
+  },
+  {
+    "id": "OP14-112",
+    "kind": "character",
+    "name": "Boa Hancock",
+    "effect_text": "[On Play] If your Leader has the {The Seven Warlords of the Sea} type, add up to 1 card from the top of your deck to the top of your Life cards. Then, add up to 1 card from the top of your opponent's Life cards to the owner's hand."
+  },
+  {
+    "id": "OP14-113",
+    "kind": "character",
+    "name": "Marguerite",
+    "effect_text": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 {Amazon Lily} or {Kuja Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order and trash 1 card from your hand."
+  },
+  {
+    "id": "OP14-114",
+    "kind": "character",
+    "name": "Ran",
+    "effect_text": "[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to 1 of your {Kuja Pirates} type Leader or Character cards."
+  },
+  {
+    "id": "OP14-115",
+    "kind": "character",
+    "name": "Rindo",
+    "effect_text": "[Opponent's Turn] [On K.O.] Add up to 1 card from the top of your deck to the top of your Life cards. Then, you take 1 damage."
+  },
+  {
+    "id": "OP14-117",
+    "kind": "event",
+    "name": "Brick Bat",
+    "effect_text": "[Counter] Up to 1 of your {Thriller Bark Pirates} type Leader or Character cards gains +3000 power during this battle."
+  },
+  {
+    "id": "OP14-118",
+    "kind": "event",
+    "name": "You'll Frighten Me... ♡",
+    "effect_text": "[Counter] If you have 2 or less Life cards, up to 1 of your opponent's active Characters cannot attack during this turn."
+  },
+  {
+    "id": "OP14-119",
+    "kind": "character",
+    "name": "Dracule Mihawk",
+    "effect_text": "[Your Turn] When this Character becomes rested, up to 1 of your opponent's Characters with a cost of 9 or less cannot be rested until the end of your opponent's next End Phase.<br>[On Your Opponent's Attack] [Once Per Turn] You may trash 1 card from your hand: Up to 1 of your Leader or Character cards gains +2000 power during this battle."
+  },
+  {
+    "id": "OP14-120",
+    "kind": "character",
+    "name": "Crocodile",
+    "effect_text": "[On Play] Up to 1 of your opponent's Characters with a cost of 9 or less cannot attack until the end of your opponent's next End Phase. Then, if your opponent has a Character with a cost of 0 or with a cost of 8 or more, draw 1 card.<br>[On K.O.] You may trash 1 card from your hand: Play this Character card from your trash."
+  },
+  {
+    "id": "OP15-001",
+    "kind": "leader",
+    "name": "Krieg",
+    "effect_text": "[DON!! x1] [Opponent's Turn] If the only Characters on your field are {East Blue} type Characters, give all of your opponent's Characters −2000 power.<br>[Activate: Main] [Once Per Turn] Rest up to 1 of your opponent's Characters that has 2 or more DON!! cards given."
+  },
+  {
+    "id": "OP15-002",
+    "kind": "leader",
+    "name": "Lucy",
+    "effect_text": "[When Attacking]/[On Your Opponent's Attack] You may trash any number of Event or Stage cards from your hand. This Leader gains +1000 power during this battle for every card trashed.<br>[Activate: Main] [Once Per Turn] If you have activated an Event with a base cost of 3 or more during this turn, draw 1 card."
+  },
+  {
+    "id": "OP15-003",
+    "kind": "character",
+    "name": "Alvida",
+    "effect_text": "If this Character would be K.O.'d, you may trash 1 Character card with a power of 6000 or less from your hand instead.<br>[Activate: Main] [Once Per Turn] You may give 1 of your opponent's rested DON!! cards to 1 of your opponent's Characters: Give up to 1 rested DON!! card to its owner's Leader or 1 of their Characters."
+  },
+  {
+    "id": "OP15-004",
+    "kind": "character",
+    "name": "Sea Cat",
+    "effect_text": "[On Play] If your Leader has 0 power or less, give up to 1 of your opponent's Characters −3000 power during this turn."
+  }
+]

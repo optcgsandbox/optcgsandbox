@@ -1,0 +1,452 @@
+[
+  {
+    "id": "OP10-097",
+    "kind": "event",
+    "name": "Gum-Gum Rhino Schneider",
+    "effect_text": "[Main] Up to 1 of your {Dressrosa} type Characters gains +2000 power during this turn. Then, if you have 10 or more cards in your trash, that card gains [Banish] during this turn."
+  },
+  {
+    "id": "OP10-098",
+    "kind": "event",
+    "name": "Liberation",
+    "effect_text": "[Main] If the number of your Characters is at least 2 less than the number of your opponent's Characters, K.O. up to 1 of your opponent's Characters with a base cost of 6 or less and up to 1 of your opponent's Characters with a base cost of 4 or less."
+  },
+  {
+    "id": "OP10-099",
+    "kind": "leader",
+    "name": "Eustass\"Captain\"Kid",
+    "effect_text": "[End of Your Turn] You may turn 1 card from the top of your Life cards face-up: Set up to 1 of your {Supernovas} type Characters with a cost of 3 to 8 as active. That Character gains [Blocker] until the end of your opponent's next turn."
+  },
+  {
+    "id": "OP10-100",
+    "kind": "character",
+    "name": "Inazuma",
+    "effect_text": "[DON!! x1] [When Attacking] Rest up to 1 of your opponent's Characters with a cost equal to or less than the total of your and your opponent's Life cards."
+  },
+  {
+    "id": "OP10-102",
+    "kind": "character",
+    "name": "Emporio.Ivankov",
+    "effect_text": "[Activate: Main] [Once Per Turn] Up to 3 of your {Revolutionary Army} type Characters gain +1000 power during this turn. Then, add 1 card from the top of your Life cards to your hand."
+  },
+  {
+    "id": "OP10-103",
+    "kind": "character",
+    "name": "Capone\"Gang\"Bege",
+    "effect_text": "[On Play] You may add 1 card from the top or bottom of your Life cards to your hand: Add up to 1 {Supernovas} type Character card from your hand to the top of your Life cards face-up."
+  },
+  {
+    "id": "OP10-104",
+    "kind": "character",
+    "name": "Caribou",
+    "effect_text": "[DON!! x1] If your Leader has the {Supernovas} type and your opponent has 3 or more Life cards, this Character cannot be K.O.'d in battle."
+  },
+  {
+    "id": "OP10-106",
+    "kind": "character",
+    "name": "Killer",
+    "effect_text": "[On K.O.] If your Leader has the {Supernovas} type, look at 3 cards from the top of your deck; reveal up to 1 {Supernovas} or {Kid Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP10-108",
+    "kind": "character",
+    "name": "Scratchmen Apoo",
+    "effect_text": "If you have a yellow {Supernovas} type Character other than [Scratchmen Apoo], this Character gains [Blocker]."
+  },
+  {
+    "id": "OP10-109",
+    "kind": "character",
+    "name": "Basil Hawkins",
+    "effect_text": "[On K.O.] Trash up to 1 card from the top of your opponent's Life cards."
+  },
+  {
+    "id": "OP10-110",
+    "kind": "character",
+    "name": "Heat & Wire",
+    "effect_text": "[On Play] Rest up to 1 of your opponent's Characters with a cost equal to or less than the number of your opponent's Life cards."
+  },
+  {
+    "id": "OP10-112",
+    "kind": "character",
+    "name": "Eustass\"Captain\"Kid",
+    "effect_text": "[On Play] You may rest this Character: Trash up to 1 card from the top of your opponent's Life cards.<br>[End of Your Turn] If your opponent has 2 or less Life cards, draw 1 card and trash 1 card from your hand."
+  },
+  {
+    "id": "OP10-113",
+    "kind": "character",
+    "name": "Roronoa Zoro",
+    "effect_text": "If you have less Life cards than your opponent, this Character gains [Rush]."
+  },
+  {
+    "id": "OP10-116",
+    "kind": "event",
+    "name": "Damned Punk",
+    "effect_text": "[Main] Look at up to 1 card from the top of your or your opponent's Life cards and place it at the top or bottom of the Life cards. Then, K.O. up to 1 of your opponent's Characters with a cost of 5 or less."
+  },
+  {
+    "id": "OP10-117",
+    "kind": "event",
+    "name": "ROOM",
+    "effect_text": "[Counter] If you have 1 or less Life cards, up to 1 of your Leader or Character cards gains +3000 power during this battle. Then, set up to 1 of your Characters with a cost of 5 or less as active."
+  },
+  {
+    "id": "OP10-118",
+    "kind": "character",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "Once per turn, this Character cannot be K.O.'d by your opponent's effects.<br>[When Attacking] You may place 3 cards from your trash at the bottom of your deck in any order: If your opponent has 5 or more cards in their hand, your opponent trashes 1 card from their hand."
+  },
+  {
+    "id": "OP10-119",
+    "kind": "character",
+    "name": "Trafalgar Law",
+    "effect_text": "[On Play] Reveal up to 1 {Supernovas} type Character card from your hand and add it to the top of your Life cards face-down. Then, give up to 1 rested DON!! card to 1 of your {Supernovas} type Leader."
+  },
+  {
+    "id": "OP11-001",
+    "kind": "leader",
+    "name": "Koby",
+    "effect_text": "Your {SWORD} type Characters can attack Characters on the turn in which they are played.<br>[Once Per Turn] If your {Navy} type Character with 7000 base power or less would be removed from the field by your opponent's effect, you may place 3 cards from your trash at the bottom of your deck in any order instead."
+  },
+  {
+    "id": "OP11-002",
+    "kind": "character",
+    "name": "Ain",
+    "effect_text": "[On Play] Give up to 1 of your opponent's Characters −1000 power during this turn. Then, K.O. up to 1 of your opponent's Characters with 0 power or less."
+  },
+  {
+    "id": "OP11-006",
+    "kind": "character",
+    "name": "Zephyr",
+    "effect_text": "[DON!! x1] [When Attacking] Give up to 1 of your opponent's ＜Special＞ attribute Characters −5000 power during this turn."
+  },
+  {
+    "id": "OP11-009",
+    "kind": "character",
+    "name": "Nico Robin",
+    "effect_text": "[DON!! x2] [When Attacking] Give up to 1 of your opponent's Characters −2000 power until the end of your opponent's next turn."
+  },
+  {
+    "id": "OP11-012",
+    "kind": "character",
+    "name": "Franky",
+    "effect_text": "[Your Turn] [Once Per Turn] When your opponent activates an Event, all of your Characters gain +2000 power during this turn."
+  },
+  {
+    "id": "OP11-013",
+    "kind": "character",
+    "name": "Prince Grus",
+    "effect_text": "[When Attacking] All of your opponent's Characters with 2000 power or less cannot activate [Blocker] during this turn."
+  },
+  {
+    "id": "OP11-018",
+    "kind": "event",
+    "name": "Honesty Impact",
+    "effect_text": "[Main] Give up to 1 of your opponent's Characters −4000 power during this turn. Then, K.O. up to 1 of your opponent's Characters with 6000 power or less."
+  },
+  {
+    "id": "OP11-021",
+    "kind": "leader",
+    "name": "Jinbe",
+    "effect_text": "[End of Your Turn] If you have 6 or less cards in your hand, set up to 1 of your {Fish-Man} or {Merfolk} type Characters and up to 1 of your DON!! cards as active."
+  },
+  {
+    "id": "OP11-023",
+    "kind": "character",
+    "name": "Arlong",
+    "effect_text": "If your Leader has the {Fish-Man} type, you have 3 or less Life cards and your opponent has 5 or more rested cards, give this card in your hand −3 cost."
+  },
+  {
+    "id": "OP11-024",
+    "kind": "character",
+    "name": "Aladine",
+    "effect_text": "When this Character is K.O.'d by your opponent's effect, you may trash 1 card from your hand and rest 1 of your DON!! cards. If you do, play up to 1 {Fish-Man} or {Merfolk} type Character card with a cost of 6 or less from your hand."
+  },
+  {
+    "id": "OP11-025",
+    "kind": "character",
+    "name": "Ishilly",
+    "effect_text": "[On Your Opponent's Attack] [Once Per Turn] You may rest 1 of your DON!! cards and this Character: Up to 1 of your Leader or Character cards gains +1000 power during this battle."
+  },
+  {
+    "id": "OP11-027",
+    "kind": "character",
+    "name": "Bulge-Eyed Neptunian",
+    "effect_text": "If your Leader is [Shirahoshi], this Character can attack Characters on the turn in which it is played."
+  },
+  {
+    "id": "OP11-028",
+    "kind": "character",
+    "name": "Lord of the Coast",
+    "effect_text": "[On Play] Up to 1 of your opponent's rested Characters will not become active in your opponent's next Refresh Phase."
+  },
+  {
+    "id": "OP11-030",
+    "kind": "character",
+    "name": "Shirahoshi",
+    "effect_text": "[Activate: Main] You may rest 1 of your DON!! cards and this Character: Look at 5 cards from the top of your deck; reveal up to 1 {Neptunian} or {Fish-Man Island} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP11-031",
+    "kind": "character",
+    "name": "Jinbe",
+    "effect_text": "[On Play] If your Leader has the {Fish-Man} or {Merfolk} type, rest up to 1 of your opponent's Characters with a cost of 5 or less.<br>[Activate: Main] [Once Per Turn] Up to 1 of your {Fish-Man} or {Merfolk} type Characters can attack Characters on the turn in which it is played."
+  },
+  {
+    "id": "OP11-035",
+    "kind": "character",
+    "name": "Fisher Tiger",
+    "effect_text": "When this Character is K.O.'d by your opponent's effect, you may rest 1 of your DON!! cards. If you do, play up to 1 {Fish-Man} or {Merfolk} type Character card with a cost of 4 or less from your hand.<br>[On Play] Rest up to 1 of your opponent's Characters."
+  },
+  {
+    "id": "OP11-036",
+    "kind": "character",
+    "name": "Spotted Neptunian",
+    "effect_text": "[On Play] If your Leader is [Shirahoshi], look at 5 cards from the top of your deck; reveal up to 1 {Neptunian} type card or [Shirahoshi] and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP11-037",
+    "kind": "event",
+    "name": "Ancient Weapon Poseidon",
+    "effect_text": "[Main] Look at 4 cards from the top of your deck; reveal up to 1 {Neptunian} or {Fish-Man Island} type Character card and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP11-040",
+    "kind": "leader",
+    "name": "Monkey.D.Luffy",
+    "effect_text": "This effect can be activated at the start of your turn. If you have 8 or more DON!! cards on your field, look at 5 cards from the top of your deck; reveal up to 1 {Straw Hat Crew} type card and add it to your hand. Then, place the rest at the top or bottom of the deck in any order."
+  },
+  {
+    "id": "OP11-041",
+    "kind": "leader",
+    "name": "Nami",
+    "effect_text": "[Your Turn] [Once Per Turn] This effect can be activated when a card is removed from your or your opponent's Life cards. If you have 7 or less cards in your hand, draw 1 card.<br>[DON!! x1] [On Your Opponent's Attack] [Once Per Turn] You may trash 1 card from your hand: This Leader gains +2000 power during this turn."
+  },
+  {
+    "id": "OP11-042",
+    "kind": "character",
+    "name": "Vito",
+    "effect_text": "[On Play] You may trash 1 {Firetank Pirates} type card from your hand: This Character gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)"
+  },
+  {
+    "id": "OP11-044",
+    "kind": "character",
+    "name": "Vinsmoke Judge",
+    "effect_text": "[Activate: Main] [Once Per Turn] You may trash 1 card from your hand: All of your {GERMA 66} type Characters gain +1000 power during this turn."
+  },
+  {
+    "id": "OP11-047",
+    "kind": "character",
+    "name": "Vinsmoke Reiju",
+    "effect_text": "[On Play] If your Leader has the {The Vinsmoke Family} type, look at 5 cards from the top of your deck; reveal up to 1 card with a type including \"GERMA\" and add it to your hand. Then, trash the rest."
+  },
+  {
+    "id": "OP11-048",
+    "kind": "character",
+    "name": "Capone\"Gang\"Bege",
+    "effect_text": "[On Play] Look at 4 cards from the top of your deck; reveal up to 1 {Firetank Pirates} or {Straw Hat Crew} type card with a cost of 2 or more and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP11-050",
+    "kind": "character",
+    "name": "Gotti",
+    "effect_text": "[When Attacking] You may trash 1 {Firetank Pirates} type card from your hand: Return up to 1 Character with a cost of 1 or less to the owner's hand or place it at the bottom of their deck."
+  },
+  {
+    "id": "OP11-051",
+    "kind": "character",
+    "name": "Sanji",
+    "effect_text": "When this Character is K.O.'d by your opponent's effect, look at 5 cards from the top of your deck and play up to 1 {Straw Hat Crew} type Character card with a cost of 5 or less. Then, place the rest at the bottom of your deck in any order.<br>[On Play] Return up to 1 Character with 5000 base power or less to the owner's hand."
+  },
+  {
+    "id": "OP11-057",
+    "kind": "character",
+    "name": "Pedro",
+    "effect_text": "If you have 4 or less cards in your hand, this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+  },
+  {
+    "id": "OP11-060",
+    "kind": "event",
+    "name": "Let's Crash This Wedding!!!",
+    "effect_text": "[Main] If your Leader is multicolored, look at 5 cards from the top of your deck; reveal up to 1 {Straw Hat Crew} type card other than [Let's Crash This Wedding!!!] and add it to your hand. Then, place the rest at the bottom of your deck in any order."
+  },
+  {
+    "id": "OP11-061",
+    "kind": "event",
+    "name": "Gum-Gum Jet Culverin",
+    "effect_text": "[Main] Place up to 1 of your opponent's Characters with a base cost of 4 or less at the bottom of the owner's deck."
+  },
+  {
+    "id": "OP11-062",
+    "kind": "leader",
+    "name": "Charlotte Katakuri",
+    "effect_text": "[When Attacking]/[On Your Opponent's Attack] [Once Per Turn] DON!! −1: Look at 1 card from the top of your opponent's deck. Then, this Leader gains +1000 power during this battle."
+  },
+  {
+    "id": "OP11-063",
+    "kind": "character",
+    "name": "Little Sadi",
+    "effect_text": "[On Play] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): If your Leader has the {Impel Down} type, rest up to 1 of your opponent's Characters with a cost of 3 or less."
+  },
+  {
+    "id": "OP11-065",
+    "kind": "character",
+    "name": "Charlotte Anana",
+    "effect_text": "If you have a purple {Big Mom Pirates} type Character other than [Charlotte Anana], this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+  },
+  {
+    "id": "OP11-069",
+    "kind": "character",
+    "name": "Charlotte Brulee",
+    "effect_text": "[On Play] You may add 1 card from the top of your Life cards to your hand: If your Leader has the {Big Mom Pirates} type, add up to 1 DON!! card from your DON!! deck and set it as active."
+  },
+  {
+    "id": "OP11-070",
+    "kind": "character",
+    "name": "Charlotte Pudding",
+    "effect_text": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 {Big Mom Pirates} type card with a cost of 2 or more and add it to your hand. Then, place the rest at the bottom of your deck in any order.<br>[Activate: Main] DON!! −1, You may rest this Character: Look at 1 card from the top of your opponent's deck."
+  },
+  {
+    "id": "OP11-071",
+    "kind": "character",
+    "name": "Charlotte Perospero",
+    "effect_text": "[Activate: Main] [Once Per Turn] You may trash 1 card from your hand: Choose a cost and reveal 1 card from the top of your opponent's deck. If the revealed card has the chosen cost, draw 1 card and add up to 1 DON!! card from your DON!! deck and set it as active."
+  },
+  {
+    "id": "OP11-072",
+    "kind": "character",
+    "name": "Charlotte Mont-d'or",
+    "effect_text": "[Activate: Main] [Once Per Turn] DON!! −1, You may rest this Character: Your opponent places 2 cards from their trash at the bottom of their deck in any order. Then, add 1 card from the top of your Life cards to your hand."
+  },
+  {
+    "id": "OP11-073",
+    "kind": "character",
+    "name": "Charlotte Linlin",
+    "effect_text": "If your Leader has the {Big Mom Pirates} type, this Character gains [Rush].<br>[On Your Opponent's Attack] [Once Per Turn] DON!! −5: Choose a cost and reveal 1 card from the top of your opponent's deck. If the revealed card has the chosen cost, up to 1 of your Leader gains +2000 power during this turn."
+  },
+  {
+    "id": "OP11-074",
+    "kind": "character",
+    "name": "Streusen",
+    "effect_text": "[Activate: Main] [Once Per Turn] DON!! −1, You may rest this Character: Choose a cost and reveal 1 card from the top of your opponent's deck. If the revealed card has the chosen cost, rest up to 1 of your opponent's Characters with a cost of 4 or less."
+  },
+  {
+    "id": "OP11-075",
+    "kind": "character",
+    "name": "Jaguar.D.Saul",
+    "effect_text": "[On Play] If your Leader is [Nico Robin] and you have 7 or more DON!! cards on your field, draw 2 cards."
+  },
+  {
+    "id": "OP11-077",
+    "kind": "character",
+    "name": "Randolph",
+    "effect_text": "[Your Turn] [Once Per Turn] When a DON!! card on your field is returned to your DON!! deck, up to 1 of your {Big Mom Pirates} type Characters gains +2 cost until the end of your opponent's next turn."
+  },
+  {
+    "id": "OP11-079",
+    "kind": "event",
+    "name": "When Two Men Are Fighting the Last Thing I Need Is Some Half-Hearted Assistance!!!!",
+    "effect_text": "[Counter] Choose a cost and reveal 1 card from the top of your opponent's deck. If the revealed card has the chosen cost, up to 1 of your Leader or Character cards gains +5000 power during this battle."
+  },
+  {
+    "id": "OP11-081",
+    "kind": "event",
+    "name": "Cognac Mama-Mash",
+    "effect_text": "[Main] Choose a cost and reveal 1 card from the top of your opponent's deck. If the revealed card has the chosen cost, K.O. up to 1 of your opponent's Characters with a base cost of 8 or less."
+  },
+  {
+    "id": "OP11-082",
+    "kind": "character",
+    "name": "Aramaki",
+    "effect_text": "[Activate: Main] You may trash this Character: If your Leader has the {Navy} type, up to 1 of your {Navy} type Characters can also attack active Characters during this turn. Then, trash 2 cards from the top of your deck."
+  },
+  {
+    "id": "OP11-085",
+    "kind": "character",
+    "name": "Kurozumi Orochi",
+    "effect_text": "[On Play] Add up to 1 {SMILE} type card with a cost of 5 or less from your trash to your hand."
+  },
+  {
+    "id": "OP11-091",
+    "kind": "character",
+    "name": "Berry Good",
+    "effect_text": "[On Play] Your opponent places 3 Events from their trash at the bottom of their deck in any order."
+  },
+  {
+    "id": "OP11-092",
+    "kind": "character",
+    "name": "Helmeppo",
+    "effect_text": "[On Play] You may trash 1 card from your hand: Draw 1 card and play up to 1 {SWORD} type Character card with a cost of 8 or less other than [Helmeppo] from your trash. Then, place the 1 Character played by this effect at the bottom of the owner's deck at the end of this turn."
+  },
+  {
+    "id": "OP11-095",
+    "kind": "character",
+    "name": "Monkey.D.Garp",
+    "effect_text": "[On Play] You may place 3 {Navy} type cards from your trash at the bottom of your deck in any order: Give up to 1 rested DON!! card to 1 of your Leader. Then, if there is a Character with a cost of 9 or more, K.O. up to 1 of your opponent's Characters with a cost of 7 or less."
+  },
+  {
+    "id": "OP11-096",
+    "kind": "character",
+    "name": "Ripper",
+    "effect_text": "If you have a black {Navy} type Character other than [Ripper], this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)"
+  },
+  {
+    "id": "OP11-099",
+    "kind": "event",
+    "name": "I'm Gonna Be a Navy Officer!!!",
+    "effect_text": "[Main] Look at 3 cards from the top of your deck; reveal up to 1 {Navy} type card other than [I'm Gonna Be a Navy Officer!!!] and add it to your hand. Then, trash the rest."
+  },
+  {
+    "id": "OP11-100",
+    "kind": "character",
+    "name": "Otohime",
+    "effect_text": "[On Play] If your Leader is [Shirahoshi], you may turn 1 card from the top of your Life cards face-down: Draw 1 card."
+  },
+  {
+    "id": "OP11-102",
+    "kind": "character",
+    "name": "Camie",
+    "effect_text": "[Your Turn] [Once Per Turn] This effect can be activated when your opponent activates an Event or [Trigger]. If your opponent has 2 or more Life cards, trash 1 card from the top of each of your and your opponent's Life cards."
+  },
+  {
+    "id": "OP11-103",
+    "kind": "character",
+    "name": "Long-Jaw Neptunian",
+    "effect_text": "[Activate: Main] If your Leader is [Shirahoshi], you may rest this Character and turn 1 card from the top of your Life cards face-down: K.O. up to 1 of your opponent's Characters with a cost of 3 or less."
+  },
+  {
+    "id": "OP11-106",
+    "kind": "character",
+    "name": "Zeus",
+    "effect_text": "[On Play] You may add 1 card from the top or bottom of your Life cards to your hand: K.O. up to 1 of your opponent's Characters with a cost of 5 or less."
+  },
+  {
+    "id": "OP11-108",
+    "kind": "character",
+    "name": "Neptune",
+    "effect_text": "[On Play] If your Leader is [Shirahoshi], you may turn 1 card from the top of your Life cards face-down: Draw 2 cards and trash 1 card from your hand."
+  },
+  {
+    "id": "OP11-109",
+    "kind": "character",
+    "name": "Pappag",
+    "effect_text": "[On Play] If you have [Camie], draw 2 cards and trash 2 cards from your hand."
+  },
+  {
+    "id": "OP11-110",
+    "kind": "character",
+    "name": "Fukaboshi",
+    "effect_text": "If this Character would be K.O.'d, you may rest 1 of your [Fish-Man Island] or your [Shirahoshi] Leader instead.<br>[On Play] You may add 1 card from the top or bottom of your Life cards to your hand: K.O. up to 1 of your opponent's Characters with a cost of 1 or less."
+  },
+  {
+    "id": "OP11-115",
+    "kind": "event",
+    "name": "You're Just Not My Type!",
+    "effect_text": "[Counter] If your Leader is [Shirahoshi], up to 1 of your Leader or Character cards gains +4000 power during this battle."
+  },
+  {
+    "id": "OP11-116",
+    "kind": "event",
+    "name": "Merman Combat Ultramarine",
+    "effect_text": "[Main] Add up to 1 Character with a cost of 6 or less to the top or bottom of the owner's Life cards face-up."
+  }
+]

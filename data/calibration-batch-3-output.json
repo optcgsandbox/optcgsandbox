@@ -1,0 +1,63 @@
+[
+  {
+    "id": "EB03-003",
+    "effectSpec": [
+      {"trigger":"on_play","condition":{"type":"if_leader_is","name":"Uta"},"action":"draw","magnitude":2,"verified":"auto"}
+    ]
+  },
+  {
+    "id": "EB03-005",
+    "effectSpec": []
+  },
+  {
+    "id": "EB03-016",
+    "effectSpec": [
+      {"trigger":"on_play","condition":{"type":"if_leader_is","name":"Kouzuki Oden"},"action":"draw","magnitude":1,"verified":"auto"},
+      {"trigger":"activate_main","action":"ramp","target":"your_leader","magnitude":1,"params":{"cost":"trash_self","leaderTrait":"Land of Wano"},"verified":"auto"}
+    ]
+  },
+  {
+    "id": "EB04-021",
+    "effectSpec": [
+      {"trigger":"on_play","condition":{"type":"if_leader_is","name":"Nefeltari Vivi"},"action":"draw","magnitude":2,"verified":"auto"},
+      {"trigger":"on_play","condition":{"type":"if_leader_is","name":"Nefeltari Vivi"},"action":"mill","target":"self","magnitude":1,"params":{"source":"hand"},"verified":"auto"},
+      {"trigger":"activate_main","action":"ramp","target":"your_leader","magnitude":1,"params":{"cost":"discard_1","oncePerTurn":true,"alternateTarget":"your_character"},"verified":"auto"}
+    ]
+  },
+  {
+    "id": "OP01-040",
+    "effectSpec": []
+  },
+  {
+    "id": "OP02-013",
+    "effectSpec": [
+      {"trigger":"on_play","action":"power_buff","target":"opp_character","magnitude":-3000,"params":{"upTo":2,"duration":"this_turn"},"verified":"auto"}
+    ]
+  },
+  {
+    "id": "OP04-038",
+    "effectSpec": [
+      {"trigger":"activate_main","action":"rest_target","target":"opp_character","magnitude":1,"params":{"alternateTarget":"opp_leader"},"verified":"auto"},
+      {"trigger":"activate_main","action":"removal_ko","target":"opp_character_cost_max","magnitude":6,"params":{"requiresRested":true},"verified":"auto"}
+    ]
+  },
+  {
+    "id": "OP05-009",
+    "effectSpec": []
+  },
+  {
+    "id": "EB01-046",
+    "effectSpec": [
+      {"trigger":"on_play","action":"removal_cost_reduce","target":"opp_character","magnitude":-1,"params":{"duration":"this_turn"},"verified":"auto"},
+      {"trigger":"when_attacking","action":"removal_cost_reduce","target":"opp_character","magnitude":-1,"params":{"duration":"this_turn"},"verified":"auto"},
+      {"trigger":"on_play","action":"removal_ko","target":"opp_character_cost_max","magnitude":0,"verified":"auto"},
+      {"trigger":"when_attacking","action":"removal_ko","target":"opp_character_cost_max","magnitude":0,"verified":"auto"}
+    ]
+  },
+  {
+    "id": "EB02-011",
+    "effectSpec": [
+      {"trigger":"on_play","condition":{"type":"if_leader_has_trait","trait":"Fish-Man"},"action":"ramp","target":"your_leader","magnitude":1,"verified":"auto"}
+    ]
+  }
+]
