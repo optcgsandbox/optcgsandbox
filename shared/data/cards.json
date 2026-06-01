@@ -4694,7 +4694,7 @@
     "effectText": "If you have [Merry Go] on your field, this Character gains [Blocker].",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -4708,8 +4708,7 @@
           }
         }
       ],
-      "replacements": [],
-      "auditNote": "Merry Go is a Stage; if_owned_other_with_name walks me.field chars only, not stage"
+      "replacements": []
     }
   },
   {

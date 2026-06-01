@@ -224,17 +224,23 @@ export function evaluateConditionV2(
       const count = me.field.filter((inst) => matchesFilter(state, inst, cond.filter)).length;
       return count >= cond.n;
     }
-    case 'if_owned_other_with_name':
-      // "other" — exclude the source instance itself.
-      return me.field.some((inst) =>
+    case 'if_owned_other_with_name': {
+      // "other" — exclude the source instance itself. Walk field + stage
+      // + leader so names like "Merry Go" (Stage) or "Whitebeard" (Leader)
+      // are findable.
+      const ownInstances = [me.leader, ...me.field, ...(me.stage ? [me.stage] : [])];
+      return ownInstances.some((inst) =>
         inst.instanceId !== sourceInstanceId
         && state.cardLibrary[inst.cardId]?.name === cond.name,
       );
-    case 'if_no_other_with_name':
-      return !me.field.some((inst) =>
+    }
+    case 'if_no_other_with_name': {
+      const ownInstances = [me.leader, ...me.field, ...(me.stage ? [me.stage] : [])];
+      return !ownInstances.some((inst) =>
         inst.instanceId !== sourceInstanceId
         && state.cardLibrary[inst.cardId]?.name === cond.name,
       );
+    }
     case 'if_played_this_turn': {
       // True when the source card was played this turn — engine tracks via
       // `summoningSick` flag on instances. Cleared at end of own turn.
