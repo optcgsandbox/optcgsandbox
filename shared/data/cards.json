@@ -70177,7 +70177,7 @@
     "effectText": "Once per turn, this Character cannot be K.O.'d by your opponent's effects.<br>[When Attacking] You may place 3 cards from your trash at the bottom of your deck in any order: If your opponent has 5 or more cards in their hand, your opponent trashes 1 card from their hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -70189,7 +70189,7 @@
             "bottomOfDeckFromTrash": 3
           },
           "action": {
-            "kind": "discard_from_hand",
+            "kind": "opp_discard_from_hand",
             "magnitude": 1
           },
           "verified": "flagged"
@@ -74603,7 +74603,11 @@
           "target": {
             "kind": "self"
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "condition": {
+            "type": "if_attacker_has_attribute",
+            "attribute": "Slash"
+          }
         }
       ],
       "continuous": [
@@ -74616,7 +74620,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
