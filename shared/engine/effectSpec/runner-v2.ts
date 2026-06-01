@@ -838,14 +838,16 @@ export function applyActionV2(
       return state;
     }
     case 'recursion': {
-      // V0: pick the first match from trash by filter, return to hand.
+      // Take up to `magnitude` matches from trash (newest first), return to hand.
+      const n = action.magnitude ?? 1;
       const f = action.filter;
-      for (let i = me.trash.length - 1; i >= 0; i--) {
+      let added = 0;
+      for (let i = me.trash.length - 1; i >= 0 && added < n; i--) {
         const inst = state.instances[me.trash[i]];
         if (inst && matchesFilter(state, inst, f)) {
           me.trash.splice(i, 1);
           me.hand.push(inst.instanceId);
-          return state;
+          added++;
         }
       }
       return state;
