@@ -24199,7 +24199,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "grant_immunity against:opp_removal — text \"cannot be K.O.'d during this battle\" includes battle-damage KO, not just effect removal"
     }
   },
   {
@@ -24307,7 +24308,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "action duration this_turn conflicts with clause-level opp_next_turn — text says \"until the start of your next turn\""
     }
   },
   {
@@ -24453,7 +24455,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "trash cost filter only matches Event; text allows \"Event or Stage\" cards as trash fuel"
     }
   },
   {
@@ -24578,7 +24581,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "grant_keyword_to_self:rush does not encode the \"cannot attack a Leader on the turn in which it is played\" base restriction; Rush from this card only enables char-attack on play turn, not leader-attack"
     }
   },
   {
@@ -24779,7 +24783,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target your_leader; text says \"Leader or 1 of your Characters\" (needs your_leader_or_character)"
     }
   },
   {
@@ -24994,7 +24999,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "on_play removal_ko clause missing is_own_turn condition — text gates the effect with [Your Turn]"
     }
   },
   {
@@ -25221,7 +25227,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "only on_play (Main) clause; text reads [Main]/[Counter] — counter branch missing"
     }
   },
   {
@@ -25284,7 +25291,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost discardHand:1 is generic; text requires \"trash 1 Event from your hand\" — needs discardHandFilter event"
     }
   },
   {
@@ -25584,7 +25592,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character with no count; text says \"up to 2 of your opponent's Characters\""
     }
   },
   {
@@ -25644,7 +25653,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character with no count; text says \"up to 2 of your opponent's rested Characters\""
     }
   },
   {
@@ -25828,7 +25838,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "choose_one option 1 targets your_character with trait East Blue; text says \"your {East Blue} type Leader or Character\""
     }
   },
   {
@@ -25984,7 +25995,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "empty clauses + text truncated to \"cannot be K.O.'d in battle by\" — real card has attribute-based damage immunity not encoded"
     }
   },
   {
@@ -26233,7 +26245,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character with no count; text says \"Rest up to 2 of your opponent's Characters\""
     }
   },
   {
@@ -26336,8 +26349,9 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed",
-      "rules": {}
+      "verified": "flagged",
+      "rules": {},
+      "auditNote": "spec.rules:{} empty — text alt-win rule \"When your deck is reduced to 0, you win the game instead of losing\" not encoded"
     }
   },
   {
@@ -26485,7 +26499,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "self_trash_at_end_of_turn is wrong verb; text says \"trash this Character\" immediately upon paying the optional trigger cost"
     }
   },
   {
@@ -26529,7 +26544,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost form discardHand:2 — text is two sequential effects \"Draw 2 cards and trash 2 cards from your hand\", not cost+effect"
     }
   },
   {
@@ -26678,7 +26694,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "bounce target opp_character; text says \"up to 1 Character\" (any character, no opp restriction)"
     }
   },
   {
@@ -26770,7 +26787,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "bounce target opp_character; text says \"up to 1 Character\" (any character, no opp restriction)"
     }
   },
   {
