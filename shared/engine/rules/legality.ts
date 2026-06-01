@@ -144,7 +144,14 @@ function playCardActions(state: GameState, player: PlayerId): Action[] {
         }
       }
     } else if (card.kind === 'event') {
-      out.push({ type: 'PLAY_CARD', instanceId, replaceTargetId: null });
+      // F5 (CR §6-5 / counter-step rules): events whose printed text begins
+      // with [Counter] are ONLY playable during the counter window (opp's
+      // attack). They are NOT legal as a main-phase PLAY_CARD. The
+      // counter-step path emits PLAY_COUNTER separately (see playCounter).
+      const text = (card as { effectText?: string }).effectText ?? '';
+      if (!text.startsWith('[Counter]')) {
+        out.push({ type: 'PLAY_CARD', instanceId, replaceTargetId: null });
+      }
     } else if (card.kind === 'stage') {
       // D1 (CR §3-8): Stage uses its own action so callers/UI never confuse
       //               the single-slot Stage zone with the 5-slot character field.
