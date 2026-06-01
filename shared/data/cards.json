@@ -3793,7 +3793,7 @@
     "effectText": "[On Play] Up to 1 of your opponent's rested Characters will not become active in your opponent's next Refresh Phase. Then, set up to 1 of your DON!! cards as active at the end of this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -3808,11 +3808,18 @@
             }
           },
           "verified": "human-reviewed"
+        },
+        {
+          "trigger": "at_end_of_turn_self",
+          "action": {
+            "kind": "set_active_don",
+            "magnitude": 1
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
-      "replacements": [],
-      "auditNote": "missing 2nd clause: set 1 DON active at end of this turn"
+      "replacements": []
     }
   },
   {

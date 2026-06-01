@@ -5,8 +5,34 @@
 import type { GameState, PlayerId } from '../GameState';
 import { RULES } from '../GameState';
 import { publishTrigger } from '../effectSpec/triggerBus-v2';
+import { applyActionV2, evaluateConditionV2, resolveTargetV2 } from '../effectSpec/runner-v2';
+import type { EffectClauseV2, EffectTriggerV2 } from '../effectSpec/types-v2';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
+
+/** Walk `controller`'s field+leader+stage and fire any effectSpecV2 clauses
+ *  whose trigger matches. Used at phase boundaries to honor
+ *  `at_end_of_turn_self` etc. on cards already in play. */
+function broadcastTriggerToOwnField(
+  state: GameState,
+  trigger: EffectTriggerV2,
+  controller: PlayerId,
+): GameState {
+  const pl = state.players[controller];
+  const candidates = [pl.leader, ...pl.field, ...(pl.stage ? [pl.stage] : [])];
+  for (const inst of candidates) {
+    const card = state.cardLibrary[inst.cardId] as
+      | { effectSpecV2?: { clauses?: EffectClauseV2[] } } | undefined;
+    const clauses = card?.effectSpecV2?.clauses ?? [];
+    for (const clause of clauses) {
+      if (clause.trigger !== trigger) continue;
+      if (clause.condition && !evaluateConditionV2(state, controller, clause.condition, inst.instanceId)) continue;
+      const targets = resolveTargetV2(state, controller, inst.instanceId, clause.target);
+      state = applyActionV2(state, { sourceInstanceId: inst.instanceId, controller }, clause.action, targets);
+    }
+  }
+  return state;
+}
 
 /** Active player un-rests their leader, characters, and all DON.
  *
@@ -123,7 +149,7 @@ export function runDonPhase(state: GameState): GameState {
  *  This matters visually: during the opponent's turn the leader still
  *  displays its attached DON instead of "floating" rested in the cost area. */
 export function endTurn(state: GameState): GameState {
-  const next: GameState = structuredClone(state);
+  let next: GameState = structuredClone(state);
   const p = next.players[next.activePlayer];
 
   // Per-turn flags reset at end-of-turn (they're per-turn, not per-refresh).
@@ -178,6 +204,10 @@ export function endTurn(state: GameState): GameState {
   // subscribers see "whose turn is ending" via state.activePlayer.
   publishTrigger('at_end_of_turn_self', next, { player: next.activePlayer });
   publishTrigger('at_end_of_turn', next, { player: next.activePlayer });
+  // EB02-015 Bonney etc.: also fire matching effectSpecV2 clauses on
+  // cards currently in play. TriggerBus has no spec-side subscribers, so
+  // dispatch directly to field instances here.
+  next = broadcastTriggerToOwnField(next, 'at_end_of_turn_self', next.activePlayer);
   next.activePlayer = OTHER[next.activePlayer];
   next.turn += 1;
   next.phase = 'refresh';
