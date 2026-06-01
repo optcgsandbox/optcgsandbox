@@ -990,7 +990,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -999,33 +999,30 @@
             "trait": "Supernovas"
           },
           "action": {
-            "kind": "removal_bounce"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_bounce"
+              },
+              {
+                "kind": "play_for_free",
+                "from": "hand",
+                "filter": {
+                  "costMax": 2,
+                  "kind": "character"
+                },
+                "colorMustDifferFromLastBounced": true
+              }
+            ]
           },
           "target": {
             "kind": "your_character"
           },
           "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "condition": {
-            "type": "if_leader_has_trait",
-            "trait": "Supernovas"
-          },
-          "action": {
-            "kind": "play_for_free",
-            "from": "hand",
-            "filter": {
-              "costMax": 2,
-              "kind": "character"
-            }
-          },
-          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
-      "replacements": [],
-      "auditNote": "play_for_free missing different-color-than-returned-char filter"
+      "replacements": []
     }
   },
   {

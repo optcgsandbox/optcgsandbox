@@ -166,6 +166,7 @@ export function endTurn(state: GameState): GameState {
     const inst = next.instances[id];
     tickPower(inst);
     delete inst.costModifier;
+    delete inst.lastBouncedColors;
   }
   // V3-2: nextPlayCostModifier expires at end of turn if not consumed by a play.
   for (const pid of ['A', 'B'] as PlayerId[]) {

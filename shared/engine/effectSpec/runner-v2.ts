@@ -1136,6 +1136,7 @@ export function applyActionV2(
       return state;
     }
     case 'removal_bounce': {
+      const sourceInst = state.instances[ctx.sourceInstanceId];
       for (const tid of targets) {
         for (const pid of ['A', 'B'] as PlayerId[]) {
           const pl = state.players[pid];
@@ -1144,6 +1145,13 @@ export function applyActionV2(
             const removed = pl.field.splice(idx, 1)[0];
             while (removed.attachedDon.length > 0) pl.donRested.push(removed.attachedDon.shift()!);
             pl.hand.push(removed.instanceId);
+            // Stamp bounced card's colors on source for follow-up
+            // "different color than the returned Character" constraints
+            // (EB01-020 Chambres etc.).
+            const removedCard = state.cardLibrary[removed.cardId];
+            if (sourceInst && removedCard?.colors) {
+              sourceInst.lastBouncedColors = [...removedCard.colors];
+            }
             // Reset summoning-sick + perTurn so it plays cleanly later.
             state.instances[removed.instanceId].summoningSick = false;
             state.instances[removed.instanceId].rested = false;
@@ -1264,6 +1272,11 @@ export function applyActionV2(
       const count = action.count ?? 1;
       const seen = new Set<string>();
       const matches: { id: string; from: 'hand' | 'trash' }[] = [];
+      // EB01-020: source's lastBouncedColors from a prior bounce step.
+      const sourceInst2 = state.instances[ctx.sourceInstanceId];
+      const excludeColors = action.colorMustDifferFromLastBounced
+        ? sourceInst2?.lastBouncedColors ?? []
+        : [];
       outer: for (const src of sources) {
         const sourceList = src === 'hand' ? me.hand : me.trash;
         for (const id of sourceList) {
@@ -1272,6 +1285,8 @@ export function applyActionV2(
           if (!inst || !card || card.kind !== 'character') continue;
           if (!matchesFilter(state, inst, action.filter)) continue;
           if (action.uniqueByName && seen.has(card.name)) continue;
+          if (excludeColors.length > 0
+              && card.colors?.some((c) => excludeColors.includes(c))) continue;
           matches.push({ id, from: src });
           seen.add(card.name);
           if (matches.length >= count) break outer;

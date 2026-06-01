@@ -111,6 +111,12 @@ export interface CardInstance {
   /** A.3.5: set true by `self_trash_at_end_of_turn` so endTurn knows to
    *  trash this instance. */
   endOfTurnTrash?: boolean;
+  /** EB01-020 (Chambres) etc. — when an effect on this card bounces a
+   *  target as part of a multi-step clause, the bounced card's colors
+   *  are stamped here so a follow-up `play_for_free` can enforce the
+   *  "different color than the returned Character" constraint. Cleared
+   *  by endTurn alongside other turn-scoped runtime state. */
+  lastBouncedColors?: string[];
 }
 
 export interface PlayerZones {

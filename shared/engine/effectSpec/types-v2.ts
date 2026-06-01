@@ -318,7 +318,11 @@ export type EffectActionV2 =
   | { kind: 'grant_immunity'; against: 'opp_effects' | 'opp_removal'; duration: EffectDuration } // (gap #60)
   | { kind: 'give_keyword'; keyword: string; duration: EffectDuration }    // (gaps #9, #34, #49, #53)
   // Cards out of hand or trash
-  | { kind: 'play_for_free'; from: 'hand' | 'trash' | 'hand_or_trash'; filter?: TargetFilter; count?: number; uniqueByName?: boolean; rested?: boolean }
+  | { kind: 'play_for_free'; from: 'hand' | 'trash' | 'hand_or_trash'; filter?: TargetFilter; count?: number; uniqueByName?: boolean; rested?: boolean;
+      /** EB01-020 (Chambres) — when true, candidate must share NO color with
+       *  source.lastBouncedColors (set by a prior removal_bounce in the same
+       *  clause sequence). */
+      colorMustDifferFromLastBounced?: boolean }
   // EB01-047 — mandatory discard from hand (not a cost). Distinct from cost.discardHand.
   | { kind: 'discard_from_hand'; magnitude: number }
   // Opp-side mirror — "your opponent trashes 1 card from their hand" (random pick).
