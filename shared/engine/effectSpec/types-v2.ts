@@ -305,6 +305,10 @@ export type EffectActionV2 =
   | { kind: 'opp_bottom_of_deck_from_hand'; magnitude: number }
   // EB01-059 / EB01-060 — trash from top of own life until N remain.
   | { kind: 'trash_own_life_until'; n: number }
+  // OP14-115 Rindo — "you take N damage" (controller's own life flips to hand N times).
+  | { kind: 'take_damage_self'; magnitude: number }
+  // OP06-116 Reject — "deal N damage to your opponent" (opp life flips to hand N times).
+  | { kind: 'deal_damage_opp'; magnitude: number }
   // EB01-038 — defensive: redirect opp's pending attack to a chosen own char.
   | { kind: 'attack_redirect_to_target' }
   // EB01-012 / EB02-010 — flip N rested DON to active (different from per-card set_active).

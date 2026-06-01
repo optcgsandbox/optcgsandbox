@@ -1202,6 +1202,20 @@ export function applyActionV2(
       }
       return state;
     }
+    case 'take_damage_self': {
+      // V0: each "damage" moves the top of own life into own hand. Real
+      // damage resolution (trigger reveal etc.) is deferred.
+      for (let i = 0; i < action.magnitude && me.life.length > 0; i++) {
+        me.hand.push(me.life.shift()!);
+      }
+      return state;
+    }
+    case 'deal_damage_opp': {
+      for (let i = 0; i < action.magnitude && opp.life.length > 0; i++) {
+        opp.hand.push(opp.life.shift()!);
+      }
+      return state;
+    }
     case 'attack_redirect_to_target': {
       if (!state.pendingAttack || targets.length === 0) return state;
       state.pendingAttack.defenderInstanceId = targets[0];

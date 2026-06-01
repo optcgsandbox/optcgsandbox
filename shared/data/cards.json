@@ -46874,10 +46874,19 @@
                   "n": 1
                 },
                 "action": {
-                  "kind": "life_to_hand",
-                  "magnitude": 1
+                  "kind": "chained_actions",
+                  "actions": [
+                    {
+                      "kind": "deal_damage_opp",
+                      "magnitude": 1
+                    },
+                    {
+                      "kind": "life_to_hand",
+                      "magnitude": 1
+                    }
+                  ]
                 },
-                "verified": "flagged"
+                "verified": "human-reviewed"
               }
             ]
           },
@@ -46887,7 +46896,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -94170,7 +94179,7 @@
     "effectText": "[Opponent's Turn] [On K.O.] Add up to 1 card from the top of your deck to the top of your Life cards. Then, you take 1 damage.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -94183,6 +94192,17 @@
           "condition": {
             "type": "is_opp_turn"
           }
+        },
+        {
+          "trigger": "on_ko",
+          "condition": {
+            "type": "is_opp_turn"
+          },
+          "action": {
+            "kind": "take_damage_self",
+            "magnitude": 1
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
