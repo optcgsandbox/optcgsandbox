@@ -5286,7 +5286,7 @@
                   "n": 5
                 },
                 "action": {
-                  "kind": "discard_from_hand",
+                  "kind": "opp_discard_from_hand",
                   "magnitude": 1
                 },
                 "verified": "flagged"
@@ -5306,7 +5306,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -7324,7 +7324,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -8076,7 +8076,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -8566,7 +8566,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -10151,7 +10151,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -10266,7 +10266,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -10346,29 +10346,36 @@
             "trait": "Minks"
           },
           "action": {
-            "kind": "chained_actions",
-            "actions": [
-              {
-                "kind": "set_active"
-              },
-              {
-                "kind": "set_active"
-              }
-            ]
+            "kind": "set_active"
           },
           "target": {
             "kind": "your_character",
             "filter": {
               "trait": "Minks"
-            }
+            },
+            "count": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_leader_has_trait",
+            "trait": "Minks"
+          },
+          "action": {
+            "kind": "set_active"
+          },
+          "target": {
+            "kind": "your_leader"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -11672,7 +11679,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -13085,35 +13092,40 @@
             "type": "if_own_chars_lt_opp_chars"
           },
           "action": {
-            "kind": "chained_actions",
-            "actions": [
-              {
-                "kind": "removal_ko",
-                "target": {
-                  "kind": "opp_character",
-                  "filter": {
-                    "costMax": 6
-                  }
-                }
-              },
-              {
-                "kind": "removal_ko",
-                "target": {
-                  "kind": "opp_character",
-                  "filter": {
-                    "costMax": 5
-                  }
-                }
-              }
-            ]
+            "kind": "removal_ko"
           },
-          "verified": "flagged"
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 6
+            }
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "cost": {
+            "flipLife": 1
+          },
+          "condition": {
+            "type": "if_own_chars_lt_opp_chars"
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 5
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -13359,7 +13371,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -15648,7 +15660,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -16211,7 +16223,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -16364,7 +16376,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -18952,7 +18964,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -19815,7 +19827,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -21667,12 +21679,26 @@
             }
           },
           "verified": "flagged"
+        },
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_attached_don_min",
+            "n": 1
+          },
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "bottom_of_deck_self"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -24430,7 +24456,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -30424,7 +30450,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -32586,7 +32612,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35508,7 +35534,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -42933,7 +42959,7 @@
     "effectText": "[On Play] You may trash 1 {Fish-Man} type card from your hand or 1 [The Ark Noah] from your hand or field: K.O. up to 1 of your opponent's rested Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -43476,7 +43502,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -46033,7 +46059,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
