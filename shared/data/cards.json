@@ -14253,13 +14253,14 @@
             "n": 2
           },
           "action": {
-            "kind": "self_immune_to_opp_effects"
+            "kind": "grant_keyword_to_self",
+            "keyword": "cannot_be_ko_by_strike"
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
