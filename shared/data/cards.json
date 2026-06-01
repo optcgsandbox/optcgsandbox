@@ -89652,7 +89652,7 @@
     "effectText": "[Activate: Main] You may trash 1 card from your hand: Give up to 2 rested DON!! cards to 1 of your {Fish-Man} or {Merfolk} type Leader or Character cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -89662,15 +89662,27 @@
           "action": {
             "kind": "give_don_to_target",
             "magnitude": 2,
-            "rested": true
-          },
-          "target": {
-            "kind": "your_character",
-            "filter": {
-              "typeIncludes": "Fish-Man"
+            "rested": true,
+            "target": {
+              "kind": "your_leader_or_character",
+              "filter": {
+                "traitsAny": [
+                  "Fish-Man",
+                  "Merfolk"
+                ]
+              }
             }
           },
-          "verified": "auto"
+          "target": {
+            "kind": "your_leader_or_character",
+            "filter": {
+              "traitsAny": [
+                "Fish-Man",
+                "Merfolk"
+              ]
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -89707,7 +89719,31 @@
       "draw": 1
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_opp_play_character",
+          "condition": {
+            "type": "is_opp_turn"
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_ko",
+          "opt": true,
+          "condition": {
+            "type": "if_attached_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "add_to_opp_hand_from_opp_life"
+          },
+          "verified": "flagged"
+        }
+      ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
@@ -89737,7 +89773,7 @@
     "effectText": "[On Play] If your Leader has the {Fish-Man} type, look at 4 cards from the top of your deck; reveal up to 1 card with a cost of 2 or more and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -89753,7 +89789,7 @@
               "costMin": 2
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -89788,18 +89824,34 @@
     "effectSpecV2": {
       "clauses": [
         {
+          "trigger": "on_play",
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "traitsAny": [
+                "Fish-Man",
+                "Merfolk"
+              ],
+              "costMax": 3,
+              "kind": "character"
+            }
+          },
+          "verified": "human-reviewed"
+        },
+        {
           "trigger": "on_ko",
           "action": {
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -89830,7 +89882,29 @@
       "draw": 2
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "reveal_top_then_if_cost_min",
+            "minCost": 0,
+            "thenAction": {
+              "kind": "chained_actions",
+              "actions": [
+                {
+                  "kind": "draw",
+                  "magnitude": 2
+                },
+                {
+                  "kind": "discard_from_hand",
+                  "magnitude": 1
+                }
+              ]
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -89880,7 +89954,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -89915,7 +89989,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -89928,12 +90002,15 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_character",
+            "kind": "your_leader_or_character",
             "filter": {
-              "typeIncludes": "Fish-Man"
+              "traitsAny": [
+                "Fish-Man",
+                "Merfolk"
+              ]
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -89967,7 +90044,32 @@
       "draw": 1
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "traitsAny": [
+                "Fish-Man",
+                "Merfolk"
+              ],
+              "costMax": 3,
+              "kind": "character"
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -89978,7 +90080,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -90004,7 +90106,7 @@
     "effectText": "[On Play] Return up to 1 of your opponent's Characters to the owner's hand. Then, trash all cards from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -90014,14 +90116,15 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
           "action": {
-            "kind": "mill_self"
+            "kind": "discard_from_hand",
+            "magnitude": 99
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -90060,7 +90163,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -90071,7 +90174,7 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -90087,7 +90190,7 @@
               "costMax": 7
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -90095,6 +90198,9 @@
           "action": {
             "kind": "grant_keyword_to_self",
             "keyword": "Rush"
+          },
+          "condition": {
+            "type": "always"
           }
         }
       ],
@@ -90127,7 +90233,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -90139,7 +90245,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -90172,19 +90278,19 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 2
           },
           "action": {
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -90213,7 +90319,24 @@
     ],
     "effectText": "[Blocker]<br>[On Play] You may trash 3 cards from your hand: Play up to 1 {Impel Down} type Character card with a cost of 6 or less from your hand.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 3
+          },
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "typeIncludes": "Impel Down",
+              "costMax": 6,
+              "kind": "character"
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -90224,7 +90347,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -90255,6 +90378,25 @@
           "action": {
             "kind": "grant_keyword_to_self",
             "keyword": "blocker"
+          }
+        },
+        {
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "is_opp_turn"
+              },
+              {
+                "type": "if_hand_max",
+                "n": 7
+              }
+            ]
+          },
+          "action": {
+            "kind": "set_base_power_copy_from",
+            "source": "opp_leader",
+            "duration": "this_battle"
           }
         }
       ],
@@ -90291,7 +90433,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -90303,12 +90445,13 @@
             "kind": "draw",
             "magnitude": 3
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "at_end_of_turn_self",
           "action": {
-            "kind": "mill_self"
+            "kind": "discard_from_hand",
+            "magnitude": 99
           },
           "verified": "flagged"
         }
@@ -90374,6 +90517,14 @@
           "action": {
             "kind": "restrict_self_attack"
           }
+        },
+        {
+          "condition": {
+            "type": "always"
+          },
+          "action": {
+            "kind": "self_immune_to_opp_effects"
+          }
         }
       ],
       "replacements": []
@@ -90407,14 +90558,23 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "action": {
             "kind": "power_buff",
             "magnitude": 1000,
-            "duration": "this_turn"
+            "duration": "this_turn",
+            "target": {
+              "kind": "all_your_characters",
+              "filter": {
+                "traitsAny": [
+                  "Fish-Man",
+                  "Merfolk"
+                ]
+              }
+            }
           },
           "target": {
             "kind": "all_your_characters",
@@ -90422,7 +90582,7 @@
               "typeIncludes": "Fish-Man"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -90462,7 +90622,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -90478,7 +90638,7 @@
               "kind": "character"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -90494,7 +90654,7 @@
               "powerMax": 6000
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -90502,7 +90662,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -90514,7 +90674,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -90549,7 +90709,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -90570,7 +90730,7 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -90603,7 +90763,7 @@
     "effectText": "[On Your Opponent's Attack] [Once Per Turn] DON!! −1: Select your Leader or 1 of your {Donquixote Pirates} type Characters. Change the attack target to the selected card.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_opp_attack",
@@ -90611,10 +90771,16 @@
             "donCost": 1
           },
           "action": {
-            "kind": "negate_target_effects",
-            "duration": "this_battle"
+            "kind": "attack_redirect_to_target"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "target": {
+            "kind": "your_leader_or_character",
+            "filter": {
+              "typeIncludes": "Donquixote Pirates"
+            }
+          },
+          "opt": true
         }
       ],
       "continuous": [],
@@ -90658,14 +90824,32 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto",
+          "verified": "human-reviewed",
           "cost": {
             "donCost": 1
+          },
+          "condition": {
+            "type": "always"
           }
         }
       ],
       "continuous": [],
-      "replacements": [],
+      "replacements": [
+        {
+          "trigger": "would_be_removed",
+          "opt": true,
+          "cost": {
+            "donCostReturnToDeck": 1
+          },
+          "action": {
+            "kind": "grant_immunity",
+            "against": "opp_removal",
+            "duration": "this_turn"
+          },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ],
       "schemaVersion": 2,
       "verified": "flagged"
     }
@@ -90693,7 +90877,7 @@
     "effectText": "[On K.O.] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): K.O. or rest up to 1 of your opponent's Characters with a base power of 6000 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -90709,7 +90893,7 @@
               "powerMax": 6000
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_ko",
@@ -90725,7 +90909,7 @@
               "powerMax": 6000
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -90761,13 +90945,30 @@
             "kind": "ramp",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_ko",
+          "condition": {
+            "type": "if_opp_don_min",
+            "n": 6
+          },
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "typeIncludes": "Donquixote Pirates",
+              "costMax": 5,
+              "kind": "character"
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -90793,7 +90994,7 @@
     "effectText": "[On K.O.] Add up to 1 DON!! card from your DON!! deck and rest it. Then, K.O. up to 1 of your opponent's Characters with a base power of 0.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -90802,7 +91003,7 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_ko",
@@ -90815,7 +91016,7 @@
               "powerMax": 0
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -90844,7 +91045,7 @@
     "effectText": "[On K.O.] Your opponent returns 1 DON!! card from their field to their DON!! deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -90852,7 +91053,7 @@
             "kind": "return_opp_don_to_deck",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -90908,7 +91109,7 @@
     "effectText": "[On K.O.] Add up to 1 DON!! card from your DON!! deck and rest it, look at 5 cards from the top of your deck; reveal up to 1 {Donquixote Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -90917,7 +91118,7 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_ko",
@@ -90929,7 +91130,7 @@
               "typeIncludes": "Donquixote Pirates"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -90960,20 +91161,29 @@
     "effectText": "[Opponent's Turn] [Once Per Turn] When a DON!! card on your field is returned to your DON!! deck, if your Leader has the {Donquixote Pirates} type, add up to 1 DON!! card from your DON!! deck and rest it.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_own_don_returned",
           "condition": {
-            "type": "if_leader_has_type",
-            "typeString": "Donquixote Pirates"
+            "type": "and",
+            "conditions": [
+              {
+                "type": "is_opp_turn"
+              },
+              {
+                "type": "if_leader_has_type",
+                "typeString": "Donquixote Pirates"
+              }
+            ]
           },
           "action": {
             "kind": "ramp",
             "magnitude": 1,
             "rested": true
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -91006,7 +91216,7 @@
     "effectText": "[On Play] DON!! −3: Choose one:<br>• If your Leader has the {Donquixote Pirates} type, K.O. up to 1 of your opponent's Characters with a cost of 8 or less.<br>• Up to 3 of your opponent's Characters with a cost of 7 or less cannot be rested until the end of your opponent's next End Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -91031,7 +91241,7 @@
                     "costMax": 8
                   }
                 },
-                "verified": "auto"
+                "verified": "human-reviewed"
               },
               {
                 "trigger": "on_play",
@@ -91045,11 +91255,11 @@
                     "costMax": 7
                   }
                 },
-                "verified": "auto"
+                "verified": "flagged"
               }
             ]
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -91089,7 +91299,23 @@
           }
         }
       ],
-      "replacements": [],
+      "replacements": [
+        {
+          "trigger": "would_be_removed",
+          "opt": true,
+          "cost": {
+            "donCostReturnToDeck": 1
+          },
+          "action": {
+            "kind": "set_active"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "conditional": true,
+          "verified": "flagged"
+        }
+      ],
       "schemaVersion": 2,
       "verified": "flagged"
     }
@@ -91117,7 +91343,7 @@
     "effectText": "[End of Your Turn] If your Leader has the {Donquixote Pirates} type, add up to 1 DON!! card from your DON!! deck and set it as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "at_end_of_turn_self",
@@ -91130,7 +91356,7 @@
             "magnitude": 1,
             "rested": false
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -91167,13 +91393,25 @@
             "kind": "ramp",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_ko",
+          "cost": {
+            "donCostReturnToDeck": 1
+          },
+          "action": {
+            "kind": "add_to_own_life_top",
+            "faceUp": false,
+            "from": "top_of_deck"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -91231,7 +91469,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -91244,7 +91482,7 @@
             "magnitude": 1,
             "rested": false
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_ko",
@@ -91252,7 +91490,7 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_ko",
@@ -91264,7 +91502,7 @@
             "magnitude": 2,
             "rested": true
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -91295,7 +91533,7 @@
     "effectText": "[On K.O.] Add up to 1 DON!! card from your DON!! deck and rest it. Then, give up to 1 of your opponent's Characters −2000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -91304,7 +91542,7 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_ko",
@@ -91316,7 +91554,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -91354,6 +91592,22 @@
       "clauses": [
         {
           "trigger": "on_play",
+          "cost": {
+            "donCost": 2
+          },
+          "condition": {
+            "type": "if_leader_has_type",
+            "typeString": "Donquixote Pirates"
+          },
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1,
+            "rested": true
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
           "action": {
             "kind": "power_buff",
             "magnitude": 3000,
@@ -91362,13 +91616,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -91406,15 +91660,29 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_opp_chars_min_power",
+            "n": 1,
+            "minPower": 6000
+          },
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1,
+            "rested": true
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -91443,7 +91711,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -91460,9 +91728,9 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -91479,9 +91747,9 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -91532,7 +91800,8 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         },
         {
           "trigger": "activate_main",
@@ -91547,15 +91816,15 @@
             "kind": "mill_self",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
         {
           "action": {
-            "kind": "aura_power_buff",
+            "kind": "aura_immunity",
             "filter": {},
-            "magnitude": 0
+            "against": "opp_removal"
           }
         }
       ],
