@@ -35504,7 +35504,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost koSelfCharacter for \"trash 1 of your {Homies} type Characters\" — text says trash not KO; also typeIncludes:Homies vs {Homies} trait; missing \"other than this Character\" self-exclusion"
     }
   },
   {
@@ -35734,7 +35735,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "condition encoded as if_own_life_max:2 AND if_opp_life_max:2 — text says \"total of 4 or less Life cards\" (sum ≤ 4), which allows e.g. 3+1 that the per-side cap rejects"
     }
   },
   {
@@ -35778,7 +35780,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "add_to_opp_life_top with no position field; text says \"to the top or bottom of your opponent's Life cards\" — bottom option missing"
     }
   },
   {
@@ -35870,7 +35873,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "continuous": [
         {
           "condition": {
@@ -35894,7 +35897,8 @@
             "against": "opp_effects"
           }
         }
-      ]
+      ],
+      "auditNote": "aura_immunity filter {costMin:5,costMax:5,kind:character} but text qualifies \"your active Characters with a base cost of 5\" — missing rested:false (active) filter"
     }
   },
   {
@@ -35949,7 +35953,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "replacement missing if_attached_don_min:1 (for [DON!! x1]) and is_opp_turn (for [Opponent's Turn]) conditions from text"
     }
   },
   {
@@ -36006,7 +36011,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target filter only typeIncludes:Revolutionary Army; text \"Revolutionary Army OR Characters with a [Trigger]\" — Trigger-char branch missing; also missing count:3 cap for \"up to 3\""
     }
   },
   {
@@ -36048,7 +36054,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "condition checks any own char ≥7000 power; text qualifies \"other than this Character\" — Inazuma itself with ≥7000 should not self-satisfy; nameExcludes/self filter missing"
     }
   },
   {
@@ -36155,7 +36162,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "on_play target opp_character but text says \"your opponent's Leader or Character cards\" — missing leader branch (when_attacking clause correctly uses opp_leader_or_character)"
     }
   },
   {
@@ -36239,7 +36247,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target filter powerMax:4000 with count:2 — text says \"up to 2 of your opponent's Characters with a TOTAL power of 4000 or less\" (sum constraint), not each ≤4000"
     }
   },
   {
@@ -36284,7 +36293,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target your_leader only; text says \"your Leader or 1 of your Characters\" — needs your_leader_or_character"
     }
   },
   {
@@ -36595,7 +36605,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "restrict_opp_blocker clause missing if_self_power_min:7000 condition; text gates with \"If this Character has 7000 power or more\""
     }
   },
   {
@@ -37284,7 +37295,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "replacement filter {rested:true,kind:character} + grant_immunity against:opp_removal duration:this_turn — text says \"If your rested Character would be K.O.'d, you may trash this Character instead\" (instance-scoped, not turn-scoped immunity)"
     }
   },
   {
@@ -37331,7 +37343,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target filter costMax:1; text says \"cost of 1\" exactly (needs costMin:1 + costMax:1)"
     }
   },
   {
@@ -37394,7 +37407,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "replacement cost restSelf:false is meaningless; text says \"rest up to 1 of your Characters with a cost of 3 or more other than [Pica] instead\" — cost should be restOwnCharFilter targeting cost≥3 non-Pica"
     }
   },
   {
@@ -37786,7 +37800,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "continuous aura_power_buff magnitude:0 is a no-op — does not implement \"all Characters with a cost of 5 or less do not become active in your and your opponent's Refresh Phases\" (needs refresh-lock aura); also at_end_of_turn clause missing \"Then, trash this Stage\" self-trash"
     }
   },
   {
@@ -37888,7 +37903,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "attack_lock_until_phase until:this_turn; text says \"until the start of your next turn\" — needs opp_next_end_phase"
     }
   },
   {
@@ -37927,7 +37943,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek with no placement spec for \"Then, place the rest at the top or bottom of the deck in any order\" — top-or-bottom choice not encoded"
     }
   },
   {
@@ -37999,7 +38016,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character but text says \"Place up to 1 Character\" (any character)"
     }
   },
   {
@@ -38156,7 +38174,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character but text says \"Place up to 1 Character\" (any character)"
     }
   },
   {
@@ -38201,7 +38220,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "bounce target opp_character but text says \"Return up to 1 Character\" (any character)"
     }
   },
   {
@@ -38285,7 +38305,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character but text says \"Place up to 1 Character\" (any character)"
     }
   },
   {
