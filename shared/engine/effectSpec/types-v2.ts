@@ -92,6 +92,7 @@ export type EffectConditionV2 =
   | { type: 'if_attacker_has_attribute'; attribute: string }            // (gap #92) — for on_opp_attack-style triggers
   | { type: 'if_self_power_min'; n: number }                            // OP05-004 etc. — "if this Character has N power or more"
   | { type: 'if_own_leader_active' }                                    // OP04-017 etc. — "if your Leader is active"
+  | { type: 'if_own_rested_don_min'; n: number }                        // OP07-023 — "if you have N or more rested DON"
   // Composite — short-circuit AND/OR
   | { type: 'and'; conditions: EffectConditionV2[] }
   | { type: 'or'; conditions: EffectConditionV2[] }

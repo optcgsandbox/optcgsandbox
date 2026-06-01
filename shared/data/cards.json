@@ -47794,7 +47794,10 @@
             "kind": "play_for_free",
             "from": "hand",
             "filter": {
-              "trait": "Fish-Man",
+              "traitsAny": [
+                "Fish-Man",
+                "Merfolk"
+              ],
               "costMax": 3,
               "kind": "character"
             }
@@ -47812,7 +47815,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -47945,8 +47948,8 @@
         },
         {
           "condition": {
-            "type": "if_attached_don_min",
-            "n": 0
+            "type": "if_own_rested_don_min",
+            "n": 6
           },
           "action": {
             "kind": "self_power_buff",
@@ -47956,7 +47959,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -48770,7 +48773,7 @@
     "effectText": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 {Amazon Lily} or {Kuja Pirates} type card other than [Gloriosa (Grandma Nyon)] and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -48779,7 +48782,10 @@
             "lookCount": 5,
             "addCount": 1,
             "filter": {
-              "trait": "Amazon Lily",
+              "traitsAny": [
+                "Amazon Lily",
+                "Kuja Pirates"
+              ],
               "nameExcludes": "Gloriosa (Grandma Nyon)"
             }
           },
@@ -50216,7 +50222,7 @@
     "effectText": "[Opponent's Turn] If your Leader has the {Foxy Pirates} type, give all of your opponent's Characters −1000 power.<br>[Activate: Main] [Once Per Turn] Add up to 1 DON!! card from your DON!! deck and rest it.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -50244,8 +50250,10 @@
             ]
           },
           "action": {
-            "kind": "aura_power_buff",
-            "filter": {},
+            "kind": "opp_aura_power_buff",
+            "filter": {
+              "kind": "character"
+            },
             "magnitude": -1000
           }
         }
@@ -50763,15 +50771,17 @@
             ]
           },
           "action": {
-            "kind": "aura_cost_modifier",
-            "filter": {},
+            "kind": "opp_aura_cost_modifier",
+            "filter": {
+              "kind": "character"
+            },
             "delta": -1
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -51168,7 +51178,7 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "discard_from_hand",
+            "kind": "opp_discard_from_hand",
             "magnitude": 1
           },
           "verified": "flagged"

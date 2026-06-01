@@ -234,6 +234,9 @@ export function evaluateConditionV2(
     case 'if_own_leader_active': {
       return !me.leader.rested;
     }
+    case 'if_own_rested_don_min': {
+      return me.donRested.length >= cond.n;
+    }
 
     // ── Composite ───────────────────────────────────────────────────
     case 'and':
