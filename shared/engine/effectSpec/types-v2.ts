@@ -149,6 +149,10 @@ export interface TargetFilter {
   attachedDonMin?: number;
   /** OP15-031 Purinpurin — "cost equal to the number of DON!! cards given to it". */
   costEqualsAttachedDon?: boolean;
+  /** EB01-008 + many others — "trash 1 Event OR Stage card" type costs.
+   *  Matches if card.kind ∈ kindsAny. Use instead of `kind` when the printed
+   *  text says "X or Y". */
+  kindsAny?: ('character' | 'event' | 'stage')[];
 }
 
 export type EffectTargetV2 =
@@ -240,6 +244,9 @@ export type EffectDuration =
 // ─────────────────────────────────────────────────────────────────────
 
 export type EffectActionV2 =
+  // No side effect — used by replacements whose effect IS the cost
+  // (EB01-008: "trash 1 Event/Stage instead [of being KO'd]").
+  | { kind: 'noop' }
   // Card movement & draw
   | { kind: 'draw'; magnitude?: number | MagnitudeFormula }
   | { kind: 'mill_self'; magnitude?: number }                          // (gap #29)

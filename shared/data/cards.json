@@ -396,7 +396,7 @@
     "effectText": "[Once Per Turn] If this Character would be K.O.'d by an effect, you may trash 1 Event or Stage card from your hand instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -406,21 +406,18 @@
             "discardHandFilter": {
               "count": 1,
               "filter": {
-                "kind": "event"
+                "kindsAny": ["event", "stage"]
               }
             }
           },
           "action": {
-            "kind": "grant_immunity",
-            "against": "opp_removal",
-            "duration": "this_turn"
+            "kind": "noop"
           },
           "conditional": true,
           "verified": "human-reviewed",
           "opt": true
         }
-      ],
-      "auditNote": "discardHandFilter kind:event misses \"or Stage\" branch of cost"
+      ]
     }
   },
   {

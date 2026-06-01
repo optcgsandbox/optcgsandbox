@@ -7,7 +7,8 @@
 
 import type { CardInstance, GameState, PlayerId } from '../GameState';
 import type { Card } from '../cards/Card';
-import type { EffectActionV2, EffectConditionV2, EffectTargetV2, TargetFilter } from './types-v2';
+import type { EffectActionV2, EffectConditionV2, EffectTargetV2, ReplacementEffectV2, TargetFilter } from './types-v2';
+import { tryApplyReplacement } from './replacements-v2';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
@@ -631,6 +632,8 @@ export function applyActionV2(
   const opp = state.players[OTHER[ctx.controller]];
 
   switch (action.kind) {
+    case 'noop':
+      return state;
     case 'draw': {
       const n = resolveMagnitude(state, ctx.controller, action.magnitude, 1);
       for (let i = 0; i < n && me.deck.length > 0; i++) {
@@ -1066,6 +1069,31 @@ export function applyActionV2(
     // ── Action group 3 — Sub-phase A.3.5 ──────────────────────────
     case 'removal_ko': {
       for (const tid of targets) {
+        // Consult would_be_ko replacement (EB01-008 etc.) before KO'ing.
+        const targetInst = state.instances[tid];
+        if (targetInst) {
+          const targetCard = state.cardLibrary[targetInst.cardId] as
+            | { effectSpecV2?: { replacements?: ReplacementEffectV2[] } }
+            | undefined;
+          const reps = targetCard?.effectSpecV2?.replacements ?? [];
+          if (reps.length > 0) {
+            const targetCtrl: PlayerId =
+              state.players.A.field.some((i) => i.instanceId === tid) ||
+              state.players.A.leader.instanceId === tid
+                ? 'A'
+                : 'B';
+            const result = tryApplyReplacement(
+              state,
+              { sourceInstanceId: tid, controller: targetCtrl },
+              'would_be_ko',
+              reps,
+            );
+            if (result.replaced) {
+              state = result.state;
+              continue; // KO skipped for this target.
+            }
+          }
+        }
         for (const pid of ['A', 'B'] as PlayerId[]) {
           const pl = state.players[pid];
           const idx = pl.field.findIndex((i) => i.instanceId === tid);

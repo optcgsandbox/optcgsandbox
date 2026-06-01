@@ -175,6 +175,7 @@ function canPayCost(
       const card = inst ? state.cardLibrary[inst.cardId] : undefined;
       if (!card) return false;
       if (filter.kind && card.kind !== filter.kind) return false;
+      if (filter.kindsAny && !filter.kindsAny.includes(card.kind as 'character' | 'event' | 'stage')) return false;
       if (filter.trait && (!card.traits || !card.traits.includes(filter.trait))) return false;
       return true;
     });
@@ -361,6 +362,7 @@ function payCost(
         const card = inst ? state.cardLibrary[inst.cardId] : undefined;
         if (!card) return false;
         if (filter.kind && card.kind !== filter.kind) return false;
+        if (filter.kindsAny && !filter.kindsAny.includes(card.kind as 'character' | 'event' | 'stage')) return false;
         if (filter.trait && (!card.traits || !card.traits.includes(filter.trait))) return false;
         return true;
       });
