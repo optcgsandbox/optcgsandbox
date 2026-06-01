@@ -55452,7 +55452,7 @@
     "effectSpecV2": {
       "clauses": [
         {
-          "trigger": "on_ko",
+          "trigger": "on_own_char_removed_by_opp_effect",
           "opt": true,
           "action": {
             "kind": "draw",
@@ -55461,7 +55461,7 @@
           "verified": "flagged"
         },
         {
-          "trigger": "on_ko",
+          "trigger": "on_own_char_removed_by_opp_effect",
           "opt": true,
           "action": {
             "kind": "peek_and_reorder_own_deck",
@@ -55473,7 +55473,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -62545,7 +62545,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -85826,7 +85826,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
