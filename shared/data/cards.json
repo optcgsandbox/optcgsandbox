@@ -27012,7 +27012,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "mill_self clause not marked opt:true; text \"you may trash 1 card from the top of your deck\" is optional"
     }
   },
   {
@@ -27072,7 +27073,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "mill_self clause not marked opt:true; text \"you may trash 2 cards from the top of your deck\" is optional"
     }
   },
   {
@@ -27159,7 +27161,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character but text says \"Place up to 1 Character\" (any character, no opp restriction)"
     }
   },
   {
@@ -27307,7 +27310,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost discardHand:1 + draw 2 — text is sequential \"Draw 2 cards and trash 1 card from your hand\" not cost+effect"
     }
   },
   {
@@ -27376,7 +27380,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek missing nameExcludes:Kokoro filter; text says \"other than [Kokoro]\""
     }
   },
   {
@@ -27726,7 +27731,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost discardHand:1 + draw 2 — text is sequential \"draw 2 cards and trash 1 card from your hand\" not cost+effect"
     }
   },
   {
@@ -27774,7 +27780,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost generic discardHand:1; text requires \"trash 1 Character card with a cost of 5\" (needs filter kind:character costMin:5 costMax:5)"
     }
   },
   {
@@ -28221,7 +28228,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "self_immune_to_opp_effects but text says \"cannot be K.O.'d in battle\" — battle-damage immunity, not effect immunity"
     }
   },
   {
@@ -28323,7 +28331,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost discardHand:2 + draw 2 — text is sequential \"Draw 2 cards and trash 2 cards from your hand\" not cost+effect"
     }
   },
   {
@@ -28387,7 +28396,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek addCount:0 with no trashFromLooked field; text \"Look 5, trash up to 2\" — trash-from-looked mechanic not encoded"
     }
   },
   {
@@ -28485,7 +28495,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek default disposes rest to bottom of deck; text says \"trash the rest\" — trash-rest semantics not encoded"
     }
   },
   {
@@ -28593,7 +28604,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek default disposes rest to bottom of deck; text says \"trash the rest\" — trash-rest semantics not encoded"
     }
   },
   {
@@ -28693,7 +28705,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "removal_cost_reduce magnitude:10 hack for \"set cost to 0\" — incorrect on opp chars with base cost > 10 (none exist today but action is semantically wrong)"
     }
   },
   {
@@ -28838,7 +28851,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek with playInsteadOfHand:true; text says \"trash the rest\" — trash-rest semantics for unplayed cards not encoded"
     }
   },
   {
@@ -28880,7 +28894,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character missing count:2; text says \"Give up to 2 of your opponent's Characters\""
     }
   },
   {
@@ -28923,7 +28938,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "removal_ko target only opp_character costMax:0; missing \"or your opponent's Stages with a cost of 3 or less\" branch"
     }
   },
   {
@@ -29082,7 +29098,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "peek_and_reorder_own_life only; text says \"top of your OR your opponent's Life cards\""
     }
   },
   {
@@ -29268,7 +29285,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "peek_and_reorder_opp_life only; text says \"top of your OR your opponent's Life cards\""
     }
   },
   {
@@ -29622,7 +29640,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek filter only trait:Big Mom Pirates; text allows \"[Sanji] OR {Big Mom Pirates} type\" (Sanji-named cards without trait missed)"
     }
   },
   {
