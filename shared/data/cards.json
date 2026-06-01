@@ -67022,7 +67022,7 @@
               "nameExcludes": "Leo"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -67069,7 +67069,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -67116,7 +67116,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -67129,7 +67129,7 @@
               "kind": "character"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -67160,7 +67160,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -67173,7 +67173,7 @@
               "powerMax": 6000
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -67208,7 +67208,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -67216,7 +67216,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -67229,7 +67229,7 @@
               "costMax": 2
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -67259,7 +67259,29 @@
     ],
     "effectText": "[Blocker]<br>[On K.O.] DON!! −1: If your Leader has the {Donquixote Pirates} type, add up to 1 purple Event from your trash to your hand.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "cost": {
+            "donCostReturnToDeck": 1
+          },
+          "condition": {
+            "type": "if_leader_has_trait",
+            "trait": "Donquixote Pirates"
+          },
+          "action": {
+            "kind": "recursion",
+            "magnitude": 1,
+            "filter": {
+              "kind": "event",
+              "colors": [
+                "purple"
+              ]
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -67270,7 +67292,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -67296,7 +67318,7 @@
     "effectText": "[On Play] If your Leader's type includes \"GERMA\", look at 5 cards from the top of your deck; reveal up to 1 card with a type including \"GERMA\" and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -67312,7 +67334,7 @@
               "trait": "GERMA"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -67351,7 +67373,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -67377,7 +67399,7 @@
     "effectText": "[Activate: Main] You may rest 1 of your DON!! cards and this Character: Look at 5 cards from the top of your deck; reveal up to 1 {Donquixote Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -67393,7 +67415,8 @@
               "trait": "Donquixote Pirates"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -67422,7 +67445,7 @@
     "effectText": "[On Your Opponent's Attack] [Once Per Turn] You may rest 2 of your DON!! cards: Rest up to 1 of your opponent's Characters with a cost of 4 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_opp_attack",
@@ -67438,7 +67461,8 @@
               "costMax": 4
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -67468,7 +67492,7 @@
     "effectText": "[On Play] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Add up to 1 purple Event with a cost of 5 or less from your trash to your hand. Then, set up to 1 of your DON!! cards as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -67486,7 +67510,7 @@
               "costMax": 5
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -67494,9 +67518,10 @@
             "donCostReturnToDeck": 1
           },
           "action": {
-            "kind": "set_active"
+            "kind": "set_active_don",
+            "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -67552,12 +67577,12 @@
     "effectText": "[DON!! x1] [When Attacking] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): K.O. up to 1 of your opponent's Characters with a cost of 1 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "cost": {
@@ -67572,7 +67597,7 @@
               "costMax": 1
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -67602,7 +67627,23 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Play] All of your Characters with 1000 base power or less cannot be K.O.'d by your opponent's effects until the end of your opponent's next turn.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "grant_immunity",
+            "against": "opp_effects",
+            "duration": "opp_next_turn"
+          },
+          "target": {
+            "kind": "all_your_characters",
+            "filter": {
+              "powerMax": 1000
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -67613,7 +67654,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -67643,7 +67684,7 @@
     "effectText": "[On Play] DON!! −1: Play up to 1 {Donquixote Pirates} type Character card with a cost of 5 or less from your hand.<br>[On Your Opponent's Attack] [Once Per Turn] You may rest 1 of your DON!! cards: Add up to 1 DON!! card from your DON!! deck and set it as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -67660,7 +67701,7 @@
             },
             "count": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_opp_attack",
@@ -67672,7 +67713,8 @@
             "magnitude": 1,
             "rested": false
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -67708,18 +67750,23 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "cost": {
-            "discardHand": 1
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "kind": "event"
+              }
+            }
           },
           "action": {
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "at_end_of_turn_self",
@@ -67728,9 +67775,10 @@
             "n": 7
           },
           "action": {
-            "kind": "set_active"
+            "kind": "set_active_don",
+            "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -67787,7 +67835,7 @@
     "effectText": "[Once Per Turn] If this Character would be K.O.'d by your opponent's effect, you may rest 2 of your active DON!! cards instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -67802,7 +67850,8 @@
             "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ]
     }
@@ -67833,7 +67882,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -67847,7 +67896,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -67876,7 +67925,7 @@
     "effectText": "[On Play] You may trash 1 card from your hand: If your Leader has the {Donquixote Pirates} type, add up to 1 DON!! card from your DON!! deck and set it as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -67892,7 +67941,7 @@
             "magnitude": 1,
             "rested": false
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -67921,7 +67970,20 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Block] You may rest 2 of your DON!! cards: Add up to 1 DON!! card from your DON!! deck and set it as active.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_block",
+          "cost": {
+            "donCost": 2
+          },
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1,
+            "rested": false
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -67932,7 +67994,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -67960,7 +68022,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -67973,7 +68035,7 @@
               "nameExcludes": "I Do Not Forgive Those Who Laugh at My Family!!!"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -68005,7 +68067,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -68018,7 +68080,7 @@
               "costMax": 5
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -68027,7 +68089,7 @@
             "magnitude": 1,
             "rested": false
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -68069,15 +68131,36 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_don_min",
+                "n": 7
+              },
+              {
+                "type": "if_hand_max",
+                "n": 5
+              }
+            ]
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -68119,7 +68202,7 @@
               "costMax": 2
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -68130,7 +68213,7 @@
             "kind": "mill_self",
             "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -68164,7 +68247,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -68175,7 +68258,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "activate_main",
@@ -68193,7 +68276,7 @@
             },
             "count": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -68246,7 +68329,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -68305,7 +68388,7 @@
     "effectText": "[DON!! x1] If you have 8 or more cards in your trash, this Character gains [Rush].",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -68313,7 +68396,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -68360,7 +68443,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -68385,7 +68468,8 @@
               "costMax": 3
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [
@@ -68393,6 +68477,9 @@
           "action": {
             "kind": "self_power_buff",
             "magnitude": 2000
+          },
+          "condition": {
+            "type": "is_opp_turn"
           }
         }
       ],
@@ -68439,7 +68526,7 @@
             "kind": "mill_opp",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "activate_main",
@@ -68450,7 +68537,7 @@
             "kind": "mill_self",
             "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -68494,7 +68581,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "activate_main",
@@ -68505,7 +68592,7 @@
             "kind": "mill_self",
             "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -68563,7 +68650,22 @@
     ],
     "effectText": "[Blocker]<br>[On K.O.] Play up to 1 {Dressrosa} type Character card with a cost of 3 or less from your trash rested.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "action": {
+            "kind": "play_for_free",
+            "from": "trash",
+            "filter": {
+              "trait": "Dressrosa",
+              "costMax": 3,
+              "kind": "character"
+            },
+            "rested": true
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -68574,7 +68676,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -68617,7 +68719,7 @@
               "costMax": 1
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "activate_main",
@@ -68628,7 +68730,7 @@
             "kind": "mill_self",
             "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -68662,7 +68764,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -68680,7 +68782,8 @@
               "nameExcludes": "Perona"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -68709,7 +68812,7 @@
     "effectText": "[Activate: Main] You may trash this Character: Up to 1 of your black Characters gains +3 cost until the end of your opponent's next turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -68729,7 +68832,7 @@
               ]
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -68773,7 +68876,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -68816,7 +68919,7 @@
               "costMax": 4
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -68827,7 +68930,7 @@
             "kind": "mill_self",
             "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -68857,7 +68960,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -68871,7 +68974,7 @@
               "costMax": 8
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
