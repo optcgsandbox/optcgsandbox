@@ -15077,7 +15077,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: on_ko discard_from_hand fires source-side own discard; text says \"opp chooses 1 from YOUR hand\" — opp-controlled selection"
     }
   },
   {
@@ -15722,7 +15723,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "missing continuous \"opp can\\u0027t attack non-Kid chars when this is rested\" — taunt rule schema gap"
     }
   },
   {
