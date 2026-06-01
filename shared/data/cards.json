@@ -32271,7 +32271,7 @@
     "effectSpecV2": {
       "clauses": [
         {
-          "trigger": "on_play",
+          "trigger": "on_self_activate_event",
           "opt": true,
           "condition": {
             "type": "if_attached_don_min",
@@ -32294,7 +32294,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
