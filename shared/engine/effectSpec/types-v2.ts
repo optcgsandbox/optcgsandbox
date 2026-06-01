@@ -272,7 +272,7 @@ export type EffectActionV2 =
   | { kind: 'peek_and_reorder_own_life'; count: number }               // ST07-003
   | { kind: 'peek_and_reorder_opp_life' }                              // (gap #85)
   | { kind: 'peek_and_reorder_own_deck'; count: number }               // ST17-004
-  | { kind: 'searcher_peek'; lookCount: number; addCount: number; filter?: TargetFilter; playInsteadOfHand?: boolean }  // V3-3 + filters; EB01-009 plays instead of adding to hand
+  | { kind: 'searcher_peek'; lookCount: number; addCount: number; filter?: TargetFilter; playInsteadOfHand?: boolean; rested?: boolean }  // V3-3 + filters; EB01-009 plays instead of adding to hand
   | { kind: 'reveal_opp_hand' }                                        // V3-4
   | { kind: 'reveal_top_and_conditional_play'; filter: TargetFilter; rested?: boolean }  // (gap #27)
   | { kind: 'peek_opp_deck'; count: number }                           // (gap #42, #58)

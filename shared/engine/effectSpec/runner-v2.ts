@@ -759,6 +759,7 @@ export function applyActionV2(
         if (added < add && inst && card && matchesFilter(state, inst, action.filter)) {
           if (action.playInsteadOfHand && card.kind === 'character') {
             inst.summoningSick = true;
+            inst.rested = !!action.rested;
             me.field.push(inst);
           } else {
             me.hand.push(inst.instanceId);

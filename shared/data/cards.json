@@ -4320,11 +4320,14 @@
             "donCost": 1
           },
           "action": {
-            "kind": "reveal_top_and_conditional_play",
+            "kind": "searcher_peek",
+            "lookCount": 5,
+            "addCount": 1,
             "filter": {
               "costMax": 2,
               "kind": "character"
             },
+            "playInsteadOfHand": true,
             "rested": true
           },
           "verified": "human-reviewed"
