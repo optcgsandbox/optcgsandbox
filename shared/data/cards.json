@@ -1726,7 +1726,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -1740,14 +1740,13 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
           "verified": "human-reviewed"
         }
       ],
       "continuous": [],
-      "replacements": [],
-      "auditNote": "target your_character; text says Leader or Character so should be your_leader_or_character"
+      "replacements": []
     }
   },
   {
