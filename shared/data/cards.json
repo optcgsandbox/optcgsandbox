@@ -51297,15 +51297,32 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_trash_min",
+            "n": 10
+          },
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "typeIncludes": "CP"
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -51341,15 +51358,31 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_trash_min",
+            "n": 10
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 2000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "your_leader_or_character"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -51379,7 +51412,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -51436,7 +51469,50 @@
     "life": 5,
     "effectText": "This Leader cannot attack.<br>[Activate: Main] [Once Per Turn] ① (You may rest the specified number of DON!! cards in your cost area.): Select up to 1 {Egghead} type card with a cost of 5 or less from your hand and play it or add it to the top of your Life cards face-up.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "opt": true,
+          "cost": {
+            "donCost": 1
+          },
+          "action": {
+            "kind": "choose_one",
+            "options": [
+              {
+                "trigger": "activate_main",
+                "action": {
+                  "kind": "play_for_free",
+                  "from": "hand",
+                  "filter": {
+                    "trait": "Egghead",
+                    "costMax": 5,
+                    "kind": "character"
+                  }
+                },
+                "verified": "human-reviewed"
+              },
+              {
+                "trigger": "activate_main",
+                "action": {
+                  "kind": "add_to_own_life_top",
+                  "faceUp": true,
+                  "from": "hand"
+                },
+                "target": {
+                  "kind": "your_character",
+                  "filter": {
+                    "trait": "Egghead",
+                    "costMax": 5
+                  }
+                },
+                "verified": "human-reviewed"
+              }
+            ]
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -51446,7 +51522,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -51477,12 +51553,11 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_opp_life_min",
-            "n": 1
+            "type": "if_own_life_max",
+            "n": 3
           },
           "action": {
-            "kind": "grant_keyword_to_self",
-            "keyword": "cannot_be_kod_in_battle"
+            "kind": "self_immune_to_opp_effects"
           }
         }
       ],
@@ -51543,7 +51618,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -51555,7 +51630,7 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -51563,14 +51638,11 @@
             "type": "if_own_life_max",
             "n": 2
           },
-          "cost": {
-            "discardHand": 2
-          },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "discard_from_hand",
+            "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -51610,7 +51682,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -51719,7 +51791,7 @@
     "effectText": "[On K.O.] If you have 2 or less Life cards, play up to 1 {Egghead} type Character card with a cost of 4 or less from your trash rested.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -51767,7 +51839,7 @@
     "effectText": "[DON!! x1] [When Attacking] If you have 1 or less Life cards, K.O. up to 1 of your opponent's Characters with a cost of 3 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -51775,7 +51847,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -51882,7 +51954,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -51948,12 +52020,12 @@
     "effectText": "[On Play] You may add 1 card from the top or bottom of your Life cards to your hand: K.O. up to 1 of your opponent's Characters with a cost of 2 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "removal_ko"
@@ -51964,7 +52036,7 @@
               "costMax": 2
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -52001,7 +52073,8 @@
             "lookCount": 5,
             "addCount": 1,
             "filter": {
-              "trait": "Egghead"
+              "trait": "Egghead",
+              "nameExcludes": "Lilith"
             }
           },
           "verified": "auto"
@@ -52010,7 +52083,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -52039,12 +52112,12 @@
     "effectText": "[When Attacking] [Once Per Turn] You may add 1 card from the top or bottom of your Life cards to your hand: You may rest up to 1 of your opponent's Characters with a cost of 4 or less. Then, if you have 1 or less Life cards, add up to 1 card from the top of your deck to the top of your Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "rest_target"
@@ -52055,12 +52128,13 @@
               "costMax": 4
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         },
         {
           "trigger": "when_attacking",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "condition": {
             "type": "if_own_life_max",
@@ -52071,7 +52145,8 @@
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -52131,7 +52206,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -52177,7 +52252,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -52191,7 +52266,7 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
           "verified": "auto"
         }
@@ -52230,7 +52305,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -52240,7 +52315,7 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
           "verified": "auto"
         },
@@ -52288,7 +52363,7 @@
     "effectText": "[End of Your Turn] If you have 3 or less Life cards, set up to 1 {Egghead} type Character with a cost of 5 or less as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "at_end_of_turn_self",
@@ -52336,7 +52411,7 @@
     "effectText": "[On Play] You may trash 1 card from your hand: K.O. up to 1 of your opponent's Characters with a cost of 5 or less and up to 1 of your opponent's Characters with a cost of 3 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -52399,7 +52474,7 @@
     "effectText": "[On Play] Add up to 1 card from the top of your deck to the top of your Life cards. Then, if you have 2 or less Life cards, this Character gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -52466,7 +52541,13 @@
           "action": {
             "kind": "give_don_to_target",
             "magnitude": 1,
-            "rested": true
+            "rested": true,
+            "filter": {
+              "traitsAny": [
+                "Animal",
+                "Drum Kingdom"
+              ]
+            }
           },
           "target": {
             "kind": "your_character",
@@ -52474,7 +52555,8 @@
               "trait": "Animal"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -52512,19 +52594,25 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
           "condition": {
-            "type": "if_don_min",
-            "n": 1
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_attached_don_min",
+                "n": 1
+              }
+            ]
           },
           "action": {
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         },
         {
           "trigger": "activate_main",
@@ -52536,7 +52624,8 @@
             "kind": "peek_and_reorder_own_deck",
             "count": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         },
         {
           "trigger": "activate_main",
@@ -52552,7 +52641,8 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -52591,7 +52681,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -52616,7 +52706,7 @@
     "effectText": "[On Play] If you have [Chess], K.O. up to 1 of your opponent's Characters with 3000 power or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -52663,7 +52753,7 @@
     "effectText": "[On Play] Give up to 1 of your opponent's Characters −2000 power during this turn. Then, if you don't have [Kuromarimo], play up to 1 [Kuromarimo] from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -52734,12 +52824,11 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_trash_min",
-                "n": 1
+                "type": "is_own_turn"
               },
               {
-                "type": "if_owned_other_with_name",
-                "name": "Kuromarimo"
+                "type": "if_trash_min",
+                "n": 2
               }
             ]
           },
@@ -52788,7 +52877,7 @@
             },
             "rested": true
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "when_attacking",
@@ -52801,13 +52890,13 @@
             },
             "rested": true
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -52847,13 +52936,33 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "activate_main",
+          "opt": true,
+          "condition": {
+            "type": "if_attached_don_min",
+            "n": 1
+          },
+          "cost": {
+            "lifeToHand": 1
+          },
+          "action": {
+            "kind": "give_keyword",
+            "keyword": "rush",
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -52926,13 +53035,18 @@
               "nameExcludes": "Hiking Bear"
             }
           },
-          "verified": "auto"
+          "verified": "auto",
+          "condition": {
+            "type": "if_attached_don_min",
+            "n": 1
+          },
+          "opt": true
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -52992,8 +53106,18 @@
             "donCost": 2
           },
           "condition": {
-            "type": "if_leader_has_trait",
-            "trait": "Drum Kingdom"
+            "type": "and",
+            "trait": "Drum Kingdom",
+            "conditions": [
+              {
+                "type": "if_attached_don_min",
+                "n": 2
+              },
+              {
+                "type": "if_leader_has_trait",
+                "trait": "Drum Kingdom"
+              }
+            ]
           },
           "action": {
             "kind": "removal_ko"
@@ -53010,7 +53134,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -53040,7 +53164,7 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_have_given_don_min",
+            "type": "if_attached_don_min",
             "n": 2
           },
           "action": {
@@ -53051,7 +53175,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -53093,7 +53217,11 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "auto",
+          "condition": {
+            "type": "if_attached_don_min",
+            "n": 1
+          }
         },
         {
           "trigger": "when_attacking",
@@ -53108,13 +53236,17 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "auto",
+          "condition": {
+            "type": "if_attached_don_min",
+            "n": 1
+          }
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
