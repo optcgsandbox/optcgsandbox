@@ -17462,7 +17462,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character; text says \"Character\" (any side) — opp-only is interpretation not literal"
     }
   },
   {
@@ -17668,7 +17669,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "nameExcludes:Kaido excludes ANY Kaido instance; text says \"other than THIS Character\""
     }
   },
   {
@@ -17770,7 +17772,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "2nd clause has no cost; payment intended to gate BOTH KO effects together"
     }
   },
   {
@@ -18030,7 +18033,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: cost donCostReturnToDeck:1 + opp_discard_from_hand looks right but flagged at clause level for opp-vs-self semantics review"
     }
   },
   {
@@ -18121,7 +18125,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "reveal_opp_hand with no count; text says \"Choose 2 cards from opp\\u0027s hand\""
     }
   },
   {
@@ -18501,7 +18506,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: clause flagged at clause level — investigate same opp-discard cost/effect pairing"
     }
   },
   {
