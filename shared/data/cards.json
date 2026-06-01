@@ -3900,17 +3900,17 @@
             "lookCount": 5,
             "addCount": 1,
             "filter": {
-              "trait": "Straw Hat Crew"
+              "trait": "Straw Hat Crew",
+              "nameExcludes": "Nami"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged",
-      "auditNote": "searcher filter missing nameExcludes:Nami"
+      "verified": "human-reviewed"
     }
   },
   {
