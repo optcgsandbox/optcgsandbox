@@ -1260,7 +1260,7 @@
     "effectText": "[DON!! x1] [When Attacking] If you have 1 or less cards in your hand, return up to 1 Character with a cost of 3 or less to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -1268,7 +1268,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -1290,8 +1290,7 @@
         }
       ],
       "continuous": [],
-      "replacements": [],
-      "auditNote": "[DON!! x1] gate should be if_attached_don_min not if_don_min"
+      "replacements": []
     }
   },
   {
