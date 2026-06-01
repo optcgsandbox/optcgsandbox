@@ -63196,7 +63196,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -63231,7 +63231,7 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_leader_or_character"
           },
           "verified": "auto"
         },
@@ -63243,7 +63243,7 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_leader_or_character"
           },
           "verified": "auto"
         }
@@ -63251,7 +63251,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -63316,7 +63316,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -63361,7 +63361,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -63396,7 +63396,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -63434,7 +63434,7 @@
               "costMax": 3
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -63484,16 +63484,16 @@
             "lookCount": 3,
             "addCount": 1,
             "filter": {
-              "trait": "Trigger"
+              "hasTrigger": true
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -63525,7 +63525,33 @@
       "draw": 1
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "lifeToHand": 1
+          },
+          "action": {
+            "kind": "chained_actions",
+            "actions": [
+              {
+                "kind": "play_for_free",
+                "from": "hand",
+                "filter": {
+                  "trait": "Revolutionary Army",
+                  "costMax": 4,
+                  "kind": "character"
+                }
+              },
+              {
+                "kind": "draw",
+                "magnitude": 1
+              }
+            ]
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -63536,7 +63562,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -63561,7 +63587,7 @@
     "effectText": "[On Play] Add up to 1 {Revolutionary Army} type Character card from your hand to the top of your Life cards face-up. Then, if you have 2 or more Life cards, add 1 card from the top or bottom of your Life cards to your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -63576,7 +63602,7 @@
               "trait": "Revolutionary Army"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -63588,7 +63614,7 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -63648,7 +63674,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -63689,7 +63715,7 @@
     "effectText": "[On Play] If your opponent has 3 or more Life cards, trash up to 1 card from the top of your opponent's Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -63771,7 +63797,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -63815,7 +63841,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -63870,7 +63896,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -63952,7 +63978,20 @@
               "powerMax": 2000
             }
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_own_life_max",
+                "n": 2
+              },
+              {
+                "type": "if_opp_life_max",
+                "n": 3
+              }
+            ]
+          }
         }
       ],
       "continuous": [],
@@ -63982,7 +64021,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -63992,10 +64031,11 @@
           "target": {
             "kind": "opp_character",
             "filter": {
-              "costMax": 3
+              "costMax": 3,
+              "hasTrigger": true
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -64035,7 +64075,7 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
           "verified": "auto"
         }
@@ -64043,7 +64083,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -64069,7 +64109,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -64078,10 +64118,11 @@
             "lookCount": 5,
             "addCount": 2,
             "filter": {
+              "hasTrigger": true,
               "nameExcludes": "Dereshi!"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -64156,7 +64197,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -64167,7 +64208,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -64182,7 +64223,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -64223,32 +64264,31 @@
       "clauses": [
         {
           "trigger": "activate_main",
+          "opt": true,
           "condition": {
-            "type": "if_own_chars_min_cost",
+            "type": "if_opp_chars_min_power",
             "n": 1,
-            "minCost": 0
+            "minPower": 7000
           },
           "action": {
-            "kind": "set_active"
+            "kind": "set_active_don",
+            "magnitude": 2
           },
           "verified": "flagged"
         }
       ],
       "continuous": [
         {
+          "condition": {
+            "type": "is_opp_turn"
+          },
           "action": {
             "kind": "aura_power_buff",
             "filter": {
-              "trait": "Navy"
-            },
-            "magnitude": 1000
-          }
-        },
-        {
-          "action": {
-            "kind": "aura_power_buff",
-            "filter": {
-              "trait": "Punk Hazard"
+              "traitsAny": [
+                "Navy",
+                "Punk Hazard"
+              ]
             },
             "magnitude": 1000
           }
@@ -64284,12 +64324,12 @@
     "effectText": "[DON!! x2] [When Attacking] You may return 1 of your {Punk Hazard} type Characters with a cost of 2 or more to the owner's hand: K.O. up to 1 of your opponent's Characters with 4000 power or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 2
           },
           "cost": {
@@ -64346,12 +64386,25 @@
         {
           "trigger": "at_end_of_turn_self",
           "condition": {
-            "type": "if_own_chars_min_cost",
-            "n": 1,
-            "minCost": 0
+            "type": "and",
+            "conditions": []
           },
           "action": {
-            "kind": "set_active"
+            "kind": "set_active_don",
+            "magnitude": 1
+          },
+          "verified": "flagged"
+        },
+        {
+          "trigger": "on_self_activate_event",
+          "opt": true,
+          "condition": {
+            "type": "is_opp_turn"
+          },
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1,
+            "rested": false
           },
           "verified": "flagged"
         }
@@ -64391,7 +64444,8 @@
             "lookCount": 5,
             "addCount": 1,
             "filter": {
-              "trait": "Punk Hazard"
+              "trait": "Punk Hazard",
+              "nameExcludes": "Vergo"
             }
           },
           "verified": "auto"
@@ -64400,7 +64454,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -64439,13 +64493,23 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
-      "continuous": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "is_own_turn"
+          },
+          "action": {
+            "kind": "self_power_buff",
+            "magnitude": 3000
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -64471,7 +64535,7 @@
     "effectText": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 [Smiley] and add it to your hand. Then, place the rest at the bottom of your deck in any order and play up to 1 [Smiley] from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -64483,7 +64547,7 @@
               "nameIs": "Smiley"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -64496,7 +64560,7 @@
             },
             "count": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -64525,7 +64589,7 @@
     "effectText": "[On Play] Play up to 1 {Punk Hazard} type Character card with a cost of 2 or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -64569,7 +64633,27 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Play] If you don't have [Rock], play up to 1 [Rock] from your hand.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "not",
+            "condition": {
+              "type": "if_owned_other_with_name",
+              "name": "Rock"
+            }
+          },
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "nameIs": "Rock",
+              "kind": "character"
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -64580,7 +64664,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -64606,7 +64690,7 @@
     "effectText": "[On Play] If your Leader has the {Punk Hazard} type, give up to 1 of your opponent's Characters −3000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -64655,14 +64739,14 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_own_chars_min_cost",
+            "type": "if_own_chars_max_with_min_power",
             "n": 1,
-            "minCost": 0
+            "minPower": 6000
           },
           "action": {
             "kind": "power_buff",
@@ -64714,11 +64798,20 @@
             "kind": "grant_keyword_to_self",
             "keyword": "blocker"
           }
+        },
+        {
+          "condition": {
+            "type": "is_opp_turn"
+          },
+          "action": {
+            "kind": "self_power_buff",
+            "magnitude": 2000
+          }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -64754,7 +64847,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -64850,7 +64943,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -64884,16 +64977,33 @@
             "restSelf": true
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "chained_actions",
+            "actions": [
+              {
+                "kind": "give_don_to_target",
+                "magnitude": 2,
+                "rested": true,
+                "target": {
+                  "kind": "your_leader"
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": -1000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "opp_character"
+                }
+              }
+            ]
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
