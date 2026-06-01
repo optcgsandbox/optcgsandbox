@@ -12600,9 +12600,22 @@
           "condition": {
             "type": "not",
             "condition": {
-              "type": "if_opp_chars_min_power",
-              "n": 1,
-              "minPower": 12000
+              "type": "or",
+              "conditions": [
+                {
+                  "type": "if_own_chars_min_filter",
+                  "n": 1,
+                  "filter": {
+                    "powerMin": 12000,
+                    "kind": "character"
+                  }
+                },
+                {
+                  "type": "if_opp_chars_min_power",
+                  "n": 1,
+                  "minPower": 12000
+                }
+              ]
             }
           },
           "action": {
@@ -12612,7 +12625,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -99048,7 +99061,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -99071,8 +99084,13 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_owned_other_with_name",
-                "name": "Gecko Moria"
+                "type": "if_own_chars_min_filter",
+                "n": 1,
+                "filter": {
+                  "nameIs": "Gecko Moria",
+                  "powerMin": 10000,
+                  "kind": "character"
+                }
               },
               {
                 "type": "if_no_other_with_name",
