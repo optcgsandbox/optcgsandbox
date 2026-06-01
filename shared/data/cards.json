@@ -53128,7 +53128,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -53161,7 +53161,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "only on_play (Main) trigger; text reads [Main]/[Counter] — counter branch missing"
     }
   },
   {
@@ -53357,7 +53358,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] Give up to 3 of your {Animal} or {Drum Kingdom} type Characters up to 1 rested DON!! card each.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -53381,7 +53382,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target your_character without count:3; text says \"Give up to 3 of your {Animal} or {Drum Kingdom} type Characters\" — needs count:3"
     }
   },
   {
@@ -53415,7 +53417,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -53467,7 +53469,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause uses peek_and_reorder_own_deck count:1 but text says \"place 1 card from your HAND at the top or bottom of your deck\" — needs bottom_of_deck_from_hand with top-or-bottom placement"
     }
   },
   {
@@ -53637,7 +53640,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -53659,7 +53662,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "condition if_trash_min:2 only checks raw count; text requires \"[Kuromarimo] AND [Chess] in your trash\" — needs specific named cards in trash"
     }
   },
   {
@@ -53717,7 +53721,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "reveal_top_and_conditional_play only looks at top 1 card; text says \"Look at 5 cards from the top of your deck\" — needs lookCount:5; also clause missing is_own_turn for [Your Turn]"
     }
   },
   {
@@ -53867,7 +53872,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost donCost:1 paid; text \"[DON!! x1] [Activate: Main]\" — DON!! xN is a condition (cards have ≥N DON attached), not a 1-DON pay cost"
     }
   },
   {
@@ -53955,7 +53961,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost donCost:2 paid; text \"[DON!! x2] [When Attacking]\" — DON!! xN is a condition (cards have ≥N DON attached), not a 2-DON pay cost"
     }
   },
   {
@@ -54067,7 +54074,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost donCost:1 paid on both clauses; text \"[DON!! x1] [When Attacking]\" — DON!! xN is a condition, not a 1-DON pay cost"
     }
   },
   {
@@ -54114,7 +54122,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek filter combines {namesAny:[\"Tony Tony.Chopper\"],traitsAny:[\"Drum Kingdom\"]} as AND; text \"[Tony Tony.Chopper] OR {Drum Kingdom} type\" needs OR-of-branches"
     }
   },
   {
@@ -54286,7 +54295,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause target your_character no count; text \"Up to 3 of your Characters\" — needs count:3"
     }
   },
   {
@@ -54346,7 +54356,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "only on_play trigger; text reads [Main]/[Counter] — counter branch missing"
     }
   },
   {
@@ -54487,7 +54498,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character with rested:true missing count:2; text says \"up to 2 of your opponent's rested Characters with a cost of 5 or less\""
     }
   },
   {
@@ -54691,7 +54703,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost donCost:1 paid; text \"[DON!! x1] [When Attacking]\" — DON!! x1 is a condition, not a 1-DON pay cost"
     }
   },
   {
@@ -54764,7 +54777,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "condition if_own_deck_max:50 is meaningless; text says \"If your opponent has 7 or more rested cards\" — needs if_opp_rested_cards_min:7"
     }
   },
   {
@@ -55020,7 +55034,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "condition if_opp_hand_min:7 wrong; text says \"your opponent has 7 or more rested cards\" (rested cards on field, not hand)"
     }
   },
   {
@@ -55439,7 +55454,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost donCost:1 paid (text \"[DON!! x1] [When Attacking]\" — condition not cost); also target opp_character but text says \"Return up to 1 Character\" (any character)"
     }
   },
   {
@@ -55658,7 +55674,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "clauses use trigger on_ko (this character is K.O.'d) but text says \"When a Character is removed from the field by your effect\" — needs broader trigger like on_char_removed_by_own_effect; also missing is_own_turn for [Your Turn]"
     }
   },
   {
@@ -55707,7 +55724,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "bounce target opp_character but text says \"Return up to 1 Character\" (any character)"
     }
   },
   {
@@ -55848,7 +55866,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "action bottom_of_deck_from_hand only; text \"place 2 cards from your hand at the top or bottom of your deck\" — top-of-deck option missing"
     }
   },
   {
@@ -55895,7 +55914,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "on_play clause missing is_own_turn condition for [Your Turn]"
     }
   },
   {
@@ -55983,7 +56003,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek filter only typeIncludes:Whitebeard Pirates; text \"type including Whitebeard Pirates OR [Monkey.D.Luffy]\" — Luffy-name branch missing"
     }
   },
   {
