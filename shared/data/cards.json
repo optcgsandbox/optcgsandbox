@@ -18270,7 +18270,7 @@
                 "type": "is_own_turn"
               },
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 8
               }
             ]
@@ -31503,7 +31503,7 @@
                 "n": 1
               },
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 2
               }
             ]
@@ -38759,7 +38759,7 @@
                 "n": 1
               },
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 8
               }
             ]
@@ -39157,7 +39157,7 @@
                 "n": 1
               },
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 8
               }
             ]
@@ -53428,7 +53428,7 @@
         {
           "trigger": "activate_main",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -53441,7 +53441,7 @@
         {
           "trigger": "activate_main",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -71463,7 +71463,7 @@
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -71623,7 +71623,7 @@
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 2
           },
           "action": {
@@ -73244,7 +73244,7 @@
         {
           "trigger": "on_opp_attack",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "cost": {
@@ -83031,7 +83031,7 @@
         {
           "trigger": "on_damage_taken",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -83131,7 +83131,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -102382,7 +102382,7 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 2
           },
           "action": {
@@ -103505,7 +103505,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -103551,7 +103551,7 @@
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "cost": {
@@ -103875,7 +103875,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -104002,7 +104002,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -105486,7 +105486,7 @@
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "cost": {
@@ -105505,7 +105505,7 @@
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -107754,7 +107754,7 @@
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -108054,7 +108054,7 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -108352,7 +108352,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -108552,7 +108552,7 @@
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -109166,7 +109166,7 @@
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "cost": {
@@ -109241,7 +109241,7 @@
         {
           "trigger": "activate_main",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
