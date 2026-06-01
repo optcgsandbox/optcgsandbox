@@ -1284,7 +1284,12 @@ export function applyActionV2(
         for (const id of sourceList) {
           const inst = state.instances[id];
           const card = inst ? state.cardLibrary[inst.cardId] : undefined;
-          if (!inst || !card || card.kind !== 'character') continue;
+          if (!inst || !card) continue;
+          // Honor caller's filter.kind if present; otherwise default to
+          // character + stage (events can't be played onto field via
+          // play_for_free; "play" semantics for events would be activate-then-trash).
+          if (card.kind !== 'character' && card.kind !== 'stage') continue;
+          if (action.filter?.kind && card.kind !== action.filter.kind) continue;
           if (!matchesFilter(state, inst, action.filter)) continue;
           if (action.uniqueByName && seen.has(card.name)) continue;
           if (excludeColors.length > 0
@@ -1299,10 +1304,18 @@ export function applyActionV2(
         const sIdx = sourceList.indexOf(m.id);
         if (sIdx !== -1) sourceList.splice(sIdx, 1);
         const inst = state.instances[m.id];
-        if (inst) {
-          inst.summoningSick = true;
-          inst.rested = !!action.rested;
-          me.field.push(inst);
+        const card = inst ? state.cardLibrary[inst.cardId] : undefined;
+        if (inst && card) {
+          if (card.kind === 'stage') {
+            // Stage replaces existing stage; old one goes to trash.
+            if (me.stage) me.trash.push(me.stage.instanceId);
+            inst.rested = !!action.rested;
+            me.stage = inst;
+          } else {
+            inst.summoningSick = true;
+            inst.rested = !!action.rested;
+            me.field.push(inst);
+          }
         }
       }
       return state;
