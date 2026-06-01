@@ -7474,7 +7474,10 @@
                 "kind": "play_for_free",
                 "from": "hand",
                 "filter": {
-                  "trait": "Alabasta",
+                  "traitsAny": [
+                    "Alabasta",
+                    "Straw Hat Crew"
+                  ],
                   "costMax": 5,
                   "kind": "character"
                 }
@@ -7485,7 +7488,7 @@
               }
             ]
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -7498,7 +7501,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -7766,7 +7769,10 @@
             "from": "hand",
             "filter": {
               "kind": "character",
-              "trait": "Amazon Lily",
+              "traitsAny": [
+                "Amazon Lily",
+                "Kuja Pirates"
+              ],
               "costMax": 6
             }
           },
@@ -7791,7 +7797,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -8254,7 +8260,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -8822,7 +8828,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -9708,7 +9714,10 @@
             "lookCount": 4,
             "addCount": 1,
             "filter": {
-              "trait": "Egghead",
+              "traitsAny": [
+                "Egghead",
+                "Straw Hat Crew"
+              ],
               "nameExcludes": "Jewelry Bonney"
             }
           },
@@ -9718,7 +9727,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -11223,7 +11232,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
