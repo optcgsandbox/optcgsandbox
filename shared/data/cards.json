@@ -71056,7 +71056,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -71093,7 +71093,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause target your_leader; text \"up to 1 of your Leader or Character cards\" — needs your_leader_or_character"
     }
   },
   {
@@ -71122,7 +71123,7 @@
     "effectText": "Once per turn, this Character cannot be K.O.'d by your opponent's effects.<br>[When Attacking] You may place 3 cards from your trash at the bottom of your deck in any order: If your opponent has 5 or more cards in their hand, your opponent trashes 1 card from their hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -71147,7 +71148,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous self_immune_to_opp_effects is permanent; text \"Once per turn, this Character cannot be K.O.'d by your opponent's effects\" — saves from first KO attempt per turn only"
     }
   },
   {
@@ -71175,7 +71177,7 @@
     "effectText": "[On Play] Reveal up to 1 {Supernovas} type Character card from your hand and add it to the top of your Life cards face-down. Then, give up to 1 rested DON!! card to 1 of your {Supernovas} type Leader.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -71200,7 +71202,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause add_to_own_life_top from:hand has no target filter; text restricts to \"{Supernovas} type Character card from your hand\"; second clause target your_leader has no trait filter; text says \"1 of your {Supernovas} type Leader\""
     }
   },
   {
@@ -71231,7 +71234,7 @@
     "effectText": "Your {SWORD} type Characters can attack Characters on the turn in which they are played.<br>[Once Per Turn] If your {Navy} type Character with 7000 base power or less would be removed from the field by your opponent's effect, you may place 3 cards from your trash at the bottom of your deck in any order instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -71249,7 +71252,8 @@
           "verified": "human-reviewed",
           "opt": true
         }
-      ]
+      ],
+      "auditNote": "spec only has the would_be_removed replacement; missing the continuous \"Your {SWORD} type Characters can attack Characters on the turn in which they are played\" aura keyword grant"
     }
   },
   {
@@ -71466,7 +71470,7 @@
     "effectText": "[DON!! x1] [When Attacking] Give up to 1 of your opponent's ＜Special＞ attribute Characters −5000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -71486,7 +71490,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target opp_character with no attribute filter; text restricts to \"your opponent's ＜Special＞ attribute Characters\"; also condition if_don_min:1 should be if_attached_don_min:1 ([DON!! x1] is attached-don)"
     }
   },
   {
@@ -71625,7 +71630,7 @@
     "effectText": "[DON!! x2] [When Attacking] Give up to 1 of your opponent's Characters −2000 power until the end of your opponent's next turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -71645,7 +71650,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "condition if_don_min:2 (total DON); text \"[DON!! x2]\" — needs if_attached_don_min:2 (attached to source, not total)"
     }
   },
   {
@@ -71961,7 +71967,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target your_leader only; text says \"your Leader or 1 of your Characters\" — needs your_leader_or_character"
     }
   },
   {
@@ -72200,7 +72207,7 @@
     "effectText": "[End of Your Turn] If you have 6 or less cards in your hand, set up to 1 of your {Fish-Man} or {Merfolk} type Characters and up to 1 of your DON!! cards as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "at_end_of_turn_self",
@@ -72242,7 +72249,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause has nested action.target (Fish-Man/Merfolk) AND outer target with typeIncludes:Fish-Man only — inconsistent/duplicated targets, outer missing Merfolk"
     }
   },
   {
@@ -72306,7 +72314,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "filter combines traitsAny:[\"Neptunian\"] AND namesAny:[\"Megalo\"] as AND; text \"{Neptunian} type Character card OR [Megalo]\" needs OR-of-branches"
     }
   },
   {
@@ -72331,7 +72340,7 @@
     "effectText": "If your Leader has the {Fish-Man} type, you have 3 or less Life cards and your opponent has 5 or more rested cards, give this card in your hand −3 cost.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -72354,7 +72363,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition only checks Fish-Man leader + own life ≤3; text adds \"and your opponent has 5 or more rested cards\" — missing opp-rested-cards condition"
     }
   },
   {
@@ -72381,7 +72391,7 @@
     "effectText": "When this Character is K.O.'d by your opponent's effect, you may trash 1 card from your hand and rest 1 of your DON!! cards. If you do, play up to 1 {Fish-Man} or {Merfolk} type Character card with a cost of 6 or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -72405,7 +72415,8 @@
             "type": "is_opp_turn"
           }
         }
-      ]
+      ],
+      "auditNote": "replacement cost only discardHand:1; text says \"you may trash 1 card from your hand AND rest 1 of your DON!! cards\" — missing donCost:1; also action filter typeIncludes:Fish-Man only — text \"{Fish-Man} OR {Merfolk} type\" needs traitsAny"
     }
   },
   {
@@ -72434,7 +72445,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_opp_attack",
@@ -72453,7 +72464,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost only restSelf:true; text says \"you may rest 1 of your DON!! cards AND this Character\" — missing donCost:1; also target your_leader only, text \"your Leader or Character cards\""
     }
   },
   {
@@ -72644,7 +72656,7 @@
     "effectText": "[Activate: Main] You may rest 1 of your DON!! cards and this Character: Look at 5 cards from the top of your deck; reveal up to 1 {Neptunian} or {Fish-Man Island} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -72660,7 +72672,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost only restSelf:true; text says \"rest 1 of your DON!! cards AND this Character\" — missing donCost:1; also searcher_peek has no filter, text restricts to \"{Neptunian} OR {Fish-Man Island} type\""
     }
   },
   {
@@ -72689,7 +72702,7 @@
     "effectText": "[On Play] If your Leader has the {Fish-Man} or {Merfolk} type, rest up to 1 of your opponent's Characters with a cost of 5 or less.<br>[Activate: Main] [Once Per Turn] Up to 1 of your {Fish-Man} or {Merfolk} type Characters can attack Characters on the turn in which it is played.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -72734,7 +72747,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause target filter typeIncludes:Fish-Man only; text says \"{Fish-Man} OR {Merfolk} type Characters\" — needs traitsAny:[\"Fish-Man\",\"Merfolk\"]"
     }
   },
   {
@@ -72849,7 +72863,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "action rest_lock_until_phase prevents the rested card from becoming active in refresh; text \"cannot be rested\" prevents resting (different effect — needs rest_immunity)"
     }
   },
   {
@@ -72878,7 +72893,7 @@
     "effectText": "When this Character is K.O.'d by your opponent's effect, you may rest 1 of your DON!! cards. If you do, play up to 1 {Fish-Man} or {Merfolk} type Character card with a cost of 4 or less from your hand.<br>[On Play] Rest up to 1 of your opponent's Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -72913,7 +72928,8 @@
             "donCost": 1
           }
         }
-      ]
+      ],
+      "auditNote": "replacement action filter typeIncludes:Fish-Man only; text says \"{Fish-Man} OR {Merfolk} type\" — needs traitsAny"
     }
   },
   {
@@ -72938,7 +72954,7 @@
     "effectText": "[On Play] If your Leader is [Shirahoshi], look at 5 cards from the top of your deck; reveal up to 1 {Neptunian} type card or [Shirahoshi] and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -72958,7 +72974,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek filter typeIncludes:Neptunian only; text \"{Neptunian} type card OR [Shirahoshi]\" — name-based Shirahoshi branch missing"
     }
   },
   {
@@ -72985,7 +73002,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -73002,7 +73019,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek filter typeIncludes:Neptunian only; text \"{Neptunian} OR {Fish-Man Island} type\" — missing Fish-Man Island trait"
     }
   },
   {
@@ -73164,7 +73182,7 @@
     "effectText": "This effect can be activated at the start of your turn. If you have 8 or more DON!! cards on your field, look at 5 cards from the top of your deck; reveal up to 1 {Straw Hat Crew} type card and add it to your hand. Then, place the rest at the top or bottom of the deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -73185,7 +73203,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "trigger activate_main fires on Main phase; text \"This effect can be activated AT THE START OF YOUR TURN\" — needs at_start_of_turn trigger; also missing \"top or bottom of the deck\" placement"
     }
   },
   {
@@ -73219,7 +73238,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_life_changed",
@@ -73256,7 +73275,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause trigger on_life_changed missing is_own_turn ([Your Turn]); second clause condition if_don_min:1 should be if_attached_don_min:1 ([DON!! x1] is attached)"
     }
   },
   {
@@ -73282,7 +73302,7 @@
     "effectText": "[On Play] You may trash 1 {Firetank Pirates} type card from your hand: This Character gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -73301,7 +73321,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost discardHand:1 generic; text \"trash 1 {Firetank Pirates} type card from your hand\" needs discardHandFilter:{trait:\"Firetank Pirates\"}"
     }
   },
   {
@@ -73519,7 +73540,7 @@
     "effectText": "[On Play] If your Leader has the {The Vinsmoke Family} type, look at 5 cards from the top of your deck; reveal up to 1 card with a type including \"GERMA\" and add it to your hand. Then, trash the rest.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -73539,7 +73560,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek default disposes rest to bottom; text \"Then, trash the rest\" — trash-rest semantics not encoded"
     }
   },
   {
@@ -73565,7 +73587,7 @@
     "effectText": "[On Play] Look at 4 cards from the top of your deck; reveal up to 1 {Firetank Pirates} or {Straw Hat Crew} type card with a cost of 2 or more and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -73582,7 +73604,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek filter typeIncludes:Firetank Pirates only; text \"{Firetank Pirates} OR {Straw Hat Crew} type\" needs traitsAny"
     }
   },
   {
@@ -73663,7 +73686,7 @@
     "effectText": "[When Attacking] You may trash 1 {Firetank Pirates} type card from your hand: Return up to 1 Character with a cost of 1 or less to the owner's hand or place it at the bottom of their deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -73688,7 +73711,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target opp_character; text says \"Return up to 1 Character\" (any character) and \"or place it at the bottom of their deck\" — alternate destination missing"
     }
   },
   {
@@ -73716,7 +73740,7 @@
     "effectText": "When this Character is K.O.'d by your opponent's effect, look at 5 cards from the top of your deck and play up to 1 {Straw Hat Crew} type Character card with a cost of 5 or less. Then, place the rest at the bottom of your deck in any order.<br>[On Play] Return up to 1 Character with 5000 base power or less to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -73750,7 +73774,8 @@
             "type": "is_opp_turn"
           }
         }
-      ]
+      ],
+      "auditNote": "on_play target opp_character; text says \"Return up to 1 Character with 5000 base power or less\" (any character)"
     }
   },
   {
@@ -73865,7 +73890,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "action bottom_of_deck_from_hand only; text \"place 2 cards from your hand at the top or bottom of your deck\" — top option missing"
     }
   },
   {
@@ -73943,7 +73969,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character; text says \"Place up to 1 Character with a base cost of 1\" (any character)"
     }
   },
   {
