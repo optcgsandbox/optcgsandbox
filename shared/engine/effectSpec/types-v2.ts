@@ -142,10 +142,11 @@ export type EffectTargetV2 =
   | { kind: 'self' }
   | { kind: 'your_leader' }
   | { kind: 'opp_leader' }
-  | { kind: 'your_character'; filter?: TargetFilter }
-  | { kind: 'your_leader_or_character'; filter?: TargetFilter }         // EB01-028 etc. — "Leader or Character" target
-  | { kind: 'opp_character'; filter?: TargetFilter }                    // includes cost-capped via filter.costMax (gap #11, #15)
-  | { kind: 'opp_leader_or_character'; filter?: TargetFilter }          // mirror — "your opponent's Leader or Character"
+  | { kind: 'your_character'; filter?: TargetFilter; count?: number }
+  | { kind: 'your_leader_or_character'; filter?: TargetFilter; count?: number } // EB01-028 etc.
+  | { kind: 'opp_character'; filter?: TargetFilter; count?: number }    // includes cost-capped via filter.costMax (gap #11, #15)
+  | { kind: 'opp_leader_or_character'; filter?: TargetFilter; count?: number } // mirror
+  | { kind: 'opp_don_or_character'; filter?: TargetFilter; count?: number } // OP09-036, OP06-020/035, EB03-012/061 — "rest 1 of opp's DON cards or Characters"
   | { kind: 'opp_hand_card'; filter?: TargetFilter }
   | { kind: 'own_trash_card'; filter?: TargetFilter }                   // (gap #15)
   | { kind: 'top_of_deck' }

@@ -6853,8 +6853,12 @@
             "kind": "rest_target"
           },
           "target": {
-            "kind": "opp_character",
+            "kind": "opp_don_or_character",
             "filter": {
+              "traitsAny": [
+                "Animal",
+                "SMILE"
+              ],
               "costMax": 3
             }
           },
@@ -6864,7 +6868,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -7346,12 +7350,28 @@
             }
           },
           "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHand": 1
+          },
+          "action": {
+            "kind": "bottom_of_deck_to_opp_deck"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 3
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -8129,7 +8149,8 @@
             "kind": "opp_character",
             "filter": {
               "costMax": 3
-            }
+            },
+            "count": 2
           },
           "verified": "human-reviewed"
         }
@@ -8137,7 +8158,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -9512,12 +9533,12 @@
             "kind": "rest_target"
           },
           "target": {
-            "kind": "opp_character",
+            "kind": "opp_don_or_character",
             "filter": {
               "costMax": 4
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "at_end_of_turn_self",
@@ -9539,7 +9560,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35739,13 +35760,14 @@
             "kind": "opp_character",
             "filter": {
               "powerMax": 4000
-            }
+            },
+            "count": 2
           },
           "verified": "flagged"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -41937,7 +41959,7 @@
             "kind": "rest_target"
           },
           "target": {
-            "kind": "opp_character",
+            "kind": "opp_don_or_character",
             "filter": {
               "costMax": 3
             }
@@ -41946,7 +41968,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -42786,7 +42808,8 @@
             "kind": "rest_target"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_don_or_character",
+            "count": 2
           },
           "verified": "human-reviewed"
         },
@@ -42809,7 +42832,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -59470,7 +59493,8 @@
             "kind": "removal_ko"
           },
           "target": {
-            "kind": "all_opp_characters",
+            "kind": "opp_character",
+            "count": 2,
             "filter": {
               "powerMax": 4000
             }
@@ -59481,7 +59505,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60425,7 +60449,7 @@
             "kind": "rest_target"
           },
           "target": {
-            "kind": "opp_character",
+            "kind": "opp_don_or_character",
             "filter": {
               "costMax": 6
             }
@@ -60436,7 +60460,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60690,7 +60714,8 @@
             "kind": "set_active"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_character",
+            "count": 2
           },
           "verified": "flagged"
         }
@@ -60698,7 +60723,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -78070,7 +78095,8 @@
             "kind": "rest_target"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_don_or_character",
+            "count": 2
           },
           "verified": "flagged"
         },
@@ -78090,7 +78116,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -78134,7 +78160,8 @@
             "filter": {
               "costMax": 4,
               "rested": true
-            }
+            },
+            "count": 2
           },
           "verified": "flagged"
         },
@@ -78154,7 +78181,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -83496,7 +83523,7 @@
     "effectText": "[On K.O.] Rest up to 2 of your opponent's cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -83504,7 +83531,8 @@
             "kind": "rest_target"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_don_or_character",
+            "count": 2
           },
           "verified": "flagged"
         }
@@ -95640,7 +95668,7 @@
     "effectText": "[On K.O.] Up to 2 of your opponent's rested cards will not become active in your opponent's next Refresh Phase.<br>[Activate: Main] [Once Per Turn] You may give 1 of your opponent's rested DON!! cards to 1 of your opponent's Characters: Give up to 1 DON!! card from its owner's cost area to its owner's Leader or 1 of their Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -95649,7 +95677,11 @@
             "until": "opp_next_end_phase"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_don_or_character",
+            "count": 2,
+            "filter": {
+              "rested": true
+            }
           },
           "verified": "flagged"
         },
@@ -109622,7 +109654,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] DON!! −4 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Rest up to 2 of your opponent's Characters with a cost of 6 or less. Then, this Character gains [Double Attack] during this turn.<br>(This card deals 2 damage.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -109636,7 +109668,8 @@
             "kind": "opp_character",
             "filter": {
               "costMax": 6
-            }
+            },
+            "count": 2
           },
           "verified": "flagged"
         },

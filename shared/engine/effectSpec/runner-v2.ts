@@ -397,25 +397,50 @@ export function resolveTargetV2(
 
     case 'your_character': {
       const hits = me.field.filter((inst) => matchesFilter(state, inst, target.filter));
-      return hits.length > 0 ? [hits[0].instanceId] : [];
+      const n = target.count ?? 1;
+      return hits.slice(0, n).map((h) => h.instanceId);
     }
 
     case 'your_leader_or_character': {
-      // Picks the leader by default (cheap default — UI can override later).
-      if (matchesFilter(state, me.leader, target.filter)) return [me.leader.instanceId];
-      const hits = me.field.filter((inst) => matchesFilter(state, inst, target.filter));
-      return hits.length > 0 ? [hits[0].instanceId] : [];
+      const n = target.count ?? 1;
+      const out: string[] = [];
+      if (matchesFilter(state, me.leader, target.filter)) out.push(me.leader.instanceId);
+      for (const inst of me.field) {
+        if (out.length >= n) break;
+        if (matchesFilter(state, inst, target.filter)) out.push(inst.instanceId);
+      }
+      return out.slice(0, n);
     }
 
     case 'opp_character': {
       const hits = opp.field.filter((inst) => matchesFilter(state, inst, target.filter));
-      return hits.length > 0 ? [hits[0].instanceId] : [];
+      const n = target.count ?? 1;
+      return hits.slice(0, n).map((h) => h.instanceId);
     }
 
     case 'opp_leader_or_character': {
-      if (matchesFilter(state, opp.leader, target.filter)) return [opp.leader.instanceId];
-      const hits = opp.field.filter((inst) => matchesFilter(state, inst, target.filter));
-      return hits.length > 0 ? [hits[0].instanceId] : [];
+      const n = target.count ?? 1;
+      const out: string[] = [];
+      if (matchesFilter(state, opp.leader, target.filter)) out.push(opp.leader.instanceId);
+      for (const inst of opp.field) {
+        if (out.length >= n) break;
+        if (matchesFilter(state, inst, target.filter)) out.push(inst.instanceId);
+      }
+      return out.slice(0, n);
+    }
+
+    case 'opp_don_or_character': {
+      // V0: prefer opp characters that match filter; falls back to opp DON area.
+      const n = target.count ?? 1;
+      const out: string[] = [];
+      for (const inst of opp.field) {
+        if (out.length >= n) break;
+        if (matchesFilter(state, inst, target.filter)) out.push(inst.instanceId);
+      }
+      // Opp DON has no instance IDs in our model — caller's action (rest_target)
+      // only operates on character instances; the DON-rest side is acknowledged
+      // at the spec level but not enforced at runtime yet.
+      return out;
     }
 
     case 'opp_hand_card': {
