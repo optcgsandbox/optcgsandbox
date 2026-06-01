@@ -64368,15 +64368,18 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
           "opt": true,
           "condition": {
-            "type": "if_opp_chars_min_power",
+            "type": "if_own_chars_min_filter",
             "n": 1,
-            "minPower": 7000
+            "filter": {
+              "powerMin": 7000,
+              "kind": "character"
+            }
           },
           "action": {
             "kind": "set_active_don",
@@ -64494,8 +64497,13 @@
         {
           "trigger": "at_end_of_turn_self",
           "condition": {
-            "type": "and",
-            "conditions": []
+            "type": "if_own_chars_min_filter",
+            "n": 1,
+            "filter": {
+              "trait": "Donquixote Pirates",
+              "powerMin": 6000,
+              "kind": "character"
+            }
           },
           "action": {
             "kind": "set_active_don",
@@ -65755,7 +65763,7 @@
     "effectText": "[Activate: Main] You may rest 2 of your DON!! cards and trash this Character: Look at 5 cards from the top of your deck; reveal up to 2 {The Akazaya Nine} type cards and add them to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -69490,7 +69498,7 @@
     "effectText": "[DON!! x1] If your Leader has the {Supernovas} type and your opponent has 3 or more Life cards, this Character cannot be K.O.'d in battle.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -69508,7 +69516,8 @@
             ]
           },
           "action": {
-            "kind": "self_immune_to_opp_effects"
+            "kind": "grant_keyword_to_self",
+            "keyword": "cannot_be_ko_in_battle"
           }
         }
       ],

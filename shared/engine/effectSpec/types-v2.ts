@@ -85,6 +85,7 @@ export type EffectConditionV2 =
   | { type: 'if_own_chars_max_with_min_power'; n: number; minPower: number } // EB02-022 — ≤N own chars whose power ≥ minPower
   | { type: 'if_opp_chars_min_power'; n: number; minPower: number }      // EB04-007 — opp has ≥n chars ≥minPower
   | { type: 'if_own_chars_min_with_trait'; n: number; trait: string }    // EB04-033 — own chars with trait T ≥ n
+  | { type: 'if_own_chars_min_filter'; n: number; filter: TargetFilter } // generic ≥n own chars matching filter
   | { type: 'if_owned_other_with_name'; name: string }
   | { type: 'if_no_other_with_name'; name: string }                     // (gap from EB04-031)
   | { type: 'if_played_this_turn' }                                     // (gap #16)

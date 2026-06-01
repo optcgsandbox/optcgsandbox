@@ -189,6 +189,10 @@ export function evaluateConditionV2(
       }).length;
       return count >= cond.n;
     }
+    case 'if_own_chars_min_filter': {
+      const count = me.field.filter((inst) => matchesFilter(state, inst, cond.filter)).length;
+      return count >= cond.n;
+    }
     case 'if_owned_other_with_name':
       return me.field.some((inst) =>
         state.cardLibrary[inst.cardId]?.name === cond.name,
