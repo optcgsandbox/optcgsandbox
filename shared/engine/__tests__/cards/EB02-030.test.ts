@@ -41,27 +41,21 @@ function boot() {
 }
 
 describe('EB02-030 — And That\'s When Somebody Makes Fun...', () => {
-  it('spec has a would_be_ko replacement with discardHand cost', () => {
+  it('spec has a battle-gated would_be_ko replacement with discardHand cost', () => {
     const r = EB02_030.effectSpecV2!.replacements?.[0];
     expect(r?.trigger).toBe('would_be_ko');
+    expect(r?.whenSource).toBe('battle');
     expect(r?.cost?.discardHand).toBe(1);
-    expect(r?.action.kind).toBe('grant_immunity');
+    // F4 + EB01-008 noop pattern: replacement IS the cost-paid skip-KO.
+    // No grant_immunity side effect — the "instead" semantics come from
+    // tryApplyReplacement returning replaced=true to abort the KO.
+    expect(r?.action.kind).toBe('noop');
   });
 
-  it('grant_immunity action sets immunity on target', () => {
+  it('noop action does not mutate state (battle-KO skip happens at the call site)', () => {
     const s = boot();
-    const c: CharacterCard = {
-      id: 'TARG', name: 'T', kind: 'character', colors: ['blue'],
-      cost: 2, power: 3000, counterValue: 1000, traits: [], keywords: [], effectTags: [],
-    };
-    s.cardLibrary[c.id] = c;
-    s.instances['t'] = {
-      instanceId: 't', cardId: c.id, controller: 'A',
-      rested: false, attachedDon: [],
-      perTurn: { hasAttacked: false, effectsUsed: [] }, summoningSick: false,
-    };
-    s.players.A.field.push(s.instances['t']);
-    applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, EB02_030.effectSpecV2!.replacements![0].action, ['t']);
-    expect(s.instances['t'].immunity).toEqual({ against: 'opp_removal' });
+    const before = JSON.stringify(s);
+    applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, EB02_030.effectSpecV2!.replacements![0].action, []);
+    expect(JSON.stringify(s)).toBe(before);
   });
 });

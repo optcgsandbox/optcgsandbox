@@ -47,12 +47,15 @@ export interface ReplacementResult {
  *  returns `replaced: true` with the new state. */
 export function tryApplyReplacement(
   state: GameState,
-  ctx: { sourceInstanceId: string; controller: PlayerId },
+  ctx: { sourceInstanceId: string; controller: PlayerId; source?: 'battle' | 'effect' },
   trigger: ReplacementTrigger,
   replacements: ReplacementEffectV2[],
 ): ReplacementResult {
   for (const r of replacements) {
     if (r.trigger !== trigger) continue;
+    // F4: honor whenSource ('battle' | 'effect') filter. Without `r.whenSource`
+    // the replacement fires for any source. If set, ctx.source must match.
+    if (r.whenSource && ctx.source && r.whenSource !== ctx.source) continue;
     if (!evaluateConditionV2(state, ctx.controller, r.condition, ctx.sourceInstanceId)) continue;
 
     // Check cost payability.

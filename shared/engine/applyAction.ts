@@ -662,7 +662,7 @@ function resolveDamage(state: GameState): { state: GameState; events: GameEvent[
       if (reps.length > 0 && targetInstNow) {
         const result = tryApplyReplacement(
           next,
-          { sourceInstanceId: pa.targetInstanceId, controller: targetInstNow.controller },
+          { sourceInstanceId: pa.targetInstanceId, controller: targetInstNow.controller, source: 'battle' },
           'would_be_ko',
           reps,
         );

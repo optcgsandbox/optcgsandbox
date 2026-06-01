@@ -429,6 +429,11 @@ export interface ReplacementEffectV2 {
   appliesToFiltered?: boolean;
   /** Marks once-per-turn replacements. */
   opt?: boolean;
+  /** F4 (EB02-030 "K.O.'d in battle"): restrict this replacement to
+   *  battle-driven KOs only. Without this field, the replacement fires for
+   *  both battle and effect KOs. Set to 'battle' for "in battle" wording or
+   *  'effect' for "by an effect" wording. */
+  whenSource?: 'battle' | 'effect';
   verified: 'ground-truth' | 'auto' | 'human-reviewed' | 'flagged';
 }
 

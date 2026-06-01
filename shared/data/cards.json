@@ -4551,25 +4551,23 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
         {
           "trigger": "would_be_ko",
+          "whenSource": "battle",
           "cost": {
             "discardHand": 1
           },
           "action": {
-            "kind": "grant_immunity",
-            "against": "opp_removal",
-            "duration": "this_turn"
+            "kind": "noop"
           },
           "conditional": true,
           "verified": "human-reviewed"
         }
-      ],
-      "auditNote": "text says K.O.d in BATTLE; spec uses opp_removal which covers effect-KO too"
+      ]
     }
   },
   {

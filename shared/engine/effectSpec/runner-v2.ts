@@ -1128,7 +1128,7 @@ export function applyActionV2(
                 : 'B';
             const result = tryApplyReplacement(
               state,
-              { sourceInstanceId: tid, controller: targetCtrl },
+              { sourceInstanceId: tid, controller: targetCtrl, source: 'effect' },
               'would_be_ko',
               reps,
             );
