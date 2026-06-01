@@ -54,6 +54,10 @@ export function evaluateConditionV2(
       const card = state.cardLibrary[me.leader.cardId];
       return Array.isArray(card?.colors) && card.colors.length >= 2;
     }
+    case 'if_leader_has_color': {
+      const card = state.cardLibrary[me.leader.cardId];
+      return Array.isArray(card?.colors) && card.colors.includes(cond.color);
+    }
     case 'if_leader_power_max': {
       const card = state.cardLibrary[me.leader.cardId];
       const base = typeof card?.power === 'number' ? card.power : 0;
