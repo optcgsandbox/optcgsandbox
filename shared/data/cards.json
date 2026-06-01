@@ -65091,7 +65091,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes Rush; text \"When your opponent activates [Blocker], if either you or your opponent has 0 Life cards, you win the game\" — alt-win condition not encoded"
     }
   },
   {
@@ -65936,7 +65937,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "chained_actions give_don_to_target target your_leader; text says \"your Leader or 1 of your Characters\" — needs your_leader_or_character"
     }
   },
   {
@@ -66195,7 +66197,7 @@
     "effectText": "[Activate: Main] You may rest this Stage: If your Leader is [Caesar Clown], give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -66218,7 +66220,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target your_leader only; text says \"your Leader or 1 of your Characters\" — needs your_leader_or_character"
     }
   },
   {
@@ -66250,7 +66253,7 @@
     "effectText": "[DON!! x1] [Activate: Main] [Once Per Turn] If the total cost of your Characters is 5 or more, you may return 1 of your Characters to the owner's hand: Reveal 1 card from the top of your Life cards. If that card is a {Supernovas} type Character card with a cost of 5 or less, you may play that card.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -66283,7 +66286,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "reveal_top_and_conditional_play reveals from deck top; text says \"Reveal 1 card from the top of your LIFE CARDS\" — source is life, not deck"
     }
   },
   {
@@ -66310,7 +66314,7 @@
     "effectText": "[On Play] If your Leader has the {Navy} type, rest up to 2 of your opponent's Characters with a cost of 5 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -66331,7 +66335,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target opp_character missing count:2; text says \"rest up to 2 of your opponent's Characters with a cost of 5 or less\""
     }
   },
   {
@@ -66482,7 +66487,7 @@
     "effectText": "[Activate: Main] You may place this Character and 1 [Kin'emon] with 0 power from your trash at the bottom of your deck in any order: Play up to 1 [Kin'emon] with a cost of 6 from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -66503,7 +66508,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost trashSelf:true sends self to trash; text \"place this Character ... at the bottom of your deck\" (bottomOfDeckSelf); also bottomOfDeckFromTrash:1 missing filter nameIs:Kin'emon + powerMax:0/powerMin:0"
     }
   },
   {
@@ -66531,7 +66537,7 @@
     "effectText": "[Activate: Main] You may place this Character and 1 [Kin'emon] with 1000 power from your trash at the bottom of your deck in any order: Play up to 1 [Kin'emon] with a cost of 6 from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -66552,7 +66558,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost trashSelf:true sends self to trash; text \"place this Character ... at the bottom of your deck\" (bottomOfDeckSelf); also bottomOfDeckFromTrash:1 missing filter nameIs:Kin'emon + powerMin:1000/powerMax:1000"
     }
   },
   {
@@ -66808,7 +66815,7 @@
     "effectText": "[On Play] If you have 2 or more rested {ODYSSEY} type Characters, up to 1 of your opponent's rested DON!! cards will not become active in your opponent's next Refresh Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -66830,7 +66837,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target opp_don_or_character with rested:true includes chars; text scopes to \"your opponent's rested DON!! cards\" only (opp_don target, not opp_don_or_character)"
     }
   },
   {
@@ -66857,7 +66865,7 @@
     "effectText": "[Once Per Turn] If this Character would be K.O.'d in battle, you may add 1 card from the top of your Life cards to your hand instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -66871,7 +66879,8 @@
           "verified": "human-reviewed",
           "opt": true
         }
-      ]
+      ],
+      "auditNote": "replacement action life_to_hand:1 gives a card but does NOT save the character from being K.O.'d in battle; text \"may add 1 card from the top of your Life cards to your hand INSTEAD\" — needs grant_immunity / skip_ko"
     }
   },
   {
@@ -66942,7 +66951,7 @@
     "effectText": "[Your Turn] [Once Per Turn] If a Character is rested by your effect, set up to 1 of your DON!! cards as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -66958,7 +66967,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "trigger on_play is wrong; text \"[Your Turn] [Once Per Turn] If a Character is rested by your effect\" — needs on_char_rested_by_own_effect"
     }
   },
   {
@@ -67147,7 +67157,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -67165,7 +67175,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "only on_play (Main) trigger; text reads [Main]/[Counter] — counter branch missing"
     }
   },
   {
@@ -67290,7 +67301,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "trigger on_own_char_removed_by_opp_effect only fires on effect-removal; text \"removed from the field by your opponent's effect OR K.O.'d\" includes battle-KO; also missing trait filter for {Dressrosa}"
     }
   },
   {
@@ -67487,7 +67499,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "bounce target opp_character but text says \"Return up to 1 Character\" (any character)"
     }
   },
   {
@@ -67769,7 +67782,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character but text says \"Place up to 1 Character\" (any character)"
     }
   },
   {
@@ -67795,7 +67809,7 @@
     "effectText": "If you have a {The Tontattas} type Character other than [Bian], this Character gains [Blocker].",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -67809,7 +67823,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition if_owned_other_with_name:\"Bian\" checks for \"another Bian\"; text says \"if you have a {The Tontattas} type Character OTHER than [Bian]\" — needs filter trait:\"The Tontattas\" + nameExcludes:Bian"
     }
   },
   {
@@ -67912,7 +67927,7 @@
     "effectText": "[On Play] You may rest 1 of your {Dressrosa} type Leader or Stage cards, and return 1 of your {Dressrosa} type Characters with a cost of 4 or more to the owner's hand: Return up to 1 of your opponent's Characters with a cost of 4 or less to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -67938,7 +67953,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost {restSelf:true,returnSelfChar:{...}} — restSelf rests THIS character; text says \"rest 1 of your {Dressrosa} type Leader or Stage cards\" — needs restLeaderOrStageFilter:{trait:\"Dressrosa\"}"
     }
   },
   {
