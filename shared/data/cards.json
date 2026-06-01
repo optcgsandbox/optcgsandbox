@@ -45950,7 +45950,7 @@
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 2
           },
           "cost": {
