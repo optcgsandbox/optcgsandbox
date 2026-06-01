@@ -857,16 +857,36 @@ export function applyActionV2(
     // ── Action group 2 — Sub-phase A.3.4 ──────────────────────────
     case 'power_buff': {
       const delta = resolveMagnitude(state, ctx.controller, action.magnitude, 1000);
+      // EB01-001 + others: `duration: 'opp_next_turn'` means the buff must
+      // survive caster's endTurn and only clear at the boundary that ends
+      // opp's next turn (i.e. one extra cycle). Default (this_turn / this_battle
+      // / undefined) keeps legacy "clear at next endTurn" semantics.
+      const extraTurns = action.duration === 'opp_next_turn' ? 1 : 0;
       for (const tid of targets) {
         const inst = state.instances[tid];
         if (!inst) continue;
         inst.powerModifier = (inst.powerModifier ?? 0) + delta;
+        if (extraTurns > 0) {
+          inst.powerModifierExpiresInTurns = Math.max(
+            inst.powerModifierExpiresInTurns ?? 0,
+            extraTurns,
+          );
+        }
         // Mirror on per-zone struct so legality reads see the delta.
         for (const pid of ['A', 'B'] as PlayerId[]) {
           const pl = state.players[pid];
-          if (pl.leader.instanceId === tid) pl.leader.powerModifier = inst.powerModifier;
-          for (const f of pl.field) if (f.instanceId === tid) f.powerModifier = inst.powerModifier;
-          if (pl.stage && pl.stage.instanceId === tid) pl.stage.powerModifier = inst.powerModifier;
+          if (pl.leader.instanceId === tid) {
+            pl.leader.powerModifier = inst.powerModifier;
+            pl.leader.powerModifierExpiresInTurns = inst.powerModifierExpiresInTurns;
+          }
+          for (const f of pl.field) if (f.instanceId === tid) {
+            f.powerModifier = inst.powerModifier;
+            f.powerModifierExpiresInTurns = inst.powerModifierExpiresInTurns;
+          }
+          if (pl.stage && pl.stage.instanceId === tid) {
+            pl.stage.powerModifier = inst.powerModifier;
+            pl.stage.powerModifierExpiresInTurns = inst.powerModifierExpiresInTurns;
+          }
         }
       }
       return state;

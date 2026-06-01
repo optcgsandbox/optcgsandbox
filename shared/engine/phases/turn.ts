@@ -142,24 +142,34 @@ export function endTurn(state: GameState): GameState {
   // effect, or the inactive player's target — both end at this boundary).
   // Mirror via state.instances map AND each per-zone struct since other
   // engine paths read from per-zone.
-  for (const pid of ['A', 'B'] as PlayerId[]) {
-    const pl = next.players[pid];
-    delete pl.leader.powerModifier;
-    delete pl.leader.costModifier;
-    for (const f of pl.field) {
-      delete f.powerModifier;
-      delete f.costModifier;
+  // EB01-001 + others: `power_buff` with `duration: 'opp_next_turn'` stamps
+  // `powerModifierExpiresInTurns` so the buff survives caster's endTurn and
+  // clears only at the next endTurn boundary (start of caster's next turn).
+  // Decrement when > 0, clear when reaches 0. costModifier remains turn-scoped
+  // for now (no card uses cost duration > this_turn yet — added when needed).
+  // Per-zone structs (leader, field[], stage) share references with
+  // `next.instances` after structuredClone (structuredClone preserves
+  // shared refs). To avoid double-ticking the same instance — which would
+  // decrement `powerModifierExpiresInTurns` twice and wipe an opp_next_turn
+  // buff that should still be live — we tick each instance exactly once via
+  // the instances map, and clear `costModifier` (no duration tracking) in
+  // the same single pass.
+  const tickPower = (i: { powerModifier?: number; powerModifierExpiresInTurns?: number }) => {
+    if ((i.powerModifierExpiresInTurns ?? 0) > 0) {
+      i.powerModifierExpiresInTurns = (i.powerModifierExpiresInTurns ?? 0) - 1;
+    } else {
+      delete i.powerModifier;
+      delete i.powerModifierExpiresInTurns;
     }
-    if (pl.stage) {
-      delete pl.stage.powerModifier;
-      delete pl.stage.costModifier;
-    }
-    // V3-2: nextPlayCostModifier expires at end of turn if not consumed by a play.
-    delete pl.nextPlayCostModifier;
-  }
+  };
   for (const id in next.instances) {
-    delete next.instances[id].powerModifier;
-    delete next.instances[id].costModifier;
+    const inst = next.instances[id];
+    tickPower(inst);
+    delete inst.costModifier;
+  }
+  // V3-2: nextPlayCostModifier expires at end of turn if not consumed by a play.
+  for (const pid of ['A', 'B'] as PlayerId[]) {
+    delete next.players[pid].nextPlayCostModifier;
   }
 
   next.history.push({ type: 'TURN_ENDED', player: next.activePlayer });

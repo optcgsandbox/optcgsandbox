@@ -71,6 +71,13 @@ export interface CardInstance {
    *  reads as 0 power until end-of-turn. Cleared in `endTurn` per CR §4-12
    *  (effect lasts "the specified duration" — v0 covers turn-scoped only). */
   powerModifier?: number;
+  /** EB01-001 + others: how many additional endTurn boundaries `powerModifier`
+   *  must survive before being cleared. Set when an effect with
+   *  `duration: 'opp_next_turn'` writes a power buff — the buff is meant to
+   *  persist through opp's next turn, expiring at the start of the caster's
+   *  next turn (i.e. one extra endTurn cycle). Default behaviour (no field /
+   *  0) is the legacy `this_turn` semantic: clear at the first endTurn. */
+  powerModifierExpiresInTurns?: number;
   /** V3-2: turn-scoped cost delta. Added to `card.cost` whenever a consumer
    *  checks this instance's effective cost (e.g. "KO a char of cost ≤ 3").
    *  Set by `removal_cost_reduce` to a negative number. Cleared in `endTurn`
