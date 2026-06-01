@@ -92208,7 +92208,7 @@
     "effectText": "[On K.O.] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): K.O. or rest up to 1 of your opponent's Characters with a base power of 6000 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -92244,7 +92244,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "two clauses (KO + rest) each with cost donCostReturnToDeck:1 — would double-pay; text \"K.O. OR rest up to 1 of your opponent's Characters\" is choose_one between two effects with a single shared cost"
     }
   },
   {
@@ -92299,7 +92300,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "action ramp magnitude:1 with no rested field; text \"add up to 1 DON!! card from your DON!! deck and SET IT AS ACTIVE\" — needs rested:false"
     }
   },
   {
@@ -92547,7 +92549,7 @@
     "effectText": "[On Play] DON!! −3: Choose one:<br>• If your Leader has the {Donquixote Pirates} type, K.O. up to 1 of your opponent's Characters with a cost of 8 or less.<br>• Up to 3 of your opponent's Characters with a cost of 7 or less cannot be rested until the end of your opponent's next End Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -92594,7 +92596,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second choose_one option action rest_lock_until_phase prevents becoming active in refresh; text \"cannot be RESTED until the end of your opponent's next End Phase\" prevents resting (needs rest_immunity); also missing count:3 on the target"
     }
   },
   {
@@ -92648,7 +92651,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "replacement trigger would_be_removed; text \"When this Character BECOMES RESTED by your opponent's Character's effect\" — different trigger context (rested via opp effect, not removed)"
     }
   },
   {
@@ -92742,7 +92746,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause action ramp magnitude:1 with no rested field; text \"add up to 1 DON!! card from your DON!! deck and SET IT AS ACTIVE\" — needs rested:false"
     }
   },
   {
@@ -92800,7 +92805,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -92837,7 +92842,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second + third clauses use cost discardHand:1 + action draw 2 vs sequential \"Draw 2 cards and trash 1 card from your hand. Then, add up to 2 DON!! cards...\" — sequential effects with the trash being a sequential effect, not a cost"
     }
   },
   {
@@ -93042,7 +93048,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93084,7 +93090,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause target your_leader_or_character (any); text \"Then, that card gains an additional +2000 power\" must reference the same card from clause 1 (same-target tracking)"
     }
   },
   {
@@ -93113,7 +93120,7 @@
     "effectText": "All of your opponent's Characters cannot be removed from the field by your effects.<br>[Activate: Main] [Once Per Turn] You may K.O. 1 of your Characters with a type including \"Baroque Works\": Give up to 1 of your opponent's Characters −10 cost during this turn. Then, you may trash 2 cards from the top of your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -93160,7 +93167,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous aura_immunity against:opp_removal (own chars immune from opp effects); text \"All of your opponent's Characters cannot be removed from the field by your effects\" — opp's chars immune from YOUR effects (needs against:self_removal on opp chars)"
     }
   },
   {
@@ -93588,7 +93596,7 @@
     "effectText": "[On Play] If your Leader's type includes \"Baroque Works\", look at 4 cards from the top of your deck; reveal up to 1 card with a type including \"Baroque Works\" other than [Miss.Valentine(Mikita)] and add it to your hand. Then, trash the rest.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93609,7 +93617,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek default disposes rest to bottom; text \"Then, trash the rest\" — trash-rest semantics not encoded"
     }
   },
   {
@@ -93750,7 +93759,7 @@
     "effectText": "If there is a Character with a cost of 0 or with a cost of 8 or more, this Character can attack Characters on the turn in which it is played.<br>[On Play] Rest up to 1 of your opponent's Characters with a cost of 0.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93789,7 +93798,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition only checks opp characters (if_opp_chars_max_cost OR if_opp_chars_min_cost); text \"If there is A CHARACTER with a cost of 0 or with a cost of 8 or more\" — covers any character (own or opp), needs check across both sides"
     }
   },
   {
@@ -94177,7 +94187,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -94194,7 +94204,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek default disposes rest to bottom; text \"Then, trash the rest\" — trash-rest semantics not encoded"
     }
   },
   {
@@ -94271,7 +94282,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "condition or only checks opp characters; text \"If there is a Character with a cost of 0 or with a cost of 8 or more\" — covers any character (own or opp)"
     }
   },
   {
@@ -94299,7 +94311,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -94316,7 +94328,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek default disposes rest to bottom; text \"Then, trash the rest\" — trash-rest semantics not encoded"
     }
   },
   {
@@ -95274,7 +95287,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_become_rested",
@@ -95307,7 +95320,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause action rest_lock_until_phase prevents becoming active in refresh; text \"cannot be RESTED until the end of your opponent's next End Phase\" prevents resting (needs rest_immunity); second clause target your_character, text \"Leader or Character cards\" needs your_leader_or_character"
     }
   },
   {
