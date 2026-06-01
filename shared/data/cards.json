@@ -9527,7 +9527,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "add_to_own_life_top has no Trigger filter; text says \"Character card with a [Trigger]\""
     }
   },
   {
@@ -9875,7 +9876,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "missing continuous: opp-turn Navy leader base power becomes 7000"
     }
   },
   {
@@ -10193,7 +10195,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: 1st clause cost donCost:1 approximates \"give 1 active DON to Silvers Rayleigh\" — semantic mismatch"
     }
   },
   {
@@ -10308,7 +10311,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "chained_actions draw 1 + discard 1 fixed values; text says \"for each Neptunian char\" (variable)"
     }
   },
   {
@@ -10544,7 +10548,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "restSelf cost rests source; text says \"rest 1 of your cards\" (any own card)"
     }
   },
   {
@@ -10776,7 +10781,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "restSelf cost; text says \"rest 1 of your cards\" (any own char)"
     }
   },
   {
@@ -10906,7 +10912,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "activate main target your_leader only; text says \"Leader or 1 of your Characters\""
     }
   },
   {
@@ -10972,7 +10979,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "mill_opp mills opp deck; text says opp places 2 cards from HAND at deck bottom — needs opp_bottom_of_deck_from_hand"
     }
   },
   {
@@ -11127,7 +11135,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "2nd clause mill_opp:1; text says opp places 1 card from HAND at deck bottom"
     }
   },
   {
