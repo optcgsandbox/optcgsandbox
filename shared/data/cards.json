@@ -1682,8 +1682,9 @@
           "action": {
             "kind": "ramp",
             "magnitude": 1,
-            "rested": true
+            "rested": false
           },
+          "opt": true,
           "verified": "human-reviewed"
         }
       ],
@@ -1697,8 +1698,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged",
-      "auditNote": "OPT not set on on_opp_attack clause despite [Once Per Turn]"
+      "verified": "human-reviewed"
     }
   },
   {
