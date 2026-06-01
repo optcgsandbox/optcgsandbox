@@ -97,6 +97,9 @@ function canPayCost(
     const inst = state.instances[sourceInstanceId];
     if (!inst || inst.rested) return false;
   }
+  if (cost.restLeader) {
+    if (me.leader.rested) return false;
+  }
   if (cost.trashSelf) {
     const inst = state.instances[sourceInstanceId];
     if (!inst) return false;
@@ -184,6 +187,11 @@ function payCost(
   if (cost.restSelf) {
     const inst = state.instances[sourceInstanceId];
     if (inst) inst.rested = true;
+  }
+  if (cost.restLeader) {
+    me.leader.rested = true;
+    const leaderInst = state.instances[me.leader.instanceId];
+    if (leaderInst) leaderInst.rested = true;
   }
   if (cost.trashSelf) {
     const inst = state.instances[sourceInstanceId];

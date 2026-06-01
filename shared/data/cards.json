@@ -33653,11 +33653,14 @@
             "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "cost": {
+            "restLeader": true
+          }
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -33932,11 +33935,12 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "restSelf": true
+            "restLeader": true
           },
           "action": {
-            "kind": "cost_reduction",
-            "magnitude": 4
+            "kind": "removal_cost_reduce",
+            "magnitude": 4,
+            "duration": "this_turn"
           },
           "target": {
             "kind": "opp_character"
@@ -33945,7 +33949,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34087,7 +34091,7 @@
           },
           "verified": "flagged",
           "cost": {
-            "restSelf": true
+            "restLeader": true
           }
         },
         {
@@ -34104,7 +34108,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35557,11 +35561,15 @@
             }
           },
           "verified": "flagged",
-          "opt": true
+          "opt": true,
+          "condition": {
+            "type": "if_self_power_min",
+            "n": 7000
+          }
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35613,11 +35621,15 @@
           "target": {
             "kind": "opp_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "condition": {
+            "type": "if_self_power_min",
+            "n": 7000
+          }
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {

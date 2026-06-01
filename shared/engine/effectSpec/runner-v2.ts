@@ -225,6 +225,12 @@ export function evaluateConditionV2(
       const card = state.cardLibrary[attackerInst.cardId];
       return card?.attribute === cond.attribute;
     }
+    case 'if_self_power_min': {
+      if (!sourceInstanceId) return false;
+      const inst = state.instances[sourceInstanceId];
+      if (!inst) return false;
+      return effectivePower(state, inst) >= cond.n;
+    }
 
     // ── Composite ───────────────────────────────────────────────────
     case 'and':

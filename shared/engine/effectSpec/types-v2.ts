@@ -90,6 +90,7 @@ export type EffectConditionV2 =
   | { type: 'if_have_given_don_min'; n: number }                        // (gap #59, OP12-015)
   | { type: 'if_field_total_cost_min'; n: number }
   | { type: 'if_attacker_has_attribute'; attribute: string }            // (gap #92) — for on_opp_attack-style triggers
+  | { type: 'if_self_power_min'; n: number }                            // OP05-004 etc. — "if this Character has N power or more"
   // Composite — short-circuit AND/OR
   | { type: 'and'; conditions: EffectConditionV2[] }
   | { type: 'or'; conditions: EffectConditionV2[] }
@@ -153,6 +154,7 @@ export interface EffectCostV2 {
   discardHand?: number;         // (gap #10)
   flipLife?: number;            // (gap #35) — turn N top Life cards face-up (or face-down per text)
   restSelf?: boolean;           // many cards
+  restLeader?: boolean;         // OP04-082/088/091 etc. — "rest your 1 Leader"
   trashSelf?: boolean;          // EB01-013 etc.
   revealHand?: { count: number; filter?: TargetFilter };  // (gap #90)
   koSelfCharacter?: { filter?: TargetFilter };            // (gap #54)
