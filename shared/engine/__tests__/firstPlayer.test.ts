@@ -289,20 +289,22 @@ describe('D15: at-start-of-game effects', () => {
     });
   }
 
-  it('leader with [draw] effectTag draws an extra card at game start', () => {
+  // Post-2026-06-01: V1 tag-based at_start_of_game fallback is REMOVED.
+  // Cards with `effectTags: ['draw' | 'ramp' | 'searcher' | 'lifegain']` no
+  // longer ghost-fire game-start effects. V2 cardEffectSpecs (`effectSpecV2`)
+  // are now the sole authority. These tests pin the new contract.
+
+  it('leader with [draw] effectTag does NOT draw extra at game start (V1 fallback removed)', () => {
     let s = setupGame(buildWithLeader(makeDrawLeader('LA_DRAW'), makeLeader('LB')));
     s = rollUntilWinner(s);
     const winner = s.activePlayer;
-    // Whichever player wins, make A the chooser AND first so we can assert
-    // A's hand grows. If B won, choose B-as-first so we test the other side too.
     if (winner === 'A') {
       s = chooseFirstPlayer(s, 'A', 'A');
     } else {
       s = chooseFirstPlayer(s, 'B', 'B');
     }
-    // A has a draw leader. Whichever player was chooser fires first.
-    expect(s.players.A.hand).toHaveLength(RULES.STARTING_HAND + 1);
-    // B has a vanilla leader, no draw, hand size unchanged.
+    // Without a V2 spec authorizing it, the [draw] tag alone must NOT fire.
+    expect(s.players.A.hand).toHaveLength(RULES.STARTING_HAND);
     expect(s.players.B.hand).toHaveLength(RULES.STARTING_HAND);
   });
 
@@ -314,18 +316,13 @@ describe('D15: at-start-of-game effects', () => {
     expect(s.players.B.hand).toHaveLength(RULES.STARTING_HAND);
   });
 
-  it('both leaders with [draw] each draw once at game start', () => {
+  it('both leaders with [draw] effectTag: no V1 ghost-fire either side', () => {
     let s = setupGame(buildWithLeader(makeDrawLeader('LA'), makeDrawLeader('LB')));
     s = rollUntilWinner(s);
     const winner = s.activePlayer;
     s = chooseFirstPlayer(s, winner, winner);
-    // Each player draws once via at_start_of_game.
-    expect(s.players.A.hand).toHaveLength(RULES.STARTING_HAND + 1);
-    expect(s.players.B.hand).toHaveLength(RULES.STARTING_HAND + 1);
-    // CR §5-2-1-5-1 chooser-first ordering is enforced by chooseFirstPlayer
-    // calling fireEffects on the chooser before the other player. Templates
-    // don't currently emit history events on draw, so the ordering is
-    // structural (not log-verifiable). Skipping a history-order assertion
-    // here is intentional.
+    // V1 fallback removed: neither leader draws via the tag-only path.
+    expect(s.players.A.hand).toHaveLength(RULES.STARTING_HAND);
+    expect(s.players.B.hand).toHaveLength(RULES.STARTING_HAND);
   });
 });

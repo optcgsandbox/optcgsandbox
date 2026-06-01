@@ -105,16 +105,12 @@ const TAGS_BY_TRIGGER: Record<EffectTrigger, ReadonlySet<EffectTag>> = {
     'move_to_top',
   ]),
   // D15 (CR §5-2-1-5-1): at-start-of-game effects fire after first/second is
-  // chosen, before the mulligan window opens. No field exists yet so removal /
-  // power_buff / cost_reduction make no sense. Searcher / draw / ramp /
-  // lifegain (the typical "draw N" or "search and add to hand" pattern) are
-  // the v0 surface.
-  at_start_of_game: new Set<EffectTag>([
-    'searcher',
-    'draw',
-    'ramp',
-    'lifegain',
-  ]),
+  // chosen, before the mulligan window opens. V1 tag-based fallback removed
+  // 2026-06-01 — extracted effectTags ('ramp', 'draw', etc.) were ghost-firing
+  // game-start effects on cards whose printed text never authorized them
+  // (e.g., adding DON to opp before their actual DON phase). V2 card specs
+  // (cardEffectSpecs) are now the sole authority for game-start effects.
+  at_start_of_game: new Set<EffectTag>(),
   // Phase D / D11 (CR §10-1-5): when a life card with [Trigger] is flipped
   // and the controller activates, fire the same effect-tag surface as on_play.
   // Card-level trigger semantics (exile/banish/special play) are NOT here —
