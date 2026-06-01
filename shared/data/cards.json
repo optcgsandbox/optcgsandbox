@@ -3588,7 +3588,7 @@
             ]
           },
           "action": {
-            "kind": "ramp",
+            "kind": "give_don_to_target",
             "magnitude": 1,
             "rested": true
           },
