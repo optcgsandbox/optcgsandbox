@@ -123,6 +123,18 @@ export function evaluateConditionV2(
       ).length;
       return charCount >= cond.n;
     }
+    case 'if_own_chars_min_rested': {
+      const count = me.field.filter(
+        (inst) => state.cardLibrary[inst.cardId]?.kind === 'character' && inst.rested,
+      ).length;
+      return count >= cond.n;
+    }
+    case 'if_opp_chars_min_rested': {
+      const count = opp.field.filter(
+        (inst) => state.cardLibrary[inst.cardId]?.kind === 'character' && inst.rested,
+      ).length;
+      return count >= cond.n;
+    }
     case 'if_own_chars_min_cost': {
       const match = me.field.filter((inst) => {
         const card = state.cardLibrary[inst.cardId];

@@ -15607,13 +15607,17 @@
             "magnitude": 1
           },
           "verified": "human-reviewed",
-          "opt": true
+          "opt": true,
+          "condition": {
+            "type": "if_own_chars_min_rested",
+            "n": 2
+          }
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -25180,7 +25184,13 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 3
+            "donCost": 3,
+            "restOwnCharFilter": {
+              "count": 2,
+              "filter": {
+                "trait": "East Blue"
+              }
+            }
           },
           "action": {
             "kind": "set_active"
@@ -25194,7 +25204,13 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 3
+            "donCost": 3,
+            "restOwnCharFilter": {
+              "count": 2,
+              "filter": {
+                "trait": "East Blue"
+              }
+            }
           },
           "action": {
             "kind": "rest_target"
@@ -25212,7 +25228,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -37386,7 +37402,7 @@
             "kind": "removal_ko"
           },
           "target": {
-            "kind": "all_opp_characters",
+            "kind": "all_characters",
             "filter": {
               "costMax": 5,
               "rested": true
@@ -49826,7 +49842,7 @@
     "effectText": "[When Attacking] DON!! −3 (You may return the specified number of DON!! cards from your field to your DON!! deck.): If you have 3 or more {Foxy Pirates} type Characters, select your opponent's rested Leader and up to 1 Character card. The selected cards will not become active in your opponent's next Refresh Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -49848,7 +49864,8 @@
             "until": "opp_next_end_phase"
           },
           "target": {
-            "kind": "opp_character",
+            "kind": "opp_leader_or_character",
+            "count": 2,
             "filter": {
               "rested": true
             }
@@ -60818,7 +60835,7 @@
                 "trait": "ODYSSEY"
               },
               {
-                "type": "if_own_chars_min",
+                "type": "if_own_chars_min_rested",
                 "n": 2
               }
             ]
@@ -66189,7 +66206,7 @@
         {
           "trigger": "on_play",
           "condition": {
-            "type": "if_own_chars_min",
+            "type": "if_own_chars_min_rested",
             "n": 2
           },
           "action": {

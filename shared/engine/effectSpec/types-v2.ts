@@ -84,6 +84,8 @@ export type EffectConditionV2 =
   | { type: 'if_own_deck_min'; n: number }
   // Field state
   | { type: 'if_own_chars_min'; n: number }                             // (gap #14)
+  | { type: 'if_own_chars_min_rested'; n: number }                      // OP01-052 / OP09-041 — ≥N own chars rested
+  | { type: 'if_opp_chars_min_rested'; n: number }                      // OP14-061 etc. — ≥N opp chars rested
   | { type: 'if_own_chars_min_cost'; n: number; minCost: number }
   | { type: 'if_opp_chars_min'; n: number }                             // opp has ≥N chars
   | { type: 'if_opp_chars_min_cost'; n: number; minCost: number }       // opp has ≥N chars with cost ≥ minCost
