@@ -305,6 +305,7 @@ export type EffectActionV2 =
   // EB01-029 Sorry. I'm a Goner — reveal top, if it matches a cost gate,
   // run the inner action (bounce). Otherwise no-op. Card goes to bottom.
   | { kind: 'reveal_top_then_if_cost_min'; minCost: number; thenAction: EffectActionV2 }
+  | { kind: 'reveal_top_then_if_filter'; filter: TargetFilter; thenAction: EffectActionV2 } // matches by trait/name/kind/cost/power
   // EB02-061 etc. — run a sequence of actions in one clause, sharing the cost paid for the clause.
   | { kind: 'chained_actions'; actions: EffectActionV2[] }
   // Misc

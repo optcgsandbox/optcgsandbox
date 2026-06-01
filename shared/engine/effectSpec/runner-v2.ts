@@ -1197,6 +1197,18 @@ export function applyActionV2(
       me.deck.push(topId);
       return state;
     }
+    case 'reveal_top_then_if_filter': {
+      if (me.deck.length === 0) return state;
+      const topId = me.deck[0];
+      const topInst = state.instances[topId];
+      if (topInst && matchesFilter(state, topInst, action.filter)) {
+        applyActionV2(state, ctx, action.thenAction, targets);
+      }
+      // Card goes to bottom of deck regardless.
+      me.deck.shift();
+      me.deck.push(topId);
+      return state;
+    }
     case 'set_base_power_copy_from_target': {
       // First target is the source to copy FROM; remaining targets receive
       // the override. For one-source-one-dest (EB01-061: self copies opp char),

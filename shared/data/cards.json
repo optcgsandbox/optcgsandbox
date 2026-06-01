@@ -55092,23 +55092,26 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "give_keyword",
-            "keyword": "rush",
-            "duration": "this_turn"
+            "kind": "reveal_top_then_if_filter",
+            "filter": {
+              "typeIncludes": "Whitebeard Pirates"
+            },
+            "thenAction": {
+              "kind": "give_keyword",
+              "keyword": "Rush",
+              "duration": "this_turn"
+            }
           },
           "target": {
             "kind": "self"
           },
-          "verified": "flagged",
-          "condition": {
-            "type": "always"
-          }
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -90184,8 +90187,10 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "reveal_top_then_if_cost_min",
-            "minCost": 0,
+            "kind": "reveal_top_then_if_filter",
+            "filter": {
+              "typeIncludes": "Whitebeard Pirates"
+            },
             "thenAction": {
               "kind": "chained_actions",
               "actions": [
@@ -90200,7 +90205,7 @@
               ]
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -90213,7 +90218,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -97929,20 +97934,22 @@
     "effectText": "[On Play] Reveal 1 card from the top of your deck. If the revealed card has a cost of 2 or less, add up to 1 DON!! card from your DON!! deck and rest it.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "action": {
-            "kind": "reveal_top_then_if_cost_min",
-            "minCost": 0,
+            "kind": "reveal_top_then_if_filter",
+            "filter": {
+              "costMax": 2
+            },
             "thenAction": {
               "kind": "ramp",
               "magnitude": 1,
               "rested": true
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -116707,25 +116714,30 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "action": {
-            "kind": "reveal_top_and_conditional_play",
+            "kind": "reveal_top_then_if_filter",
             "filter": {
               "typeIncludes": "The Seven Warlords of the Sea"
+            },
+            "thenAction": {
+              "kind": "chained_actions",
+              "actions": [
+                {
+                  "kind": "draw",
+                  "magnitude": 2
+                },
+                {
+                  "kind": "bottom_of_deck_from_hand",
+                  "magnitude": 1
+                }
+              ]
             }
           },
-          "verified": "flagged"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "draw",
-            "magnitude": 2
-          },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -118594,9 +118606,13 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "reveal_top_and_conditional_play",
+            "kind": "reveal_top_then_if_filter",
             "filter": {
               "typeIncludes": "Whitebeard Pirates"
+            },
+            "thenAction": {
+              "kind": "draw",
+              "magnitude": 2
             }
           },
           "verified": "human-reviewed"
@@ -118612,7 +118628,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -118731,25 +118747,30 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "action": {
-            "kind": "reveal_top_and_conditional_play",
+            "kind": "reveal_top_then_if_filter",
             "filter": {
               "typeIncludes": "Whitebeard Pirates"
+            },
+            "thenAction": {
+              "kind": "chained_actions",
+              "actions": [
+                {
+                  "kind": "draw",
+                  "magnitude": 2
+                },
+                {
+                  "kind": "discard_from_hand",
+                  "magnitude": 1
+                }
+              ]
             }
           },
-          "verified": "flagged"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "draw",
-            "magnitude": 2
-          },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -118780,29 +118801,25 @@
     "effectText": "[Activate: Main] [Once Per Turn] Reveal 1 card from the top of your deck. If that card's type includes \"Whitebeard Pirates\", give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
           "action": {
-            "kind": "reveal_top_and_conditional_play",
+            "kind": "reveal_top_then_if_filter",
             "filter": {
               "typeIncludes": "Whitebeard Pirates"
+            },
+            "thenAction": {
+              "kind": "give_don_to_target",
+              "magnitude": 1,
+              "rested": true
             }
           },
-          "verified": "flagged"
-        },
-        {
-          "trigger": "activate_main",
-          "action": {
-            "kind": "give_don_to_target",
-            "magnitude": 1,
-            "rested": true
-          },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -118980,29 +118997,25 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
           "action": {
-            "kind": "reveal_top_and_conditional_play",
+            "kind": "reveal_top_then_if_filter",
             "filter": {
               "typeIncludes": "Whitebeard Pirates"
+            },
+            "thenAction": {
+              "kind": "power_buff",
+              "magnitude": 1000,
+              "duration": "opp_next_turn"
             }
-          },
-          "verified": "flagged"
-        },
-        {
-          "trigger": "when_attacking",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "opp_next_turn"
           },
           "target": {
             "kind": "self"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -119184,29 +119197,25 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "action": {
-            "kind": "reveal_top_and_conditional_play",
+            "kind": "reveal_top_then_if_filter",
             "filter": {
               "typeIncludes": "Whitebeard Pirates"
+            },
+            "thenAction": {
+              "kind": "power_buff",
+              "magnitude": 4000,
+              "duration": "this_battle"
             }
           },
-          "verified": "flagged"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
