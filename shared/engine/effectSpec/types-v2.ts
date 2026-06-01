@@ -200,6 +200,8 @@ export interface EffectCostV2 {
   revealHand?: { count: number; filter?: TargetFilter };  // (gap #90)
   koSelfCharacter?: { filter?: TargetFilter };            // (gap #54)
   bottomOfDeckFromTrash?: number;                          // (gap #48) "place N cards from your trash at bottom"
+  /** EB01-043 etc. — "place N cards with type X (filter) from your trash at the bottom of deck". */
+  bottomOfDeckFromTrashFilter?: { count: number; filter: TargetFilter };
   bottomOfDeckFromHand?: number;                           // EB01-030 Loguetown — place N cards from hand at bottom
   bottomOfDeckSelf?: boolean;                              // EB01-030 — place THIS card at bottom of deck
   lifeToHand?: number;                                     // EB01-056 — pay-cost variant: move N life to hand

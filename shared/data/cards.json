@@ -2104,7 +2104,12 @@
         {
           "trigger": "on_play",
           "cost": {
-            "bottomOfDeckFromTrash": 3
+            "bottomOfDeckFromTrashFilter": {
+              "count": 3,
+              "filter": {
+                "typeIncludes": "CP"
+              }
+            }
           },
           "action": {
             "kind": "play_for_free",
@@ -2123,8 +2128,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged",
-      "auditNote": "cost.bottomOfDeckFromTrash:3 has no CP trait filter — text requires CP type cards as cost"
+      "verified": "human-reviewed"
     }
   },
   {

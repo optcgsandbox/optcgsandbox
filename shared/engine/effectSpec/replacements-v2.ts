@@ -161,6 +161,19 @@ function canPayCost(
     if (matches.length === 0) return false;
   }
   if (typeof cost.bottomOfDeckFromTrash === 'number' && me.trash.length < cost.bottomOfDeckFromTrash) return false;
+  if (cost.bottomOfDeckFromTrashFilter) {
+    const { count, filter } = cost.bottomOfDeckFromTrashFilter;
+    const matches = me.trash.filter((id) => {
+      const inst = state.instances[id];
+      const card = inst ? state.cardLibrary[inst.cardId] : undefined;
+      if (!card) return false;
+      if (filter.typeIncludes && !card.traits?.some((t) => t.includes(filter.typeIncludes!))) return false;
+      if (filter.trait && !card.traits?.includes(filter.trait)) return false;
+      if (filter.kind && card.kind !== filter.kind) return false;
+      return true;
+    });
+    if (matches.length < count) return false;
+  }
   if (typeof cost.bottomOfDeckFromHand === 'number' && me.hand.length < cost.bottomOfDeckFromHand) return false;
   if (cost.bottomOfDeckSelf) {
     const inst = state.instances[sourceInstanceId];
@@ -337,6 +350,26 @@ function payCost(
   if (typeof cost.bottomOfDeckFromTrash === 'number') {
     for (let i = 0; i < cost.bottomOfDeckFromTrash && me.trash.length > 0; i++) {
       me.deck.push(me.trash.shift()!);
+    }
+  }
+  if (cost.bottomOfDeckFromTrashFilter) {
+    const { count, filter } = cost.bottomOfDeckFromTrashFilter;
+    let moved = 0;
+    for (let i = 0; i < me.trash.length && moved < count;) {
+      const id = me.trash[i];
+      const inst = state.instances[id];
+      const card = inst ? state.cardLibrary[inst.cardId] : undefined;
+      const match = !!card
+        && (!filter.typeIncludes || card.traits?.some((t) => t.includes(filter.typeIncludes!)))
+        && (!filter.trait || card.traits?.includes(filter.trait))
+        && (!filter.kind || card.kind === filter.kind);
+      if (match) {
+        me.trash.splice(i, 1);
+        me.deck.push(id);
+        moved++;
+      } else {
+        i++;
+      }
     }
   }
   if (typeof cost.bottomOfDeckFromHand === 'number') {
