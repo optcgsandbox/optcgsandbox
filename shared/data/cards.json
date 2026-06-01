@@ -86033,7 +86033,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -86075,7 +86075,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous aura_power_buff magnitude:0 is a no-op; text \"Your Leader and all of your Characters that do not have a type including \\\"Roger Pirates\\\" have their effects negated\" — needs aura_negate_effects filter typeExcludes:Roger Pirates"
     }
   },
   {
@@ -86184,7 +86185,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second chained action set_active_don:1 fires immediately; text \"add up to 1 DON!! card from your DON!! deck and set it as active AT THE END OF THIS TURN\" — delayed timing not encoded"
     }
   },
   {
@@ -86750,7 +86752,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause has only one removal_ko target ≤4000; text says \"K.O. up to 1 of your opponent's Characters with 4000 base power or less AND up to 1 of your opponent's Characters with 3000 base power or less\" — second KO ≤3000 missing"
     }
   },
   {
@@ -86791,7 +86794,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "trigger on_own_char_removed_by_opp_effect has no trait filter; text scopes to \"your Character with a type including \\\"Roger Pirates\\\"\""
     }
   },
   {
@@ -86822,7 +86826,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -86855,7 +86859,8 @@
             "kind": "stage"
           }
         }
-      }
+      },
+      "auditNote": "activate_main cost only discardHandFilter:typeIncludes:Celestial Dragons; text says \"trash 1 of your {Celestial Dragons} type Characters OR 1 card from your hand\" — alternate cost branch (trash any 1 from hand) missing"
     }
   },
   {
@@ -86982,7 +86987,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "give_don_to_target target your_leader; text \"your Leader or 1 of your Characters\" — needs your_leader_or_character"
     }
   },
   {
@@ -87097,7 +87103,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes on_play searcher_peek; missing \"If you have 7 or more cards in your trash, this Character cannot be removed from the field by your opponent's effects\" continuous immunity"
     }
   },
   {
@@ -87124,7 +87131,7 @@
     "effectText": "If you have 7 or more cards in your trash, this Character cannot be removed from the field by your opponent's effects.<br>[Your Turn] If you have 10 or more cards in your trash, set the base power of all of your {Five Elders} type Characters to 7000.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -87150,7 +87157,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous aura_power_buff magnitude:7000 ADDS +7000; text \"SET the base power of all of your {Five Elders} type Characters TO 7000\" — set vs add (5000-base becomes 7000 not 12000); also missing is_own_turn for [Your Turn]"
     }
   },
   {
@@ -87202,7 +87210,7 @@
     "effectText": "[On Play] Look at 3 cards from the top of your deck; reveal up to 1 {Celestial Dragons} type card other than [Saint Shalria] and add it to your hand. Then, trash the rest and trash 1 card from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -87230,7 +87238,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause cost discardHand:1 + action discard_from_hand:1 — discards 2 total; text \"and trash 1 card from your hand\" is a single discard effect after the searcher_peek; also \"Then, trash the rest\" — trash-rest semantics on the first clause not encoded"
     }
   },
   {
@@ -87345,7 +87354,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes on_ko draw 1; missing continuous \"If you have 7 or more cards in your trash, this Character cannot be removed from the field by your opponent's effects and gains [Blocker]\""
     }
   },
   {
@@ -87619,7 +87629,7 @@
     "effectText": "[On Play] You may trash 1 card from your hand: If you only have {Celestial Dragons} type Characters, K.O. up to 2 of your opponent's Characters with a base cost of 3 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -87643,7 +87653,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target opp_character missing count:2; text says \"K.O. up to 2 of your opponent's Characters\""
     }
   },
   {
@@ -87671,7 +87682,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -87688,7 +87699,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek default disposes rest to bottom of deck; text \"Then, trash the rest\" — trash-rest semantics not encoded"
     }
   },
   {
@@ -87789,7 +87801,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -87831,7 +87843,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause target opp_character with kind:stage filter — target type mismatch (opp_character implies character); needs opp_stage target type; second clause target your_leader, text \"your Leader or Character cards\" — needs your_leader_or_character"
     }
   },
   {
@@ -87861,7 +87874,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -87906,7 +87919,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "activate_main play_for_free filter missing costMaxFromCount:\"own_don_count\"; text \"Character card with a cost EQUAL TO OR LESS THAN the number of DON!! cards on your field\"; also continuous aura_power_buff filter:kind:character — text gives +1000 to YOUR LEADER, not characters"
     }
   },
   {
@@ -87934,7 +87948,7 @@
     "effectText": "[Your Turn] [Once Per Turn] This effect can be activated when you play a Character with a [Trigger]. Give up to 2 rested DON!! cards to 1 of your Leader or Character cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -87951,7 +87965,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "trigger on_play has no filter; text \"when you play a Character with a [Trigger]\" — needs filter hasTrigger:true; also missing is_own_turn for [Your Turn]"
     }
   },
   {
@@ -88187,7 +88202,7 @@
     "effectText": "[Opponent's Turn] When a [Trigger] activates, this Character gains [Blocker] during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "trigger",
@@ -88207,7 +88222,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "trigger field is placeholder string \"trigger\"; text is the triggered ability \"[Opponent's Turn] When a [Trigger] activates\" — needs proper on_trigger_activate trigger"
     }
   },
   {
@@ -88320,7 +88336,7 @@
     "effectText": "If this Character would be removed from the field by your opponent's effect, you may turn 1 card from the top of your Life cards face-up instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -88337,7 +88353,8 @@
           "conditional": true,
           "verified": "flagged"
         }
-      ]
+      ],
+      "auditNote": "replacement action add_to_own_life_top from:\"own_trash\" — text says \"turn 1 card from the top of your Life cards FACE-UP\" — needs flipLife face-up action, not add-from-trash"
     }
   },
   {
@@ -88486,7 +88503,7 @@
     "effectText": "[On Play] Look at 4 cards from the top of your deck; reveal up to 1 card with a [Trigger] other than [Lilith] and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -88503,7 +88520,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek filter trait:\"Trigger\" treats Trigger as a trait; Trigger is a card attribute — needs filter hasTrigger:true"
     }
   },
   {
@@ -88610,7 +88628,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes first +3000 power_buff (target your_leader); missing \"Then, if your opponent has 2 or less Life cards, up to 1 of your Leader or Character cards gains +1000 power during this turn\" second clause; also first clause target your_leader misses \"or Character\""
     }
   },
   {
@@ -88765,7 +88784,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause restrict_play_self_this_turn with kind_filter:\"character\" blocks all character plays; text restricts to \"Character cards WITH A BASE COST OF 5 OR MORE\" — needs cost-min filter on the restriction"
     }
   },
   {
@@ -88794,7 +88814,7 @@
     "effectText": "If you have 3 or less Life cards, this Character gains [Rush].<br>[On Play] Give up to 1 rested DON!! card to your Leader. Then, you may return up to 1 of your opponent's Characters with a cost of 5 or less to the owner's hand. If you do, your opponent plays up to 1 Character card with a cost of 4 or less from their hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -88834,7 +88854,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause action removal_bounce; missing \"If you do, your opponent plays up to 1 Character card with a cost of 4 or less from their hand\" — opp-trigger-on-bounce tail effect not encoded"
     }
   },
   {
