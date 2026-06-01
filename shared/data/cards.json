@@ -93964,7 +93964,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93978,7 +93978,7 @@
               "costMax": 9
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -93986,7 +93986,22 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "condition": {
+            "type": "or",
+            "conditions": [
+              {
+                "type": "if_opp_chars_max_cost",
+                "n": 1,
+                "maxCost": 0
+              },
+              {
+                "type": "if_opp_chars_min_cost",
+                "n": 1,
+                "minCost": 8
+              }
+            ]
+          }
         },
         {
           "trigger": "on_ko",
@@ -94001,7 +94016,7 @@
               "kind": "character"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -94047,14 +94062,27 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "opt": true
         }
       ],
       "continuous": [
         {
           "condition": {
-            "type": "if_don_min",
-            "n": 1
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_attached_don_min",
+                "n": 1
+              },
+              {
+                "type": "is_opp_turn"
+              },
+              {
+                "type": "if_only_chars_with_trait",
+                "trait": "East Blue"
+              }
+            ]
           },
           "action": {
             "kind": "aura_power_buff",
@@ -94110,7 +94138,15 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "cost": {
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "kind": "event"
+              }
+            }
+          }
         },
         {
           "trigger": "on_opp_attack",
@@ -94122,7 +94158,15 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "cost": {
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "kind": "event"
+              }
+            }
+          }
         },
         {
           "trigger": "activate_main",
@@ -94130,7 +94174,8 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -94163,7 +94208,7 @@
     "effectText": "If this Character would be K.O.'d, you may trash 1 Character card with a power of 6000 or less from your hand instead.<br>[Activate: Main] [Once Per Turn] You may give 1 of your opponent's rested DON!! cards to 1 of your opponent's Characters: Give up to 1 rested DON!! card to its owner's Leader or 1 of their Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -94171,7 +94216,8 @@
             "kind": "give_don_to_opp_target",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         },
         {
           "trigger": "activate_main",
@@ -94183,7 +94229,8 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -94191,15 +94238,21 @@
         {
           "trigger": "would_be_ko",
           "cost": {
-            "discardHand": 1
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "powerMax": 6000,
+                "kind": "character"
+              }
+            }
           },
           "action": {
             "kind": "grant_immunity",
-            "against": "opp_effects",
+            "against": "opp_removal",
             "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ]
     }
@@ -94227,7 +94280,7 @@
     "effectText": "[On Play] If your Leader has 0 power or less, give up to 1 of your opponent's Characters −3000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -94276,7 +94329,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -94292,7 +94345,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -94326,7 +94379,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -94366,7 +94419,7 @@
     "effectText": "[On Play] If your Leader has the {East Blue} type, play up to 1 Character card with a cost of 5 or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -94428,7 +94481,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -94440,7 +94493,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "activate_main",
@@ -94500,7 +94553,8 @@
             "kind": "your_leader"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "opt": true
         }
       ]
     }
@@ -94529,7 +94583,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to its owner's Leader or 1 of their Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -94540,7 +94594,8 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -94573,7 +94628,7 @@
     "effectText": "[Opponent's Turn] If your Leader has the {East Blue} type, this Character gains [Blocker] and +2000 power.<br>[On K.O.] If your Leader has the {East Blue} type, K.O. up to 1 of your opponent's Characters with 6000 base power or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -94590,7 +94645,7 @@
               "powerMax": 6000
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -94662,18 +94717,29 @@
     "effectSpecV2": {
       "clauses": [
         {
+          "trigger": "when_attacking",
+          "action": {
+            "kind": "give_don_to_opp_target",
+            "magnitude": 1
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "human-reviewed"
+        },
+        {
           "trigger": "on_ko",
           "action": {
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -94706,11 +94772,21 @@
             "kind": "grant_keyword_to_self",
             "keyword": "blocker"
           }
+        },
+        {
+          "condition": {
+            "type": "if_leader_power_max",
+            "n": 0
+          },
+          "action": {
+            "kind": "cost_modifier_in_hand",
+            "delta": -2
+          }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -94736,7 +94812,7 @@
     "effectText": "If this Character would be K.O.'d, you may trash 1 Event from your hand instead.<br>[On Play] Activate up to 1 {Dressrosa} type Event with a base cost of 3 or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -94748,7 +94824,7 @@
               "costMax": 3
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -94767,7 +94843,7 @@
             "kind": "self"
           },
           "conditional": true,
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ]
     }
@@ -94796,7 +94872,7 @@
     "effectText": "[On Play] Give up to 1 of your opponent's rested DON!! cards to 1 of your opponent's Characters. Then, give −1000 power during this turn to up to 1 of your opponent's Characters with a DON!! card given.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -94877,7 +94953,33 @@
     ],
     "effectText": "[Blocker]<br>[Activate: Main] [Once Per Turn] You may give 1 of your opponent's rested DON!! cards to 1 of your opponent's Characters: Give up to 1 rested DON!! card to its owner's Leader or 1 of their Characters.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "opt": true,
+          "action": {
+            "kind": "chained_actions",
+            "actions": [
+              {
+                "kind": "give_don_to_opp_target",
+                "magnitude": 1,
+                "target": {
+                  "kind": "opp_character"
+                }
+              },
+              {
+                "kind": "give_don_to_target",
+                "magnitude": 1,
+                "rested": true,
+                "target": {
+                  "kind": "your_leader"
+                }
+              }
+            ]
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -94888,7 +94990,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -94927,7 +95029,11 @@
               "powerMax": 3000
             }
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "condition": {
+            "type": "if_have_given_don_min",
+            "n": 1
+          }
         }
       ],
       "continuous": [],
@@ -94963,7 +95069,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95019,7 +95125,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95092,7 +95198,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95147,7 +95253,7 @@
     "effectText": "Under the rules of this game, you do not lose when your deck has 0 cards. You lose at the end of the turn in which your deck becomes 0 cards.<br>[Activate: Main] [Once Per Turn] Trash 4 cards from the top of your deck. Then, if your deck has 0 cards, set up to 1 of your Characters as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -95155,7 +95261,8 @@
             "kind": "mill_self",
             "magnitude": 4
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         },
         {
           "trigger": "activate_main",
@@ -95165,7 +95272,12 @@
           "target": {
             "kind": "your_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "condition": {
+            "type": "if_own_deck_max",
+            "n": 0
+          },
+          "opt": true
         }
       ],
       "continuous": [],
@@ -95226,7 +95338,8 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -95257,7 +95370,7 @@
     "effectText": "[Opponent's Turn] This Character cannot be rested by your opponent's Leader and Character effects and gains [Blocker].<br>[On K.O.] Rest up to 1 of your opponent's Leader or Character cards with a cost of 7 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -95276,7 +95389,7 @@
       "continuous": [
         {
           "condition": {
-            "type": "during_opp_turn"
+            "type": "is_opp_turn"
           },
           "action": {
             "kind": "grant_keyword_to_self",
@@ -95311,7 +95424,33 @@
     ],
     "effectText": "[Blocker]<br>[On Play] Give up to 2 DON!! cards from your opponent's cost area to 1 of your opponent's Characters. Then, at the end of this turn, up to 1 rested Character with 3 or more DON!! cards given will not become active in your opponent's next Refresh Phase.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "give_don_to_opp_target",
+            "magnitude": 2
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "at_end_of_turn_self",
+          "action": {
+            "kind": "rest_lock_until_phase",
+            "until": "opp_next_end_phase"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "rested": true
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -95360,13 +95499,27 @@
               "trait": "East Blue"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "trashSelf": true
+          },
+          "action": {
+            "kind": "give_don_to_opp_target",
+            "magnitude": 1
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -95392,7 +95545,7 @@
     "effectText": "[On Play] Rest up to 1 of your opponent's Characters with a DON!! card given.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95436,7 +95589,7 @@
     "effectText": "[On Play] If your Leader has the {East Blue} type, give up to 1 DON!! card from your opponent's cost area to 1 of your opponent's Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95481,7 +95634,7 @@
     "effectText": "[On Play] Up to 1 of your opponent's Characters with a cost of 5 or less cannot be rested until the end of your opponent's next End Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95598,7 +95751,7 @@
     "effectText": "[On Play] Rest up to 1 of your opponent's cards.<br>[Activate: Main] You may trash this Character: If your Leader has the {Straw Hat Crew} type, set up to 1 of your Characters with a base cost of 8 or less as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95608,7 +95761,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "activate_main",
@@ -95628,7 +95781,7 @@
               "costMax": 8
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -95660,7 +95813,7 @@
     "effectText": "[On Play] Set your {Fish-Man} type Leader as active. Then, add 1 card from the top of your Life cards to your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95719,7 +95872,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95776,7 +95929,10 @@
             "kind": "your_character"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "cost": {
+            "restSelf": true
+          }
         }
       ]
     }
@@ -95806,7 +95962,7 @@
     "effectText": "[On Play]/[When Attacking] K.O. up to 1 of your opponent's rested Characters with a cost of 4 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95865,7 +96021,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95944,7 +96100,7 @@
               "nameIs": "Krieg"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -95974,7 +96130,30 @@
     "life": 5,
     "effectText": "This Leader cannot attack.<br>[Activate: Main] You may rest this Leader and return 1 of your {Dressrosa} type Characters to the owner's hand: Play up to 1 {Dressrosa} type Character card with a cost of 3 from your hand.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true,
+            "returnSelfChar": {
+              "filter": {
+                "typeIncludes": "Dressrosa"
+              }
+            }
+          },
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "typeIncludes": "Dressrosa",
+              "costMin": 3,
+              "costMax": 3,
+              "kind": "character"
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -95984,7 +96163,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
