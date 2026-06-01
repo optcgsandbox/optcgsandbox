@@ -402,6 +402,7 @@
       "replacements": [
         {
           "trigger": "would_be_ko",
+          "whenSource": "effect",
           "cost": {
             "discardHandFilter": {
               "count": 1,
@@ -547,8 +548,8 @@
             "restSelf": true,
             "bottomOfDeckOwnChar": {
               "filter": {
-                "powerMax": 1000,
-                "powerMin": 1000
+                "basePowerMax": 1000,
+                "basePowerMin": 1000
               }
             }
           },
@@ -1284,7 +1285,7 @@
             "kind": "removal_bounce"
           },
           "target": {
-            "kind": "opp_character",
+            "kind": "any_character",
             "filter": {
               "costMax": 3
             }
@@ -2788,6 +2789,9 @@
       "clauses": [
         {
           "trigger": "on_ko",
+          "condition": {
+            "type": "if_self_kod_by_opp_effect"
+          },
           "action": {
             "kind": "add_to_own_life_top",
             "faceUp": false,
@@ -4265,7 +4269,7 @@
             "kind": "removal_bounce"
           },
           "target": {
-            "kind": "opp_character",
+            "kind": "any_character",
             "filter": {
               "costMax": 1
             }

@@ -96,6 +96,7 @@ export type EffectConditionV2 =
   | { type: 'if_opp_chars_max_cost'; n: number; maxCost: number }       // opp has ≥N chars with cost ≤ maxCost (EB01-045 "cost of 0")
   | { type: 'if_attached_don_min'; n: number }                          // [DON!! xN] — DON attached to SOURCE card
   | { type: 'if_don_returned_count_min'; n: number }                    // EB02-035 — ≥ n DON returned in current on_own_don_returned emission
+  | { type: 'if_self_kod_by_opp_effect' }                               // EB01-057 Shirahoshi — gates on_ko to "by your opponent's effect"
   | { type: 'is_opp_turn' }                                             // EB02-003 [Opponent's Turn] gate
   | { type: 'is_own_turn' }                                             // mirror
   | { type: 'if_only_chars_with_trait'; trait: string }                 // EB02-010 — every char on your field has this trait
@@ -171,6 +172,7 @@ export type EffectTargetV2 =
   | { kind: 'your_character'; filter?: TargetFilter; count?: number }
   | { kind: 'your_leader_or_character'; filter?: TargetFilter; count?: number } // EB01-028 etc.
   | { kind: 'opp_character'; filter?: TargetFilter; count?: number }    // includes cost-capped via filter.costMax (gap #11, #15)
+  | { kind: 'any_character'; filter?: TargetFilter; count?: number }    // EB01-026, EB02-024 — "1 Character" without "opponent's" qualifier (either side)
   | { kind: 'opp_leader_or_character'; filter?: TargetFilter; count?: number } // mirror
   | { kind: 'opp_don_or_character'; filter?: TargetFilter; count?: number } // OP09-036, OP06-020/035, EB03-012/061 — "rest 1 of opp's DON cards or Characters"
   | { kind: 'opp_hand_card'; filter?: TargetFilter }

@@ -701,8 +701,11 @@ function resolveDamage(state: GameState): { state: GameState; events: GameEvent[
           // controller — the player who controlled the dying character. The
           // instance is now in trash; fireEffects still reads it from
           // state.instances which is keyed by instanceId, not zone.
+          const anyNext = next as any;
+          anyNext.lastKoSource = { instanceId: removed.instanceId, source: 'battle' };
           const after = fireEffects(next, removed.instanceId, 'on_ko', koedController);
           Object.assign(next, after);
+          delete anyNext.lastKoSource;
 
           // F2 (EB01-047 Laboon etc.): on_any_char_ko + on_any_opp_char_ko
           // dispatch via spec-clause broadcast.

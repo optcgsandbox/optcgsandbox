@@ -51,12 +51,25 @@ export function tryApplyReplacement(
   trigger: ReplacementTrigger,
   replacements: ReplacementEffectV2[],
 ): ReplacementResult {
-  for (const r of replacements) {
+  for (let i = 0; i < replacements.length; i++) {
+    const r = replacements[i];
     if (r.trigger !== trigger) continue;
     // F4: honor whenSource ('battle' | 'effect') filter. Without `r.whenSource`
     // the replacement fires for any source. If set, ctx.source must match.
     if (r.whenSource && ctx.source && r.whenSource !== ctx.source) continue;
     if (!evaluateConditionV2(state, ctx.controller, r.condition, ctx.sourceInstanceId)) continue;
+
+    // OPT (once_per_turn) enforcement on replacements:
+    // - source-side: card with `once_per_turn` keyword + clause-level `opt: true`
+    // - tracked on the source instance's perTurn.effectsUsed under the
+    //   distinct key `repl:${trigger}:${i}` so it doesn't collide with regular
+    //   clause OPT bookkeeping.
+    const sourceInst = state.instances[ctx.sourceInstanceId];
+    const sourceCard = sourceInst ? state.cardLibrary[sourceInst.cardId] : undefined;
+    const optReplFlag = (r as { opt?: boolean }).opt === true;
+    const cardOpt = !!sourceCard?.keywords?.includes('once_per_turn');
+    const optKey = `repl:${trigger}:${i}`;
+    if (optReplFlag && cardOpt && sourceInst && sourceInst.perTurn.effectsUsed.includes(optKey)) continue;
 
     // Check cost payability.
     if (r.cost && !canPayCost(state, ctx.controller, ctx.sourceInstanceId, r.cost)) {
@@ -78,6 +91,14 @@ export function tryApplyReplacement(
     // Apply the replacement's action.
     const tIds = resolveTargetV2(next, ctx.controller, ctx.sourceInstanceId, (r as unknown as { target?: any }).target);
     next = applyActionV2(next, ctx, r.action, tIds.length > 0 ? tIds : [ctx.sourceInstanceId]);
+
+    // Mark OPT after successful apply.
+    if (optReplFlag && cardOpt) {
+      const inst = next.instances[ctx.sourceInstanceId];
+      if (inst && !inst.perTurn.effectsUsed.includes(optKey)) {
+        inst.perTurn.effectsUsed.push(optKey);
+      }
+    }
 
     return { replaced: true, state: next };
   }
@@ -195,8 +216,11 @@ function canPayCost(
       if (!filter) return true;
       const card = state.cardLibrary[inst.cardId];
       if (!card) return false;
-      if (typeof filter.powerMax === 'number' && (typeof (card as { power?: number }).power !== 'number' || (card as { power: number }).power > filter.powerMax)) return false;
-      if (typeof filter.powerMin === 'number' && (typeof (card as { power?: number }).power !== 'number' || (card as { power: number }).power < filter.powerMin)) return false;
+      const printed = typeof (card as { power?: number }).power === 'number' ? (card as { power: number }).power : -1;
+      if (typeof filter.powerMax === 'number' && (printed < 0 || printed > filter.powerMax)) return false;
+      if (typeof filter.powerMin === 'number' && (printed < 0 || printed < filter.powerMin)) return false;
+      if (typeof filter.basePowerMax === 'number' && (printed < 0 || printed > filter.basePowerMax)) return false;
+      if (typeof filter.basePowerMin === 'number' && (printed < 0 || printed < filter.basePowerMin)) return false;
       if (filter.trait && (!card.traits || !card.traits.includes(filter.trait))) return false;
       return true;
     });
@@ -435,8 +459,11 @@ function payCost(
       if (!filter) return true;
       const card = state.cardLibrary[inst.cardId];
       if (!card) return false;
-      if (typeof filter.powerMax === 'number' && (typeof (card as { power?: number }).power !== 'number' || (card as { power: number }).power > filter.powerMax)) return false;
-      if (typeof filter.powerMin === 'number' && (typeof (card as { power?: number }).power !== 'number' || (card as { power: number }).power < filter.powerMin)) return false;
+      const printed = typeof (card as { power?: number }).power === 'number' ? (card as { power: number }).power : -1;
+      if (typeof filter.powerMax === 'number' && (printed < 0 || printed > filter.powerMax)) return false;
+      if (typeof filter.powerMin === 'number' && (printed < 0 || printed < filter.powerMin)) return false;
+      if (typeof filter.basePowerMax === 'number' && (printed < 0 || printed > filter.basePowerMax)) return false;
+      if (typeof filter.basePowerMin === 'number' && (printed < 0 || printed < filter.basePowerMin)) return false;
       if (filter.trait && (!card.traits || !card.traits.includes(filter.trait))) return false;
       return true;
     });

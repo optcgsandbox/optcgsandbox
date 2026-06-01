@@ -59,13 +59,16 @@ describe('EB01-052 — Viola', () => {
     expect(s.instances['vi'].grantedKeywords).toContain('blocker');
   });
 
-  it('on-play choose_one resolves without error (V0 no-op for both branches)', () => {
+  it('on-play choose_one resolves without error and records the peek observation', () => {
     const s = boot();
-    const before = JSON.stringify(s);
     expect(() =>
       applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, EB01_052.effectSpecV2!.clauses![0].action, []),
     ).not.toThrow();
-    // peek_and_reorder is a no-op in V0; state should be untouched.
-    expect(JSON.stringify(s)).toBe(before);
+    // peek_and_reorder leaves zone order unchanged but stamps state.lastPeek
+    // so future UI/AI can read what the player saw. (choose_one resolves
+    // option 0 = peek_and_reorder_opp_life.)
+    const lastPeek = (s as unknown as { lastPeek?: { zone: string; controller: string } }).lastPeek;
+    expect(lastPeek?.zone).toBe('oppLife');
+    expect(lastPeek?.controller).toBe('A');
   });
 });

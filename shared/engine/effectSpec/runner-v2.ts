@@ -186,6 +186,13 @@ export function evaluateConditionV2(
       const n = (state as any).pendingDonReturned?.[controller] ?? 0;
       return n >= cond.n;
     }
+    case 'if_self_kod_by_opp_effect': {
+      const ks = (state as any).lastKoSource as
+        | { instanceId: string; source: 'opp_effect' | 'own_effect' | 'battle' }
+        | undefined;
+      if (!ks || !sourceInstanceId) return false;
+      return ks.instanceId === sourceInstanceId && ks.source === 'opp_effect';
+    }
     case 'is_opp_turn':
       return state.activePlayer !== controller;
     case 'is_own_turn':
@@ -497,6 +504,18 @@ export function resolveTargetV2(
       return hits.slice(0, n).map((h) => h.instanceId);
     }
 
+    case 'any_character': {
+      // Either side. Without player choice the engine prefers opp targets
+      // first (most common useful play for removal-style effects), then
+      // falls back to own.
+      const all = [
+        ...opp.field.filter((inst) => matchesFilter(state, inst, target.filter)),
+        ...me.field.filter((inst) => matchesFilter(state, inst, target.filter)),
+      ];
+      const n = target.count ?? 1;
+      return all.slice(0, n).map((h) => h.instanceId);
+    }
+
     case 'opp_leader_or_character': {
       const n = target.count ?? 1;
       const out: string[] = [];
@@ -757,7 +776,27 @@ export function applyActionV2(
     case 'peek_and_reorder_own_life':
     case 'peek_and_reorder_opp_life':
     case 'peek_and_reorder_own_deck': {
-      // V0: no UI for reorder; no-op.
+      // The player's text-faithful options are "top in current order" or
+      // "bottom in any order" — the engine picks the most game-useful
+      // deterministic policy: peek the top N, surface them on a transient
+      // state slot so AI / UI can read them, and keep them in current order.
+      // (Keeping current order IS one of the legal "any order" choices, so
+      //  no reorder is text-faithful by default. A future UI/AI hook can
+      //  swap in a chosen ordering.)
+      const zoneKey =
+        action.kind === 'peek_and_reorder_opp_life' ? 'oppLife' :
+        action.kind === 'peek_and_reorder_own_life' ? 'ownLife' :
+        'ownDeck';
+      const source =
+        zoneKey === 'oppLife' ? opp.life :
+        zoneKey === 'ownLife' ? me.life :
+        me.deck;
+      const requested = 'count' in action && typeof (action as any).count === 'number'
+        ? (action as any).count
+        : source.length;
+      const n = Math.min(requested, source.length);
+      const peeked = source.slice(0, n);
+      (state as any).lastPeek = { controller: ctx.controller, zone: zoneKey, ids: peeked };
       return state;
     }
     case 'searcher_peek': {
@@ -1155,6 +1194,20 @@ export function applyActionV2(
           }
         }
         if (koedSide) {
+          // Fire the KO'd char's OWN on_ko clauses (e.g. EB01-057 Shirahoshi,
+          // EB02-036 Nico Robin). Mirrors the battle-KO path which fires
+          // fireEffects(...,'on_ko',...) after trash.
+          // Stash KO-source for if_self_kod_by_opp_effect conditions:
+          // - if removal_ko's controller != koedSide → opp KO'd this char
+          //   via effect → 'opp_effect'
+          // - else (own removal_ko, e.g. self-trash) → 'own_effect'
+          const anyState = state as any;
+          anyState.lastKoSource = {
+            instanceId: tid,
+            source: ctx.controller !== koedSide ? 'opp_effect' : 'own_effect',
+          };
+          state = fireSpecOnInstance(state, tid, 'on_ko', koedSide);
+          delete anyState.lastKoSource;
           // Broadcast on_any_char_ko to BOTH players' field cards
           // (EB01-047 Laboon fires when ANY character is KO'd).
           state = broadcastTriggerToBothFields(state, 'on_any_char_ko');
@@ -1625,5 +1678,32 @@ export function broadcastTriggerToBothFields(
 ): GameState {
   state = broadcastTriggerToOwnField(state, trigger, 'A');
   state = broadcastTriggerToOwnField(state, trigger, 'B');
+  return state;
+}
+
+/** Fire `trigger` clauses on EXACTLY ONE instance (by ID), regardless of
+ *  the instance's current zone. Used for KO'd cards (already in trash) and
+ *  similar zone-free fires where `broadcastTriggerToOwnField` would skip
+ *  the instance because it has left the field. */
+export function fireSpecOnInstance(
+  state: GameState,
+  instanceId: string,
+  trigger: EffectTriggerV2,
+  controller: PlayerId,
+): GameState {
+  const inst = state.instances[instanceId];
+  if (!inst) return state;
+  const card = state.cardLibrary[inst.cardId] as
+    | { effectSpecV2?: { clauses?: EffectClauseV2[] }; keywords?: string[] } | undefined;
+  const clauses = card?.effectSpecV2?.clauses ?? [];
+  const isOpt = !!card?.keywords?.includes('once_per_turn');
+  for (const clause of clauses) {
+    if (clause.trigger !== trigger) continue;
+    if (isOpt && inst.perTurn.effectsUsed.includes(trigger)) continue;
+    if (clause.condition && !evaluateConditionV2(state, controller, clause.condition, instanceId)) continue;
+    const targets = resolveTargetV2(state, controller, instanceId, clause.target);
+    state = applyActionV2(state, { sourceInstanceId: instanceId, controller }, clause.action, targets);
+    if (isOpt && !inst.perTurn.effectsUsed.includes(trigger)) inst.perTurn.effectsUsed.push(trigger);
+  }
   return state;
 }
