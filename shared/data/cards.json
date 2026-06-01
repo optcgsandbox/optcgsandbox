@@ -80038,7 +80038,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -80070,7 +80070,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause condition if_trash_min:4 counts any cards; text says \"If you have 4 or more EVENTS in your trash\" — needs event-filtered trash count"
     }
   },
   {
@@ -80173,7 +80174,7 @@
     "effectText": "[Once Per Turn] If your [Trafalgar Law] would be K.O.'d, you may add 1 card from the top of your Life cards to your hand instead.<br>[Activate: Main] [Once Per Turn] DON!! −1: The next time you play [Trafalgar Law] with a cost of 4 or more from your hand during this turn, the cost will be reduced by 2.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -80208,7 +80209,8 @@
             "lifeToHand": 1
           }
         }
-      ]
+      ],
+      "auditNote": "replacement would_be_ko has no name filter; text \"If your [Trafalgar Law] would be K.O.'d\" — replacement should fire for [Trafalgar Law] being KO'd, not self"
     }
   },
   {
@@ -80343,7 +80345,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "continuous conditions use if_trash_min:4 (any cards); text \"If you have 4 or more EVENTS in your trash\" — needs event-filtered trash count"
     }
   },
   {
@@ -80399,7 +80402,7 @@
     "effectText": "If you have 4 or more Events in your trash, this Character gains [Blocker].<br>[On K.O.] Add up to 1 Event from your trash to your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -80430,7 +80433,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition if_trash_min:4 (any cards); text \"If you have 4 or more EVENTS in your trash\""
     }
   },
   {
@@ -80457,7 +80461,7 @@
     "effectText": "If you have 4 or more Events in your trash, this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -80471,7 +80475,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition if_trash_min:4 (any cards); text \"If you have 4 or more EVENTS in your trash\""
     }
   },
   {
@@ -80553,7 +80558,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_opp_attack",
@@ -80576,7 +80581,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target your_leader; text \"up to 1 of your Leader or Character cards\" — needs your_leader_or_character"
     }
   },
   {
@@ -80604,7 +80610,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -80633,7 +80639,8 @@
           "conditional": true,
           "verified": "flagged"
         }
-      ]
+      ],
+      "auditNote": "continuous self_power_buff countSource own_trash_count (all cards); text \"gains +1000 power for every 5 EVENTS in your trash\" — count restricted to events"
     }
   },
   {
@@ -80658,7 +80665,7 @@
     "effectText": "[On Play] Look at 4 cards from the top of your deck; reveal up to 1 [Sanji] or Event card and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -80674,7 +80681,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek filter only nameIs:\"Sanji\"; text \"[Sanji] OR Event card\" — Event branch missing"
     }
   },
   {
@@ -80752,7 +80760,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -80783,7 +80791,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause power_buff target all_your_characters filter typeIncludes:\"Heart Pirates\"; text \"all of your [Donquixote Rosinante] AND {Heart Pirates} type Characters\" — missing Rosinante name branch"
     }
   },
   {
@@ -80808,7 +80817,7 @@
     "effectText": "[On Play] You may trash 1 Event from your hand: If your Leader is [Sanji], add up to 1 DON!! card from your DON!! deck and set it as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -80828,7 +80837,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost discardHand:1 generic; text \"trash 1 Event from your hand\" — needs discardHandFilter:{kind:event}"
     }
   },
   {
@@ -80939,7 +80949,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -80958,7 +80968,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "spec only encodes +2000 power_buff; missing \"Then, if the selected card attacks during this turn, your opponent cannot activate [Blocker]\" — selected-target attack restriction not encoded"
     }
   },
   {
@@ -81084,7 +81095,7 @@
     "effectText": "[Activate: Main] You may place this Stage at the bottom of the owner's deck: If your Leader is [Sanji], look at 3 cards from the top of your deck; reveal up to 1 Event and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -81107,7 +81118,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost trashSelf:true sends stage to trash; text \"place this Stage at the bottom of the owner's deck\" — needs bottomOfDeckSelf"
     }
   },
   {
@@ -81142,7 +81154,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -81166,7 +81178,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause trigger on_opp_play_character has no cost condition; text restricts to \"Character with a base cost of 8 or more, OR played via Character effect\" — needs cost ≥8 OR played-via-effect condition"
     }
   },
   {
@@ -81357,7 +81370,7 @@
     "effectText": "[On Play] If your Leader has the {Revolutionary Army} type, look at 3 cards from the top of your deck; reveal up to 1 {Revolutionary Army} type card other than [Koala] or up to 1 [Nico Robin] and add it to your hand. Then, trash the rest.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -81378,7 +81391,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek filter typeIncludes:Revolutionary Army + nameExcludes:Koala; text adds \"OR up to 1 [Nico Robin]\" — Nico Robin name branch missing; also \"trash the rest\" not encoded"
     }
   },
   {
@@ -81405,7 +81419,7 @@
     "effectText": "If your Leader is [Koala] or [Monkey.D.Luffy], this Character gains [Blocker] and +3 cost.<br>[On Play] You may trash 1 card from your hand: If your opponent has 5 or more cards in their hand, your opponent trashes 2 cards from their hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -81443,7 +81457,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous grants Blocker only; text \"this Character gains [Blocker] AND +3 cost\" — missing +3 cost; also on_play action take_from_opp_hand — text says \"your opponent TRASHES 2 cards from their hand\" needs opp_discard_from_hand:2"
     }
   },
   {
@@ -81499,7 +81514,7 @@
     "effectText": "If your Leader has the {Revolutionary Army} type, this Character gains [Blocker] and +4 cost.<br>[On K.O.] If your Leader has the {Revolutionary Army} type, K.O. up to 1 of your opponent's Characters with a base cost of 4 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -81531,7 +81546,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous only grants Blocker; text \"this Character gains [Blocker] AND +4 cost\" — +4 cost continuous missing"
     }
   },
   {
@@ -81557,7 +81573,7 @@
     "effectText": "[When Attacking] You may trash 2 cards from the top of your deck: Give up to 1 of your opponent's Characters −2 cost during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -81576,7 +81592,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost discardHand:2 discards from hand; text says \"trash 2 cards from the top of your DECK\" — needs millSelf:2 as cost"
     }
   },
   {
@@ -81607,7 +81624,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -81629,7 +81646,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target your_character missing count:2; text \"Up to 2 of your {SMILE} type Characters\""
     }
   },
   {
@@ -81719,7 +81737,7 @@
     "effectText": "[On Play] You may place 3 {Revolutionary Army} type cards from your trash at the bottom of your deck in any order: If your Leader has the {Revolutionary Army} type, play up to 1 Character card with a cost of 6 or less from your trash.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -81742,7 +81760,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost bottomOfDeckFromTrash:3 has no filter; text \"place 3 {Revolutionary Army} type cards from your trash\""
     }
   },
   {
@@ -81825,7 +81844,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -81860,7 +81879,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "two separate removal_ko clauses both fire; text \"you may select your opponent's Character with a cost of 6 or less INSTEAD of a Character with a cost of 4 or less\" — mutually exclusive choice"
     }
   },
   {
@@ -81886,7 +81906,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -81903,7 +81923,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek default disposes rest to bottom; text \"Then, trash the rest\" — trash-rest semantics not encoded"
     }
   },
   {
@@ -81968,7 +81989,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause target your_character filter typeIncludes:Revolutionary Army (any); text \"that card gains an additional +2000\" must reference the same card that received the initial +2000"
     }
   },
   {
@@ -81999,7 +82021,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_life_changed",
@@ -82012,7 +82034,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "spec only encodes draw clause; missing \"Then, you cannot draw cards using your own effects during this turn\" restriction; also missing is_own_turn for [Your Turn]"
     }
   },
   {
@@ -82044,7 +82067,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -82070,7 +82093,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous only grants Blocker; text \"this Character gains [Blocker] AND +3 cost\" — +3 cost missing; also draw 2 + trash 1 uses cost form (cost:flipLife:1, action:draw 2), text \"Draw 2 cards and trash 1 card from your hand\" is sequential after life-to-hand cost"
     }
   },
   {
@@ -82153,7 +82177,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -82198,7 +82222,8 @@
           },
           "appliesToFiltered": true
         }
-      ]
+      ],
+      "auditNote": "continuous condition if_no_other_with_name:Shirahoshi (any cost); text \"if you have no other [Shirahoshi] WITH A BASE COST OF 2\" — missing costMin:2 + costMax:2 in the name check"
     }
   },
   {
@@ -82281,7 +82306,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -82300,7 +82325,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "on_play clause missing is_own_turn condition for [Your Turn]"
     }
   },
   {
@@ -82661,7 +82687,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes +2000 power_buff (target your_leader); missing \"Then, if you have 2 or less Life cards, add up to 1 [Trafalgar Law] from your trash to your hand\" recursion clause; also target your_leader misses \"or character\""
     }
   },
   {
@@ -82689,7 +82716,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -82705,7 +82732,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek filter typeIncludes:Shandian Warrior only; text \"{Shandian Warrior} type Character cards OR [Mont Blanc Noland]\" — Noland name branch missing"
     }
   },
   {
@@ -82754,7 +82782,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes [Counter] +3000 leader; missing entire [Main] clause \"rest 5 DON: if Supernovas leader, add up to 1 Character with a cost of 9 or less to the top or bottom of the owner's Life cards face-down\""
     }
   },
   {
@@ -82834,7 +82863,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "condition if_own_chars_min:8 counts characters; text \"If you have 8 or more RESTED CARDS\" — counts rested cards on field (chars + DONs), not chars only"
     }
   },
   {
