@@ -1106,8 +1106,17 @@ export function applyActionV2(
       return state;
     }
     case 'give_don_to_target': {
+      // Pre-fix this handler sourced from `me.donRested` when
+      // `action.rested === true`, which is never what the text means.
+      // OPTCG card text "Give 1 rested DON to your Leader/Character"
+      // moves a DON from the controller's active cost area to the target's
+      // `attachedDon` pool; the `rested` flag describes the attached DON's
+      // state (it arrives rested — can't later be detached to pay cost),
+      // not the source pool. Source is always the active cost area.
+      // (Per-attached-DON rested state isn't modeled yet in CardInstance;
+      // the flag is preserved here for when it lands.)
       const n = action.magnitude;
-      const source = action.rested ? me.donRested : me.donCostArea;
+      const source = me.donCostArea;
       for (let i = 0; i < n && source.length > 0; i++) {
         for (const tid of targets) {
           const inst = state.instances[tid];
