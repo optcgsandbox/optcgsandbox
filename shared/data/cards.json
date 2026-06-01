@@ -3522,25 +3522,18 @@
             "trait": "Straw Hat Crew"
           },
           "action": {
-            "kind": "set_active_don",
-            "magnitude": 2
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "opt": true,
-          "cost": {
-            "donCost": 2
-          },
-          "condition": {
-            "type": "if_only_chars_with_trait",
-            "trait": "Straw Hat Crew"
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "opp_next_turn"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "set_active_don",
+                "magnitude": 2
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "opp_next_turn"
+              }
+            ]
           },
           "target": {
             "kind": "your_leader"
