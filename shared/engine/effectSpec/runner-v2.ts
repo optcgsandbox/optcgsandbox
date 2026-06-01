@@ -312,6 +312,12 @@ function matchesFilter(state: GameState, inst: CardInstance, filter: TargetFilte
     const text = (card as { effectText?: string | null }).effectText ?? '';
     if (!text.includes('[Trigger]')) return false;
   }
+  if (filter.traitsAny && filter.traitsAny.length > 0) {
+    if (!Array.isArray(card.traits) || !filter.traitsAny.some((t) => card.traits.includes(t))) return false;
+  }
+  if (filter.namesAny && filter.namesAny.length > 0) {
+    if (!filter.namesAny.includes(card.name)) return false;
+  }
   if (filter.noBaseEffect === true) {
     // Vanilla / no base effect: card has no effectSpecV2 content OR explicit ground-truth marker.
     const spec = (card as { effectSpecV2?: { clauses?: unknown[]; continuous?: unknown[]; replacements?: unknown[]; verified?: string } }).effectSpecV2;

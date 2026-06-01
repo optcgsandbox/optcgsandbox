@@ -117,6 +117,10 @@ export interface TargetFilter {
   attribute?: string;
   /** EB03-S-Snake — "with a [Trigger]" effect filter; matches cards whose effectText mentions [Trigger]. */
   hasTrigger?: boolean;
+  /** EB02-002, OP07-020, etc. — cards with text "trait A or trait B" require ANY of the listed traits. */
+  traitsAny?: string[];
+  /** Mirror — name OR name (e.g., "Sanji or Black Leg"). */
+  namesAny?: string[];
 }
 
 export type EffectTargetV2 =

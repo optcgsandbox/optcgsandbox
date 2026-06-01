@@ -49318,7 +49318,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -49355,15 +49355,25 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "your_character"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -49393,7 +49403,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -49410,7 +49420,7 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
           "verified": "auto"
         }
@@ -49457,12 +49467,12 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_character",
+            "kind": "your_leader_or_character",
             "filter": {
               "trait": "The Seven Warlords of the Sea"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -49491,7 +49501,7 @@
     "effectText": "[Activate: Main] You may trash 1 card from your hand and rest this Stage: If your Leader has the {Kuja Pirates} type, return up to 1 of your {Amazon Lily} or {Kuja Pirates} type Characters to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -49509,10 +49519,13 @@
           "target": {
             "kind": "your_character",
             "filter": {
-              "trait": "Amazon Lily"
+              "traitsAny": [
+                "Amazon Lily",
+                "Kuja Pirates"
+              ]
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -49551,8 +49564,14 @@
             "donCostReturnToDeck": 3
           },
           "condition": {
-            "type": "if_own_chars_min",
-            "n": 3
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_own_chars_min_with_trait",
+                "n": 3,
+                "trait": "Foxy Pirates"
+              }
+            ]
           },
           "action": {
             "kind": "rest_lock_until_phase",
@@ -49564,7 +49583,7 @@
               "rested": true
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -49594,7 +49613,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] If your Leader has the {Foxy Pirates} type and you have no other [Itomimizu], add up to 1 DON!! card from your DON!! deck and rest it.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -49616,7 +49635,8 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -49649,7 +49669,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -49694,7 +49714,7 @@
     "effectText": "[On Play] If the number of DON!! cards on your field is equal to or less than the number on your opponent's field, return up to 1 of your {The Vinsmoke Family} type Characters with a cost of 1 to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -49742,7 +49762,7 @@
     "effectText": "[On Play] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): If your Leader has the {Foxy Pirates} type, up to 1 of your opponent's Characters with a cost of 6 or less cannot attack until the end of your opponent's next turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -49799,6 +49819,15 @@
             "kind": "grant_keyword_to_self",
             "keyword": "blocker"
           }
+        },
+        {
+          "condition": {
+            "type": "if_own_don_le_opp"
+          },
+          "action": {
+            "kind": "cost_modifier_in_hand",
+            "delta": -3
+          }
         }
       ],
       "replacements": [],
@@ -49828,7 +49857,7 @@
     "effectText": "[On Play] If your Leader has the {Foxy Pirates} type and the number of DON!! cards on your field is equal to or less than the number on your opponent's field, add up to 1 DON!! card from your DON!! deck and set it as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -49880,7 +49909,20 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Play] If the number of DON!! cards on your field is equal to or less than the number on your opponent's field, add up to 1 DON!! card from your DON!! deck and rest it.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_don_le_opp"
+          },
+          "action": {
+            "kind": "ramp",
+            "magnitude": 1,
+            "rested": true
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -49891,7 +49933,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -49942,7 +49984,7 @@
     "effectText": "[DON!! x1] [When Attacking] If the number of DON!! cards on your field is equal to or less than the number on your opponent's field, add up to 1 DON!! card from your DON!! deck and rest it.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -49950,7 +49992,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -49990,7 +50032,7 @@
     "effectText": "If the number of DON!! cards on your field is equal to or less than the number on your opponent's field, your {Foxy Pirates} type Characters other than [Pickles] cannot be K.O.'d by your opponent's effects.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -49998,12 +50040,12 @@
             "type": "if_own_don_le_opp"
           },
           "action": {
-            "kind": "aura_power_buff",
+            "kind": "aura_immunity",
             "filter": {
               "trait": "Foxy Pirates",
               "nameExcludes": "Pickles"
             },
-            "magnitude": 0
+            "against": "opp_removal"
           }
         }
       ],
@@ -50034,7 +50076,7 @@
     "effectText": "[On Play] If the number of DON!! cards on your field is equal to or less than the number on your opponent's field, play up to 1 {Foxy Pirates} type card with a cost of 4 or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -50091,14 +50133,23 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [
         {
           "condition": {
-            "type": "if_leader_has_type",
-            "typeString": "Foxy Pirates"
+            "type": "and",
+            "conditions": [
+              {
+                "type": "is_opp_turn"
+              },
+              {
+                "type": "if_leader_has_type",
+                "typeString": "Foxy Pirates"
+              }
+            ]
           },
           "action": {
             "kind": "aura_power_buff",
@@ -50133,7 +50184,7 @@
     "effectText": "[On Play] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Look at 5 cards from the top of your deck; reveal up to 1 {Foxy Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order and play up to 1 purple Character card with 4000 power or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -50148,7 +50199,7 @@
               "trait": "Foxy Pirates"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -50163,7 +50214,7 @@
               "kind": "character"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -50193,7 +50244,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] DON!! −3 (You may return the specified number of DON!! cards from your field to your DON!! deck.): If your opponent has 3 or more Characters, set this Character as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -50210,7 +50261,8 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "auto",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -50240,7 +50292,7 @@
     "effectText": "[Activate: Main] You may trash this Character: If your Leader has the {Foxy Pirates} type, add up to 1 DON!! card from your DON!! deck and rest it.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -50285,7 +50337,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -50358,18 +50410,31 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged",
+          "verified": "human-reviewed",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           }
+        },
+        {
+          "trigger": "on_play",
+          "cost": {
+            "donCostReturnToDeck": 1
+          },
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -50397,7 +50462,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -50419,10 +50484,13 @@
             "lookCount": 5,
             "addCount": 1,
             "filter": {
-              "trait": "Animal Kingdom Pirates"
+              "traitsAny": [
+                "Animal Kingdom Pirates",
+                "Big Mom Pirates"
+              ]
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -50452,7 +50520,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -50499,12 +50567,12 @@
     "effectText": "[When Attacking] You may trash 2 cards from the top of your deck: Give up to 1 of your opponent's Characters −1 cost during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
           "cost": {
-            "discardHand": 2
+            "millSelf": 2
           },
           "action": {
             "kind": "removal_cost_reduce",
@@ -50514,7 +50582,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -50550,16 +50618,20 @@
             "bottomOfDeckFromTrash": 2
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "removal_cost_reduce",
+            "magnitude": 3,
+            "duration": "this_turn"
           },
-          "verified": "flagged"
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -50587,19 +50659,27 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_have_given_don_min",
-            "n": 1
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_attached_don_min",
+                "n": 1
+              },
+              {
+                "type": "is_own_turn"
+              }
+            ]
           },
           "action": {
             "kind": "aura_cost_modifier",
             "filter": {},
-            "delta": 1
+            "delta": -1
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "flagged"
     }
   },
   {
@@ -50625,7 +50705,7 @@
     "effectText": "[On Play] Trash 2 cards from the top of your deck and give up to 1 of your opponent's Characters −1 cost during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -50677,7 +50757,7 @@
     "effectText": "[Activate: Main] You may place 4 {Thriller Bark Pirates} type cards from your trash at the bottom of your deck in any order: This Character gains [Banish] and +1000 power during this turn.<br>(When this card deals damage, the target card is trashed without activating its Trigger.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -50692,7 +50772,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "activate_main",
@@ -50707,7 +50787,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -50746,7 +50826,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -50771,7 +50851,7 @@
     "effectText": "[On Play] You may trash 1 of your Characters: K.O. up to 1 of your opponent's Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -50816,7 +50896,7 @@
     "effectText": "[On Play] Trash 2 cards from the top of your deck and give up to 1 of your opponent's Characters −2 cost during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -50869,14 +50949,22 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
           "condition": {
-            "type": "if_own_chars_min_cost",
-            "n": 1,
-            "minCost": 0
+            "type": "and",
+            "conditions": [
+              {
+                "type": "is_own_turn"
+              },
+              {
+                "type": "if_opp_chars_max_cost",
+                "n": 1,
+                "maxCost": 0
+              }
+            ]
           },
           "action": {
             "kind": "self_power_buff",
@@ -50913,7 +51001,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -50988,14 +51076,23 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "reveal_opp_hand"
+            "kind": "discard_from_hand",
+            "magnitude": 1
           },
           "verified": "flagged"
         },
         {
           "trigger": "on_play",
           "action": {
-            "kind": "take_from_opp_hand"
+            "kind": "reveal_opp_hand"
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
           },
           "verified": "flagged"
         }
@@ -51031,7 +51128,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -51044,7 +51141,7 @@
               "costMax": 2
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "when_attacking",
@@ -51055,7 +51152,7 @@
               "source": "own_trash_count"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "when_attacking",
@@ -51072,7 +51169,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -51108,16 +51205,21 @@
             "bottomOfDeckFromTrash": 2
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "removal_ko"
           },
-          "verified": "flagged"
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 1
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -51143,7 +51245,7 @@
     "effectText": "[On Play] You may place 3 cards from your trash at the bottom of your deck in any order: Your opponent trashes 1 card from their hand. Then, you may place up to 1 card from your opponent's trash at the bottom of their deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -51151,7 +51253,8 @@
             "bottomOfDeckFromTrash": 3
           },
           "action": {
-            "kind": "take_from_opp_hand"
+            "kind": "discard_from_hand",
+            "magnitude": 1
           },
           "verified": "flagged"
         }
