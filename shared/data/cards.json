@@ -11246,7 +11246,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "discardHand:1 modeled as cost; text says \"draw 2 AND trash 1\" — discard is an effect, not cost"
     }
   },
   {
@@ -11297,7 +11298,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character has no count:2; text says \"up to 2 opp Chars\""
     }
   },
   {
@@ -11367,7 +11369,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher filter nameIs:Sanji only; text allows \"[Sanji] OR Event card\""
     }
   },
   {
@@ -11730,7 +11733,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: if_trash_min:4 counts all cards; text requires 4+ Events in trash specifically"
     }
   },
   {
@@ -12277,7 +12281,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: bottomOfDeckFromTrash + grant_immunity approximates \"3 trash to deck INSTEAD of KO\"; cost-replacement semantics not faithful"
     }
   },
   {
@@ -12345,7 +12350,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: on_ko trigger fires on source-KO; text reads \"when your opponent\\u0027s Character is K.O.d\" (any opp char)"
     }
   },
   {
