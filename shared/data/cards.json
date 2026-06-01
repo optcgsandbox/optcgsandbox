@@ -96749,7 +96749,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -96765,10 +96765,10 @@
         {
           "trigger": "on_ko",
           "condition": {
-            "type": "during_opp_turn"
+            "type": "is_opp_turn"
           },
           "action": {
-            "kind": "discard_from_hand",
+            "kind": "opp_bottom_of_deck_from_hand",
             "magnitude": 1
           },
           "verified": "flagged"
@@ -97312,7 +97312,7 @@
     "effectText": "Under the rules of this game, your DON!! deck consists of 6 cards.<br>[Activate: Main] [Once Per Turn] If it is your second turn or later, add up to 1 DON!! card from your DON!! deck and set it as active, and add up to 4 additional DON!! cards and rest them. Then, give up to 4 rested DON!! cards to 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -99213,12 +99213,13 @@
     "effectText": "[On Play] Place up to 1 card from your opponent's trash at the bottom of the owner's deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "action": {
-            "kind": "bottom_of_deck_to_opp_deck"
+            "kind": "opp_bottom_of_deck_from_trash",
+            "magnitude": 1
           },
           "verified": "flagged"
         }
