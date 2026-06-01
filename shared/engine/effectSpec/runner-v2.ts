@@ -161,6 +161,23 @@ export function evaluateConditionV2(
       }).length;
       return count <= cond.n;
     }
+    case 'if_opp_chars_min_power': {
+      const count = opp.field.filter((inst) => {
+        const card = state.cardLibrary[inst.cardId];
+        if (card?.kind !== 'character') return false;
+        const power = (card as { power?: number }).power ?? 0;
+        return power >= cond.minPower;
+      }).length;
+      return count >= cond.n;
+    }
+    case 'if_own_chars_min_with_trait': {
+      const count = me.field.filter((inst) => {
+        const card = state.cardLibrary[inst.cardId];
+        if (card?.kind !== 'character') return false;
+        return Array.isArray(card?.traits) && card.traits.includes(cond.trait);
+      }).length;
+      return count >= cond.n;
+    }
     case 'if_owned_other_with_name':
       return me.field.some((inst) =>
         state.cardLibrary[inst.cardId]?.name === cond.name,
@@ -286,6 +303,10 @@ function matchesFilter(state: GameState, inst: CardInstance, filter: TargetFilte
   }
   if (filter.attribute) {
     if ((card as { attribute?: string }).attribute !== filter.attribute) return false;
+  }
+  if (filter.hasTrigger === true) {
+    const text = (card as { effectText?: string | null }).effectText ?? '';
+    if (!text.includes('[Trigger]')) return false;
   }
   if (filter.noBaseEffect === true) {
     // Vanilla / no base effect: card has no effectSpecV2 content OR explicit ground-truth marker.

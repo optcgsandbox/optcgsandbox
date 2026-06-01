@@ -122,6 +122,7 @@ function canPayCost(
     if (me.leader.rested) return false;
   }
   if (typeof cost.donRestedToActive === 'number' && me.donRested.length < cost.donRestedToActive) return false;
+  if (typeof cost.millSelf === 'number' && me.deck.length < cost.millSelf) return false;
   if (cost.bottomOfDeckOwnChar) {
     const filter = cost.bottomOfDeckOwnChar.filter;
     const matches = me.field.filter((inst) => {
@@ -254,6 +255,11 @@ function payCost(
   if (typeof cost.donRestedToActive === 'number') {
     for (let i = 0; i < cost.donRestedToActive && me.donRested.length > 0; i++) {
       me.donCostArea.push(me.donRested.shift()!);
+    }
+  }
+  if (typeof cost.millSelf === 'number') {
+    for (let i = 0; i < cost.millSelf && me.deck.length > 0; i++) {
+      me.trash.push(me.deck.shift()!);
     }
   }
   if (cost.bottomOfDeckOwnChar) {

@@ -90,6 +90,42 @@ export function applyContinuousEffectsV2ToInstance(
         }
         break;
       }
+      case 'aura_immunity': {
+        const filter = eff.action.filter;
+        for (const inst of me.field) {
+          if (!matchesFilterMinimal(state, inst, filter)) continue;
+          inst.immunity = { against: eff.action.against };
+          state.instances[inst.instanceId].immunity = inst.immunity;
+        }
+        break;
+      }
+      case 'self_cost_buff': {
+        const m = eff.action.magnitude;
+        let delta: number;
+        if (typeof m === 'number') delta = m;
+        else if (m.kind === 'per_count') {
+          const total = (() => {
+            switch (m.countSource) {
+              case 'own_trash_count': return me.trash.length;
+              case 'opp_trash_count': return opp.trash.length;
+              case 'own_hand_count': return me.hand.length;
+              case 'opp_hand_count': return opp.hand.length;
+              case 'own_life_count': return me.life.length;
+              case 'opp_life_count': return opp.life.length;
+              case 'own_don_count': return me.donCostArea.length;
+              case 'opp_don_count': return opp.donCostArea.length;
+              case 'own_rested_don_count': return me.donRested.length;
+              default: return 0;
+            }
+          })();
+          delta = Math.floor(total / (m.divisor || 1)) * (m.perUnit || 0);
+        } else delta = 0;
+        source.costModifier = (source.costModifier ?? 0) + delta;
+        if (me.leader.instanceId === sourceInstanceId) me.leader.costModifier = source.costModifier;
+        for (const f of me.field) if (f.instanceId === sourceInstanceId) f.costModifier = source.costModifier;
+        if (me.stage && me.stage.instanceId === sourceInstanceId) me.stage.costModifier = source.costModifier;
+        break;
+      }
       case 'aura_counter_buff': {
         // EB01-001 — chars matching filter that lack a counter chip gain
         // +magnitude counter while source is on field. Counter is read at

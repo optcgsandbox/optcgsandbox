@@ -37,6 +37,7 @@ export type EffectTriggerV2 =
   | 'during_opp_turn'            // (gap #50, #75) — continuous on opp's turn
   | 'on_opp_play_character'      // (gap #4, OP12-081) — opp plays a Character matching filter
   | 'on_own_char_removed_by_opp_effect' // (gap #28 variant) — your char removed by opp effect
+  | 'on_opp_activate_event'      // OP01-004 Usopp — opp plays an event
   ;
 
 // ─────────────────────────────────────────────────────────────────────
@@ -78,6 +79,8 @@ export type EffectConditionV2 =
   | { type: 'is_own_turn' }                                             // mirror
   | { type: 'if_only_chars_with_trait'; trait: string }                 // EB02-010 — every char on your field has this trait
   | { type: 'if_own_chars_max_with_min_power'; n: number; minPower: number } // EB02-022 — ≤N own chars whose power ≥ minPower
+  | { type: 'if_opp_chars_min_power'; n: number; minPower: number }      // EB04-007 — opp has ≥n chars ≥minPower
+  | { type: 'if_own_chars_min_with_trait'; n: number; trait: string }    // EB04-033 — own chars with trait T ≥ n
   | { type: 'if_owned_other_with_name'; name: string }
   | { type: 'if_no_other_with_name'; name: string }                     // (gap from EB04-031)
   | { type: 'if_played_this_turn' }                                     // (gap #16)
@@ -109,6 +112,8 @@ export interface TargetFilter {
   noBaseEffect?: boolean;
   /** EB03-014 — attribute is a card metadata field ('Slash', 'Strike', 'Ranged', etc.). */
   attribute?: string;
+  /** EB03-S-Snake — "with a [Trigger]" effect filter; matches cards whose effectText mentions [Trigger]. */
+  hasTrigger?: boolean;
 }
 
 export type EffectTargetV2 =
@@ -152,6 +157,7 @@ export interface EffectCostV2 {
   donRestedToActive?: number;                              // mirror cost — set N rested DON as active as cost (rare)
   bottomOfDeckOwnChar?: { filter?: TargetFilter };         // EB01-011 — place 1 own char with X power at bottom of deck as cost
   discardHandFilter?: { count: number; filter: TargetFilter }; // EB01-008 — discard 1 Event-or-Stage card
+  millSelf?: number;                                       // EB04-042 — pay N mill-self as cost
   returnSelfChar?: { filter?: TargetFilter };              // ST22-005 etc.
 }
 
@@ -305,6 +311,8 @@ export interface ContinuousEffectV2 {
     | { kind: 'aura_power_buff'; filter: TargetFilter; magnitude: number }   // OP12-073
     | { kind: 'aura_cost_modifier'; filter: TargetFilter; delta: number }    // OP10-042
     | { kind: 'aura_counter_buff'; filter: TargetFilter; magnitude: number } // EB01-001 — chars without a counter chip gain +N counter
+    | { kind: 'aura_immunity'; filter: TargetFilter; against: 'opp_effects' | 'opp_removal' } // EB04-057 — chars matching filter become immune
+    | { kind: 'self_cost_buff'; magnitude: number | MagnitudeFormula }       // EB04-048 — own cost scales by formula (mirrors self_power_buff)
     | { kind: 'restrict_self_attack' }                                       // "This Leader cannot attack"
     | { kind: 'cost_modifier_in_hand'; delta: number };                      // (gap #91, EB04-061)
 }
