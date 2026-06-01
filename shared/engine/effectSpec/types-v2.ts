@@ -40,6 +40,7 @@ export type EffectTriggerV2 =
   | 'on_opp_play_character'      // (gap #4, OP12-081) — opp plays a Character matching filter
   | 'on_own_char_removed_by_opp_effect' // (gap #28 variant) — your char removed by opp effect
   | 'on_opp_activate_event'      // OP01-004 Usopp — opp plays an event
+  | 'on_self_activate_event'     // OP04-053 Page One — fires when controller plays an Event
   | 'on_attack_deal_damage'      // OP03-040 Nami mill — when source's attack deals damage to opp's Life
   ;
 
