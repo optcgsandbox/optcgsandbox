@@ -65028,7 +65028,7 @@
     "effectText": "[On Play] If you don't have [Scotch], play up to 1 [Scotch] from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -65087,15 +65087,27 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -2000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_leader_or_character"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -65130,6 +65142,22 @@
       "clauses": [
         {
           "trigger": "on_play",
+          "cost": {
+            "donCost": 5
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "powerMax": 8000
+            }
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
           "action": {
             "kind": "power_buff",
             "magnitude": 3000,
@@ -65138,13 +65166,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -65176,7 +65204,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -65202,7 +65230,7 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
           "verified": "auto"
         }
@@ -65234,7 +65262,7 @@
     "effectText": "[Activate: Main] You may rest this Stage: If your Leader is [Caesar Clown], give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -65253,7 +65281,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -65289,7 +65317,7 @@
     "effectText": "[DON!! x1] [Activate: Main] [Once Per Turn] If the total cost of your Characters is 5 or more, you may return 1 of your Characters to the owner's hand: Reveal 1 card from the top of your Life cards. If that card is a {Supernovas} type Character card with a cost of 5 or less, you may play that card.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -65297,7 +65325,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -65317,7 +65345,8 @@
               "kind": "character"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -65348,7 +65377,7 @@
     "effectText": "[On Play] If your Leader has the {Navy} type, rest up to 2 of your opponent's Characters with a cost of 5 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -65365,7 +65394,7 @@
               "costMax": 5
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -65396,7 +65425,7 @@
     "effectText": "[On Play] If you have 2 or more rested Characters, rest up to 1 of your opponent's Characters with a cost of 5 or less. Then, K.O. up to 1 of your opponent's rested Characters with a cost of 3 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -65413,7 +65442,7 @@
               "costMax": 5
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -65431,7 +65460,7 @@
               "rested": true
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -65465,7 +65494,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -65477,7 +65506,7 @@
             "kind": "draw",
             "magnitude": 3
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -65485,14 +65514,11 @@
             "type": "if_own_chars_min",
             "n": 2
           },
-          "cost": {
-            "discardHand": 2
-          },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "discard_from_hand",
+            "magnitude": 2
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -65637,7 +65663,7 @@
               "trait": "The Akazaya Nine"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -65667,7 +65693,7 @@
     "effectText": "[On Play] If you have 2 or more rested Characters, set up to 1 of your rested {ODYSSEY} type Characters with a cost of 5 or less as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -65686,7 +65712,7 @@
               "rested": true
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -65716,7 +65742,25 @@
     ],
     "effectText": "[Banish] (When this card deals damage, the target card is trashed without activating its Trigger.)<br>[Activate: Main] Set up to 1 of your DON!! cards as active. Then, you cannot set DON!! cards as active using Character effects during this turn.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "activate_main",
+          "action": {
+            "kind": "chained_actions",
+            "actions": [
+              {
+                "kind": "set_active_don",
+                "magnitude": 1
+              },
+              {
+                "kind": "restrict_effect_type",
+                "effectKind": "character_set_active"
+              }
+            ]
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -65727,7 +65771,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -65786,10 +65830,6 @@
       "replacements": [
         {
           "trigger": "would_be_removed",
-          "condition": {
-            "type": "if_owned_other_with_name",
-            "name": "Tashigi"
-          },
           "cost": {
             "restSelf": true
           },
@@ -65873,7 +65913,7 @@
     "effectText": "[Once Per Turn] If this Character would be K.O.'d in battle, you may add 1 card from the top of your Life cards to your hand instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -65883,8 +65923,9 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "conditional": false,
-          "verified": "flagged"
+          "conditional": true,
+          "verified": "human-reviewed",
+          "opt": true
         }
       ]
     }
@@ -65912,7 +65953,7 @@
     "effectText": "[On K.O.] Rest up to 1 of your opponent's Leader or Character cards with a cost of 5 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -65920,7 +65961,7 @@
             "kind": "rest_target"
           },
           "target": {
-            "kind": "opp_character",
+            "kind": "opp_leader_or_character",
             "filter": {
               "costMax": 5
             }
@@ -65961,8 +66002,13 @@
       "clauses": [
         {
           "trigger": "on_play",
+          "opt": true,
+          "condition": {
+            "type": "is_own_turn"
+          },
           "action": {
-            "kind": "set_active"
+            "kind": "set_active_don",
+            "magnitude": 1
           },
           "verified": "flagged"
         }
@@ -65997,7 +66043,7 @@
     "effectText": "[Once Per Turn] If this Character would be removed from the field by your opponent's effect, you may rest 1 of your {ODYSSEY} type Characters instead.<br>[End of Your Turn] Set up to 1 of your {ODYSSEY} type Characters as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "at_end_of_turn_self",
@@ -66010,7 +66056,7 @@
               "trait": "ODYSSEY"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -66021,7 +66067,8 @@
             "kind": "rest_target"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ]
     }
@@ -66054,13 +66101,21 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
           "condition": {
-            "type": "if_own_chars_min",
-            "n": 2
+            "type": "and",
+            "conditions": [
+              {
+                "type": "is_opp_turn"
+              },
+              {
+                "type": "if_own_chars_min",
+                "n": 2
+              }
+            ]
           },
           "action": {
             "kind": "self_power_buff",
@@ -66097,7 +66152,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -66148,7 +66203,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -66196,7 +66251,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -66262,8 +66317,33 @@
       "draw": 1
     },
     "effectSpecV2": {
-      "clauses": [],
-      "continuous": [],
+      "clauses": [
+        {
+          "trigger": "on_own_char_removed_by_opp_effect",
+          "opt": true,
+          "condition": {
+            "type": "if_hand_max",
+            "n": 5
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "flagged"
+        }
+      ],
+      "continuous": [
+        {
+          "action": {
+            "kind": "aura_cost_modifier",
+            "filter": {
+              "trait": "Dressrosa",
+              "costMin": 2
+            },
+            "delta": 1
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
       "verified": "flagged"
@@ -66310,7 +66390,7 @@
               "nameIs": "Monkey.D.Luffy"
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -66356,7 +66436,7 @@
               "costMax": 1
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -66391,7 +66471,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -66399,18 +66479,17 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         },
         {
           "trigger": "when_attacking",
-          "cost": {
-            "discardHand": 1
-          },
+          "opt": true,
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "discard_from_hand",
+            "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -66450,13 +66529,13 @@
               "costMax": 5
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -66486,7 +66565,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -66506,7 +66585,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -66552,7 +66631,7 @@
               "costMax": 1
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -66589,8 +66668,13 @@
       "replacements": [
         {
           "trigger": "would_be_removed",
+          "cost": {
+            "returnSelfChar": {}
+          },
           "action": {
-            "kind": "removal_bounce"
+            "kind": "grant_immunity",
+            "against": "opp_removal",
+            "duration": "this_turn"
           },
           "conditional": true,
           "verified": "flagged"
@@ -66650,12 +66734,12 @@
     "effectText": "[DON!! x1] [When Attacking] Look at 3 cards from the top of your deck; reveal up to 1 {Revolutionary Army} type Character card and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -66698,7 +66782,21 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Play] Place up to 1 Character with a cost of 1 or less at the bottom of the owner's deck.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "bottom_of_deck_to_opp_deck"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 1
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -66709,7 +66807,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -66735,7 +66833,7 @@
     "effectText": "If you have a {The Tontattas} type Character other than [Bian], this Character gains [Blocker].",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -66801,7 +66899,21 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On K.O.] Return up to 1 of your opponent's Characters with a cost of 4 or less to the owner's hand.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "action": {
+            "kind": "removal_bounce"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 4
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -66812,7 +66924,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -66838,7 +66950,7 @@
     "effectText": "[On Play] You may rest 1 of your {Dressrosa} type Leader or Stage cards, and return 1 of your {Dressrosa} type Characters with a cost of 4 or more to the owner's hand: Return up to 1 of your opponent's Characters with a cost of 4 or less to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -66860,7 +66972,7 @@
               "costMax": 4
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
