@@ -96205,7 +96205,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -96244,13 +96244,29 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "activate_main",
+          "opt": true,
+          "cost": {
+            "bottomOfDeckOwnChar": {}
+          },
+          "action": {
+            "kind": "give_keyword",
+            "keyword": "rush",
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -96278,7 +96294,7 @@
     "effectText": "[On Play] You may trash 1 card from your hand: If your Leader is [Rebecca], this Character gains [Rush] during this turn.<br>[On K.O.] Add this Character card from your trash to your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -96338,7 +96354,7 @@
     "effectText": "[On Play] Play up to 1 [Bobby Funk] from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -96380,7 +96396,21 @@
     ],
     "effectText": "[Blocker]<br>[On K.O.] Look at 3 cards from the top of your deck; reveal up to 1 {Dressrosa} type Event and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "action": {
+            "kind": "searcher_peek",
+            "lookCount": 3,
+            "addCount": 1,
+            "filter": {
+              "typeIncludes": "Dressrosa",
+              "kind": "event"
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -96391,7 +96421,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -96421,7 +96451,24 @@
       "draw": 2
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "kind": "event"
+              }
+            }
+          },
+          "action": {
+            "kind": "draw",
+            "magnitude": 2
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -96432,7 +96479,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -96458,7 +96505,22 @@
     ],
     "effectText": "[Blocker]<br>[On Play] If your Leader has the {Dressrosa} type, activate up to 1 {Dressrosa} type Event from your hand.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_leader_has_type",
+            "typeString": "Dressrosa"
+          },
+          "action": {
+            "kind": "activate_event_from_hand",
+            "filter": {
+              "typeIncludes": "Dressrosa"
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -96469,7 +96531,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -96496,7 +96558,20 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Play] Up to 1 of your Characters gains [Unblockable] during this turn.<br>(This card cannot be blocked.)",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "give_keyword",
+            "keyword": "unblockable",
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "your_character"
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -96507,7 +96582,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -96549,7 +96624,7 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_ko",
@@ -96557,7 +96632,7 @@
             "type": "during_opp_turn"
           },
           "action": {
-            "kind": "bottom_of_deck_from_trash",
+            "kind": "discard_from_hand",
             "magnitude": 1
           },
           "verified": "flagged"
@@ -96619,7 +96694,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -96663,7 +96738,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -96719,8 +96794,7 @@
         {
           "trigger": "would_be_removed",
           "action": {
-            "kind": "bottom_of_deck_from_trash",
-            "magnitude": 1
+            "kind": "bottom_of_deck_to_opp_deck"
           },
           "target": {
             "kind": "your_character"
@@ -96765,13 +96839,24 @@
               "trait": "Dressrosa"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
-      "continuous": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_attached_don_min",
+            "n": 1
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "blocker"
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -96803,7 +96888,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -96820,7 +96905,7 @@
                   "kind": "draw",
                   "magnitude": 2
                 },
-                "verified": "auto"
+                "verified": "human-reviewed"
               },
               {
                 "trigger": "on_play",
@@ -96836,7 +96921,7 @@
                     "costMax": 4
                   }
                 },
-                "verified": "auto"
+                "verified": "human-reviewed"
               },
               {
                 "trigger": "on_play",
@@ -96849,11 +96934,11 @@
                     "kind": "stage"
                   }
                 },
-                "verified": "flagged"
+                "verified": "human-reviewed"
               }
             ]
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -96893,15 +96978,39 @@
           "trigger": "on_play",
           "action": {
             "kind": "choose_one",
-            "options": []
+            "options": [
+              {
+                "trigger": "on_play",
+                "action": {
+                  "kind": "draw",
+                  "magnitude": 2
+                },
+                "verified": "human-reviewed"
+              },
+              {
+                "trigger": "on_play",
+                "action": {
+                  "kind": "give_keyword",
+                  "keyword": "blocker",
+                  "duration": "opp_next_end_phase"
+                },
+                "target": {
+                  "kind": "your_character",
+                  "filter": {
+                    "typeIncludes": "Dressrosa"
+                  }
+                },
+                "verified": "human-reviewed"
+              }
+            ]
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -96934,7 +97043,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -97008,7 +97117,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -97075,7 +97184,8 @@
             "kind": "ramp",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         },
         {
           "trigger": "activate_main",
@@ -97084,7 +97194,7 @@
             "magnitude": 4,
             "rested": true
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "activate_main",
@@ -97096,7 +97206,7 @@
           "target": {
             "kind": "your_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -97153,7 +97263,10 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "condition": {
+            "type": "always"
+          }
         }
       ],
       "continuous": [],
@@ -97189,7 +97302,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -97204,7 +97317,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "activate_main",
@@ -97213,10 +97326,14 @@
             "discardHand": 1
           },
           "action": {
-            "kind": "mill_self",
-            "magnitude": 0
+            "kind": "give_keyword",
+            "keyword": "blocker",
+            "duration": "opp_next_end_phase"
           },
-          "verified": "flagged"
+          "target": {
+            "kind": "self"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -97279,16 +97396,32 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto",
+          "verified": "human-reviewed",
           "cost": {
             "donCost": 1
           }
+        },
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_don_max",
+            "n": 6
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -1000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_character"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -97352,16 +97485,33 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto",
+          "verified": "human-reviewed",
           "cost": {
             "donCost": 1
           }
+        },
+        {
+          "trigger": "on_ko",
+          "condition": {
+            "type": "if_don_max",
+            "n": 6
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "powerMax": 2000
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -97387,7 +97537,7 @@
     "effectText": "[Activate: Main] DON!! −2, You may rest this Character: If you have [Satori] and [Hotori], rest up to 1 of your opponent's Characters with 5000 power or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -97453,8 +97603,13 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "ramp",
-            "magnitude": 1
+            "kind": "reveal_top_then_if_cost_min",
+            "minCost": 0,
+            "thenAction": {
+              "kind": "ramp",
+              "magnitude": 1,
+              "rested": true
+            }
           },
           "verified": "flagged"
         }
@@ -97498,16 +97653,28 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto",
+          "verified": "human-reviewed",
           "cost": {
             "donCost": 1
           }
+        },
+        {
+          "trigger": "when_attacking",
+          "condition": {
+            "type": "if_don_max",
+            "n": 6
+          },
+          "action": {
+            "kind": "peek_and_reorder_own_deck",
+            "count": 2
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -97544,16 +97711,27 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto",
+          "verified": "human-reviewed",
           "cost": {
             "donCost": 1
           }
         }
       ],
-      "continuous": [],
+      "continuous": [
+        {
+          "condition": {
+            "type": "if_don_max",
+            "n": 6
+          },
+          "action": {
+            "kind": "grant_keyword_to_self",
+            "keyword": "rush"
+          }
+        }
+      ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -97578,7 +97756,7 @@
     "effectText": "If you have 6 or less DON!! cards on your field, this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -97676,7 +97854,7 @@
         },
         {
           "condition": {
-            "type": "during_opp_turn"
+            "type": "is_opp_turn"
           },
           "action": {
             "kind": "self_power_buff",
@@ -97731,7 +97909,7 @@
         },
         {
           "condition": {
-            "type": "during_opp_turn"
+            "type": "is_opp_turn"
           },
           "action": {
             "kind": "self_power_buff",
@@ -97765,7 +97943,7 @@
     "effectText": "[Activate: Main] DON!! −2, You may rest this Character: If you have [Kotori] and [Satori], give up to 1 of your opponent's Characters −3000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -97823,7 +98001,27 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Play] Play up to 1 [Heavenly Warriors] with a cost of 1 or up to 1 {Vassals} type Character card with a cost of 1 from your hand.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "namesAny": [
+                "Heavenly Warriors"
+              ],
+              "traitsAny": [
+                "Vassals"
+              ],
+              "costMin": 1,
+              "costMax": 1,
+              "kind": "character"
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -97866,7 +98064,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -97881,7 +98079,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -97893,13 +98091,14 @@
             "name": "Enel"
           },
           "action": {
-            "kind": "cost_reduction",
-            "magnitude": -2
+            "kind": "removal_cost_reduce",
+            "magnitude": -2,
+            "duration": "opp_next_end_phase"
           },
           "target": {
             "kind": "your_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -97914,7 +98113,7 @@
               "nameIs": "Enel"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -97951,7 +98150,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -98043,7 +98242,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -98127,7 +98326,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -98197,21 +98396,46 @@
       "clauses": [
         {
           "trigger": "on_play",
+          "cost": {
+            "donCost": 2
+          },
+          "action": {
+            "kind": "chained_actions",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "rest_target",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "powerMax": 5000
+                  }
+                }
+              }
+            ]
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
           "action": {
             "kind": "power_buff",
             "magnitude": 1000,
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -98236,7 +98460,7 @@
     "effectText": "[On K.O.] Add up to 1 {Thriller Bark Pirates} type card from your trash to your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_ko",
