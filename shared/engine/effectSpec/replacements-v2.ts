@@ -100,6 +100,13 @@ function canPayCost(
   if (cost.restLeader) {
     if (me.leader.rested) return false;
   }
+  if (cost.restLeaderOrStageFilter) {
+    const trait = cost.restLeaderOrStageFilter.filter?.trait;
+    const leaderCard = state.cardLibrary[me.leader.cardId];
+    const leaderEligible = !me.leader.rested && (!trait || leaderCard?.traits?.includes(trait));
+    const stageEligible = me.stage && !me.stage.rested && (!trait || state.cardLibrary[me.stage.cardId]?.traits?.includes(trait));
+    if (!leaderEligible && !stageEligible) return false;
+  }
   if (cost.trashSelf) {
     const inst = state.instances[sourceInstanceId];
     if (!inst) return false;
@@ -192,6 +199,18 @@ function payCost(
     me.leader.rested = true;
     const leaderInst = state.instances[me.leader.instanceId];
     if (leaderInst) leaderInst.rested = true;
+  }
+  if (cost.restLeaderOrStageFilter) {
+    // Prefer resting stage first if available (preserves leader for attacks).
+    if (me.stage && !me.stage.rested) {
+      me.stage.rested = true;
+      const inst = state.instances[me.stage.instanceId];
+      if (inst) inst.rested = true;
+    } else if (!me.leader.rested) {
+      me.leader.rested = true;
+      const inst = state.instances[me.leader.instanceId];
+      if (inst) inst.rested = true;
+    }
   }
   if (cost.trashSelf) {
     const inst = state.instances[sourceInstanceId];

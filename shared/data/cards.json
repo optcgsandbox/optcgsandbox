@@ -66488,12 +66488,16 @@
     "effectText": "[On Play] You may rest 1 of your {Dressrosa} type Leader or Stage cards: Up to 1 of your [Monkey.D.Luffy] Characters gains [Banish] during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "cost": {
-            "restSelf": true
+            "restLeaderOrStageFilter": {
+              "filter": {
+                "trait": "Dressrosa"
+              }
+            }
           },
           "action": {
             "kind": "give_keyword",
@@ -66536,12 +66540,16 @@
     "effectText": "[On Play] You may rest 1 of your {Dressrosa} type Leader or Stage cards: Return up to 1 of your opponent's Characters with a cost of 1 or less to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "cost": {
-            "restSelf": true
+            "restLeaderOrStageFilter": {
+              "filter": {
+                "trait": "Dressrosa"
+              }
+            }
           },
           "action": {
             "kind": "removal_bounce"
@@ -66731,12 +66739,16 @@
     "effectText": "[On Play] You may rest 1 of your {Dressrosa} type Leader or Stage cards: Return up to 1 of your opponent's Characters with a cost of 1 or less to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "cost": {
-            "restSelf": true
+            "restLeaderOrStageFilter": {
+              "filter": {
+                "trait": "Dressrosa"
+              }
+            }
           },
           "action": {
             "kind": "removal_bounce"
@@ -67118,7 +67130,7 @@
     "effectText": "[On Play] You may rest your Leader or 1 of your Stage cards: If your Leader is [Usopp], look at 5 cards from the top of your deck; reveal up to 2 {Dressrosa} type cards other than [Leo] and add them to your hand. Then, place the rest at the bottom of your deck in any order, and trash 1 card from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -67127,7 +67139,7 @@
             "name": "Usopp"
           },
           "cost": {
-            "restSelf": true
+            "restLeaderOrStageFilter": {}
           },
           "action": {
             "kind": "searcher_peek",
@@ -68302,12 +68314,16 @@
     "effectText": "[On Play] You may rest 1 of your {Dressrosa} type Leader or Stage cards: K.O. up to 1 of your opponent's Characters with a cost of 2 or less. Then, trash 2 cards from the top of your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "cost": {
-            "restSelf": true
+            "restLeaderOrStageFilter": {
+              "filter": {
+                "trait": "Dressrosa"
+              }
+            }
           },
           "action": {
             "kind": "removal_ko"
@@ -68323,7 +68339,11 @@
         {
           "trigger": "on_play",
           "cost": {
-            "restSelf": true
+            "restLeaderOrStageFilter": {
+              "filter": {
+                "trait": "Dressrosa"
+              }
+            }
           },
           "action": {
             "kind": "mill_self",
@@ -68430,12 +68450,17 @@
     "effectText": "[Activate: Main] You may rest this Character and 1 of your {Dressrosa} type Leader or Stage cards: Give up to 1 of your opponent's Characters -2 cost during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
           "cost": {
-            "restSelf": true
+            "restSelf": true,
+            "restLeaderOrStageFilter": {
+              "filter": {
+                "trait": "Dressrosa"
+              }
+            }
           },
           "action": {
             "kind": "removal_cost_reduce",
@@ -68627,7 +68652,7 @@
     "effectText": "[Activate: Main] You may rest this Character and 1 of your {Dressrosa} type Leader or Stage cards: If your opponent has 5 or more cards in their hand, your opponent trashes 1 card from their hand. Then, trash 2 cards from the top of your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -68636,7 +68661,12 @@
             "n": 5
           },
           "cost": {
-            "restSelf": true
+            "restSelf": true,
+            "restLeaderOrStageFilter": {
+              "filter": {
+                "trait": "Dressrosa"
+              }
+            }
           },
           "action": {
             "kind": "mill_opp",
@@ -68647,7 +68677,12 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "restSelf": true
+            "restSelf": true,
+            "restLeaderOrStageFilter": {
+              "filter": {
+                "trait": "Dressrosa"
+              }
+            }
           },
           "action": {
             "kind": "mill_self",
@@ -68686,12 +68721,17 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
           "cost": {
-            "restSelf": true
+            "restSelf": true,
+            "restLeaderOrStageFilter": {
+              "filter": {
+                "trait": "Dressrosa"
+              }
+            }
           },
           "action": {
             "kind": "draw",
@@ -68702,7 +68742,12 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "restSelf": true
+            "restSelf": true,
+            "restLeaderOrStageFilter": {
+              "filter": {
+                "trait": "Dressrosa"
+              }
+            }
           },
           "action": {
             "kind": "mill_self",
@@ -68819,12 +68864,17 @@
     "effectText": "[Activate: Main] You may rest this Character and 1 of your {Dressrosa} type Leader or Stage cards: K.O. up to 1 of your opponent's Characters with a cost of 1 or less. Then, trash 2 cards from the top of your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
           "cost": {
-            "restSelf": true
+            "restSelf": true,
+            "restLeaderOrStageFilter": {
+              "filter": {
+                "trait": "Dressrosa"
+              }
+            }
           },
           "action": {
             "kind": "removal_ko"
@@ -68840,7 +68890,12 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "restSelf": true
+            "restSelf": true,
+            "restLeaderOrStageFilter": {
+              "filter": {
+                "trait": "Dressrosa"
+              }
+            }
           },
           "action": {
             "kind": "mill_self",
@@ -69019,12 +69074,16 @@
     "effectText": "[On Play] You may rest 1 of your {Dressrosa} type Leader or Stage cards: K.O. up to 1 of your opponent's Characters with a cost of 4 or less. Then, trash 2 cards from the top of your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "cost": {
-            "restSelf": true
+            "restLeaderOrStageFilter": {
+              "filter": {
+                "trait": "Dressrosa"
+              }
+            }
           },
           "action": {
             "kind": "removal_ko"
@@ -69040,7 +69099,11 @@
         {
           "trigger": "on_play",
           "cost": {
-            "restSelf": true
+            "restLeaderOrStageFilter": {
+              "filter": {
+                "trait": "Dressrosa"
+              }
+            }
           },
           "action": {
             "kind": "mill_self",
@@ -85022,7 +85085,7 @@
         {
           "trigger": "on_play",
           "condition": {
-            "type": "if_have_given_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -85056,7 +85119,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -85592,7 +85655,7 @@
             "donCost": 3
           },
           "condition": {
-            "type": "if_have_given_don_min",
+            "type": "if_attached_don_min",
             "n": 1
           },
           "action": {
@@ -85622,7 +85685,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
