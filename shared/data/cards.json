@@ -59585,7 +59585,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost discardHand:1 + draw 2 — text is sequential \"draw 2 cards and trash 1 card from your hand\" not cost+effect"
     }
   },
   {
@@ -59818,7 +59819,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost donCost:1 paid; text \"[DON!! x1] [When Attacking]\" — DON!! x1 is a condition, not a 1-DON pay cost"
     }
   },
   {
@@ -59915,7 +59917,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "replacement triggers on self being KO'd; text says \"If your Character [Bonk Punch] would be K.O.'d by an effect, you may trash this Character instead\" — replacement context is the OTHER character ([Bonk Punch]) being KO'd, not self"
     }
   },
   {
@@ -60194,7 +60197,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character with count:2 + filter powerMax:4000; text says \"up to 2 of your opponent's Characters with a TOTAL power of 4000 or less\" (sum constraint, not per-target)"
     }
   },
   {
@@ -60430,7 +60434,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "continuous restrict_effect_type effectKind:character_set_active blocks setting chars active; text says \"Your Character cards are played rested\" — that's a play-state-rested rule, not a \"cannot set active\" restriction"
     }
   },
   {
@@ -60497,7 +60502,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause action set_active_don with target your_character — set_active_don targets DONs implicitly; target your_character is mismatched"
     }
   },
   {
@@ -60558,7 +60564,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause action draw:0 is a no-op; intended effect is \"trash 2 cards from your hand\" — needs discard_from_hand:2 not draw:0"
     }
   },
   {
@@ -60999,7 +61006,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target filter only trait:ODYSSEY; text says \"{ODYSSEY} OR {Straw Hat Crew} type Characters\" — target filter should include both traits (action filter has traitsAny but target filter does not)"
     }
   },
   {
@@ -61054,7 +61062,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek filter combines {namesAny:[\"Dracule Mihawk\"],traitsAny:[\"Thriller Bark Pirates\"]} as AND; text \"[Dracule Mihawk] OR {Thriller Bark Pirates} type\" needs OR-of-branches"
     }
   },
   {
@@ -61208,7 +61217,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "on_play searcher_peek filter trait:ODYSSEY missing nameExcludes:Lim; text says \"other than [Lim]\""
     }
   },
   {
@@ -61560,7 +61570,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause action mill_self magnitude:1 (trashes deck top); text says \"trash 1 card from your hand\" — needs discard_from_hand:1"
     }
   },
   {
@@ -61708,7 +61719,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "on_ko cost discardHand:1 + draw:2 — text \"Draw 2 cards and trash 1 card from your hand\" is sequential, not cost+effect"
     }
   },
   {
@@ -61761,7 +61773,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "on_play cost discardHand:1 + draw:2 — text \"Draw 2 cards and trash 1 card from your hand\" is sequential, not cost+effect"
     }
   },
   {
