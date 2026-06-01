@@ -3138,7 +3138,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -3177,7 +3177,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "on_play target your_leader; text Leader or 1 of your Characters needs your_leader_or_character"
     }
   },
   {
@@ -3370,7 +3371,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -3399,7 +3400,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "buff target your_character no count; text says up to 3 Leader and Character — needs leader_or_character count:3"
     }
   },
   {
@@ -3811,7 +3813,7 @@
     "effectText": "[On Play] Up to 1 of your opponent's rested Characters will not become active in your opponent's next Refresh Phase. Then, set up to 1 of your DON!! cards as active at the end of this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -3829,7 +3831,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "missing 2nd clause: set 1 DON active at end of this turn"
     }
   },
   {
@@ -3919,7 +3922,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher filter missing nameExcludes:Nami"
     }
   },
   {
@@ -4209,7 +4213,7 @@
     "effectText": "[Your Turn] [Once Per Turn] When your opponent's Character is returned to the owner's hand by your effect, look at 3 cards from the top of your deck and place them at the top or bottom of the deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "trigger",
@@ -4221,7 +4225,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "root flagged: trigger trigger placeholder for reactive bounce trigger gap"
     }
   },
   {
