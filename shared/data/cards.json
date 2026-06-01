@@ -88952,7 +88952,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] Select 2 of your {Supernovas} or {Heart Pirates} type Characters. Swap the base power of the selected Characters with each other during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -88972,7 +88972,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action power_buff:0 is a no-op; text \"Swap the base power of the selected Characters with each other during this turn\" — needs a swap_base_power action between 2 selected targets"
     }
   },
   {
@@ -89002,7 +89003,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -89027,7 +89028,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "both clauses missing condition if_self_power_min:5000; text gates with \"If this Character has 5000 power or more\""
     }
   },
   {
@@ -89051,7 +89053,7 @@
     "effectText": "This Character cannot be K.O.'d by effects of your opponent's Characters with 5000 base power or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -89060,7 +89062,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous self_immune_to_opp_effects covers all opp effects; text restricts to \"effects of your opponent's Characters with 5000 base power or less\" — needs source-power filter"
     }
   },
   {
@@ -89088,7 +89091,7 @@
     "effectText": "If this Character has 5000 power or more, this Character gains [Rush].<br>(This card can attack on the turn in which it is played.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -89098,7 +89101,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous grants Rush unconditionally; text \"If this Character has 5000 power or more, this Character gains [Rush]\" — needs condition if_self_power_min:5000"
     }
   },
   {
@@ -89141,7 +89145,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target your_leader; text \"your Leader or 1 of your Characters\" — needs your_leader_or_character"
     }
   },
   {
@@ -89167,7 +89172,7 @@
     "effectText": "[When Attacking] If this Character has 5000 power or more, give up to 1 of your opponent's Characters −2000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -89183,7 +89188,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "missing condition if_self_power_min:5000; text gates with \"If this Character has 5000 power or more\""
     }
   },
   {
@@ -89293,7 +89299,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "action set_base_power_copy_from source:opp_leader — text says \"Select your Leader and 1 Character. SWAP the base power of the selected cards\" — needs swap_base_power between own leader and own char"
     }
   },
   {
@@ -89377,7 +89384,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "continuous condition if_have_given_don_min:2 (total given DON across field); text \"[DON!! x2]\" — needs if_attached_don_min:2 (DON attached to this card)"
     }
   },
   {
@@ -89403,7 +89411,7 @@
     "effectText": "[When Attacking] If this Character has 5000 power or more, give up to 2 rested DON!! cards to your Leader or 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -89419,7 +89427,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "missing condition if_self_power_min:5000; target your_leader missing \"or 1 of your Characters\""
     }
   },
   {
@@ -89658,7 +89667,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "when_attacking clause uses if_have_given_don_min:1; text \"[DON!! x1]\" — needs if_attached_don_min:1"
     }
   },
   {
@@ -89684,7 +89694,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -89703,7 +89713,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action power_buff:0 is a no-op; text \"Swap the base power of the selected Characters with each other during this turn\" — needs swap_base_power between 2 selected opp chars"
     }
   },
   {
@@ -89733,7 +89744,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -89749,7 +89760,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "spec target your_leader has no power-condition; text \"If there is a Character with 8000 power or more\" requires a min-power-on-field condition; also target your_leader misses \"or Character\""
     }
   },
   {
@@ -89829,7 +89841,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -89882,7 +89894,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition if_leader_has_trait:Slash checks OWN Leader; text \"If your OPPONENT'S Leader has the <Slash> attribute\" — needs if_opp_leader_attribute:Slash"
     }
   },
   {
@@ -89910,7 +89923,7 @@
     "effectText": "[Your Turn] When this Character becomes rested, you may add 1 card from the top of your Life cards to your hand. If you do, up to 1 of your opponent's rested Characters or Stages will not become active in your opponent's next Refresh Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_become_rested",
@@ -89932,7 +89945,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target opp_character; text \"your opponent's rested Characters OR Stages\" — Stages missing from target type"
     }
   },
   {
@@ -89960,7 +89974,7 @@
     "effectText": "[End of Your Turn] If your Leader has the {FILM} or {Straw Hat Crew} type, set up to 2 of your DON!! cards as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "at_end_of_turn_self",
@@ -89984,7 +89998,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action set_active; text \"set up to 2 of your DON!! cards as active\" — needs set_active_don:2"
     }
   },
   {
@@ -90052,7 +90067,7 @@
     "effectText": "[On Play] Set up to 3 of your DON!! cards as active. Then, you cannot play Character cards during this turn.<br>[On K.O.] Rest up to 1 of your opponent's cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -90081,7 +90096,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause action set_active; text \"Set up to 3 of your DON!! cards as active\" — needs set_active_don:3"
     }
   },
   {
@@ -90321,7 +90337,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -90354,7 +90370,8 @@
           "conditional": true,
           "verified": "human-reviewed"
         }
-      ]
+      ],
+      "auditNote": "activate_main cost restSelf:true (rests this character); text \"rest 2 of your cards\" rests 2 own cards (chars+DON), needs restOwnCharFilter count:2 or restOwnCardsFilter:2; replacement cost also restSelf:true, text \"rest 1 of your cards\" — any own card"
     }
   },
   {
@@ -90441,7 +90458,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause rest_target target opp_character costMax:8 missing count:2; text \"Rest up to 2 of your opponent's Characters\""
     }
   },
   {
@@ -90513,7 +90531,7 @@
     "effectText": "[On Play] Up to 2 of your opponent's Characters with a cost of 5 or less cannot be rested until the end of your opponent's next End Phase.<br>[On K.O.] You may rest 1 of your cards: Play up to 1 green Character card with a cost of 5 or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -90549,7 +90567,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause action rest_lock_until_phase prevents becoming active; text \"cannot be RESTED until the end of your opponent's next End Phase\" prevents resting — different effect (needs rest_immunity); also missing count:2"
     }
   },
   {
@@ -90699,7 +90718,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -90718,7 +90737,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target your_character; text \"your Leader or Character cards\" — needs your_leader_or_character"
     }
   },
   {
@@ -90892,7 +90912,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -90919,7 +90939,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause action set_active; text \"set up to 1 of your DON!! cards as active\" — needs set_active_don:1"
     }
   },
   {
@@ -91042,7 +91063,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "first clause trigger on_opp_play_character (when OPP plays); text \"When YOU play a Character\" — needs on_self_play_character; second clause trigger on_ko missing filter \"your {Amazon Lily} or {Kuja Pirates} type Characters with 5000 base power or more\""
     }
   },
   {
@@ -91257,7 +91279,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes on_ko draw clause; missing \"When a card is trashed from your hand by an effect, this Character gains [Rush] during this turn\" continuous-triggered Rush"
     }
   },
   {
@@ -91460,7 +91483,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -91501,7 +91524,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous grant_keyword Rush with condition always:true is permanent Rush; text \"When a card is trashed from your hand by an effect, this Character gains [Rush] during this turn\" — triggered conditional Rush; also second on_play clause removal_bounce target opp_character, text \"Return up to 1 Character with a cost of 7 or less\" any character"
     }
   },
   {
@@ -91731,7 +91755,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -91755,7 +91779,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "at_end_of_turn discard_from_hand magnitude:99 discards entire hand; text \"Trash cards from your hand UNTIL YOU HAVE 5 CARDS IN YOUR HAND\" — variable count (hand-5)"
     }
   },
   {
@@ -91808,7 +91833,7 @@
     "effectText": "This Character cannot attack.<br>When a card is trashed from your hand by an effect, this Character's effect is negated during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -91825,7 +91850,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous self_immune_to_opp_effects with condition always:true is permanent immunity; text \"When a card is trashed from your hand by an effect, this Character's effect is negated DURING THIS TURN\" — triggered turn-scoped negation"
     }
   },
   {
@@ -91856,7 +91882,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -91884,7 +91910,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "outer target filter only typeIncludes:Fish-Man; text \"{Fish-Man} OR {Merfolk} type\" needs traitsAny on outer target (the action.target has both but outer is missing Merfolk)"
     }
   },
   {
@@ -91920,7 +91947,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -91976,7 +92003,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause bounce target opp_character; text \"Return up to 1 Character with 6000 base power to the owner's hand\" — any character (no opp restriction)"
     }
   },
   {
