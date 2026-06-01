@@ -18822,7 +18822,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: restrict_opp_blocker action with filter; schema added but engine firing for blocker-silence is downstream gap"
     }
   },
   {
@@ -18942,7 +18943,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec has no clauses/continuous; \"when given DON\" trigger schema gap"
     }
   },
   {
@@ -19040,7 +19042,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: 3rd clause restrict_effect_type wrong verb for \"cannot add life cards this turn\""
     }
   },
   {
@@ -19435,7 +19438,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character no count; text says \"up to 2 of opp Characters\""
     }
   },
   {
@@ -19903,7 +19907,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "root: restrict_effect_type wrong verb for \"cannot add life\" restriction"
     }
   },
   {
