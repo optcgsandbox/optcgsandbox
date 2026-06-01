@@ -115227,7 +115227,28 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Play] You may trash 1 card from the top or bottom of your Life cards: Reveal up to 1 Character card with a cost of 5 from your hand and add it to the top of your Life cards face-down.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "cost": {
+            "flipLife": 1
+          },
+          "action": {
+            "kind": "add_to_own_life_top",
+            "faceUp": false,
+            "from": "hand"
+          },
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "costMin": 5,
+              "costMax": 5,
+              "kind": "character"
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -115238,7 +115259,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -115264,7 +115285,50 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Play] Play up to 1 each of [Sabo], [Portgas.D.Ace], and [Monkey.D.Luffy] with a cost of 2 from your hand.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "nameIs": "Sabo",
+              "costMin": 2,
+              "costMax": 2,
+              "kind": "character"
+            }
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "nameIs": "Portgas.D.Ace",
+              "costMin": 2,
+              "costMax": 2,
+              "kind": "character"
+            }
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "nameIs": "Monkey.D.Luffy",
+              "costMin": 2,
+              "costMax": 2,
+              "kind": "character"
+            }
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -115275,7 +115339,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -115800,7 +115864,16 @@
     ],
     "effectText": "[Rush] (This card can attack on the turn in which it is played.)<br>[On Play] Look at all your Life cards; place 1 at the top of your deck and place the rest back in your Life area in any order.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "peek_and_reorder_own_life",
+            "count": 99
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -115811,7 +115884,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -116167,13 +116240,13 @@
     "effectText": "[Activate: Main] [Once Per Turn] Up to 1 of your black {Straw Hat Crew} type Characters gains +2 cost until the end of your opponent's next turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
+            "kind": "give_cost_buff",
+            "magnitude": 2,
             "duration": "opp_next_turn"
           },
           "target": {
@@ -116379,16 +116452,51 @@
             "restSelf": true
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "give_cost_buff",
+            "magnitude": 2,
+            "duration": "opp_next_turn"
           },
-          "verified": "flagged"
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "typeIncludes": "Straw Hat Crew",
+              "colors": [
+                "black"
+              ]
+            }
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "condition": {
+            "type": "if_own_chars_min_cost",
+            "n": 1,
+            "minCost": 8
+          },
+          "action": {
+            "kind": "chained_actions",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "discard_from_hand",
+                "magnitude": 1
+              }
+            ]
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -116524,16 +116632,26 @@
             "restSelf": true
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "give_cost_buff",
+            "magnitude": 2,
+            "duration": "opp_next_turn"
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "typeIncludes": "Straw Hat Crew",
+              "colors": [
+                "black"
+              ]
+            }
+          }
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -116744,7 +116862,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -116757,14 +116875,14 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 0,
+            "kind": "give_cost_buff",
+            "magnitude": 3,
             "duration": "opp_next_turn"
           },
           "target": {
             "kind": "your_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -120252,7 +120370,29 @@
       "draw": 1
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_chars_min_rested",
+            "n": 6
+          },
+          "action": {
+            "kind": "chained_actions",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "discard_from_hand",
+                "magnitude": 1
+              }
+            ]
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -120263,7 +120403,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -120389,7 +120529,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -120405,7 +120545,7 @@
         {
           "trigger": "on_play",
           "condition": {
-            "type": "if_own_chars_min",
+            "type": "if_opp_chars_min_rested",
             "n": 2
           },
           "action": {
@@ -121345,14 +121485,11 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "cost": {
-            "discardHand": 1
-          },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "discard_from_hand",
+            "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -121406,7 +121543,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {

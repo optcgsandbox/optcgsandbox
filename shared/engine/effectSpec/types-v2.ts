@@ -276,6 +276,8 @@ export type EffectActionV2 =
   | { kind: 'set_base_power_copy_from'; source: 'opp_leader' | 'opp_character'; duration: EffectDuration } // (gap #57)
   | { kind: 'cost_reduction'; magnitude: number; scope?: { cardName?: string; costMin?: number } } // (gap #80)
   | { kind: 'removal_cost_reduce'; magnitude: number; duration: EffectDuration }
+  // ST14-004/008/011/016, OP14-016 — "X gains +N cost during [duration]"
+  | { kind: 'give_cost_buff'; magnitude: number; duration: EffectDuration }
   // Rest / lock
   | { kind: 'rest_target' }
   | { kind: 'set_active' }                                             // (gap #59-style; OP09-037 etc.)

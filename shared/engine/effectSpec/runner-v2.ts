@@ -941,6 +941,20 @@ export function applyActionV2(
       }
       return state;
     }
+    case 'give_cost_buff': {
+      for (const tid of targets) {
+        const inst = state.instances[tid];
+        if (!inst) continue;
+        inst.costModifier = (inst.costModifier ?? 0) + action.magnitude;
+        for (const pid of ['A', 'B'] as PlayerId[]) {
+          const pl = state.players[pid];
+          if (pl.leader.instanceId === tid) pl.leader.costModifier = inst.costModifier;
+          for (const f of pl.field) if (f.instanceId === tid) f.costModifier = inst.costModifier;
+          if (pl.stage && pl.stage.instanceId === tid) pl.stage.costModifier = inst.costModifier;
+        }
+      }
+      return state;
+    }
     case 'rest_target': {
       for (const tid of targets) {
         const inst = state.instances[tid];
