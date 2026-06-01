@@ -189,13 +189,19 @@ export function fireEffects(
     const v2trigger = trigger as EffectTriggerV2;
     const after = fireV2Effects(state, instanceId, v2trigger, controller);
     if (after !== state) return after;
-    // When V2 spec is verified-authoritative (human-reviewed or ground-truth),
-    // the absence of a matching clause is intentional: do NOTHING for this
-    // trigger. Skipping the V1 effectTag fallback prevents auto-extracted
-    // tags (e.g., 'ramp' on OP01-060 Doflamingo from a "DON!! −1" regex hit)
-    // from firing ghost effects at game start / on triggers the printed text
-    // never authorized. Cards not yet migrated to V2 (verified === 'auto' or
-    // 'flagged' or unset) still fall through to the legacy template path.
+  }
+  // When V2 spec is verified-authoritative (human-reviewed or ground-truth),
+  // the absence of a matching clause is intentional: do NOTHING for this
+  // trigger. Skipping the V1 effectTag fallback prevents auto-extracted
+  // tags (e.g., 'ramp' on OP01-060 Doflamingo from a "DON!! −1" regex hit,
+  // or 'ramp' on OP01-091 King whose V2 spec is continuous-only with no
+  // clauses) from firing ghost effects at game start / on triggers the
+  // printed text never authorized. This check runs regardless of whether
+  // `shouldUseV2` returned true — continuous-only specs have clauses.length
+  // === 0 (shouldUseV2 → false) but their verified status still makes V1
+  // ghost-tag firing inappropriate. Cards not yet migrated to V2
+  // (verified === 'auto' / 'flagged' / unset) still fall through.
+  {
     const verified = (card as { effectSpecV2?: { verified?: string } }).effectSpecV2?.verified;
     if (verified === 'human-reviewed' || verified === 'ground-truth') {
       return state;
