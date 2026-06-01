@@ -141,6 +141,25 @@ function canPayCost(
     });
     if (matches.length === 0) return false;
   }
+  if (cost.returnSelfChar) {
+    const filter = cost.returnSelfChar.filter;
+    const matches = me.field.filter((inst) => {
+      const card = state.cardLibrary[inst.cardId];
+      if (!card) return false;
+      if (!filter) return true;
+      if (filter.trait && (!card.traits || !card.traits.includes(filter.trait))) return false;
+      if (typeof filter.costMin === 'number') {
+        const c = typeof card.cost === 'number' ? card.cost + (inst.costModifier ?? 0) : -1;
+        if (c < 0 || c < filter.costMin) return false;
+      }
+      if (typeof filter.costMax === 'number') {
+        const c = typeof card.cost === 'number' ? card.cost + (inst.costModifier ?? 0) : -1;
+        if (c < 0 || c > filter.costMax) return false;
+      }
+      return true;
+    });
+    if (matches.length === 0) return false;
+  }
   if (typeof cost.bottomOfDeckFromTrash === 'number' && me.trash.length < cost.bottomOfDeckFromTrash) return false;
   if (typeof cost.bottomOfDeckFromHand === 'number' && me.hand.length < cost.bottomOfDeckFromHand) return false;
   if (cost.bottomOfDeckSelf) {
@@ -286,6 +305,33 @@ function payCost(
       const idx = me.field.findIndex((i) => i.instanceId === match.instanceId);
       me.field.splice(idx, 1);
       me.trash.push(match.instanceId);
+    }
+  }
+  if (cost.returnSelfChar) {
+    const filter = cost.returnSelfChar.filter;
+    const match = me.field.find((inst) => {
+      const card = state.cardLibrary[inst.cardId];
+      if (!card) return false;
+      if (!filter) return true;
+      if (filter.trait && (!card.traits || !card.traits.includes(filter.trait))) return false;
+      if (typeof filter.costMin === 'number') {
+        const c = typeof card.cost === 'number' ? card.cost + (inst.costModifier ?? 0) : -1;
+        if (c < 0 || c < filter.costMin) return false;
+      }
+      if (typeof filter.costMax === 'number') {
+        const c = typeof card.cost === 'number' ? card.cost + (inst.costModifier ?? 0) : -1;
+        if (c < 0 || c > filter.costMax) return false;
+      }
+      return true;
+    });
+    if (match) {
+      const idx = me.field.findIndex((i) => i.instanceId === match.instanceId);
+      const removed = me.field.splice(idx, 1)[0];
+      while (removed.attachedDon.length > 0) me.donRested.push(removed.attachedDon.shift()!);
+      me.hand.push(removed.instanceId);
+      // Reset transient flags so it can re-enter play cleanly.
+      state.instances[removed.instanceId].summoningSick = false;
+      state.instances[removed.instanceId].rested = false;
     }
   }
   if (typeof cost.bottomOfDeckFromTrash === 'number') {
