@@ -120187,7 +120187,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -120195,14 +120195,20 @@
             "type": "if_own_life_max",
             "n": 2
           },
-          "cost": {
-            "discardHand": 1
-          },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
+            "kind": "chained_actions",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "discard_from_hand",
+                "magnitude": 1
+              }
+            ]
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -120334,13 +120340,13 @@
               "trait": "Straw Hat Crew"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -120516,7 +120522,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -120579,7 +120585,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -120607,7 +120613,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to 1 of your [Monkey.D.Luffy] cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "auto",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -120622,7 +120628,8 @@
               "nameIs": "Monkey.D.Luffy"
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -120762,15 +120769,31 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_life_max",
+            "n": 1
+          },
+          "action": {
+            "kind": "power_buff",
+            "magnitude": -2000,
+            "duration": "this_turn"
+          },
+          "target": {
+            "kind": "opp_leader_or_character"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -120857,15 +120880,32 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_life_max",
+            "n": 2
+          },
+          "action": {
+            "kind": "removal_ko"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 3
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   }
 ]
