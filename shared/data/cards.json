@@ -22097,17 +22097,17 @@
       "continuous": [
         {
           "action": {
-            "kind": "aura_power_buff",
+            "kind": "aura_grant_keyword",
             "filter": {
               "nameIs": "Blugori"
             },
-            "magnitude": 0
+            "keyword": "blocker"
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -34531,7 +34531,7 @@
     "effectSpecV2": {
       "clauses": [],
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "continuous": [
         {
           "condition": {
@@ -34539,11 +34539,12 @@
             "trait": "Dressrosa"
           },
           "action": {
-            "kind": "aura_power_buff",
+            "kind": "aura_grant_keyword",
             "filter": {
-              "trait": "Dressrosa"
+              "trait": "Dressrosa",
+              "kind": "character"
             },
-            "magnitude": 0
+            "keyword": "rush_character"
           }
         }
       ]
@@ -35487,20 +35488,21 @@
       "continuous": [
         {
           "action": {
-            "kind": "aura_power_buff",
+            "kind": "aura_grant_keyword",
             "filter": {
               "colors": [
                 "red"
               ],
               "costMin": 3,
-              "nameExcludes": "Nefeltari Vivi"
+              "nameExcludes": "Nefeltari Vivi",
+              "kind": "character"
             },
-            "magnitude": 0
+            "keyword": "Rush"
           }
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -98390,7 +98392,7 @@
     "effectText": "All of your [Shura] cards and this Character gain [Unblockable].<br>(This card cannot be blocked.)<br>[Opponent's Turn] All of your [Shura] cards' base power and this Character's base power become 6000.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -98401,11 +98403,11 @@
         },
         {
           "action": {
-            "kind": "aura_power_buff",
+            "kind": "aura_grant_keyword",
             "filter": {
               "nameIs": "Shura"
             },
-            "magnitude": 0
+            "keyword": "Unblockable"
           }
         },
         {
@@ -98413,8 +98415,23 @@
             "type": "is_opp_turn"
           },
           "action": {
-            "kind": "self_power_buff",
-            "magnitude": 6000
+            "kind": "aura_set_base_power",
+            "filter": {
+              "nameIs": "Shura"
+            },
+            "basePower": 6000
+          }
+        },
+        {
+          "condition": {
+            "type": "is_opp_turn"
+          },
+          "action": {
+            "kind": "aura_set_base_power",
+            "filter": {
+              "nameIs": "Fuza"
+            },
+            "basePower": 6000
           }
         }
       ],
@@ -98445,7 +98462,7 @@
     "effectText": "All of your [Ohm] cards and this Character gain [Double Attack].<br>(This card deals 2 damage.)<br>[Opponent's Turn] All of your [Ohm] cards' base power and this Character's base power become 6000.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -98456,11 +98473,11 @@
         },
         {
           "action": {
-            "kind": "aura_power_buff",
+            "kind": "aura_grant_keyword",
             "filter": {
               "nameIs": "Ohm"
             },
-            "magnitude": 0
+            "keyword": "Double Attack"
           }
         },
         {
@@ -98468,8 +98485,23 @@
             "type": "is_opp_turn"
           },
           "action": {
-            "kind": "self_power_buff",
-            "magnitude": 6000
+            "kind": "aura_set_base_power",
+            "filter": {
+              "nameIs": "Ohm"
+            },
+            "basePower": 6000
+          }
+        },
+        {
+          "condition": {
+            "type": "is_opp_turn"
+          },
+          "action": {
+            "kind": "aura_set_base_power",
+            "filter": {
+              "nameIs": "Holly"
+            },
+            "basePower": 6000
           }
         }
       ],

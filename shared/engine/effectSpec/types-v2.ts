@@ -362,6 +362,8 @@ export interface ContinuousEffectV2 {
     | { kind: 'opp_aura_cost_modifier'; filter: TargetFilter; delta: number }  // mirror — affects opp.field
     | { kind: 'aura_counter_buff'; filter: TargetFilter; magnitude: number } // EB01-001 — chars without a counter chip gain +N counter
     | { kind: 'aura_immunity'; filter: TargetFilter; against: 'opp_effects' | 'opp_removal' } // EB04-057 — chars matching filter become immune
+    | { kind: 'aura_grant_keyword'; filter: TargetFilter; keyword: string } // OP02-074 Saldeath / OP04-096 Corrida Coliseum / OP04-118 Vivi / OP15-070 Fuza / OP15-071 Holly
+    | { kind: 'aura_set_base_power'; filter: TargetFilter; basePower: number } // OP15-070 / OP15-071 — set base power of filter to N
     | { kind: 'self_cost_buff'; magnitude: number | MagnitudeFormula }       // EB04-048 — own cost scales by formula (mirrors self_power_buff)
     | { kind: 'restrict_self_attack' }                                       // "This Leader cannot attack"
     | { kind: 'cost_modifier_in_hand'; delta: number };                      // (gap #91, EB04-061)

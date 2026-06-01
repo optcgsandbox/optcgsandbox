@@ -119,6 +119,38 @@ export function applyContinuousEffectsV2ToInstance(
         }
         break;
       }
+      case 'aura_grant_keyword': {
+        const filter = eff.action.filter;
+        const kw = eff.action.keyword;
+        // Also apply to source instance if it matches (text often says "All your X cards AND this Character").
+        const apply = (inst: CardInstance) => {
+          if (!inst.grantedKeywords) inst.grantedKeywords = [];
+          if (!inst.grantedKeywords.includes(kw)) inst.grantedKeywords.push(kw);
+          const mirror = state.instances[inst.instanceId];
+          if (mirror) mirror.grantedKeywords = inst.grantedKeywords;
+        };
+        for (const inst of me.field) {
+          if (!matchesFilterMinimal(state, inst, filter)) continue;
+          apply(inst);
+        }
+        if (matchesFilterMinimal(state, source, filter)) apply(source);
+        break;
+      }
+      case 'aura_set_base_power': {
+        const filter = eff.action.filter;
+        const bp = eff.action.basePower;
+        const apply = (inst: CardInstance) => {
+          (inst as { baseOverride?: number }).baseOverride = bp;
+          const mirror = state.instances[inst.instanceId] as { baseOverride?: number };
+          if (mirror) mirror.baseOverride = bp;
+        };
+        for (const inst of me.field) {
+          if (!matchesFilterMinimal(state, inst, filter)) continue;
+          apply(inst);
+        }
+        if (matchesFilterMinimal(state, source, filter)) apply(source);
+        break;
+      }
       case 'self_cost_buff': {
         const m = eff.action.magnitude;
         let delta: number;
