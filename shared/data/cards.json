@@ -7014,28 +7014,42 @@
             "restSelf": true
           },
           "action": {
-            "kind": "chained_actions",
-            "actions": [
-              {
-                "kind": "give_don_to_target",
-                "magnitude": 1,
-                "rested": true
-              },
-              {
-                "kind": "rest_target"
-              }
-            ]
+            "kind": "give_don_to_target",
+            "magnitude": 1,
+            "rested": true
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character",
+            "filter": {
+              "traitsAny": [
+                "Fish-Man",
+                "Merfolk"
+              ]
+            }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "activate_main",
+          "cost": {
+            "restSelf": true
+          },
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "opp_character",
+            "filter": {
+              "costMax": 2
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -8721,7 +8735,38 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "condition": {
+            "type": "or",
+            "conditions": [
+              {
+                "type": "if_own_chars_min_filter",
+                "n": 1,
+                "filter": {
+                  "costMax": 0,
+                  "kind": "character"
+                }
+              },
+              {
+                "type": "if_own_chars_min_filter",
+                "n": 1,
+                "filter": {
+                  "costMin": 8,
+                  "kind": "character"
+                }
+              },
+              {
+                "type": "if_opp_chars_max_cost",
+                "n": 1,
+                "maxCost": 0
+              },
+              {
+                "type": "if_opp_chars_min_cost",
+                "n": 1,
+                "minCost": 8
+              }
+            ]
+          }
         },
         {
           "trigger": "on_ko",
@@ -8735,7 +8780,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -10414,8 +10459,17 @@
             "restSelf": true
           },
           "condition": {
-            "type": "if_leader_has_trait",
-            "trait": "Fish-Man"
+            "type": "or",
+            "conditions": [
+              {
+                "type": "if_leader_has_trait",
+                "trait": "Fish-Man"
+              },
+              {
+                "type": "if_leader_has_trait",
+                "trait": "Merfolk"
+              }
+            ]
           },
           "action": {
             "kind": "play_for_free",
@@ -10441,7 +10495,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -13028,9 +13082,7 @@
             "flipLife": 1
           },
           "condition": {
-            "type": "if_own_chars_max_with_min_power",
-            "n": 999,
-            "minPower": 0
+            "type": "if_own_chars_lt_opp_chars"
           },
           "action": {
             "kind": "chained_actions",
@@ -31040,7 +31092,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35662,7 +35714,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -48528,13 +48580,22 @@
     "effectText": "This Character can attack Characters on the turn in which it is played.<br>[On Play] If your Leader has the {Fish-Man} or {Merfolk} type, rest up to 1 of your opponent's Characters with a cost of 6 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "condition": {
-            "type": "if_leader_has_type",
-            "typeString": "Fish-Man"
+            "type": "or",
+            "conditions": [
+              {
+                "type": "if_leader_has_trait",
+                "trait": "Fish-Man"
+              },
+              {
+                "type": "if_leader_has_trait",
+                "trait": "Merfolk"
+              }
+            ]
           },
           "action": {
             "kind": "rest_target"
@@ -92921,7 +92982,7 @@
     "effectText": "If there is a Character with a cost of 0 or with a cost of 8 or more, this Character can attack Characters on the turn in which it is played.<br>[On Play] Rest up to 1 of your opponent's Characters with a cost of 0.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93141,6 +93202,22 @@
             "type": "or",
             "conditions": [
               {
+                "type": "if_own_chars_min_filter",
+                "n": 1,
+                "filter": {
+                  "costMax": 0,
+                  "kind": "character"
+                }
+              },
+              {
+                "type": "if_own_chars_min_filter",
+                "n": 1,
+                "filter": {
+                  "costMin": 8,
+                  "kind": "character"
+                }
+              },
+              {
                 "type": "if_opp_chars_max_cost",
                 "n": 1,
                 "maxCost": 0
@@ -93163,6 +93240,22 @@
           "condition": {
             "type": "or",
             "conditions": [
+              {
+                "type": "if_own_chars_min_filter",
+                "n": 1,
+                "filter": {
+                  "costMax": 0,
+                  "kind": "character"
+                }
+              },
+              {
+                "type": "if_own_chars_min_filter",
+                "n": 1,
+                "filter": {
+                  "costMin": 8,
+                  "kind": "character"
+                }
+              },
               {
                 "type": "if_opp_chars_max_cost",
                 "n": 1,
@@ -93192,7 +93285,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
