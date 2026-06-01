@@ -30466,19 +30466,27 @@
         {
           "trigger": "when_attacking",
           "action": {
-            "kind": "reveal_top_and_conditional_play",
+            "kind": "reveal_top_then_if_filter",
             "filter": {
               "kind": "character",
               "powerMin": 6000
+            },
+            "thenAction": {
+              "kind": "power_buff",
+              "magnitude": 3000,
+              "duration": "this_turn"
             }
           },
-          "verified": "flagged"
+          "verified": "flagged",
+          "target": {
+            "kind": "self"
+          }
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -43602,7 +43610,7 @@
     "effectText": "[Your Turn] When your opponent activates [Blocker] or an Event, if your Leader has the {East Blue} type, you may trash 4 cards from the top of your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_opp_attack",
@@ -46778,13 +46786,18 @@
     "effectText": "If you have a {Shandian Warrior} type Character other than [Raki], this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
           "condition": {
-            "type": "if_owned_other_with_name",
-            "name": "Shandian Warrior"
+            "type": "if_own_chars_min_filter",
+            "n": 1,
+            "filter": {
+              "trait": "Shandian Warrior",
+              "nameExcludes": "Raki",
+              "kind": "character"
+            }
           },
           "action": {
             "kind": "grant_keyword_to_self",
@@ -46818,7 +46831,7 @@
     "effectText": "[On Play] You may place 1 Stage with a cost of 1 at the bottom of the owner's deck: Look at 5 cards from the top of your deck; reveal up to 1 [Upper Yard] or {Shandian Warrior} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -46834,7 +46847,12 @@
             "lookCount": 5,
             "addCount": 1,
             "filter": {
-              "typeIncludes": "Shandian Warrior"
+              "namesAny": [
+                "Upper Yard"
+              ],
+              "traitsAny": [
+                "Shandian Warrior"
+              ]
             }
           },
           "verified": "flagged"
@@ -69594,7 +69612,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -69607,7 +69625,11 @@
               "costMax": 6
             }
           },
-          "verified": "human-reviewed"
+          "verified": "human-reviewed",
+          "condition": {
+            "type": "if_own_chars_lt_opp_chars",
+            "delta": 1
+          }
         },
         {
           "trigger": "on_play",
@@ -69620,7 +69642,11 @@
               "costMax": 4
             }
           },
-          "verified": "human-reviewed"
+          "verified": "human-reviewed",
+          "condition": {
+            "type": "if_own_chars_lt_opp_chars",
+            "delta": 1
+          }
         }
       ],
       "continuous": [],
@@ -70375,8 +70401,7 @@
             "restSelf": true
           },
           "condition": {
-            "type": "if_own_life_max",
-            "n": 4
+            "type": "if_own_life_le_opp"
           },
           "action": {
             "kind": "rest_target"
@@ -70393,7 +70418,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -82424,16 +82449,6 @@
             "kind": "self_power_buff",
             "magnitude": -2000
           }
-        },
-        {
-          "condition": {
-            "type": "if_don_max",
-            "n": 9
-          },
-          "action": {
-            "kind": "self_power_buff",
-            "magnitude": -2000
-          }
         }
       ],
       "replacements": []
@@ -83398,8 +83413,17 @@
         {
           "trigger": "on_play",
           "condition": {
-            "type": "if_leader_has_type",
-            "typeString": "FILM"
+            "type": "or",
+            "conditions": [
+              {
+                "type": "if_leader_has_type",
+                "typeString": "FILM"
+              },
+              {
+                "type": "if_leader_attribute_is",
+                "attribute": "Strike"
+              }
+            ]
           },
           "action": {
             "kind": "set_active_don",
@@ -83418,7 +83442,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {

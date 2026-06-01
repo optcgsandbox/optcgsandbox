@@ -135,6 +135,16 @@ export function evaluateConditionV2(
       ).length;
       return count >= cond.n;
     }
+    case 'if_own_chars_lt_opp_chars': {
+      const own = me.field.filter((inst) => state.cardLibrary[inst.cardId]?.kind === 'character').length;
+      const opc = opp.field.filter((inst) => state.cardLibrary[inst.cardId]?.kind === 'character').length;
+      const delta = cond.delta ?? 0;
+      return own + delta < opc;
+    }
+    case 'if_leader_attribute_is': {
+      const card = state.cardLibrary[me.leader.cardId];
+      return (card as { attribute?: string })?.attribute === cond.attribute;
+    }
     case 'if_own_chars_min_cost': {
       const match = me.field.filter((inst) => {
         const card = state.cardLibrary[inst.cardId];

@@ -85,6 +85,8 @@ export type EffectConditionV2 =
   // Field state
   | { type: 'if_own_chars_min'; n: number }                             // (gap #14)
   | { type: 'if_own_chars_min_rested'; n: number }                      // OP01-052 / OP09-041 — ≥N own chars rested
+  | { type: 'if_own_chars_lt_opp_chars'; delta?: number }               // OP10-098 — own chars + delta < opp chars (delta default 0)
+  | { type: 'if_leader_attribute_is'; attribute: string }               // OP13-025 — "Leader has <Strike> attribute"
   | { type: 'if_opp_chars_min_rested'; n: number }                      // OP14-061 etc. — ≥N opp chars rested
   | { type: 'if_own_chars_min_cost'; n: number; minCost: number }
   | { type: 'if_opp_chars_min'; n: number }                             // opp has ≥N chars
