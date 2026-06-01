@@ -92592,7 +92592,7 @@
     "effectText": "[On K.O.] Look at 3 cards from the top of your deck; reveal up to 1 {Thriller Bark Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -92604,7 +92604,7 @@
               "typeIncludes": "Thriller Bark Pirates"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -92687,7 +92687,7 @@
     "effectText": "[On Play] You may add 1 card from the top or bottom of your Life cards to your hand: Add up to 1 card from your hand to the top of your Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -92699,7 +92699,7 @@
             "faceUp": false,
             "from": "hand"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -92730,7 +92730,7 @@
     "effectText": "[On Play] Select up to 1 {Thriller Bark Pirates} type Character with a cost of 4 or less from your trash and play it or add it to the top of your Life cards face-up.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -92761,7 +92761,7 @@
               }
             ]
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -92792,7 +92792,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] You may reveal 3 {Amazon Lily} or {Kuja Pirates} type cards from your hand: Give your Leader and all of your Characters up to 1 rested DON!! card each.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -92812,7 +92812,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "activate_main",
@@ -92832,7 +92832,7 @@
           "target": {
             "kind": "all_your_characters"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -92872,7 +92872,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -92901,7 +92901,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -92913,7 +92913,7 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -92957,7 +92957,7 @@
     "effectText": "[On Play] If your Leader is multicolored and your opponent has 3 or less Life cards, K.O. up to 1 of your opponent's Characters with 7000 base power or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -92982,7 +92982,7 @@
               "powerMax": 7000
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -93021,7 +93021,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -93046,7 +93046,7 @@
     "effectText": "[On K.O.] Play up to 1 Character card with a cost of 4 or less and a [Trigger] other than [Dr. Hogback] from your trash.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -93091,7 +93091,7 @@
     "effectText": "[On Play]/[On K.O.] Up to 1 of your opponent's Characters with a cost of 6 or less cannot attack until the end of your opponent's next End Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93105,7 +93105,7 @@
               "costMax": 6
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_ko",
@@ -93119,7 +93119,7 @@
               "costMax": 6
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -93150,7 +93150,7 @@
     "effectText": "[On Play] If your Leader has the {The Seven Warlords of the Sea} type, add up to 1 card from the top of your deck to the top of your Life cards. Then, add up to 1 card from the top of your opponent's Life cards to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93163,7 +93163,7 @@
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -93174,7 +93174,7 @@
           "action": {
             "kind": "add_to_opp_hand_from_opp_life"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -93203,7 +93203,7 @@
     "effectText": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 {Amazon Lily} or {Kuja Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order and trash 1 card from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93215,7 +93215,7 @@
               "typeIncludes": "Amazon Lily"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -93256,7 +93256,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to 1 of your {Kuja Pirates} type Leader or Character cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -93271,7 +93271,7 @@
               "typeIncludes": "Kuja Pirates"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -93300,7 +93300,7 @@
     "effectText": "[Opponent's Turn] [On K.O.] Add up to 1 card from the top of your deck to the top of your Life cards. Then, you take 1 damage.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -93309,7 +93309,7 @@
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -93358,7 +93358,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -93386,7 +93386,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93401,7 +93401,7 @@
               "typeIncludes": "Thriller Bark Pirates"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -93433,7 +93433,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93451,7 +93451,7 @@
               "rested": false
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -93553,7 +93553,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93567,7 +93567,7 @@
               "costMax": 9
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -93590,7 +93590,7 @@
               "kind": "character"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -93752,7 +93752,7 @@
     "effectText": "If this Character would be K.O.'d, you may trash 1 Character card with a power of 6000 or less from your hand instead.<br>[Activate: Main] [Once Per Turn] You may give 1 of your opponent's rested DON!! cards to 1 of your opponent's Characters: Give up to 1 rested DON!! card to its owner's Leader or 1 of their Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -93772,7 +93772,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -93816,7 +93816,7 @@
     "effectText": "[On Play] If your Leader has 0 power or less, give up to 1 of your opponent's Characters −3000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93832,7 +93832,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -93955,7 +93955,7 @@
     "effectText": "[On Play] If your Leader has the {East Blue} type, play up to 1 Character card with a cost of 5 or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -93971,7 +93971,7 @@
               "costMax": 5
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -94118,7 +94118,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to its owner's Leader or 1 of their Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -94129,7 +94129,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -94162,7 +94162,7 @@
     "effectText": "[Opponent's Turn] If your Leader has the {East Blue} type, this Character gains [Blocker] and +2000 power.<br>[On K.O.] If your Leader has the {East Blue} type, K.O. up to 1 of your opponent's Characters with 6000 base power or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -94179,7 +94179,7 @@
               "powerMax": 6000
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [
@@ -94325,7 +94325,7 @@
     "effectText": "If this Character would be K.O.'d, you may trash 1 Event from your hand instead.<br>[On Play] Activate up to 1 {Dressrosa} type Event with a base cost of 3 or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -94337,7 +94337,7 @@
               "costMax": 3
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -94385,7 +94385,7 @@
     "effectText": "[On Play] Give up to 1 of your opponent's rested DON!! cards to 1 of your opponent's Characters. Then, give −1000 power during this turn to up to 1 of your opponent's Characters with a DON!! card given.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -94396,7 +94396,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -94408,7 +94408,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -94552,7 +94552,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -94560,7 +94560,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -94572,7 +94572,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -94608,7 +94608,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -94620,7 +94620,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -94632,7 +94632,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -94648,7 +94648,7 @@
               "powerMax": 0
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -94681,7 +94681,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -94693,7 +94693,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [
@@ -94846,7 +94846,7 @@
     "effectText": "[Opponent's Turn] This Character cannot be rested by your opponent's Leader and Character effects and gains [Blocker].<br>[On K.O.] Rest up to 1 of your opponent's Leader or Character cards with a cost of 7 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -94859,7 +94859,7 @@
               "costMax": 7
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [
@@ -94981,7 +94981,7 @@
     "effectText": "[On Play] Rest up to 1 of your opponent's Characters with a DON!! card given.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -94995,7 +94995,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -95025,7 +95025,7 @@
     "effectText": "[On Play] If your Leader has the {East Blue} type, give up to 1 DON!! card from your opponent's cost area to 1 of your opponent's Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95040,7 +95040,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -95070,7 +95070,7 @@
     "effectText": "[On Play] Up to 1 of your opponent's Characters with a cost of 5 or less cannot be rested until the end of your opponent's next End Phase.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95084,7 +95084,7 @@
               "costMax": 5
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -95249,7 +95249,7 @@
     "effectText": "[On Play] Set your {Fish-Man} type Leader as active. Then, add 1 card from the top of your Life cards to your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95263,7 +95263,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -95275,7 +95275,7 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -95308,7 +95308,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95323,7 +95323,7 @@
               "nameIs": "Brook"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -95395,7 +95395,7 @@
     "effectText": "[On Play]/[When Attacking] K.O. up to 1 of your opponent's rested Characters with a cost of 4 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95409,7 +95409,7 @@
               "rested": true
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "when_attacking",
@@ -95423,7 +95423,7 @@
               "rested": true
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -95454,7 +95454,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95467,7 +95467,7 @@
               "nameExcludes": "The Outcome Will Tell Us Who's Strong and Who's Weak"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -95609,13 +95609,13 @@
               "trait": "Dressrosa"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -95688,7 +95688,7 @@
     "effectText": "[On Play] You may trash 1 card from your hand: If your Leader is [Rebecca], this Character gains [Rush] during this turn.<br>[On K.O.] Add this Character card from your trash to your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95707,7 +95707,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_ko",
@@ -95718,7 +95718,7 @@
               "nameIs": "Kyros"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -95748,7 +95748,7 @@
     "effectText": "[On Play] Play up to 1 [Bobby Funk] from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95759,7 +95759,7 @@
               "nameIs": "Bobby Funk"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -96029,7 +96029,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -96073,7 +96073,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -96344,7 +96344,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -96352,7 +96352,7 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -96367,7 +96367,7 @@
               "nameIs": "Lucy"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -96382,7 +96382,7 @@
               "nameIs": "Lucy"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -96418,7 +96418,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -96430,7 +96430,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_opp_attack",
@@ -96446,7 +96446,7 @@
           "target": {
             "kind": "your_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -96599,7 +96599,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -96614,7 +96614,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "activate_main",
@@ -96797,7 +96797,7 @@
     "effectText": "[Activate: Main] DON!! −2, You may rest this Character: If you have [Satori] and [Hotori], rest up to 1 of your opponent's Characters with 5000 power or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -96827,7 +96827,7 @@
               "powerMax": 5000
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -96988,7 +96988,7 @@
     "effectText": "If you have 6 or less DON!! cards on your field, this Character gains [Blocker].<br>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -97175,7 +97175,7 @@
     "effectText": "[Activate: Main] DON!! −2, You may rest this Character: If you have [Kotori] and [Satori], give up to 1 of your opponent's Characters −3000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -97204,7 +97204,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -97276,7 +97276,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -97291,7 +97291,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -97324,7 +97324,7 @@
               "nameIs": "Enel"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -97361,7 +97361,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -97380,7 +97380,7 @@
           "target": {
             "kind": "your_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -97400,7 +97400,7 @@
               "powerMax": 3000
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -97415,7 +97415,7 @@
               "nameIs": "Enel"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -97453,7 +97453,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -97468,7 +97468,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -97487,7 +97487,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -97502,7 +97502,7 @@
               "nameIs": "Enel"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -97537,7 +97537,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -97548,7 +97548,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -97566,7 +97566,7 @@
               "rested": true
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -97646,7 +97646,7 @@
     "effectText": "[On K.O.] Add up to 1 {Thriller Bark Pirates} type card from your trash to your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -97657,7 +97657,7 @@
               "typeIncludes": "Thriller Bark Pirates"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -97754,7 +97754,7 @@
     "effectText": "[On Play] If your Leader has the {Straw Hat Crew} type, trash 5 cards from the top of your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -97766,7 +97766,7 @@
             "kind": "mill_self",
             "magnitude": 5
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -97876,7 +97876,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -97888,7 +97888,7 @@
             "kind": "mill_self",
             "magnitude": 5
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_ko",
@@ -97900,7 +97900,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -97971,7 +97971,7 @@
     "effectText": "[On Play] If your Leader has the {Straw Hat Crew} type, play up to 1 {Straw Hat Crew} type Character with a cost of 7 or less from your trash. The Character played with this effect gains [Rush] during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -97988,7 +97988,7 @@
               "costMax": 7
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -98001,7 +98001,7 @@
             "keyword": "Rush",
             "duration": "this_turn"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -98173,7 +98173,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -98306,7 +98306,7 @@
     "effectText": "[Activate: Main] You may trash this Character: If you have 15 or more cards in your trash, up to 1 of your [Monkey.D.Luffy] Characters gains [Rush: Character] and the <Slash> attribute during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -98328,7 +98328,7 @@
               "nameIs": "Monkey.D.Luffy"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -98500,7 +98500,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -98518,7 +98518,7 @@
               "costMax": 5
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -98600,7 +98600,7 @@
     "effectText": "[On Play] You may trash 1 {Supernovas} type card from your hand: This Character gains [Rush] during this turn.<br>[Activate: Main] You may turn 1 card from the top of your Life cards face-down: Give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -98615,7 +98615,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "activate_main",
@@ -98630,7 +98630,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -98661,7 +98661,7 @@
     "effectText": "[On Play] You may trash this Character and add 1 card from the top of your Life cards to your hand: K.O. up to 1 of your opponent's Characters with a cost of 6 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -98672,7 +98672,7 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -98688,7 +98688,7 @@
               "costMax": 6
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -98764,7 +98764,7 @@
     "effectText": "If you have a {Sky Island} type Character with 7000 power or more, give this card in your hand −3 cost.<br>[On Play] Rest up to 1 of your opponent's Characters with a cost equal to or less than the number of your opponent's Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -99005,13 +99005,13 @@
               "trait": "Sky Island"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -99039,7 +99039,7 @@
     "effectText": "[On Play] You may add 1 card from the top of your Life cards to your hand: If your Leader has the {Straw Hat Crew} type, add up to 1 card from the top of your deck to the top of your Life cards. Then, play up to 1 {Sky Island} type Character card with a cost of 5 or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -99055,7 +99055,7 @@
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -99075,7 +99075,7 @@
               "costMax": 5
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -99105,7 +99105,7 @@
     "effectText": "[On K.O.] If your Leader has the {Shandian Warrior} type, add up to 1 card from the top of your deck to the top of your Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -99118,7 +99118,7 @@
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -99150,7 +99150,7 @@
     "effectText": "[DON!! x1] [When Attacking] Up to 1 of your [Kalgara] cards gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -99169,7 +99169,7 @@
               "nameIs": "Kalgara"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -99245,7 +99245,7 @@
             "from": "top_of_deck"
           },
           "magnitude": 1,
-          "verified": "human-reviewed",
+          "verified": "auto",
           "cost": {
             "discardHand": 1
           }
@@ -99254,7 +99254,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -99286,7 +99286,7 @@
     "effectText": "[On Play] You may turn 1 card from the top of your Life cards face-up: Give all of your opponent's Characters −2000 power during this turn. Then, K.O. all of your opponent's Characters with 0 power or less.<br>[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to 1 of your {Sky Island} type Leader or Character cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -99301,7 +99301,7 @@
           "target": {
             "kind": "all_opp_characters"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -99317,7 +99317,7 @@
               "powerMax": 0
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "activate_main",
@@ -99332,7 +99332,7 @@
               "typeIncludes": "Sky Island"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -99364,7 +99364,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -99377,7 +99377,7 @@
               "costMax": 4
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -99385,7 +99385,7 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -99469,7 +99469,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -99477,7 +99477,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -99492,7 +99492,7 @@
               "typeIncludes": "Sky Island"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -99527,7 +99527,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -99539,7 +99539,7 @@
             "lookCount": 5,
             "addCount": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -99682,7 +99682,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -99764,7 +99764,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -99804,7 +99804,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -99830,7 +99830,7 @@
     "effectText": "[Activate: Main]  DON!! −2 (You may return the specified number of DON!! cards from your field to your DON!! deck.): This Character gains [Banish] during this turn.<br>(When this card deals damage, the target card is trashed without activating its Trigger.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -99845,7 +99845,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -99876,7 +99876,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -99968,7 +99968,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -99994,7 +99994,7 @@
     "effectText": "[On Play] If your opponent has 6 or more cards in their hand, your opponent adds 1 card from their Life area to their hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -100005,7 +100005,7 @@
           "action": {
             "kind": "add_to_opp_hand_from_opp_life"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -100036,7 +100036,7 @@
     "effectText": "[End of Your Turn] Add 1 DON!! card from your DON!! deck and set it as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "at_end_of_turn_self",
@@ -100045,7 +100045,7 @@
             "magnitude": 1,
             "rested": false
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -100152,7 +100152,7 @@
     "effectText": "[Activate: Main] You may place this Character at the bottom of the owner's deck: Give up to 1 of your opponent's Characters −3000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -100167,7 +100167,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -100207,7 +100207,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -100300,13 +100300,13 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -100343,7 +100343,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -100385,13 +100385,13 @@
               "powerMax": 3000
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -100430,13 +100430,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -100548,7 +100548,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -100565,7 +100565,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -100643,13 +100643,13 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -100728,7 +100728,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -100758,7 +100758,7 @@
     "effectText": "[End of Your Turn] You may rest this Character: Set up to 1 of your {FILM} type Characters other than [Bartolomeo] as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "at_end_of_turn_self",
@@ -100775,7 +100775,7 @@
               "nameExcludes": "Bartolomeo"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -100806,7 +100806,7 @@
     "effectText": "[On K.O.] Place up to 1 Character with a cost of 3 or less at the bottom of the owner's deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -100819,7 +100819,7 @@
               "costMax": 3
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -100855,13 +100855,13 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -100902,7 +100902,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -100931,7 +100931,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -100942,7 +100942,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -100972,7 +100972,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -101021,7 +101021,7 @@
     "effectText": "[DON!! x1] [When Attacking] You may trash 1 card from your hand: K.O. up to 1 of your opponent's Characters with a cost of 0.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -101041,7 +101041,7 @@
               "costMax": 0
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -101075,7 +101075,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -101086,7 +101086,7 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "when_attacking",
@@ -101098,7 +101098,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "when_attacking",
@@ -101110,7 +101110,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -101142,7 +101142,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -101158,7 +101158,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -101295,7 +101295,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -101321,7 +101321,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -101377,7 +101377,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -101446,7 +101446,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -101467,7 +101467,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -101553,13 +101553,13 @@
             "kind": "peek_and_reorder_own_deck",
             "count": 5
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -101626,7 +101626,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -101643,7 +101643,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -101709,7 +101709,7 @@
     "effectText": "[On Play] If you have 3 or less cards in your hand, return up to 1 of your opponent's Characters with a cost of 3 or less to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -101726,7 +101726,7 @@
               "costMax": 3
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -101794,7 +101794,7 @@
     "effectText": "[On Play] You may trash 2 cards from your hand: Your opponent places 1 of their Characters at the bottom of the owner's deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -101808,7 +101808,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -101857,7 +101857,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -101884,7 +101884,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -101903,7 +101903,7 @@
               "rested": true
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -102046,7 +102046,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -102061,7 +102061,7 @@
             "kind": "rest_opp_don",
             "magnitude": 2
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -102125,7 +102125,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -102138,7 +102138,7 @@
               "costMax": 4
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "activate_main",
@@ -102150,7 +102150,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "activate_main",
@@ -102158,7 +102158,7 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -102199,13 +102199,13 @@
               "costMax": 1
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -102281,7 +102281,7 @@
     "effectText": "[Activate: Main] You may trash this Character: Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -102292,7 +102292,7 @@
             "kind": "peek_and_reorder_own_deck",
             "count": 5
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -102332,13 +102332,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -102373,7 +102373,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -102398,7 +102398,7 @@
     "effectText": "[On K.O.] You may add this Character card to your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -102409,7 +102409,7 @@
               "nameIs": "Marco"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -102444,7 +102444,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -102455,7 +102455,7 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "activate_main",
@@ -102467,7 +102467,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -102496,7 +102496,7 @@
     "effectText": "[Activate: Main] You may return this Character to the owner's hand: Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -102507,7 +102507,7 @@
             "kind": "peek_and_reorder_own_deck",
             "count": 5
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -102586,7 +102586,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] You may trash 1 {Navy} type card from your hand: Give up to 1 of your opponent's Characters －1 cost during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -102601,7 +102601,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -102818,7 +102818,7 @@
     "effectText": "[Your Turn] [On Play] If your Leader has the {Cross Guild} type or a type including \"Baroque Works\", place up to 1 of your opponent's Characters with 2000 power or less at the bottom of the owner's deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -102845,7 +102845,7 @@
               "powerMax": 2000
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -102879,7 +102879,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -102898,7 +102898,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "when_attacking",
@@ -102910,7 +102910,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -103186,7 +103186,7 @@
     "effectText": "[Opponent's Turn] Give this Character −3000 power.<br>[When Attacking] If your Leader has the {Navy} type, your Leader's base power becomes 7000 until the end of your opponent's next turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -103202,7 +103202,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [
@@ -103278,7 +103278,7 @@
     "effectText": "[On Play]/[When Attacking] Your opponent cannot activate [Blocker] during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -103286,7 +103286,7 @@
             "kind": "restrict_effect_type",
             "effectKind": "character_set_active"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "when_attacking",
@@ -103294,7 +103294,7 @@
             "kind": "restrict_effect_type",
             "effectKind": "character_set_active"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -103356,7 +103356,7 @@
     "effectText": "[When Attacking] DON!! −10 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Set this Character as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -103369,7 +103369,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -103397,7 +103397,7 @@
     "effectText": "[When Attacking] Negate the effects of your opponent's Leader and all of their Characters during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -103408,7 +103408,7 @@
           "target": {
             "kind": "opp_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "when_attacking",
@@ -103419,7 +103419,7 @@
           "target": {
             "kind": "all_opp_characters"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -103461,7 +103461,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [
@@ -103474,7 +103474,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -103500,7 +103500,7 @@
     "effectText": "[On Play] If your Leader has the {Straw Hat Crew} type, set up to 2 of your DON!! cards as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -103511,7 +103511,7 @@
           "action": {
             "kind": "set_active"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -103543,7 +103543,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -103551,7 +103551,7 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -103559,7 +103559,7 @@
             "kind": "peek_and_reorder_own_deck",
             "count": 2
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -103571,7 +103571,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -103651,7 +103651,7 @@
     "effectText": "If your Leader has the {Revolutionary Army} type, this Character gains [Blocker] and +4 cost.<br>[On Play] You may add 1 card from the top or bottom of your Life cards to your hand: Give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -103662,7 +103662,7 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -103674,7 +103674,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [
@@ -103718,7 +103718,7 @@
     "effectText": "[End of Your Turn] You may turn 1 card from the top of your Life cards face-up: Set up to 1 of your {Egghead} type Characters as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "at_end_of_turn_self",
@@ -103734,7 +103734,7 @@
               "typeIncludes": "Egghead"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -103876,7 +103876,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -103889,7 +103889,7 @@
               "powerMax": 3000
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "when_attacking",
@@ -103901,7 +103901,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [
@@ -104209,7 +104209,7 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [
@@ -104222,7 +104222,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -104421,13 +104421,13 @@
               "trait": "Straw Hat Crew"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -104556,7 +104556,7 @@
     "effectText": "If your Leader has the {Blackbeard Pirates} type, this Character gains [Blocker] and +4 cost.<br>[On K.O.] If your Leader has the {Blackbeard Pirates} type, K.O. up to 1 of your opponent's Characters with a base cost of 4 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -104573,7 +104573,7 @@
               "costMax": 4
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [
@@ -104618,7 +104618,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -104630,7 +104630,7 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "activate_main",
@@ -104646,7 +104646,7 @@
           "target": {
             "kind": "your_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -104768,7 +104768,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] Give this Leader or 1 of your Characters up to 1 rested DON!! card.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -104780,7 +104780,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -104892,7 +104892,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -104921,7 +104921,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -104937,7 +104937,7 @@
           "target": {
             "kind": "your_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -104977,7 +104977,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -105013,13 +105013,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -105132,13 +105132,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -105204,7 +105204,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -105257,13 +105257,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -105290,7 +105290,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -105303,7 +105303,7 @@
               "powerMax": 6000
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -105379,7 +105379,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -105397,7 +105397,7 @@
               "typeIncludes": "Straw Hat Crew"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -105500,7 +105500,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -105559,7 +105559,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -105597,13 +105597,13 @@
               "rested": true
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -105672,7 +105672,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -105698,7 +105698,7 @@
     "effectText": "[DON!! x1] [When Attacking] Rest up to 1 of your opponent's DON!! cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -105710,7 +105710,7 @@
             "kind": "rest_opp_don",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -105740,7 +105740,7 @@
     "effectText": "[On Play] Set up to 1 of your {Supernovas} or {Heart Pirates} type rested Characters with a cost of 5 or less as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -105755,7 +105755,7 @@
               "rested": true
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -105971,7 +105971,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -106017,7 +106017,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -106044,7 +106044,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -106054,7 +106054,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -106086,7 +106086,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] DON!! −4 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Return up to 1 Character with a cost of 5 or less to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -106102,7 +106102,7 @@
               "costMax": 5
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -106195,7 +106195,7 @@
     "effectText": "[On Play] Add up to 1 {The Seven Warlords of the Sea} or {Thriller Bark Pirates} type Character with a cost of 4 or less other than [Gecko Moria] from your trash to your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -106208,7 +106208,7 @@
               "kind": "character"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -106241,7 +106241,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -106256,7 +106256,7 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -106371,7 +106371,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -106414,7 +106414,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -106440,7 +106440,7 @@
     "effectText": "[On Play] Look at 3 cards from the top of your deck and return them to the top or bottom of the deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -106448,7 +106448,7 @@
             "kind": "peek_and_reorder_own_deck",
             "count": 3
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -106542,7 +106542,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -106585,7 +106585,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -106612,7 +106612,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -106625,7 +106625,7 @@
               "costMax": 7
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -106655,7 +106655,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -106668,7 +106668,7 @@
               "costMax": 3
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -106719,7 +106719,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -106791,7 +106791,7 @@
     "effectText": "[On Play] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Play up to 1 [Page One] card with a cost of 4 or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -106806,7 +106806,7 @@
               "costMax": 4
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -106839,7 +106839,7 @@
     "effectText": "[On Play] DON!! −5 (You may return the specified number of DON!! cards from your field to your DON!! deck.): K.O. up to 1 of your opponent's Characters with a cost of 6 or less. This Character gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -106855,7 +106855,7 @@
               "costMax": 6
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -106870,7 +106870,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -106910,7 +106910,7 @@
               "costMax": 4
             }
           },
-          "verified": "human-reviewed",
+          "verified": "auto",
           "cost": {
             "donCost": 1
           }
@@ -106919,7 +106919,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -106996,7 +106996,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed",
+          "verified": "auto",
           "cost": {
             "donCost": 1
           }
@@ -107005,7 +107005,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -107063,7 +107063,7 @@
             "kind": "ramp",
             "magnitude": 1
           },
-          "verified": "human-reviewed",
+          "verified": "auto",
           "cost": {
             "discardHand": 1
           }
@@ -107072,7 +107072,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -107135,7 +107135,7 @@
               "costMax": 3
             }
           },
-          "verified": "human-reviewed",
+          "verified": "auto",
           "cost": {
             "donCost": 1
           }
@@ -107144,7 +107144,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -107179,7 +107179,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -107263,7 +107263,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -107271,7 +107271,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -107279,7 +107279,7 @@
             "kind": "ramp",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -107310,7 +107310,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -107323,7 +107323,7 @@
               "costMax": 6
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -107331,7 +107331,7 @@
             "kind": "ramp",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -107374,7 +107374,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed",
+          "verified": "auto",
           "cost": {
             "donCost": 1
           }
@@ -107383,7 +107383,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -107408,7 +107408,7 @@
     "effectText": "[Activate: Main] You may rest this Stage: If your Leader has the {Animal Kingdom Pirates} type, add up to 1 DON!! card from your DON!! deck and rest it.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -107424,7 +107424,7 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -107461,7 +107461,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -107479,7 +107479,7 @@
               "trait": "FILM"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -107516,13 +107516,13 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -107558,7 +107558,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -107622,7 +107622,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] You may rest this Character and trash 1 {FILM} type card from your hand: If your opponent has more DON!! cards on their field than you, add 2 DON!! cards from your DON!! deck and rest them.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -107638,7 +107638,7 @@
             "magnitude": 2,
             "rested": true
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -107677,7 +107677,7 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "human-reviewed",
+          "verified": "auto",
           "cost": {
             "donCost": 2
           }
@@ -107686,7 +107686,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -107736,7 +107736,7 @@
     "effectText": "If you have 8 or more DON!! cards on your field, this Character cannot be K.O.'d in battle.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -107858,7 +107858,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] DON!! −4 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Rest up to 2 of your opponent's Characters with a cost of 6 or less. Then, this Character gains [Double Attack] during this turn.<br>(This card deals 2 damage.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -107874,7 +107874,7 @@
               "costMax": 6
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "activate_main",
@@ -107889,7 +107889,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -107983,13 +107983,13 @@
               "trait": "FILM"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -108056,7 +108056,7 @@
               "costMax": 5
             }
           },
-          "verified": "human-reviewed",
+          "verified": "auto",
           "cost": {
             "donCost": 2
           }
@@ -108065,7 +108065,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -108140,7 +108140,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] ③ (You may rest the specified number of DON!! cards in your cost area.) You may trash 1 card from your hand: K.O. up to 1 of your opponent's Characters with a cost of 0.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -108157,7 +108157,7 @@
               "costMax": 0
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -108186,7 +108186,7 @@
     "effectText": "[On Play] You may trash 1 card from your hand: K.O. up to 1 of your opponent's Characters with a cost of 0.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -108202,7 +108202,7 @@
               "costMax": 0
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -108311,13 +108311,13 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -108358,7 +108358,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -108393,7 +108393,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -108428,13 +108428,13 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -108495,13 +108495,13 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -108553,7 +108553,7 @@
     "effectText": "[Activate: Main] You may trash 1 card from your hand and rest this Character: K.O. up to 1 of your opponent's Characters with a cost of 4 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -108570,7 +108570,7 @@
               "costMax": 4
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -108645,7 +108645,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -108675,7 +108675,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -108683,7 +108683,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -108695,7 +108695,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -108737,13 +108737,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -108948,7 +108948,7 @@
     "effectText": "[DON!! x1] [When Attacking] You may add 1 card from the top or bottom of your Life cards to your hand: This Character gains [Banish] and +1000 power during this battle.<br>(When this card deals damage, the target card is trashed without activating its Trigger.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -108967,7 +108967,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "when_attacking",
@@ -108986,7 +108986,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -109016,7 +109016,7 @@
     "effectText": "[DON!! x1] [When Attacking] You may add 1 card from the top or bottom of your Life cards to your hand: Add up to 1 card from the top of your deck to the top of your Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -109032,7 +109032,7 @@
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -109097,7 +109097,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -109160,7 +109160,7 @@
     "effectText": "[Activate: Main] You may rest this Character and add 1 card from the top or bottom of your Life cards to your hand: K.O. up to 1 of your opponent's Characters with a cost of 3 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -109177,7 +109177,7 @@
               "costMax": 3
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -109262,7 +109262,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -109332,7 +109332,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -109477,7 +109477,7 @@
     "effectText": "[Activate: Main] You may rest this Stage and add 1 card from the top or bottom of your Life cards to your hand: Add up to 1 of your Characters with a cost of 3 to the top of the owner's Life cards face-up.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -109497,7 +109497,7 @@
               "costMin": 3
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -109634,7 +109634,7 @@
               "costMax": 2
             }
           },
-          "verified": "human-reviewed",
+          "verified": "auto",
           "cost": {
             "restSelf": true
           }
@@ -109643,7 +109643,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -109668,7 +109668,7 @@
     "effectText": "[On Play] You may trash 1 card from your hand: K.O. all Characters with a cost of 1 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -109684,7 +109684,7 @@
               "costMax": 1
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -109760,7 +109760,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -109795,13 +109795,13 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -109829,7 +109829,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -109842,7 +109842,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -109981,7 +109981,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -109996,7 +109996,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -110037,13 +110037,13 @@
               "costMax": 2
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -110073,7 +110073,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -110172,7 +110172,7 @@
     "effectText": "[DON!! x1] If you have 2 or less Life cards, this Character cannot be K.O.'d in battle.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -110331,7 +110331,7 @@
     "effectText": "[DON!! x1] [When Attacking] You may add 1 card from the top or bottom of your Life cards to your hand: Play up to 1 yellow {Land of Wano} type Character card with a cost of 4 or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -110354,7 +110354,7 @@
               "kind": "character"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -110484,7 +110484,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -110499,7 +110499,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -110555,7 +110555,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -110571,7 +110571,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -110620,7 +110620,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -110884,13 +110884,13 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -111000,7 +111000,7 @@
     "effectText": "[On Play] If you have 3 or less DON!! cards on your field, add up to 2 DON!! cards from your DON!! deck and rest them.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -111013,7 +111013,7 @@
             "magnitude": 2,
             "rested": true
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -111048,7 +111048,7 @@
             "kind": "ramp",
             "magnitude": 1
           },
-          "verified": "human-reviewed",
+          "verified": "auto",
           "cost": {
             "donCost": 1
           }
@@ -111057,7 +111057,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -111169,7 +111169,7 @@
     "effectText": "[On Play]/[When Attacking] If your opponent has more DON!! cards on their field than you, add up to 1 DON!! card from your DON!! deck and rest it.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -111181,7 +111181,7 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "when_attacking",
@@ -111193,7 +111193,7 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -111227,7 +111227,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -111242,7 +111242,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "when_attacking",
@@ -111257,7 +111257,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -111332,7 +111332,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -111344,7 +111344,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -111357,7 +111357,7 @@
               "powerMax": 2000
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -111387,7 +111387,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -111400,7 +111400,7 @@
               "powerMax": 7000
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -111431,7 +111431,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -111444,7 +111444,7 @@
               "costMax": 2
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -111453,7 +111453,7 @@
             "magnitude": 1,
             "rested": true
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -111484,7 +111484,7 @@
     "effectText": "[DON!! x1] [When Attacking] [Once Per Turn] Reveal 1 card from the top of your deck and add up to 1 {FILM} type card to your hand. Then, place the rest at the bottom of your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -111500,7 +111500,7 @@
               "trait": "FILM"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -111615,7 +111615,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -111632,7 +111632,7 @@
               "nameExcludes": "New Genesis"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -111644,7 +111644,7 @@
             "kind": "ramp",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -111675,7 +111675,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -111685,7 +111685,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -111717,7 +111717,7 @@
     "effectText": "[DON!! x1] [When Attacking] [Once Per Turn] You may return 1 of your Characters with a cost of 2 or more to the owner's hand: Set up to 1 of your Characters with 7000 power or less as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -111741,7 +111741,7 @@
               "powerMax": 7000
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -111781,7 +111781,7 @@
               "costMax": 4
             }
           },
-          "verified": "human-reviewed",
+          "verified": "auto",
           "cost": {
             "restSelf": true
           }
@@ -111790,7 +111790,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -111960,7 +111960,7 @@
     "effectText": "[On Play] ➁ (You may rest the specified number of DON!! cards in your cost area.): If your opponent has 3 or more Life cards, set up to 1 of your <Slash> attribute Characters with a cost of 4 or less as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -111980,7 +111980,7 @@
               "costMax": 4
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -112009,7 +112009,7 @@
     "effectText": "[DON!! x1] [When Attacking] Rest up to 1 of your opponent's Characters with a cost of 6 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -112026,7 +112026,7 @@
               "costMax": 6
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -112088,7 +112088,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -112100,7 +112100,7 @@
               "kind": "character"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "when_attacking",
@@ -112112,7 +112112,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -112144,7 +112144,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -112169,7 +112169,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -112198,7 +112198,7 @@
     "effectText": "[Activate: Main] Return this Character to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -112208,7 +112208,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -112341,7 +112341,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -112354,7 +112354,7 @@
               "costMax": 4
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -112403,7 +112403,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -112618,7 +112618,7 @@
     "effectText": "[On Play] Add 1 card from the top of your deck to the top of your Life cards. Then, look at all your Life cards; place 1 card at the top of your deck and place the rest back in your Life area in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -112627,7 +112627,7 @@
             "faceUp": false,
             "from": "top_of_deck"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -112635,7 +112635,7 @@
             "kind": "peek_and_reorder_own_life",
             "count": 99
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -112962,7 +112962,7 @@
     "effectText": "[On Play] If you have 2 or less Life cards, this Character gains [Rush].<br>(This card can attack on the turn in which it is played.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -112978,7 +112978,7 @@
           "target": {
             "kind": "self"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -113055,7 +113055,7 @@
     "effectText": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 [Sabo], [Portgas.D.Ace], or [Monkey.D.Luffy] with a cost of 5 or less and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -113067,7 +113067,7 @@
               "costMax": 5
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -113290,7 +113290,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -113337,7 +113337,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -113364,7 +113364,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -113376,7 +113376,7 @@
               "costMax": 5
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -113408,7 +113408,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -113457,7 +113457,7 @@
     "effectText": "[DON!! x1] [When Attacking] If you have a Character with a cost of 8 or more, K.O. up to 1 of your opponent's Characters with a cost of 4 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -113475,7 +113475,7 @@
               "costMax": 4
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -113504,7 +113504,7 @@
     "effectText": "[On Play] If you have a Character with a cost of 6 or more, K.O. up to 1 of your opponent's Characters with a cost of 5 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -113522,7 +113522,7 @@
               "costMax": 5
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -113553,7 +113553,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] Up to 1 of your black {Straw Hat Crew} type Characters gains +2 cost until the end of your opponent's next turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -113571,7 +113571,7 @@
               ]
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -113669,7 +113669,7 @@
     "effectText": "[On Play]/[When Attacking] If you have a Character with a cost of 8 or more, give up to 1 of your opponent's Characters −5 cost during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -113686,7 +113686,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "when_attacking",
@@ -113703,7 +113703,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -113751,7 +113751,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -113780,7 +113780,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -113880,7 +113880,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -113906,7 +113906,7 @@
     "effectText": "If you have a Character with a cost of 10 or more, this Character gains [Rush].<br>(This card can attack on the turn in which it is played.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -113975,7 +113975,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -113992,7 +113992,7 @@
           "target": {
             "kind": "your_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -114026,7 +114026,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -114038,7 +114038,7 @@
           "target": {
             "kind": "your_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -114056,7 +114056,7 @@
               "costMax": 2
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -114091,7 +114091,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -114099,7 +114099,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -114143,7 +114143,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -114155,7 +114155,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [
@@ -114325,7 +114325,7 @@
     "effectText": "[On Play] If your Leader's type includes \"Whitebeard Pirates\", give up to 1 of your opponent's Characters −2000 power during this turn. Then, add 1 card from the top of your Life cards to your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -114341,7 +114341,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -114353,7 +114353,7 @@
             "kind": "life_to_hand",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -114560,7 +114560,7 @@
     "effectText": "[On Play] K.O. up to 1 of your opponent's rested Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -114573,7 +114573,7 @@
               "rested": true
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -114605,7 +114605,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -114697,7 +114697,7 @@
     "effectText": "[On Play] You may return 1 of your Characters to the owner's hand: If your Leader has the {The Seven Warlords of the Sea} type, return up to 1 Character with a cost of 4 or less to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -114717,7 +114717,7 @@
               "costMax": 4
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -114747,7 +114747,7 @@
     "effectText": "[On Play] Look at 3 cards from the top of your deck and place them at the top of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -114755,7 +114755,7 @@
             "kind": "peek_and_reorder_own_deck",
             "count": 3
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -114825,7 +114825,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] You may place 1 card from your hand at the top of your deck: Give up to 2 rested DON!! cards to your Leader or 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -114840,7 +114840,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -114871,7 +114871,7 @@
     "effectText": "[On Play] If you have 8 or more DON!! cards on your field, rest up to 1 of your opponent's Characters with a cost of 5 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -114888,7 +114888,7 @@
               "costMax": 5
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -114961,7 +114961,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -114973,7 +114973,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -115002,7 +115002,7 @@
     "effectText": "[On Play] Look at 5 cards from the top of your deck; reveal up to 1 purple {Straw Hat Crew} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -115017,7 +115017,7 @@
               ]
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -115047,7 +115047,7 @@
     "effectText": "[On Play] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Play up to 1 purple {Straw Hat Crew} type Character card with a cost of 5 or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -115066,7 +115066,7 @@
               "costMax": 5
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -115095,7 +115095,7 @@
     "effectText": "[On Play] You may trash 1 black {Navy} type card from your hand: Up to 2 of your opponent's Characters with a cost of 4 or less cannot attack until the end of your opponent's next turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -115112,7 +115112,7 @@
               "costMax": 4
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -115144,7 +115144,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -115159,7 +115159,7 @@
             "kind": "draw",
             "magnitude": 3
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -115255,7 +115255,7 @@
     "effectText": "[DON!! x1] [Opponent's Turn] This Character gains +4 cost.<br>[Activate: Main] [Once Per Turn] You may place 1 card from your trash at the bottom of your deck: Give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -115270,7 +115270,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [
@@ -115454,7 +115454,7 @@
     "effectText": "[On Play] You may add 1 card from the top of your Life cards to your hand: Set up to 1 of your {Big Mom Pirates} type Characters with a cost of 3 or less as active.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -115471,7 +115471,7 @@
               "costMax": 3
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -115563,7 +115563,7 @@
     "effectText": "[DON!! x1] [Activate: Main] [Once Per Turn] Give up to 2 rested DON!! cards to 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -115578,7 +115578,7 @@
           "target": {
             "kind": "your_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -115614,7 +115614,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -115701,7 +115701,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -115709,7 +115709,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -115802,7 +115802,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -115855,7 +115855,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] Give up to 2 rested DON!! cards to 1 of your {Straw Hat Crew} type Leader or Character cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -115870,7 +115870,7 @@
               "typeIncludes": "Straw Hat Crew"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -115914,13 +115914,13 @@
               "powerMax": 4000
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -115950,7 +115950,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -115993,7 +115993,7 @@
     "effectText": "[When Attacking] Give up to 2 rested DON!! cards to your Leader or 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -116005,7 +116005,7 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -116206,7 +116206,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -116218,7 +116218,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -116235,7 +116235,7 @@
               "powerMax": 2000
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -116663,7 +116663,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -116717,7 +116717,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -116740,7 +116740,7 @@
               "typeIncludes": "Whitebeard Pirates"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -117036,7 +117036,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -117052,7 +117052,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -117210,7 +117210,7 @@
     "effectText": "[On Play] You may trash 1 card from your hand: If your Leader has the {Red-Haired Pirates} type, K.O. up to 1 of your opponent's Characters with 4000 base power or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -117230,7 +117230,7 @@
               "powerMax": 4000
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -117263,7 +117263,7 @@
     "effectText": "[Activate: Main] You may rest 1 of your DON!! cards and this Character: Give up to 1 of your opponent's Characters −1000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -117279,7 +117279,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -117319,13 +117319,13 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -117451,7 +117451,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -117482,7 +117482,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -117493,7 +117493,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -117541,7 +117541,7 @@
     "effectText": "[On Play] If your Leader has the {Supernovas} type, rest up to 1 of your opponent's Characters with a cost of 5 or less. Then, set up to 1 of your DON!! cards as active at the end of this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -117558,7 +117558,7 @@
               "costMax": 5
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         },
         {
           "trigger": "on_play",
@@ -117674,7 +117674,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [],
       "continuous": [
         {
@@ -117815,7 +117815,7 @@
     "effectText": "[Activate: Main] You may trash 1 card from your hand and trash this Character: If your Leader is [Buggy], play up to 1 {Cross Guild} type Character card with a cost of 6 or less from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -117836,7 +117836,7 @@
               "costMax": 6
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -117870,7 +117870,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -117891,7 +117891,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [
@@ -118063,7 +118063,7 @@
             "kind": "ramp",
             "magnitude": 1
           },
-          "verified": "human-reviewed",
+          "verified": "auto",
           "cost": {
             "donCost": 2
           }
@@ -118072,7 +118072,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -118107,7 +118107,7 @@
           "target": {
             "kind": "opp_character"
           },
-          "verified": "human-reviewed",
+          "verified": "auto",
           "cost": {
             "donCost": 2
           }
@@ -118116,7 +118116,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -118418,7 +118418,7 @@
     "effectText": "[On Play] If your Leader has the {Land of Wano} type and your opponent has 3 or more Life cards, K.O. up to 1 of your opponent's Characters with a base cost of 5 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -118444,7 +118444,7 @@
               "costMax": 5
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -118614,7 +118614,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "on_play",
@@ -118627,7 +118627,7 @@
               "costMin": 2
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [
@@ -118674,7 +118674,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -118689,7 +118689,7 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -118821,13 +118821,13 @@
               "trait": "Straw Hat Crew"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -119003,7 +119003,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -119066,7 +119066,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -119094,7 +119094,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to 1 of your [Monkey.D.Luffy] cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "auto",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -119109,7 +119109,7 @@
               "nameIs": "Monkey.D.Luffy"
             }
           },
-          "verified": "human-reviewed"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -119257,7 +119257,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   },
   {
@@ -119352,7 +119352,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "auto"
     }
   }
 ]
