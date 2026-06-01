@@ -388,6 +388,13 @@ function matchesFilter(state: GameState, inst: CardInstance, filter: TargetFilte
   if (typeof filter.rested === 'boolean') {
     if (inst.rested !== filter.rested) return false;
   }
+  if (typeof filter.attachedDonMin === 'number') {
+    if ((inst.attachedDon?.length ?? 0) < filter.attachedDonMin) return false;
+  }
+  if (filter.costEqualsAttachedDon === true) {
+    const cost = typeof card.cost === 'number' ? card.cost + (inst.costModifier ?? 0) : -1;
+    if (cost < 0 || cost !== (inst.attachedDon?.length ?? 0)) return false;
+  }
   if (filter.attribute) {
     if ((card as { attribute?: string }).attribute !== filter.attribute) return false;
   }

@@ -87370,7 +87370,7 @@
     "effectText": "[Your Turn] [Once Per Turn] This effect can be activated when you play a Character with a [Trigger]. Give up to 2 rested DON!! cards to 1 of your Leader or Character cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -87623,7 +87623,7 @@
     "effectText": "[Opponent's Turn] When a [Trigger] activates, this Character gains [Blocker] during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "trigger",
@@ -88201,7 +88201,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -88230,7 +88230,7 @@
     "effectText": "If you have 3 or less Life cards, this Character gains [Rush].<br>[On Play] Give up to 1 rested DON!! card to your Leader. Then, you may return up to 1 of your opponent's Characters with a cost of 5 or less to the owner's hand. If you do, your opponent plays up to 1 Character card with a cost of 4 or less from their hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -90457,7 +90457,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -91146,7 +91146,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -94814,7 +94814,7 @@
     "effectText": "[DON!! x1] [Opponent's Turn] If the only Characters on your field are {East Blue} type Characters, give all of your opponent's Characters −2000 power.<br>[Activate: Main] [Once Per Turn] Rest up to 1 of your opponent's Characters that has 2 or more DON!! cards given.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -94822,7 +94822,10 @@
             "kind": "rest_target"
           },
           "target": {
-            "kind": "opp_character"
+            "kind": "opp_character",
+            "filter": {
+              "attachedDonMin": 2
+            }
           },
           "verified": "flagged",
           "opt": true
@@ -94888,7 +94891,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -95232,7 +95235,7 @@
     "effectText": "[On Play] Give up to 3 of your opponent's rested DON!! cards to 1 of your opponent's Characters. Then, this Character gains [Rush] during this turn.<br>[Activate: Main] [Once Per Turn] If this Character was played on this turn, give all of your opponent's Characters −1000 power during this turn for every DON!! card given to that Character.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -95787,7 +95790,7 @@
     "effectText": "[When Attacking] K.O. up to 1 of your opponent's Characters with 3000 power or less with a DON!! card given.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -95797,14 +95800,11 @@
           "target": {
             "kind": "opp_character",
             "filter": {
-              "powerMax": 3000
+              "powerMax": 3000,
+              "attachedDonMin": 1
             }
           },
-          "verified": "flagged",
-          "condition": {
-            "type": "if_have_given_don_min",
-            "n": 1
-          }
+          "verified": "flagged"
         }
       ],
       "continuous": [],
@@ -96220,7 +96220,8 @@
           "target": {
             "kind": "opp_character",
             "filter": {
-              "rested": true
+              "rested": true,
+              "attachedDonMin": 3
             }
           },
           "verified": "flagged"
@@ -96236,7 +96237,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -96480,7 +96481,7 @@
     "effectText": "[On Play] Select up to 1 of your opponent's rested Characters. If the chosen Character has a cost equal to the number of DON!! cards given to it, K.O. it.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -96490,7 +96491,8 @@
           "target": {
             "kind": "opp_character",
             "filter": {
-              "rested": true
+              "rested": true,
+              "costEqualsAttachedDon": true
             }
           },
           "verified": "flagged"
@@ -96854,7 +96856,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -96866,7 +96868,8 @@
             "kind": "opp_character",
             "filter": {
               "costMax": 8,
-              "rested": true
+              "rested": true,
+              "attachedDonMin": 2
             }
           },
           "verified": "flagged"
@@ -98030,7 +98033,7 @@
     "effectText": "[On Your Opponent's Attack] You may rest this Character: Your opponent may return 1 of their active DON!! cards to their DON!! deck. If they do not, give up to 1 of your opponent's Leader or Character cards −2000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_opp_attack",
