@@ -8511,7 +8511,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -19956,11 +19956,41 @@
     "life": 5,
     "effectText": "[Once Per Turn] When you play a Character with no base effect from your hand, if you have 3 or less Characters, set up to 2 of your DON!! cards as active.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "opt": true,
+          "condition": {
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_own_chars_min_filter",
+                "n": 1,
+                "filter": {
+                  "noBaseEffect": true,
+                  "kind": "character"
+                }
+              },
+              {
+                "type": "not",
+                "condition": {
+                  "type": "if_own_chars_min",
+                  "n": 4
+                }
+              }
+            ]
+          },
+          "action": {
+            "kind": "set_active_don",
+            "magnitude": 2
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -26351,6 +26381,9 @@
               {
                 "kind": "mill_self",
                 "magnitude": 3
+              },
+              {
+                "kind": "self_trash_at_end_of_turn"
               }
             ]
           },
@@ -26360,7 +26393,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -28780,7 +28813,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -30008,7 +30041,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -38159,7 +38192,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -38389,7 +38422,7 @@
             "kind": "bottom_of_deck_to_opp_deck"
           },
           "target": {
-            "kind": "all_opp_characters",
+            "kind": "all_characters",
             "filter": {
               "costMax": 3
             }
@@ -38398,7 +38431,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -40316,7 +40349,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -40777,7 +40810,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -40853,7 +40886,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -40924,7 +40957,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -41320,7 +41353,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -43657,7 +43690,7 @@
     "effectText": "[On Play] Your opponent returns all cards in their hand to their deck and shuffles their deck. Then, your opponent draws 5 cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -47784,7 +47817,7 @@
     "effectText": "[On Play] If your Leader is [Portgas.D.Ace], look at 5 cards from the top of your deck; reveal up to 1 [Portgas.D.Ace] or red Event and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -47797,9 +47830,13 @@
             "lookCount": 5,
             "addCount": 1,
             "filter": {
+              "namesAny": [
+                "Portgas.D.Ace"
+              ],
               "colors": [
                 "red"
-              ]
+              ],
+              "kind": "event"
             }
           },
           "verified": "flagged"
@@ -49965,7 +50002,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -50341,7 +50378,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -51584,7 +51621,7 @@
     "effectText": "[On Play] Your opponent trashes 1 card from their hand and reveals their hand. Then, your opponent draws 1 card.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -54465,7 +54502,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -55684,7 +55721,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -62994,7 +63031,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -64727,7 +64764,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -66118,7 +66155,7 @@
     "effectText": "[Activate: Main] You may place this Character and 1 [Kin'emon] with 0 power from your trash at the bottom of your deck in any order: Play up to 1 [Kin'emon] with a cost of 6 from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -66167,7 +66204,7 @@
     "effectText": "[Activate: Main] You may place this Character and 1 [Kin'emon] with 1000 power from your trash at the bottom of your deck in any order: Play up to 1 [Kin'emon] with a cost of 6 from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -77749,7 +77786,17 @@
         },
         {
           "condition": {
-            "type": "always"
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_leader_attribute_is",
+                "attribute": "Slash"
+              },
+              {
+                "type": "if_own_rested_don_min",
+                "n": 6
+              }
+            ]
           },
           "action": {
             "kind": "self_immune_to_opp_effects"
@@ -77758,7 +77805,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -82447,7 +82494,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_opp_attack",
@@ -82562,7 +82609,7 @@
     "effectText": "If you have any DON!! cards on your field, 1 DON!! card placed during your DON!! Phase is given to your Leader.<br>If you have 9 or less DON!! cards on your field, give this Leader −2000 power.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -85495,7 +85542,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -88393,7 +88440,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] Select 2 of your {Supernovas} or {Heart Pirates} type Characters. Swap the base power of the selected Characters with each other during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -88492,7 +88539,7 @@
     "effectText": "This Character cannot be K.O.'d by effects of your opponent's Characters with 5000 base power or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -88734,7 +88781,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -89125,7 +89172,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -91249,7 +91296,7 @@
     "effectText": "This Character cannot attack.<br>When a card is trashed from your hand by an effect, this Character's effect is negated during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
