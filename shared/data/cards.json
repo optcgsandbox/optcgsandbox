@@ -67980,7 +67980,7 @@
     "effectText": "[On Play] You may rest your Leader or 1 of your Stage cards: If your Leader is [Usopp], look at 5 cards from the top of your deck; reveal up to 2 {Dressrosa} type cards other than [Leo] and add them to your hand. Then, place the rest at the bottom of your deck in any order, and trash 1 card from your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -68004,7 +68004,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "missing trailing effect \"and trash 1 card from your hand\""
     }
   },
   {
@@ -68034,7 +68035,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -68067,7 +68068,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause plays 2 cards with count:2; text \"Play 1 of the revealed cards and play the other card rested IF IT HAS A COST OF 4 OR LESS\" — two distinct plays with the second one conditionally rested"
     }
   },
   {
@@ -68139,7 +68141,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -68156,7 +68158,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action removal_bounce returns to hand; text says \"Place up to 1 of your opponent's Characters with 6000 power or less at the BOTTOM OF THE OWNER'S DECK\" — needs bottom_of_deck_to_opp_deck"
     }
   },
   {
@@ -69001,7 +69004,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -69018,7 +69021,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "only on_play (Main) trigger; text reads [Main]/[Counter] — counter branch missing"
     }
   },
   {
@@ -69503,7 +69507,7 @@
     "effectText": "[Activate: Main] You may rest this Character and 1 of your {Dressrosa} type Leader or Stage cards: If your opponent has 5 or more cards in their hand, your opponent trashes 1 card from their hand. Then, trash 2 cards from the top of your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -69543,7 +69547,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause action mill_opp:1 (mills opp deck); text says \"your opponent trashes 1 card from THEIR HAND\" — needs opp_discard_from_hand"
     }
   },
   {
@@ -69786,7 +69791,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -69809,7 +69814,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost bottomOfDeckFromTrash:2 has no filter; text restricts to \"2 {Thriller Bark Pirates} type cards from your trash\""
     }
   },
   {
@@ -70040,7 +70046,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -70078,7 +70084,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause target your_character (any Dressrosa); text \"that card gains [Banish]\" must reference the same Dressrosa Character that received the initial +2000"
     }
   },
   {
@@ -70104,7 +70111,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -70142,7 +70149,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "condition if_own_chars_lt_opp_chars delta:1; text says \"at least 2 less\" — needs delta:2"
     }
   },
   {
@@ -70241,7 +70249,7 @@
     "effectText": "[DON!! x1] [When Attacking] Rest up to 1 of your opponent's Characters with a cost equal to or less than the total of your and your opponent's Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -70262,7 +70270,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "filter costMaxFromCount:\"opp_life_count\"; text says \"cost equal to or less than the TOTAL of your and your opponent's Life cards\" — needs total (own_life + opp_life) not just opp"
     }
   },
   {
@@ -70319,7 +70328,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -70346,7 +70355,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "target your_character missing count:3; text says \"Up to 3 of your {Revolutionary Army} type Characters\""
     }
   },
   {
@@ -70373,7 +70383,7 @@
     "effectText": "[On Play] You may add 1 card from the top or bottom of your Life cards to your hand: Add up to 1 {Supernovas} type Character card from your hand to the top of your Life cards face-up.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -70395,7 +70405,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost flipLife:1 (flips a life card); text says \"You may add 1 card from the top or bottom of your Life cards TO YOUR HAND\" — needs lifeToHand:1"
     }
   },
   {
@@ -70423,7 +70434,7 @@
     "effectText": "[DON!! x1] If your Leader has the {Supernovas} type and your opponent has 3 or more Life cards, this Character cannot be K.O.'d in battle.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -70446,7 +70457,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "condition only if_attached_don_min:1 + if_opp_life_min:3; text adds \"If your Leader has the {Supernovas} type\" — missing if_leader_has_type:Supernovas"
     }
   },
   {
@@ -70500,7 +70512,7 @@
     "effectText": "[On K.O.] If your Leader has the {Supernovas} type, look at 3 cards from the top of your deck; reveal up to 1 {Supernovas} or {Kid Pirates} type card and add it to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_ko",
@@ -70517,7 +70529,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek action has no filter; text restricts to \"{Supernovas} OR {Kid Pirates} type card\" — needs filter traitsAny"
     }
   },
   {
@@ -70605,7 +70618,7 @@
     "effectText": "If you have a yellow {Supernovas} type Character other than [Scratchmen Apoo], this Character gains [Blocker].",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -70619,7 +70632,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition if_owned_other_with_name:Scratchmen Apoo (checks for another Apoo); text says \"if you have a YELLOW {Supernovas} type Character other than [Scratchmen Apoo]\" — needs filter colors:yellow + trait:Supernovas + nameExcludes:Apoo"
     }
   },
   {
@@ -70744,7 +70758,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "searcher_peek filter trait:Supernovas only; text says \"other than [Monkey.D.Luffy]\" — needs nameExcludes:\"Monkey.D.Luffy\""
     }
   },
   {
@@ -70845,7 +70860,7 @@
     "effectText": "If you have less Life cards than your opponent, this Character gains [Rush].",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -70859,7 +70874,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition if_own_life_max:0; text says \"If you have LESS Life cards than your opponent\" — needs if_own_life_lt_opp"
     }
   },
   {
@@ -70957,7 +70973,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes +4000 power_buff clause; missing \"Then, if you have 0 Life cards, draw 1 card\"; also target your_leader but text \"your Leader or Character cards\" — needs your_leader_or_character"
     }
   },
   {
@@ -70985,7 +71002,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -71009,7 +71026,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause peek_and_reorder_opp_life only; text says \"your or your opponent's Life cards\" — missing own-life branch"
     }
   },
   {
