@@ -41307,7 +41307,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause target your_leader_or_character (any); text \"that card gains an additional +2000\" must reference the same card from clause 1"
     }
   },
   {
@@ -41556,7 +41557,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "action removal_bounce but text says \"Place all of your Characters except this Character at the bottom of your deck\" (not return to hand); also missing \"Then, take an extra turn after this one\" effect entirely"
     }
   },
   {
@@ -41613,7 +41615,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost generic discardHand:1; text requires \"trash 1 {FILM} type card from your hand\" — needs discardHandFilter:typeIncludes:FILM"
     }
   },
   {
@@ -41821,7 +41824,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause uses self_trash_at_end_of_turn but target is your_character filter FILM (not self); text says \"trash 1 of your {FILM} type Characters at the end of this turn\" — needs target_trash_at_end_of_turn"
     }
   },
   {
@@ -42093,7 +42097,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "condition if_opp_chars_min_power only checks opp characters; text says \"Leader or Character with a base power of 6000 or more\"; also action grant_immunity against:opp_removal but text \"cannot be K.O.'d IN BATTLE\" — battle-damage immunity, not effect-removal"
     }
   },
   {
@@ -42192,7 +42197,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost discardHandFilter count:1 fixed; text says \"trash any number of {FILM} type cards\" — needs variable count"
     }
   },
   {
@@ -42335,7 +42341,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "only on_play (Main) trigger; text reads [Main]/[Counter] — counter branch missing"
     }
   },
   {
@@ -42486,7 +42493,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes rest_target portion; missing \"Then, you cannot add Life cards to your hand using your own effects during this turn\" restriction"
     }
   },
   {
@@ -42783,7 +42791,8 @@
     "effectSpecV2": {
       "clauses": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "empty clauses + text truncated to \"[On Play] Up to 1 of your\" — real on_play effect not encoded"
     }
   },
   {
@@ -43058,7 +43067,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -43106,7 +43115,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "grant_immunity against:opp_removal but text \"this Character cannot be K.O.'d in battle\" — battle-damage immunity, not effect-removal"
     }
   },
   {
@@ -43195,7 +43205,7 @@
     "effectText": "[On Play] You may trash 1 {Fish-Man} type card from your hand or 1 [The Ark Noah] from your hand or field: K.O. up to 1 of your opponent's rested Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -43220,7 +43230,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "cost only discardHandFilter:Fish-Man; missing alternate cost \"or 1 [The Ark Noah] from your hand or field\""
     }
   },
   {
@@ -43482,7 +43493,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "only first +2000 clause; missing \"Then, if you have 8 or more rested cards, that card gains an additional +2000 power during this battle\" — second clause entirely absent and same-target tracking"
     }
   },
   {
@@ -43594,7 +43606,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character missing count:2; text says \"up to 2 of your opponent's rested Characters\""
     }
   },
   {
@@ -43666,7 +43679,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_own_don_returned",
@@ -43679,7 +43692,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "on_own_don_returned clause missing is_own_turn condition; text gates with [Your Turn]"
     }
   },
   {
@@ -43738,7 +43752,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost discardHand:1 only; missing second cost \"and place 1 Character with a cost of 2 or less at the bottom of the owner's deck\""
     }
   },
   {
@@ -43765,7 +43780,7 @@
     "effectText": "[Your Turn] [Once Per Turn] When your opponent activates an Event, your opponent must place 1 card from their hand at the bottom of their deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_opp_activate_event",
@@ -43778,7 +43793,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "on_opp_activate_event clause missing is_own_turn condition; text gates with [Your Turn]"
     }
   },
   {
@@ -43868,7 +43884,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character but text says \"Place up to 1 Character\" (any character)"
     }
   },
   {
@@ -43893,7 +43910,7 @@
     "effectText": "[On Play] Your opponent returns all cards in their hand to their deck and shuffles their deck. Then, your opponent draws 5 cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -43905,7 +43922,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "spec only draw 5 (and that's player draw not opp); text says \"Your opponent returns all cards in their hand to their deck and shuffles their deck. Then, your opponent draws 5 cards\" — both parts wrong"
     }
   },
   {
@@ -43931,7 +43949,7 @@
     "effectText": "[Your Turn] When your opponent activates [Blocker] or an Event, if your Leader has the {East Blue} type, you may trash 4 cards from the top of your deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_opp_attack",
@@ -43947,7 +43965,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "trigger on_opp_attack is wrong; text triggers \"When your opponent activates [Blocker] or an Event\" — needs on_opp_activate_blocker_or_event"
     }
   },
   {
@@ -44040,7 +44059,7 @@
     "effectText": "[On Play] You may trash 2 cards from your hand: Your opponent returns 1 of their Characters to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -44057,7 +44076,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "removal_bounce action takes own target choice; text says \"Your opponent returns 1 of their Characters to the owner's hand\" — opponent chooses which char to return"
     }
   },
   {
