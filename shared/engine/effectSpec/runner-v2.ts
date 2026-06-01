@@ -726,23 +726,33 @@ export function applyActionV2(
       return state;
     }
     case 'searcher_peek': {
-      // V0: take first matching card from deck → hand (filter applied).
+      // "Look at N cards from the top of your deck and add/play up to M
+      // matching." Restrict the search to the top `lookCount`, then place
+      // the unselected ones at the bottom of the deck.
       // EB01-009 etc. set playInsteadOfHand:true to put it on the field instead.
-      for (let i = 0; i < me.deck.length; i++) {
-        const inst = state.instances[me.deck[i]];
+      const look = Math.min(action.lookCount, me.deck.length);
+      const peeked = me.deck.splice(0, look);
+      const add = Math.min(action.addCount, peeked.length);
+      let added = 0;
+      const remaining: string[] = [];
+      for (const id of peeked) {
+        const inst = state.instances[id];
         const card = inst ? state.cardLibrary[inst.cardId] : undefined;
-        if (inst && card && matchesFilter(state, inst, action.filter)) {
-          me.deck.splice(i, 1);
+        if (added < add && inst && card && matchesFilter(state, inst, action.filter)) {
           if (action.playInsteadOfHand && card.kind === 'character') {
             inst.summoningSick = true;
             me.field.push(inst);
           } else {
             me.hand.push(inst.instanceId);
           }
-          return state;
+          added++;
+        } else {
+          remaining.push(id);
         }
       }
-      // No match → no-op.
+      // Place the rest at the bottom of the deck in original order
+      // (player choice of order is V0-approximated as preserved order).
+      for (const id of remaining) me.deck.push(id);
       return state;
     }
     case 'reveal_opp_hand': {

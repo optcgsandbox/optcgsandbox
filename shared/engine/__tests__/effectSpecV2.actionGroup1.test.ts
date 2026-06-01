@@ -191,14 +191,15 @@ describe('EffectSpec v2 — applyActionV2 group 1 (card movement & draw)', () =>
     expect(s.players.A.hand.length).toBe(handBefore + 1);
   });
 
-  it('searcher_peek pulls first card matching filter', () => {
+  it('searcher_peek pulls first card matching filter (from top lookCount)', () => {
     const s = boot();
     s.cardLibrary['SEARCH'] = makeChar('SEARCH', 2, 'Sub', ['Straw Hat Crew']);
     s.instances['si'] = {
       instanceId: 'si', cardId: 'SEARCH', controller: 'A', rested: false,
       attachedDon: [], perTurn: { hasAttacked: false, effectsUsed: [] }, summoningSick: false,
     };
-    s.players.A.deck.push('si');
+    // Searcher_peek only inspects the top `lookCount`; unshift to position 0.
+    s.players.A.deck.unshift('si');
     applyActionV2(s, CTX, { kind: 'searcher_peek', lookCount: 5, addCount: 1, filter: { trait: 'Straw Hat Crew' } }, []);
     expect(s.players.A.hand).toContain('si');
   });
