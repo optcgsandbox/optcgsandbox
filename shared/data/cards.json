@@ -299,7 +299,7 @@
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)[DON!! x2] [When Attacking] Give up to 1 of your opponent's Characters −3000 power during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -326,7 +326,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "[DON!! x2] gate should be if_attached_don_min not if_don_min"
     }
   },
   {
@@ -369,7 +370,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target should be your_leader_or_character, not your_leader"
     }
   },
   {
@@ -396,7 +398,7 @@
     "effectText": "[Once Per Turn] If this Character would be K.O.'d by an effect, you may trash 1 Event or Stage card from your hand instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -419,7 +421,8 @@
           "verified": "human-reviewed",
           "opt": true
         }
-      ]
+      ],
+      "auditNote": "discardHandFilter kind:event misses \"or Stage\" branch of cost"
     }
   },
   {
@@ -968,7 +971,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "buff target should be your_leader_or_character"
     }
   },
   {
@@ -995,7 +999,7 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -1029,7 +1033,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "play_for_free missing different-color-than-returned-char filter"
     }
   },
   {
@@ -1267,7 +1272,7 @@
     "effectText": "[DON!! x1] [When Attacking] If you have 1 or less cards in your hand, return up to 1 Character with a cost of 3 or less to the owner's hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -1297,7 +1302,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "[DON!! x1] gate should be if_attached_don_min not if_don_min"
     }
   },
   {
