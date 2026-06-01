@@ -12132,11 +12132,19 @@
             "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "filter": {
+            "colors": [
+              "black"
+            ],
+            "costMax": 5,
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -12204,7 +12212,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36770,11 +36778,19 @@
             "duration": "this_turn"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "filter": {
+            "rested": true,
+            "kind": "character"
+          },
+          "appliesToFiltered": true,
+          "condition": {
+            "type": "is_opp_turn"
+          }
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -75311,11 +75327,17 @@
             "from": "top_of_deck"
           },
           "conditional": true,
-          "verified": "flagged"
+          "verified": "flagged",
+          "filter": {
+            "typeIncludes": "Supernovas",
+            "nameExcludes": "Capone\"Gang\"Bege",
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -87322,7 +87344,7 @@
     "effectText": "If this Character would be removed from the field by your opponent's effect, you may turn 1 card from the top of your Life cards face-up instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -91598,7 +91620,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -105652,7 +105674,9 @@
           "trigger": "would_be_removed",
           "opt": true,
           "cost": {
-            "restSelf": true
+            "restOwnCharFilter": {
+              "count": 1
+            }
           },
           "action": {
             "kind": "grant_immunity",
@@ -105664,7 +105688,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -105827,7 +105851,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -112201,7 +112225,7 @@
     "effectText": "[Once Per Turn] If this Character would be K.O.'d, you may trash 1 card from the top or bottom of your Life cards instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -121298,23 +121322,24 @@
     "effectText": "If your {Egghead} type Character would be K.O.'d by your opponent's effect, you may turn 1 card from the top of your Life cards face-up instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
         {
           "trigger": "would_be_ko",
-          "condition": {
-            "type": "if_leader_has_type",
-            "typeString": "Egghead"
-          },
           "action": {
             "kind": "grant_immunity",
             "against": "opp_effects",
             "duration": "this_turn"
           },
-          "conditional": false,
-          "verified": "flagged"
+          "conditional": true,
+          "verified": "flagged",
+          "filter": {
+            "typeIncludes": "Egghead",
+            "kind": "character"
+          },
+          "appliesToFiltered": true
         }
       ]
     }
