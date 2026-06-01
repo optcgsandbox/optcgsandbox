@@ -101035,7 +101035,7 @@
     "effectText": "[DON!! x1] This Character cannot be K.O.'d in battle by ＜Strike＞ attribute Leaders or Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -101727,7 +101727,7 @@
     "effectText": "[DON!! x1] This Character cannot be K.O.'d in battle by Characters without the <Special> attribute.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -102652,7 +102652,7 @@
     "effectText": "[DON!! x1] [When Attacking] If you have 4 or more Life cards, your opponent places 1 card from their hand at the bottom of their deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -102660,7 +102660,7 @@
             "type": "and",
             "conditions": [
               {
-                "type": "if_don_min",
+                "type": "if_attached_don_min",
                 "n": 1
               },
               {
@@ -102670,7 +102670,7 @@
             ]
           },
           "action": {
-            "kind": "discard_from_hand",
+            "kind": "opp_bottom_of_deck_from_hand",
             "magnitude": 1
           },
           "verified": "flagged"
@@ -102847,7 +102847,7 @@
     "effectText": "[DON!! x1] This Character cannot be K.O.'d in battle by <Slash> attribute cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -102932,7 +102932,7 @@
     "effectText": "[DON!! x1] This Character cannot be K.O.'d in battle by <Strike> attribute cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -105095,7 +105095,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] Up to 1 of your Characters without an [On Play] effect and with a cost of 8 or less gains [Rush] during this turn.<br>(This card can attack on the turn in which it is played.)",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
