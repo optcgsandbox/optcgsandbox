@@ -920,6 +920,16 @@ export function applyActionV2(
       opp.restrictions.oppAttackUnlessDiscard = action.unless?.discardN ?? 0;
       return state;
     }
+    case 'restrict_opp_blocker': {
+      // V0: blanket flag on opp restrictions; full filter-aware blocker
+      // gating is the responsibility of the attack resolver (gap #46-ish).
+      if (!opp.restrictions) opp.restrictions = {};
+      (opp.restrictions as Record<string, unknown>).blockerSilenced = {
+        filter: action.filter ?? null,
+        duration: action.duration ?? 'this_battle',
+      };
+      return state;
+    }
     case 'restrict_play_self_this_turn': {
       if (!me.restrictions) me.restrictions = {};
       me.restrictions.cantPlayKind = action.kind_filter;

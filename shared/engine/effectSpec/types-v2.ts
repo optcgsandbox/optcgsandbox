@@ -263,6 +263,8 @@ export type EffectActionV2 =
   | { kind: 'attack_lock_until_phase'; until: EffectDuration }         // (gap #61)
   | { kind: 'rest_lock_until_phase'; until: EffectDuration }           // (gap #62)
   | { kind: 'restrict_opp_attack'; unless?: { discardN?: number } }    // (gap #46)
+  // OP01-120 Shanks, OP02-061, OP02-101, OP03-002 Adio, OP05-016 Morley, OP06-055, OP08-111, OP09-014, OP11-013 — silence opp Blocker chars matching filter for one battle/turn.
+  | { kind: 'restrict_opp_blocker'; filter?: TargetFilter; duration?: 'this_battle' | 'this_turn' }
   | { kind: 'restrict_play_self_this_turn'; kind_filter?: 'character' | 'event' | 'stage' } // (gap #81)
   | { kind: 'restrict_effect_type'; effectKind: 'character_set_active' } // (gap #87)
   // Removal

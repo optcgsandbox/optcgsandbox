@@ -18595,7 +18595,10 @@
         {
           "trigger": "when_attacking",
           "action": {
-            "kind": "restrict_opp_attack"
+            "kind": "restrict_opp_blocker",
+            "filter": {
+              "powerMax": 2000
+            }
           },
           "verified": "flagged"
         }
@@ -18610,7 +18613,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -21344,7 +21347,10 @@
             "n": 1
           },
           "action": {
-            "kind": "restrict_opp_attack"
+            "kind": "restrict_opp_blocker",
+            "filter": {
+              "costMax": 5
+            }
           },
           "verified": "flagged"
         }
@@ -21352,7 +21358,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -23157,7 +23163,10 @@
             "maxCost": 0
           },
           "action": {
-            "kind": "restrict_opp_attack"
+            "kind": "restrict_opp_blocker",
+            "filter": {
+              "costMax": 5
+            }
           },
           "verified": "flagged"
         }
@@ -23165,7 +23174,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -24140,7 +24149,10 @@
             "n": 1
           },
           "action": {
-            "kind": "restrict_opp_attack"
+            "kind": "restrict_opp_blocker",
+            "filter": {
+              "powerMax": 2000
+            }
           },
           "verified": "flagged"
         }
@@ -24148,7 +24160,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -36061,13 +36073,13 @@
         {
           "trigger": "when_attacking",
           "action": {
-            "kind": "restrict_opp_attack"
+            "kind": "restrict_opp_blocker"
           },
           "verified": "flagged"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -43628,7 +43640,7 @@
     "effectText": "[DON!! x2] [When Attacking] If you have 4 or less cards in your hand, your opponent cannot activate [Blocker] during this battle.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -43646,7 +43658,7 @@
             ]
           },
           "action": {
-            "kind": "restrict_opp_attack"
+            "kind": "restrict_opp_blocker"
           },
           "verified": "flagged"
         }
@@ -58109,7 +58121,7 @@
             "donCost": 1
           },
           "action": {
-            "kind": "restrict_opp_attack"
+            "kind": "restrict_opp_blocker"
           },
           "verified": "flagged"
         }
@@ -58117,7 +58129,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -59237,7 +59249,10 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "restrict_opp_attack"
+            "kind": "restrict_opp_blocker",
+            "filter": {
+              "powerMax": 4000
+            }
           },
           "verified": "flagged"
         }
@@ -59245,7 +59260,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -70939,12 +70954,16 @@
     "effectText": "[When Attacking] All of your opponent's Characters with 2000 power or less cannot activate [Blocker] during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
           "action": {
-            "kind": "restrict_opp_attack"
+            "kind": "restrict_opp_blocker",
+            "filter": {
+              "powerMax": 2000
+            },
+            "duration": "this_turn"
           },
           "verified": "flagged"
         }
@@ -84588,7 +84607,8 @@
             "n": 1
           },
           "action": {
-            "kind": "restrict_opp_attack"
+            "kind": "restrict_opp_blocker",
+            "duration": "this_turn"
           },
           "verified": "flagged"
         },
@@ -84608,7 +84628,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
