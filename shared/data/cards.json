@@ -38380,7 +38380,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "continuous self_power_buff is permanent; text is triggered \"[Your Turn] [Once Per Turn] When you draw a card outside of your Draw Phase, this Character gains +2000 power during this turn\" — needs on_draw_outside_draw_phase trigger"
     }
   },
   {
@@ -38577,7 +38578,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause target opp_character but text says \"Place up to 1 Character\" (any character)"
     }
   },
   {
@@ -38619,7 +38621,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes the bottom-of-deck placement; missing \"Then, you and your opponent trash cards from your hands until you each have 5 cards in your hands\""
     }
   },
   {
@@ -38676,7 +38679,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause target opp_character but text says \"return up to 1 Character with a cost of 5 or less to the owner's hand\" (any character)"
     }
   },
   {
@@ -39035,7 +39039,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "ramp action has no rested specifier — text says \"set it as active\" (rested:false); default likely rested:true (most ramp cards rest the DON)"
     }
   },
   {
@@ -39262,7 +39267,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "target opp_character missing count:2; text says \"give up to 2 of your opponent's Characters\""
     }
   },
   {
@@ -40035,7 +40041,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost koSelfCharacter but text says \"rest 1 of your Characters\" (rest not KO); needs restOwnCharFilter"
     }
   },
   {
@@ -40502,7 +40509,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "third choose_one option uses add_to_opp_life_top only; text says \"to the top or bottom of their Life cards face-up\" — bottom-of-life option missing"
     }
   },
   {
@@ -40537,7 +40545,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "continuous cost_modifier_in_hand applies to all cards (no filter); text restricts to \"{Celestial Dragons} type Character cards with a cost of 2 or more\""
     }
   },
   {
@@ -40593,7 +40602,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "on_life_changed clauses missing is_opp_turn condition; text gates with [Opponent's Turn]"
     }
   },
   {
@@ -40637,7 +40647,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec encodes power_buff -2000 unconditionally; text says \"Your opponent may trash 1 card from the top of their Life cards. If they do not, give -2000\" — opp-choice branching not encoded"
     }
   },
   {
@@ -40674,7 +40685,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec only encodes Rush; text \"[Once Per Turn] If this Character would leave the field, you may trash 1 card from the top of your Life cards instead. If there is a [Monkey.D.Luffy] Character, this effect is negated\" — replacement effect entirely missing"
     }
   },
   {
@@ -40998,7 +41010,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "continuous self_power_buff is permanent; text is triggered \"[Your Turn] [Once Per Turn] When a card is added to your hand from your Life\" — needs on_life_to_hand trigger"
     }
   },
   {
@@ -41074,7 +41087,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "trigger field is the placeholder string \"trigger\"; text is a real triggered ability \"[Once Per Turn] When a [Trigger] activates, draw 2 cards and trash 2 cards from your hand\" — needs proper on_trigger_activate trigger"
     }
   },
   {
@@ -41145,7 +41159,8 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "cost discardHand:1 but text says \"you may PLAY 1 [Kotori] from your hand\" (play not discard); also add_to_opp_life_top missing \"top or bottom\" placement option"
     }
   },
   {
