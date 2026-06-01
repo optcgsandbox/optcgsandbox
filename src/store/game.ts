@@ -35,6 +35,16 @@ function pickLeader(color: DeckColor): LeaderCard {
   return match as LeaderCard;
 }
 
+/** Pick a specific leader by id. Used to override the default `pickLeader`
+ *  when we want a known-clean leader for the demo (e.g., one whose effect
+ *  doesn't add DON / draw / search at game start or via triggers we haven't
+ *  finished wiring). */
+function pickLeaderById(id: string): LeaderCard {
+  const match = ALL_CARDS.find((c) => c.id === id && c.kind === 'leader');
+  if (!match) throw new Error(`Leader ${id} not in corpus`);
+  return match as LeaderCard;
+}
+
 /** Build a 50-card deck from the corpus filtered to cards sharing the
  *  leader's color. Per OPTCG rules a card is legal in a deck if any of its
  *  colors matches the leader's color set (CR §5-1). For V0 we take the first
@@ -59,7 +69,13 @@ function bootGame(seed: number): GameState {
     seed,
     decks: {
       A: { leader: pickLeader('red'), cards: buildDeck('red') },
-      B: { leader: pickLeader('blue'), cards: buildDeck('blue') },
+      // 2026-06-01: switch opp from OP01-060 Doflamingo to OP09-042 Buggy.
+      // Doflamingo's auto-extracted effectTags include 'searcher'+'ramp',
+      // which previously ghost-fired at game start. Even though the V1
+      // fallback for at_start_of_game is now empty, picking a leader with
+      // no draw/ramp/searcher tags (cost_reduction only) gives a cleaner
+      // baseline for the demo while the rest of the engine is shored up.
+      B: { leader: pickLeaderById('OP09-042'), cards: buildDeck('blue') },
     },
   });
   s = setupGame(s);
