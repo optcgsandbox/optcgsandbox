@@ -645,6 +645,13 @@ export function applyActionV2(
   switch (action.kind) {
     case 'noop':
       return state;
+    case 'sequence': {
+      let s = state;
+      for (const inner of action.actions) {
+        s = applyActionV2(s, ctx, inner, targets);
+      }
+      return s;
+    }
     case 'draw': {
       const n = resolveMagnitude(state, ctx.controller, action.magnitude, 1);
       for (let i = 0; i < n && me.deck.length > 0; i++) {

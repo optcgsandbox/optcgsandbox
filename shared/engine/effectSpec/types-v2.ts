@@ -252,6 +252,10 @@ export type EffectActionV2 =
   // No side effect — used by replacements whose effect IS the cost
   // (EB01-008: "trash 1 Event/Stage instead [of being KO'd]").
   | { kind: 'noop' }
+  // Composite: run N actions in order. Used when a single clause's
+  // resolution chains multiple discrete effects (EB01-013: "play X. Then,
+  // draw 1.") — the alternative of multiple clauses double-pays costs.
+  | { kind: 'sequence'; actions: EffectActionV2[] }
   // Card movement & draw
   | { kind: 'draw'; magnitude?: number | MagnitudeFormula }
   | { kind: 'mill_self'; magnitude?: number }                          // (gap #29)

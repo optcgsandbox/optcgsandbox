@@ -669,26 +669,23 @@
             "trashSelf": true
           },
           "action": {
-            "kind": "play_for_free",
-            "from": "hand",
-            "filter": {
-              "trait": "Land of Wano",
-              "costMax": 5,
-              "nameExcludes": "Kouzuki Hiyori",
-              "kind": "character"
-            }
-          },
-          "verified": "human-reviewed",
-          "opt": true
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "trashSelf": true
-          },
-          "action": {
-            "kind": "draw",
-            "magnitude": 1
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "play_for_free",
+                "from": "hand",
+                "filter": {
+                  "trait": "Land of Wano",
+                  "costMax": 5,
+                  "nameExcludes": "Kouzuki Hiyori",
+                  "kind": "character"
+                }
+              },
+              {
+                "kind": "draw",
+                "magnitude": 1
+              }
+            ]
           },
           "verified": "human-reviewed",
           "opt": true
