@@ -24,7 +24,7 @@
 //     `applyActionV2` for the work.
 
 import type { GameState, PlayerId } from '../GameState';
-import { applyActionV2, resolveTargetV2 } from './runner-v2';
+import { applyActionV2, broadcastTriggerToOwnField, resolveTargetV2 } from './runner-v2';
 import { evaluateConditionV2 } from './runner-v2';
 import type { EffectCostV2, ReplacementEffectV2 } from './types-v2';
 
@@ -233,6 +233,9 @@ function payCost(
   }
   if (typeof cost.donCostReturnToDeck === 'number') {
     for (let i = 0; i < cost.donCostReturnToDeck; i++) me.donDeck.push(me.donCostArea.shift()!);
+    // F2: dispatch on_own_don_returned for any spec clauses listening on the
+    // controller's field (EB02-035 Sanji & Pudding etc.).
+    state = broadcastTriggerToOwnField(state, 'on_own_don_returned', controller);
   }
   if (typeof cost.discardHand === 'number') {
     for (let i = 0; i < cost.discardHand && me.hand.length > 0; i++) {

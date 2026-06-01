@@ -1227,8 +1227,15 @@ export function applyActionV2(
     }
     case 'return_opp_don_to_deck': {
       const n = resolveMagnitude(state, ctx.controller, action.magnitude, 1);
+      let moved = 0;
       for (let i = 0; i < n && opp.donCostArea.length > 0; i++) {
         opp.donDeck.push(opp.donCostArea.shift()!);
+        moved++;
+      }
+      // F2: dispatch on_own_don_returned to OPP's field (their DON came back).
+      if (moved > 0) {
+        const oppPid: PlayerId = ctx.controller === 'A' ? 'B' : 'A';
+        state = broadcastTriggerToOwnField(state, 'on_own_don_returned', oppPid);
       }
       return state;
     }
