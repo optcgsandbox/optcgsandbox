@@ -52687,25 +52687,23 @@
     "effectText": "[Activate: Main] [Once Per Turn] Give up to 3 of your {Animal} or {Drum Kingdom} type Characters up to 1 rested DON!! card each.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
           "action": {
             "kind": "give_don_to_target",
             "magnitude": 1,
-            "rested": true,
-            "filter": {
-              "traitsAny": [
-                "Animal",
-                "Drum Kingdom"
-              ]
-            }
+            "rested": true
           },
           "target": {
             "kind": "your_character",
             "filter": {
-              "trait": "Animal"
+              "traitsAny": [
+                "Animal",
+                "Drum Kingdom"
+              ],
+              "kind": "character"
             }
           },
           "verified": "human-reviewed",
@@ -54970,16 +54968,27 @@
             "n": 5
           },
           "action": {
-            "kind": "mill_opp",
+            "kind": "opp_bottom_of_deck_from_hand",
             "magnitude": 1
           },
           "verified": "flagged"
+        },
+        {
+          "trigger": "on_ko",
+          "opt": true,
+          "action": {
+            "kind": "rest_target"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
