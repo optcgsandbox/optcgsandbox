@@ -395,11 +395,19 @@ function matchesFilter(state: GameState, inst: CardInstance, filter: TargetFilte
     const text = (card as { effectText?: string | null }).effectText ?? '';
     if (!text.includes('[Trigger]')) return false;
   }
-  if (filter.traitsAny && filter.traitsAny.length > 0) {
-    if (!Array.isArray(card.traits) || !filter.traitsAny.some((t) => card.traits.includes(t))) return false;
-  }
-  if (filter.namesAny && filter.namesAny.length > 0) {
-    if (!filter.namesAny.includes(card.name)) return false;
+  // When BOTH namesAny and traitsAny are set, treat them as OR — the card text
+  // is "X name OR Y trait". When only one is set, that one is required.
+  if (filter.traitsAny && filter.traitsAny.length > 0 && filter.namesAny && filter.namesAny.length > 0) {
+    const traitMatch = Array.isArray(card.traits) && filter.traitsAny.some((t) => card.traits.includes(t));
+    const nameMatch = filter.namesAny.includes(card.name);
+    if (!traitMatch && !nameMatch) return false;
+  } else {
+    if (filter.traitsAny && filter.traitsAny.length > 0) {
+      if (!Array.isArray(card.traits) || !filter.traitsAny.some((t) => card.traits.includes(t))) return false;
+    }
+    if (filter.namesAny && filter.namesAny.length > 0) {
+      if (!filter.namesAny.includes(card.name)) return false;
+    }
   }
   if (filter.noBaseEffect === true) {
     // Vanilla / no base effect: card has no effectSpecV2 content OR explicit ground-truth marker.

@@ -21409,7 +21409,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -21914,7 +21914,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -37560,7 +37560,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -40390,7 +40390,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -41767,7 +41767,8 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "koSelfCharacter": {
+            "restOwnCharFilter": {
+              "count": 1,
               "filter": {
                 "nameIs": "Uta"
               }
@@ -41786,7 +41787,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -48616,7 +48617,29 @@
       "draw": 1
     },
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "opt": true,
+          "condition": {
+            "type": "is_own_turn"
+          },
+          "action": {
+            "kind": "chained_actions",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "discard_from_hand",
+                "magnitude": 1
+              }
+            ]
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -48627,7 +48650,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -48992,7 +49015,7 @@
     "effectSpecV2": {
       "clauses": [
         {
-          "trigger": "on_ko",
+          "trigger": "on_any_opp_char_ko",
           "opt": true,
           "condition": {
             "type": "if_hand_max",
@@ -49008,7 +49031,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -53289,7 +53312,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -53766,7 +53789,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56508,14 +56531,14 @@
             "donCostReturnToDeck": 1
           },
           "action": {
-            "kind": "play_for_free",
-            "from": "trash",
+            "kind": "searcher_peek",
+            "lookCount": 99,
+            "addCount": 1,
             "filter": {
-              "kind": "character",
               "nameIs": "Baron Tamago",
               "costMax": 4
             },
-            "playInsteadOfHand": false
+            "playInsteadOfHand": true
           },
           "verified": "flagged",
           "condition": {
@@ -56526,7 +56549,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56593,13 +56616,14 @@
             "donCostReturnToDeck": 1
           },
           "action": {
-            "kind": "play_for_free",
-            "from": "trash",
+            "kind": "searcher_peek",
+            "lookCount": 99,
+            "addCount": 1,
             "filter": {
-              "kind": "character",
               "nameIs": "Count Niwatori",
               "costMax": 6
-            }
+            },
+            "playInsteadOfHand": true
           },
           "verified": "flagged",
           "condition": {
@@ -56610,7 +56634,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56654,7 +56678,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -57759,7 +57783,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -58003,7 +58027,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60045,7 +60069,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -60669,7 +60693,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -63510,7 +63534,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -98845,7 +98869,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -100478,7 +100502,7 @@
     "effectText": "[On Play] You may trash 1 card from your hand: Look at 5 cards from the top of your deck; reveal up to a total of 2 [Mont Blanc Noland] or {Shandian Warrior} type cards and add them to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
