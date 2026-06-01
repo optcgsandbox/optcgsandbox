@@ -19281,16 +19281,27 @@
             "restSelf": true
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "power_buff",
+            "magnitude": 3000,
+            "duration": "this_turn"
           },
-          "verified": "flagged"
+          "target": {
+            "kind": "your_character",
+            "filter": {
+              "colors": [
+                "red"
+              ],
+              "costMin": 1,
+              "costMax": 1
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -19341,7 +19352,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -19369,7 +19380,7 @@
         {
           "trigger": "when_attacking",
           "condition": {
-            "type": "if_have_given_don_min",
+            "type": "if_attached_don_min",
             "n": 2
           },
           "action": {
@@ -19381,13 +19392,13 @@
               "powerMax": 2000
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -19413,7 +19424,33 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On K.O.] You may trash 1 card with a type including \"Whitebeard Pirates\" from your hand: If you have 2 or less Life cards, play this Character card from your trash rested.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_ko",
+          "cost": {
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "typeIncludes": "Whitebeard Pirates"
+              }
+            }
+          },
+          "condition": {
+            "type": "if_own_life_max",
+            "n": 2
+          },
+          "action": {
+            "kind": "play_for_free",
+            "from": "trash",
+            "filter": {
+              "nameIs": "Marco",
+              "kind": "character"
+            },
+            "rested": true
+          },
+          "verified": "human-reviewed"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -19424,7 +19461,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -19456,8 +19493,16 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_don_min",
-            "n": 1
+            "type": "and",
+            "conditions": [
+              {
+                "type": "if_attached_don_min",
+                "n": 1
+              },
+              {
+                "type": "is_own_turn"
+              }
+            ]
           },
           "action": {
             "kind": "aura_power_buff",
@@ -19470,7 +19515,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -19545,7 +19590,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -19589,7 +19634,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -19615,7 +19660,20 @@
     "effectText": "[Main] If you have 3 or less Life cards, you cannot add Life cards to your hand using your own effects during this turn.",
     "counterEventBoost": null,
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "condition": {
+            "type": "if_own_life_max",
+            "n": 3
+          },
+          "action": {
+            "kind": "restrict_effect_type",
+            "effectKind": "character_set_active"
+          },
+          "verified": "flagged"
+        }
+      ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
@@ -19650,8 +19708,16 @@
       "continuous": [
         {
           "condition": {
-            "type": "if_own_life_max",
-            "n": 1
+            "type": "and",
+            "conditions": [
+              {
+                "type": "is_own_turn"
+              },
+              {
+                "type": "if_own_life_max",
+                "n": 1
+              }
+            ]
           },
           "action": {
             "kind": "aura_power_buff",
@@ -19664,7 +19730,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -19705,13 +19771,14 @@
               "costMin": 3
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -19772,12 +19839,16 @@
         {
           "action": {
             "kind": "self_immune_to_opp_effects"
+          },
+          "condition": {
+            "type": "if_don_max",
+            "n": 0
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -19833,16 +19904,16 @@
         {
           "trigger": "at_end_of_turn_self",
           "action": {
-            "kind": "ramp",
+            "kind": "set_active_don",
             "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -19881,22 +19952,25 @@
           "target": {
             "kind": "self"
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "opt": true
         },
         {
           "trigger": "on_ko",
           "action": {
-            "kind": "play_for_free",
-            "from": "hand",
+            "kind": "searcher_peek",
+            "lookCount": 99,
+            "addCount": 1,
             "filter": {
-              "trait": "Land of Wano",
               "colors": [
                 "green"
               ],
-              "costMax": 3,
+              "trait": "Land of Wano",
               "costMin": 3,
+              "costMax": 3,
               "kind": "character"
-            }
+            },
+            "playInsteadOfHand": true
           },
           "verified": "flagged"
         }
@@ -19944,7 +20018,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -19990,7 +20064,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -20057,13 +20131,17 @@
               "costMax": 2
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed",
+          "condition": {
+            "type": "if_attached_don_min",
+            "n": 1
+          }
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -20108,13 +20186,14 @@
               "costMin": 3
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -20177,7 +20256,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -20214,7 +20293,7 @@
               "costMax": 2
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -20257,7 +20336,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -20321,7 +20400,7 @@
               "costMax": 3
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -20355,7 +20434,21 @@
     ],
     "effectText": "[Blocker] (After your opponent declares an attack, you may rest this card to make it the new target of the attack.)<br>[On Play] Play up to 1 {FILM} or {Straw Hat Crew} type Character card with a cost of 4 or less from your hand.",
     "effectSpecV2": {
-      "clauses": [],
+      "clauses": [
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "trait": "FILM",
+              "costMax": 4,
+              "kind": "character"
+            }
+          },
+          "verified": "flagged"
+        }
+      ],
       "continuous": [
         {
           "action": {
@@ -20402,13 +20495,18 @@
               "costMax": 6
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed",
+      "rules": {
+        "nameAliases": [
+          "Kouzuki Oden"
+        ]
+      }
     }
   },
   {
@@ -20479,7 +20577,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -20518,15 +20616,28 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_play",
+          "action": {
+            "kind": "play_for_free",
+            "from": "hand",
+            "filter": {
+              "kind": "character",
+              "costMax": 3,
+              "noBaseEffect": true
+            }
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -20571,7 +20682,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -20615,7 +20726,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -20643,19 +20754,25 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "discardHand": 1,
+            "discardHandFilter": {
+              "count": 1,
+              "filter": {
+                "trait": "Land of Wano"
+              }
+            },
             "restSelf": true
           },
           "action": {
-            "kind": "set_active"
+            "kind": "set_active_don",
+            "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -20702,7 +20819,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "auto"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -20738,11 +20855,21 @@
             "kind": "grant_keyword_to_self",
             "keyword": "blocker"
           }
+        },
+        {
+          "condition": {
+            "type": "if_hand_max",
+            "n": 1
+          },
+          "action": {
+            "kind": "self_power_buff",
+            "magnitude": 2000
+          }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -20774,7 +20901,7 @@
             "kind": "draw",
             "magnitude": 3
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -20790,7 +20917,7 @@
               "costMax": 6
             }
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -20835,7 +20962,7 @@
             "kind": "draw",
             "magnitude": 2
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         },
         {
           "trigger": "on_play",
@@ -20843,20 +20970,17 @@
             "type": "if_owned_other_with_name",
             "name": "Mohji"
           },
-          "cost": {
-            "discardHand": 1
-          },
           "action": {
-            "kind": "draw",
-            "magnitude": 0
+            "kind": "discard_from_hand",
+            "magnitude": 1
           },
-          "verified": "flagged"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
