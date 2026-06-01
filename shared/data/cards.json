@@ -37546,24 +37546,27 @@
       "clauses": [
         {
           "trigger": "on_block",
-          "action": {
-            "kind": "chained_actions",
-            "actions": [
-              {
-                "kind": "draw",
-                "magnitude": 1
-              },
-              {
-                "kind": "power_buff",
-                "magnitude": 1000,
-                "duration": "this_battle",
-                "target": {
-                  "kind": "self"
-                }
-              }
-            ]
+          "condition": {
+            "type": "if_hand_max",
+            "n": 3
           },
-          "verified": "flagged"
+          "action": {
+            "kind": "draw",
+            "magnitude": 1
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_block",
+          "action": {
+            "kind": "power_buff",
+            "magnitude": 1000,
+            "duration": "this_battle"
+          },
+          "target": {
+            "kind": "self"
+          },
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -37576,7 +37579,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -39013,14 +39016,14 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "bottom_of_deck_from_trash",
+            "kind": "opp_bottom_of_deck_from_trash",
             "magnitude": 3
           },
           "verified": "flagged"
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -42164,7 +42167,10 @@
             "lookCount": 4,
             "addCount": 1,
             "filter": {
-              "typeIncludes": "Fish-Man",
+              "traitsAny": [
+                "Fish-Man",
+                "Merfolk"
+              ],
               "nameExcludes": "Camie"
             }
           },
@@ -42172,7 +42178,7 @@
         }
       ],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -43179,13 +43185,13 @@
     "effectText": "[Your Turn] [Once Per Turn] When your opponent activates an Event, your opponent must place 1 card from their hand at the bottom of their deck.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_opp_activate_event",
           "opt": true,
           "action": {
-            "kind": "mill_opp",
+            "kind": "opp_bottom_of_deck_from_hand",
             "magnitude": 1
           },
           "verified": "flagged"
@@ -43496,7 +43502,7 @@
     "effectText": "[DON!! x1] If you have 4 or less cards in your hand, this Character cannot be K.O.'d in battle.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [
         {
@@ -45553,7 +45559,7 @@
     "effectText": "[On Play] Choose one:<br>• Trash up to 1 of your opponent's Characters with a cost of 4 or less.<br>• Your opponent places 3 cards from their trash at the bottom of their deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -45576,10 +45582,10 @@
               {
                 "trigger": "on_play",
                 "action": {
-                  "kind": "bottom_of_deck_from_trash",
+                  "kind": "opp_bottom_of_deck_from_trash",
                   "magnitude": 3
                 },
-                "verified": "flagged"
+                "verified": "human-reviewed"
               }
             ]
           },
@@ -45613,7 +45619,7 @@
     "effectText": "[On Play] If your opponent has 5 or more cards in their hand, choose one:<br>• Your opponent trashes 1 card from their hand.<br>• Give up to 1 of your opponent's Characters −3 cost during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -45627,16 +45633,17 @@
               {
                 "trigger": "on_play",
                 "action": {
-                  "kind": "discard_from_hand",
+                  "kind": "opp_discard_from_hand",
                   "magnitude": 1
                 },
-                "verified": "flagged"
+                "verified": "human-reviewed"
               },
               {
                 "trigger": "on_play",
                 "action": {
-                  "kind": "cost_reduction",
-                  "magnitude": 3
+                  "kind": "removal_cost_reduce",
+                  "magnitude": 3,
+                  "duration": "this_turn"
                 },
                 "target": {
                   "kind": "opp_character"
@@ -45809,12 +45816,12 @@
     "counterEventBoost": null,
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "action": {
-            "kind": "mill_opp",
+            "kind": "opp_discard_from_hand",
             "magnitude": 1
           },
           "verified": "flagged"

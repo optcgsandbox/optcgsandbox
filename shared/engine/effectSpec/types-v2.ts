@@ -272,6 +272,10 @@ export type EffectActionV2 =
   | { kind: 'discard_from_hand'; magnitude: number }
   // Opp-side mirror — "your opponent trashes 1 card from their hand" (random pick).
   | { kind: 'opp_discard_from_hand'; magnitude: number }
+  // OP05-079, OP06-092 — "your opponent places N cards from their trash at the bottom of their deck."
+  | { kind: 'opp_bottom_of_deck_from_trash'; magnitude: number }
+  // OP06-044 — "your opponent places 1 card from their hand at the bottom of their deck."
+  | { kind: 'opp_bottom_of_deck_from_hand'; magnitude: number }
   // EB01-059 / EB01-060 — trash from top of own life until N remain.
   | { kind: 'trash_own_life_until'; n: number }
   // EB01-038 — defensive: redirect opp's pending attack to a chosen own char.

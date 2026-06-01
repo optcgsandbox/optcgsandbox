@@ -1077,6 +1077,20 @@ export function applyActionV2(
       }
       return state;
     }
+    case 'opp_bottom_of_deck_from_trash': {
+      const n = action.magnitude;
+      for (let i = 0; i < n && opp.trash.length > 0; i++) {
+        opp.deck.push(opp.trash.shift()!);
+      }
+      return state;
+    }
+    case 'opp_bottom_of_deck_from_hand': {
+      const n = action.magnitude;
+      for (let i = 0; i < n && opp.hand.length > 0; i++) {
+        opp.deck.push(opp.hand.shift()!);
+      }
+      return state;
+    }
     case 'trash_own_life_until': {
       const target = action.n;
       while (me.life.length > target) {
