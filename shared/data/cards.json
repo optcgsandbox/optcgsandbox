@@ -70488,13 +70488,14 @@
             "n": 1
           },
           "action": {
-            "kind": "self_immune_to_opp_effects"
+            "kind": "grant_keyword_to_self",
+            "keyword": "cannot_be_ko_by_non_special"
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -73774,7 +73775,7 @@
     "effectText": "[Activate: Main] [Once Per Turn] DON!! −1, You may rest this Character: Your opponent places 2 cards from their trash at the bottom of their deck in any order. Then, add 1 card from the top of your Life cards to your hand.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -73783,7 +73784,7 @@
             "restSelf": true
           },
           "action": {
-            "kind": "bottom_of_deck_from_trash",
+            "kind": "opp_bottom_of_deck_from_trash",
             "magnitude": 2
           },
           "verified": "flagged",
@@ -74702,12 +74703,12 @@
     "effectText": "[On Play] Your opponent places 3 Events from their trash at the bottom of their deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
           "action": {
-            "kind": "bottom_of_deck_from_trash",
+            "kind": "opp_bottom_of_deck_from_trash",
             "magnitude": 3
           },
           "verified": "flagged"
@@ -74744,7 +74745,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
@@ -76928,7 +76929,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -77101,7 +77102,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -77129,12 +77130,12 @@
     "effectText": "[DON!! x3] [Activate: Main] [Once Per Turn] If this Leader battles your opponent's Character during this turn, set this Leader as active. Then, this Leader cannot attack your opponent's Characters with a base cost of 7 or less during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "activate_main",
           "condition": {
-            "type": "if_don_min",
+            "type": "if_attached_don_min",
             "n": 3
           },
           "action": {
@@ -78067,10 +78068,10 @@
     "effectText": "When a card is trashed from your hand by your {Navy} type card's effect, draw cards equal to the number of cards trashed.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
-          "trigger": "on_play",
+          "trigger": "on_hand_trashed_by_effect",
           "opt": true,
           "action": {
             "kind": "draw",
@@ -78468,19 +78469,14 @@
     "effectText": "[Opponent's Turn] If your blue {Navy} type Character would be removed from the field by your opponent's effect, you may rest this Character and trash 1 card from your hand instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [],
       "continuous": [],
       "replacements": [
         {
           "trigger": "would_be_removed",
           "condition": {
-            "type": "and",
-            "conditions": [
-              {
-                "type": "during_opp_turn"
-              }
-            ]
+            "type": "is_opp_turn"
           },
           "cost": {
             "restSelf": true,
@@ -80076,7 +80072,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "when_attacking",
@@ -80245,7 +80241,7 @@
             ]
           },
           "action": {
-            "kind": "discard_from_hand",
+            "kind": "opp_discard_from_hand",
             "magnitude": 1
           },
           "verified": "flagged"
@@ -80265,7 +80261,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -81763,7 +81759,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -82910,7 +82906,7 @@
     "effectText": "[On Play] You may reveal 1 {Music} or {FILM} type card from your hand: Set up to 2 of your DON!! cards as active at the end of this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "flagged",
+      "verified": "human-reviewed",
       "clauses": [
         {
           "trigger": "on_play",
