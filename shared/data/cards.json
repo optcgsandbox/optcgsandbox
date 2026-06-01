@@ -53567,7 +53567,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -53762,13 +53762,13 @@
               "rested": true
             }
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -54072,7 +54072,7 @@
       "continuous": [
         {
           "condition": {
-            "type": "always"
+            "type": "if_self_active"
           },
           "action": {
             "kind": "aura_immunity",
@@ -54087,7 +54087,7 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56553,11 +56553,8 @@
             "type": "if_played_this_turn"
           },
           "action": {
-            "kind": "discard_from_hand",
+            "kind": "opp_discard_from_hand",
             "magnitude": 1
-          },
-          "target": {
-            "kind": "opp_hand_card"
           },
           "verified": "flagged",
           "opt": true
@@ -56566,7 +56563,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -56741,15 +56738,17 @@
             ]
           },
           "action": {
-            "kind": "aura_cost_modifier",
-            "filter": {},
+            "kind": "opp_aura_cost_modifier",
+            "filter": {
+              "kind": "character"
+            },
             "delta": -1
           }
         }
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged"
+      "verified": "human-reviewed"
     }
   },
   {

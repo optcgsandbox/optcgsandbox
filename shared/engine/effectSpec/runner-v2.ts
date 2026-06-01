@@ -237,6 +237,16 @@ export function evaluateConditionV2(
     case 'if_own_rested_don_min': {
       return me.donRested.length >= cond.n;
     }
+    case 'if_self_active': {
+      if (!sourceInstanceId) return false;
+      const inst = state.instances[sourceInstanceId];
+      return !!inst && !inst.rested;
+    }
+    case 'if_self_rested': {
+      if (!sourceInstanceId) return false;
+      const inst = state.instances[sourceInstanceId];
+      return !!inst && !!inst.rested;
+    }
 
     // ── Composite ───────────────────────────────────────────────────
     case 'and':
