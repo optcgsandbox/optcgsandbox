@@ -38,6 +38,7 @@ export type EffectTriggerV2 =
   | 'on_opp_play_character'      // (gap #4, OP12-081) — opp plays a Character matching filter
   | 'on_own_char_removed_by_opp_effect' // (gap #28 variant) — your char removed by opp effect
   | 'on_opp_activate_event'      // OP01-004 Usopp — opp plays an event
+  | 'on_attack_deal_damage'      // OP03-040 Nami mill — when source's attack deals damage to opp's Life
   ;
 
 // ─────────────────────────────────────────────────────────────────────
@@ -68,6 +69,8 @@ export type EffectConditionV2 =
   | { type: 'if_opp_hand_max'; n: number }
   | { type: 'if_trash_min'; n: number }
   | { type: 'if_trash_max'; n: number }
+  | { type: 'if_own_deck_max'; n: number }                              // OP03-045 Carne — 20 or less cards in deck
+  | { type: 'if_own_deck_min'; n: number }
   // Field state
   | { type: 'if_own_chars_min'; n: number }                             // (gap #14)
   | { type: 'if_own_chars_min_cost'; n: number; minCost: number }

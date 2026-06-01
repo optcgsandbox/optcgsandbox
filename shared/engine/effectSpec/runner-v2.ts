@@ -96,6 +96,10 @@ export function evaluateConditionV2(
       return me.trash.length >= cond.n;
     case 'if_trash_max':
       return me.trash.length <= cond.n;
+    case 'if_own_deck_max':
+      return me.deck.length <= cond.n;
+    case 'if_own_deck_min':
+      return me.deck.length >= cond.n;
 
     // ── Field state ─────────────────────────────────────────────────
     case 'if_own_chars_min': {
