@@ -77,9 +77,9 @@ describe('EffectSpec v2 — applyContinuousEffectsV2ToInstance', () => {
     expect(s.instances['sp3'].powerModifier).toBeUndefined();
   });
 
-  it('aura_power_buff buffs friendly chars matching filter (excludes self)', () => {
+  it('aura_power_buff buffs friendly chars matching filter (default: include self)', () => {
     const s = boot();
-    placeOnField(s, 'A', makeChar('SRC', { traits: ['Aura'] }), 'src');
+    placeOnField(s, 'A', makeChar('SRC', { traits: ['Pirate'] }), 'src');
     placeOnField(s, 'A', makeChar('CH1', { traits: ['Pirate'] }), 'ch1');
     placeOnField(s, 'A', makeChar('CH2', { traits: ['Pirate'] }), 'ch2');
     placeOnField(s, 'A', makeChar('CH3', { traits: ['Marine'] }), 'ch3');
@@ -90,7 +90,19 @@ describe('EffectSpec v2 — applyContinuousEffectsV2ToInstance', () => {
     expect(s.instances['ch1'].powerModifier).toBe(1000);
     expect(s.instances['ch2'].powerModifier).toBe(1000);
     expect(s.instances['ch3'].powerModifier).toBeUndefined();
-    expect(s.instances['src'].powerModifier).toBeUndefined(); // self excluded
+    expect(s.instances['src'].powerModifier).toBe(1000); // src has Pirate too
+  });
+
+  it('aura_power_buff with excludeSelf:true skips source', () => {
+    const s = boot();
+    placeOnField(s, 'A', makeChar('SRC', { traits: ['Pirate'] }), 'src');
+    placeOnField(s, 'A', makeChar('CH1', { traits: ['Pirate'] }), 'ch1');
+    const effects: ContinuousEffectV2[] = [
+      { action: { kind: 'aura_power_buff', filter: { trait: 'Pirate' }, magnitude: 1000, excludeSelf: true } as any },
+    ];
+    applyContinuousEffectsV2ToInstance(s, 'src', effects);
+    expect(s.instances['ch1'].powerModifier).toBe(1000);
+    expect(s.instances['src'].powerModifier).toBeUndefined();
   });
 
   it('aura_cost_modifier shifts cost on matching friendlies', () => {
@@ -197,7 +209,7 @@ describe('EffectSpec v2 — applyContinuousEffectsV2ToInstance', () => {
     expect(s.instances['lf'].powerModifier).toBe(3);
   });
 
-  it('aura excludes self even with broad filter', () => {
+  it('aura with broad filter buffs all chars on field INCLUDING self (default)', () => {
     const s = boot();
     placeOnField(s, 'A', makeChar('AS'), 'as1');
     placeOnField(s, 'A', makeChar('AT'), 'at1');
@@ -206,7 +218,7 @@ describe('EffectSpec v2 — applyContinuousEffectsV2ToInstance', () => {
     ];
     applyContinuousEffectsV2ToInstance(s, 'as1', effects);
     expect(s.instances['at1'].powerModifier).toBe(500);
-    expect(s.instances['as1'].powerModifier).toBeUndefined();
+    expect(s.instances['as1'].powerModifier).toBe(500);
   });
 
   it('match_opp_don magnitude reads opp DON count', () => {

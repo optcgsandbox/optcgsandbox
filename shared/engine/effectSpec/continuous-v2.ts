@@ -82,11 +82,14 @@ export function applyContinuousEffectsV2ToInstance(
       }
       case 'aura_power_buff': {
         // Apply delta to every friendly field instance matching filter.
+        // Per OPTCG rules "all your X" includes the source if it
+        // matches; "all your other X" sets excludeSelf:true to opt out.
         const delta = eff.action.magnitude;
         const filter = eff.action.filter;
+        const excludeSelf = (eff.action as { excludeSelf?: boolean }).excludeSelf === true;
         for (const inst of me.field) {
           if (!matchesFilterMinimal(state, inst, filter)) continue;
-          if (inst.instanceId === sourceInstanceId) continue; // exclude self by convention
+          if (excludeSelf && inst.instanceId === sourceInstanceId) continue;
           inst.powerModifier = (inst.powerModifier ?? 0) + delta;
           // Mirror to instances map.
           state.instances[inst.instanceId].powerModifier = inst.powerModifier;

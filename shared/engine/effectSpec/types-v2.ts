@@ -386,7 +386,7 @@ export interface ContinuousEffectV2 {
     | { kind: 'self_power_buff'; magnitude: number | MagnitudeFormula }      // (gap #17, OP15-092)
     | { kind: 'self_immune_to_opp_effects' }                                 // (gap #60, OP15-118)
     | { kind: 'grant_keyword_to_self'; keyword: string }                     // (gap #34)
-    | { kind: 'aura_power_buff'; filter: TargetFilter; magnitude: number }   // OP12-073
+    | { kind: 'aura_power_buff'; filter: TargetFilter; magnitude: number; excludeSelf?: boolean }   // OP12-073
     | { kind: 'aura_cost_modifier'; filter: TargetFilter; delta: number }    // OP10-042
     | { kind: 'opp_aura_power_buff'; filter: TargetFilter; magnitude: number } // mirror — affects opp.field
     | { kind: 'opp_aura_cost_modifier'; filter: TargetFilter; delta: number }  // mirror — affects opp.field
