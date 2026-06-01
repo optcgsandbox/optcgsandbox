@@ -53,7 +53,21 @@ export function applyContinuousEffectsV2ToInstance(
             default: delta = 0;
           }
         } else if (m.kind === 'per_count') {
-          delta = m.perUnit;
+          const total = (() => {
+            switch (m.countSource) {
+              case 'own_trash_count': return me.trash.length;
+              case 'opp_trash_count': return opp.trash.length;
+              case 'own_hand_count': return me.hand.length;
+              case 'opp_hand_count': return opp.hand.length;
+              case 'own_life_count': return me.life.length;
+              case 'opp_life_count': return opp.life.length;
+              case 'own_don_count': return me.donCostArea.length;
+              case 'opp_don_count': return opp.donCostArea.length;
+              case 'own_rested_don_count': return me.donRested.length;
+              default: return 0;
+            }
+          })();
+          delta = Math.floor(total / (m.divisor || 1)) * (m.perUnit || 0);
         } else if (m.kind === 'match_opp_don') {
           delta = opp.donCostArea.length;
         } else {
