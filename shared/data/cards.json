@@ -98741,7 +98741,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -98796,7 +98796,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "two activate_main clauses duplicate the give_keyword Blocker action (first with donCost:1 cost only, second with donCost:1 + discardHand:1); text \"DON!! −1: This Character gains [Blocker] until... Then, trash 1 card from your hand\" — needs ONE clause with cost donCost:1 and chained_actions [Blocker, discard 1]"
     }
   },
   {
@@ -99238,7 +99239,7 @@
     "effectText": "If your Character with 7000 base power or less would be removed from the field by your opponent's effect, you may return 1 DON!! card from your field to your DON!! deck instead.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [],
       "replacements": [
@@ -99263,7 +99264,8 @@
             }
           }
         }
-      ]
+      ],
+      "auditNote": "replacement action return_opp_don_to_deck:1 returns opp's DON; text \"you may return 1 DON!! card FROM YOUR FIELD to your DON!! deck instead\" — needs return_own_don_to_deck (own DON return)"
     }
   },
   {
@@ -99515,7 +99517,8 @@
       ],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "play_for_free filter combines namesAny:[\"Heavenly Warriors\"] AND traitsAny:[\"Vassals\"] as AND; text \"[Heavenly Warriors] with a cost of 1 OR up to 1 {Vassals} type Character\" — needs OR of name-branch and trait-branch"
     }
   },
   {
@@ -99633,7 +99636,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -99691,7 +99694,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause target your_character (no leader); text \"up to 1 of your Leader or Character cards\" — needs your_leader_or_character"
     }
   },
   {
@@ -99918,7 +99922,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "spec has only Counter +1000 power_buff; missing \"Then, if you have 6 or less DON!! cards on your field, draw 1 card\" — counter conditional draw clause"
     }
   },
   {
@@ -100323,7 +100328,7 @@
     "effectText": "[On Play] If your Leader has the {Straw Hat Crew} type, play up to 1 {Straw Hat Crew} type Character with a cost of 7 or less from your trash. The Character played with this effect gains [Rush] during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -100360,7 +100365,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause target self (Nami); text \"The Character played with this effect gains [Rush] during this turn\" — Rush should target the just-played character from the first clause, not Nami (same-target tracking)"
     }
   },
   {
@@ -100442,7 +100448,7 @@
     "effectText": "This Character gains +6 cost.<br>[On Play] You may trash 3 cards from the top of your deck: Play up to 1 {Straw Hat Crew} type Character card with a cost of 2 or less from your trash.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -100472,7 +100478,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous aura_cost_modifier filter nameIs:Pirates Docking Six applies to other copies; text \"This Character gains +6 cost\" affects this card in hand — needs cost_modifier_in_hand"
     }
   },
   {
@@ -100615,7 +100622,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [],
       "continuous": [
         {
@@ -100649,7 +100656,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous only has 10+ and 30+ branches; text adds \"If you have 20 or more cards, DURING YOUR OPPONENT'S TURN, your Leader's base power becomes 7000\" — missing the 20+ middle branch"
     }
   },
   {
@@ -100676,7 +100684,7 @@
     "effectText": "[Activate: Main] You may trash this Character: If you have 15 or more cards in your trash, up to 1 of your [Monkey.D.Luffy] Characters gains [Rush: Character] and the <Slash> attribute during this turn.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "activate_main",
@@ -100702,7 +100710,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "action give_keyword:Rush; text \"gains [Rush: Character] AND the <Slash> attribute\" — needs both \"Rush: Character\" (only attacks characters) AND attribute grant to Slash"
     }
   },
   {
@@ -100789,7 +100798,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -100831,7 +100840,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause target your_character with typeIncludes:Straw Hat Crew; text \"up to 1 of your {Straw Hat Crew} type LEADER or Character cards\" — needs your_leader_or_character with Straw Hat filter"
     }
   },
   {
@@ -100894,7 +100904,8 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "human-reviewed"
+      "verified": "flagged",
+      "auditNote": "second clause [Counter] target your_leader; text \"up to 1 of your Leader or Character cards\" — needs your_leader_or_character"
     }
   },
   {
@@ -101022,7 +101033,7 @@
     "effectText": "[On Play] You may trash 1 {Supernovas} type card from your hand: This Character gains [Rush] during this turn.<br>[Activate: Main] You may turn 1 card from the top of your Life cards face-down: Give up to 1 rested DON!! card to your Leader or 1 of your Characters.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -101061,7 +101072,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause give_don_to_target target your_leader; text \"your Leader or 1 of your Characters\" — needs your_leader_or_character"
     }
   },
   {
@@ -101088,7 +101100,7 @@
     "effectText": "[On Play] You may trash this Character and add 1 card from the top of your Life cards to your hand: K.O. up to 1 of your opponent's Characters with a cost of 6 or less.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -101121,7 +101133,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause cost lifeToHand:1 + action life_to_hand:1 — would life-to-hand twice; text \"trash this Character AND add 1 card from the top of your Life cards to your hand\" — life_to_hand is the cost only, action is removal_ko on second clause only"
     }
   },
   {
@@ -101148,7 +101161,7 @@
     "effectText": "[On Play] You may trash 1 card from your hand: Look at 5 cards from the top of your deck; reveal up to a total of 2 [Mont Blanc Noland] or {Shandian Warrior} type cards and add them to your hand. Then, place the rest at the bottom of your deck in any order.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -101172,7 +101185,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "searcher_peek filter combines traitsAny + namesAny as AND; text \"[Mont Blanc Noland] OR {Shandian Warrior} type cards\" — needs OR-of-branches"
     }
   },
   {
@@ -101198,7 +101212,7 @@
     "effectText": "If you have a {Sky Island} type Character with 7000 power or more, give this card in your hand −3 cost.<br>[On Play] Rest up to 1 of your opponent's Characters with a cost equal to or less than the number of your opponent's Life cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -101230,7 +101244,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "continuous condition checks any own char ≥7000 power; text \"If you have A {SKY ISLAND} TYPE Character with 7000 power or more\" — needs trait:\"Sky Island\" filter on the power-check"
     }
   },
   {
@@ -101286,7 +101301,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -101309,7 +101324,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "first clause action draw:2 has no condition; text \"If you have less Life cards than your opponent, draw 2 cards AND trash 2 cards\" — both clauses need if_own_life_lt_opp condition"
     }
   },
   {
@@ -101747,7 +101763,7 @@
     "effectText": "[On Play] You may turn 1 card from the top of your Life cards face-up: Give all of your opponent's Characters −2000 power during this turn. Then, K.O. all of your opponent's Characters with 0 power or less.<br>[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to 1 of your {Sky Island} type Leader or Character cards.",
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -101797,7 +101813,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "third clause give_don_to_target target your_character; text \"1 of your {Sky Island} type Leader or Character cards\" — needs your_leader_or_character"
     }
   },
   {
@@ -101958,7 +101975,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -101985,7 +102002,8 @@
         }
       ],
       "continuous": [],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause give_don_to_target target your_character; text \"1 of your {Sky Island} type Leader or Character cards\" — needs your_leader_or_character"
     }
   },
   {
@@ -102016,7 +102034,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_play",
@@ -102064,7 +102082,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "second clause action bottom_of_deck_from_hand magnitude:0 is meaningless; text \"place the rest at the bottom of your deck in any order, AND trash 1 card from your hand\" — needs discard_from_hand:1 (the rest-to-bottom is implicit in searcher_peek)"
     }
   },
   {
@@ -102098,7 +102117,7 @@
     },
     "effectSpecV2": {
       "schemaVersion": 2,
-      "verified": "human-reviewed",
+      "verified": "flagged",
       "clauses": [
         {
           "trigger": "on_opp_play_character",
@@ -102128,7 +102147,8 @@
           }
         }
       ],
-      "replacements": []
+      "replacements": [],
+      "auditNote": "trigger on_opp_play_character; text \"When your opponent activates an EVENT or [BLOCKER]\" — needs on_opp_activate_event_or_blocker; magnitude source own_life_count is the count of life, not the cost of the revealed card — text says \"+1000 power during this turn PER 1 COST ON THE REVEALED CARD\""
     }
   },
   {
