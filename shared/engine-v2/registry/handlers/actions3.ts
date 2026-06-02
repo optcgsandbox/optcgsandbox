@@ -105,17 +105,56 @@ const lifeToHand: ActionHandler = (state, ctx) => {
   return state;
 };
 
-const addToOwnLifeTop: ActionHandler = (state, ctx) => {
+function pullFromSource(state: GameState, pl: GameState['players'][PlayerId], from: string, targets: ReadonlyArray<InstanceId>): string | undefined {
+  // For from='hand'/'own_trash' the parent action's target resolver picks
+  // the specific instance; use targets[0] when present.
+  if ((from === 'hand' || from === 'own_trash') && targets.length > 0) {
+    const id = targets[0]!;
+    if (from === 'hand') {
+      const idx = pl.hand.indexOf(id);
+      if (idx === -1) return undefined;
+      pl.hand.splice(idx, 1);
+      return id;
+    }
+    const idx = pl.trash.indexOf(id);
+    if (idx === -1) return undefined;
+    pl.trash.splice(idx, 1);
+    return id;
+  }
+  // Default: top of own deck.
+  return pl.deck.shift();
+  void state;
+}
+
+const addToOwnLifeTop: ActionHandler = (state, ctx, action, targets) => {
   const pl = state.players[ctx.controller];
-  const id = pl.deck.shift();
-  if (id !== undefined) pl.life.unshift(id);
+  const from = typeof action['from'] === 'string' ? (action['from'] as string) : 'top_of_deck';
+  const faceUp = action['faceUp'] === true;
+  const position = action['position'] === 'bottom' ? 'bottom' : 'top';
+  const id = pullFromSource(state, pl, from, targets);
+  if (id === undefined) return state;
+  if (position === 'bottom') pl.life.push(id);
+  else pl.life.unshift(id);
+  if (faceUp) pl.lifeFaceUp[id] = true;
   return state;
 };
 
-const addToOppLifeTop: ActionHandler = (state, ctx) => {
+const addToOppLifeTop: ActionHandler = (state, ctx, action, targets) => {
   const opp = state.players[OTHER[ctx.controller]];
-  const id = opp.deck.shift();
-  if (id !== undefined) opp.life.unshift(id);
+  const from = typeof action['from'] === 'string' ? (action['from'] as string) : 'top_of_deck';
+  const faceUp = action['faceUp'] === true;
+  const position = action['position'] === 'bottom' ? 'bottom' : 'top';
+  // For opp life, source is usually opp's deck (default) or our targets.
+  let id: string | undefined;
+  if (from === 'top_of_deck') {
+    id = opp.deck.shift();
+  } else if (targets.length > 0) {
+    id = targets[0];
+  }
+  if (id === undefined) return state;
+  if (position === 'bottom') opp.life.push(id);
+  else opp.life.unshift(id);
+  if (faceUp) opp.lifeFaceUp[id] = true;
   return state;
 };
 
