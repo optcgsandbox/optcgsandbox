@@ -613,64 +613,120 @@ const searcherPeek: ActionHandler = (state, ctx, action) => {
   return state;
 };
 
-// ─── reveal_top_and_conditional_play: reveal top of deck; if it matches the
-//     filter, play it for free; else return it (or trash per spec). V0:
-//     plays on match, returns to top of deck on miss.
+// Shared filter check used by all reveal_* variants. Reads filter fields
+// off `action.filter` OR off `action` (cards.json uses both shapes).
+function revealMatchesFilter(
+  card: { kind: string; cost?: number | null; power?: number | null; traits?: ReadonlyArray<string>; colors?: ReadonlyArray<string> },
+  action: EffectActionV2,
+): boolean {
+  const f = action['filter'];
+  const filter = typeof f === 'object' && f !== null ? f as Record<string, unknown> : action;
+  const cost = typeof card.cost === 'number' ? card.cost : 0;
+  const power = typeof card.power === 'number' ? card.power : 0;
+  if (filter['kind'] !== undefined && card.kind !== filter['kind']) return false;
+  const trait = filter['trait'];
+  if (typeof trait === 'string' && !(card.traits ?? []).includes(trait)) return false;
+  const typeStr = filter['typeIncludes'];
+  if (typeof typeStr === 'string' && !(card.traits ?? []).some((t) => t.includes(typeStr))) return false;
+  const color = filter['color'];
+  if (typeof color === 'string' && !(card.colors ?? []).includes(color)) return false;
+  const minCost = filter['minCost'] ?? action['minCost'];
+  if (typeof minCost === 'number' && cost < minCost) return false;
+  const maxCost = filter['maxCost'] ?? filter['costMax'] ?? action['maxCost'];
+  if (typeof maxCost === 'number' && cost > maxCost) return false;
+  const minPower = filter['minPower'] ?? filter['powerMin'];
+  if (typeof minPower === 'number' && power < minPower) return false;
+  const maxPower = filter['maxPower'] ?? filter['powerMax'];
+  if (typeof maxPower === 'number' && power > maxPower) return false;
+  return true;
+}
+
+// ─── reveal_top_and_conditional_play: reveal top of deck; if matches filter,
+//     PLAY the revealed card for free; on miss OR after play of non-char,
+//     send revealed card to bottom of deck (per CR text "place the revealed
+//     card at the bottom of your deck").
 const revealTopAndConditionalPlay: ActionHandler = (state, ctx, action) => {
   const pl = state.players[ctx.controller];
   const topId = pl.deck[0];
   if (topId === undefined) return state;
   const inst = state.instances[topId];
   if (inst === undefined) return state;
-  const card = state.cardLibrary[inst.cardId] as { kind: string; cost?: number | null; traits?: ReadonlyArray<string>; colors?: ReadonlyArray<string> } | undefined;
+  const card = state.cardLibrary[inst.cardId] as { kind: string; cost?: number | null; power?: number | null; traits?: ReadonlyArray<string>; colors?: ReadonlyArray<string> } | undefined;
   if (card === undefined) return state;
-  const f = action['filter'];
-  const filter = typeof f === 'object' && f !== null
-    ? (f as { kind?: string; trait?: string; color?: string; minCost?: number; maxCost?: number })
-    : undefined;
-  let matches = true;
-  if (filter !== undefined) {
-    if (filter.kind !== undefined && card.kind !== filter.kind) matches = false;
-    if (matches && filter.trait !== undefined && !(card.traits ?? []).includes(filter.trait)) matches = false;
-    if (matches && filter.color !== undefined && !(card.colors ?? []).includes(filter.color)) matches = false;
-    const cost = typeof card.cost === 'number' ? card.cost : 0;
-    if (matches && filter.minCost !== undefined && cost < filter.minCost) matches = false;
-    if (matches && filter.maxCost !== undefined && cost > filter.maxCost) matches = false;
-  }
+  const matches = revealMatchesFilter(card, action);
 
-  if (matches) {
-    pl.deck.shift();
-    if (card.kind === 'character') {
-      // play_for_free flow inline
-      resetInstanceTransientState(inst);
-      inst.summoningSick = true;
-      pl.field.push(inst);
-      (state.history as Array<unknown>).push({
-        type: 'CHARACTER_PLAYED',
-        instanceId: topId,
-        cardId: inst.cardId,
-        controller: ctx.controller,
-        cost: 0,
-        reason: 'reveal_top_and_conditional_play',
-      });
-    } else {
-      // events / stages: trash post-reveal (V0 — events don't have on_play
-      // dispatch from this path)
-      pl.trash.push(topId);
-    }
-  }
-  // On miss: leave top card alone (don't move). Expose to viewer.
+  // Always expose the revealed card.
   const known = state.knownByViewer[ctx.controller] ?? [];
   if (!known.includes(topId)) known.push(topId);
   state.knownByViewer[ctx.controller] = known;
+
+  pl.deck.shift();
+  if (matches && card.kind === 'character') {
+    resetInstanceTransientState(inst);
+    // Summoning sickness applies on any play unless the card explicitly says
+    // otherwise. "Play it rested" controls inst.rested only, not sickness.
+    inst.summoningSick = true;
+    inst.rested = action['rested'] === true;
+    pl.field.push(inst);
+    (state.history as Array<unknown>).push({
+      type: 'CHARACTER_PLAYED',
+      instanceId: topId,
+      cardId: inst.cardId,
+      controller: ctx.controller,
+      cost: 0,
+      reason: 'reveal_top_and_conditional_play',
+    });
+  } else {
+    // No match OR not a character → bottom of deck.
+    pl.deck.push(topId);
+  }
   return state;
 };
 
-const revealTopThenIfCostMin: ActionHandler = (state, ctx, action) =>
-  revealTopAndConditionalPlay(state, ctx, action, []);
+// ─── reveal_top_then_if_filter / _if_cost_min: reveal top, if matches,
+//     dispatch action.thenAction with the parent's targets. Always send the
+//     revealed card to bottom of deck after (per CR text "Then, place the
+//     revealed card at the bottom of your deck").
+function revealTopThenIf(state: GameState, ctx: HandlerCtxLite, action: EffectActionV2, targets: ReadonlyArray<InstanceId>): GameState {
+  const pl = state.players[ctx.controller];
+  const topId = pl.deck[0];
+  if (topId === undefined) return state;
+  const inst = state.instances[topId];
+  if (inst === undefined) return state;
+  const card = state.cardLibrary[inst.cardId] as { kind: string; cost?: number | null; power?: number | null; traits?: ReadonlyArray<string>; colors?: ReadonlyArray<string> } | undefined;
+  if (card === undefined) return state;
+  const matches = revealMatchesFilter(card, action);
 
-const revealTopThenIfFilter: ActionHandler = (state, ctx, action) =>
-  revealTopAndConditionalPlay(state, ctx, action, []);
+  const known = state.knownByViewer[ctx.controller] ?? [];
+  if (!known.includes(topId)) known.push(topId);
+  state.knownByViewer[ctx.controller] = known;
+
+  pl.deck.shift();
+  pl.deck.push(topId); // always to bottom
+
+  let next = state;
+  if (matches) {
+    const thenAction = action['thenAction'];
+    if (typeof thenAction === 'object' && thenAction !== null && typeof (thenAction as { kind?: string }).kind === 'string') {
+      const sub = thenAction as EffectActionV2;
+      if (actionHandlers.has(sub.kind)) {
+        next = actionHandlers.get(sub.kind)(next, ctx, sub, targets);
+      }
+    }
+  }
+  return next;
+}
+
+interface HandlerCtxLite {
+  readonly sourceInstanceId: InstanceId;
+  readonly controller: PlayerId;
+}
+
+const revealTopThenIfCostMin: ActionHandler = (state, ctx, action, targets) =>
+  revealTopThenIf(state, ctx, action, targets);
+
+const revealTopThenIfFilter: ActionHandler = (state, ctx, action, targets) =>
+  revealTopThenIf(state, ctx, action, targets);
 
 // ─── peek_and_reorder_*: needs PendingReorder shape — out of scope for this
 //     batch. V0 noops (cards: rare; deferred to dedicated reorder PR).
