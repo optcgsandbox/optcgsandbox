@@ -8,6 +8,7 @@
 import { registerActionHandlers } from './actions.js';
 import { registerActionHandlers2 } from './actions2.js';
 import { registerConditionHandlers } from './conditions.js';
+import { registerConditionHandlers2 } from './conditions2.js';
 import { registerContinuousHandlers } from './continuous.js';
 import { registerCostHandlers } from './costs.js';
 import { registerReplacementHandlers } from './replacements.js';
@@ -16,6 +17,7 @@ import { registerTriggerEmitters } from './triggers.js';
 
 export function registerAllHandlers(): void {
   registerConditionHandlers();
+  registerConditionHandlers2();
   registerTargetResolvers();
   registerActionHandlers();
   registerActionHandlers2();
