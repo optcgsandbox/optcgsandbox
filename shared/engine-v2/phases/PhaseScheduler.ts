@@ -20,6 +20,10 @@
  * - CR §6 (turn structure)
  */
 
+import { EffectDispatcher } from '../effects/EffectDispatcher.js';
+import { triggerEmitters } from '../registry/types.js';
+import type { EffectActionV2 } from '../spec/types.js';
+import { actionHandlers } from '../registry/types.js';
 import { detachAllAttachedDon } from '../state/derived/don.js';
 import { resetInstanceTransientState } from '../state/derived/reset.js';
 import {
@@ -80,34 +84,51 @@ export const PhaseScheduler = {
   enterRefresh(state: GameState): GameState {
     const ap = state.activePlayer;
     const pl = state.players[ap];
+    const opp = OTHER_PLAYER[ap];
 
-    // (1) Un-rest active player's chars
-    for (const inst of allCharsOnField(state, ap)) {
-      inst.rested = false;
-      // Clear summoning sickness — a char that was summoned last turn is now
-      // active for the new active player's turn.
-      inst.summoningSick = false;
+    // V1 parity (D5 / CR §6-2-3): broadcast at_opp_refresh to opp's field
+    // BEFORE the rest→active flip so listeners observe pre-refresh state.
+    let next = state;
+    if (triggerEmitters.has('at_opp_refresh')) {
+      next = triggerEmitters.get('at_opp_refresh')(next, { kind: 'at_opp_refresh' }, opp);
     }
 
-    // (2) DON: rested → cost area (unrested). Attached-rested DON also
-    // returns to cost area. Per CR §6-1-3.
+    // V1 parity (D5 / CR §6-2-3): DETACH all attached DON from active
+    // player's leader/chars/stage → donRested BEFORE the unrest flip. This
+    // lets the rested→active step pick them up so they return active this
+    // refresh. Visually keeps DON attached during opp's turn (cosmetic
+    // divergence fix from V1).
+    const apCharsForDetach: CardInstance[] = [pl.leader, ...pl.field];
+    if (pl.stage !== null) apCharsForDetach.push(pl.stage);
+    for (const inst of apCharsForDetach) {
+      while (inst.attachedDon.length > 0) {
+        const id = inst.attachedDon.shift();
+        if (id !== undefined) pl.donRested.push(id);
+      }
+      while (inst.attachedDonRested.length > 0) {
+        const id = inst.attachedDonRested.shift();
+        if (id !== undefined) pl.donRested.push(id);
+      }
+    }
+
+    // (1) Un-rest active player's chars
+    for (const inst of allCharsOnField(next, ap)) {
+      inst.rested = false;
+      inst.summoningSick = false;
+    }
+    if (pl.stage !== null) pl.stage.rested = false;
+
+    // (2) ALL rested DON → cost area (active). Per CR §6-2-4.
     while (pl.donRested.length > 0) {
       const id = pl.donRested.shift();
       if (id !== undefined) pl.donCostArea.push(id);
     }
-    for (const inst of allCharsOnField(state, ap)) {
-      while (inst.attachedDonRested.length > 0) {
-        const id = inst.attachedDonRested.shift();
-        if (id !== undefined) inst.attachedDon.push(id);
-      }
-    }
 
     // (3) Clear active player's THIS_TURN OneShot fields. (perTurn always
     // resets here so OPT keys can fire again.)
-    for (const inst of Object.values(state.instances)) {
+    for (const inst of Object.values(next.instances)) {
       if (inst.controller !== ap) continue;
       inst.perTurn = { hasAttacked: false, effectsUsed: [] };
-      // THIS_TURN OneShot fields expire NOW.
       if (inst.powerModifierExpiresInTurns === 0) {
         inst.powerModifierOneShot = undefined;
         inst.powerModifierExpiresInTurns = undefined;
@@ -120,19 +141,13 @@ export const PhaseScheduler = {
         inst.basePowerOverrideOneShot = undefined;
         inst.basePowerOverrideExpiresInTurns = undefined;
       }
-      // grantedKeywordsOneShot / immunityOneShot / attackLockedOneShot are
-      // pure THIS_TURN — always clear at refresh of their controller.
       inst.grantedKeywordsOneShot = undefined;
       inst.immunityOneShot = undefined;
       inst.attackLockedOneShot = undefined;
-      // armedReplacementsThisTurn drain (active player only)
     }
     pl.armedReplacementsThisTurn = [];
 
-    // TODO: TriggerEngine.broadcast(state, 'at_refresh_phase', ap);
-    // TODO: ContinuousManager.refold(state);
-
-    return setPhase(state, expectStaticNext('refresh')); // → 'draw'
+    return setPhase(next, expectStaticNext('refresh')); // → 'draw'
   },
 
   /**
@@ -206,34 +221,79 @@ export const PhaseScheduler = {
     const opp = OTHER_PLAYER[ap];
     const apZ = state.players[ap];
 
-    // (1) Resolve pending end-of-turn entries (e.g., trash-at-end-of-turn).
-    for (const entry of apZ.pendingEndOfTurn ?? []) {
-      // TODO: dispatch entry to ActionHandler (delegated; not implemented yet).
-      void entry;
-    }
+    // (1) Drain pendingEndOfTurn — dispatch each queued action with the
+    // ORIGINAL source's controller (per V1 endTurn lines 203-217).
+    let next = state;
+    const queue = apZ.pendingEndOfTurn ?? [];
     apZ.pendingEndOfTurn = [];
+    for (const entry of queue) {
+      const sourceInst = next.instances[entry.sourceInstanceId];
+      const controller = sourceInst?.controller ?? ap;
+      const action = entry.action as EffectActionV2;
+      if (typeof action === 'object' && action !== null && typeof action.kind === 'string' && actionHandlers.has(action.kind)) {
+        next = actionHandlers.get(action.kind)(next, {
+          sourceInstanceId: entry.sourceInstanceId,
+          controller,
+        }, action, []);
+      }
+    }
 
-    // (2) Tick down OneShot expiresInTurns counters for ALL instances.
-    for (const inst of Object.values(state.instances)) {
-      if (inst.powerModifierExpiresInTurns !== undefined) {
-        inst.powerModifierExpiresInTurns -= 1;
+    // (2) Tick OneShot expiresInTurns; clear when reaches zero (V1 parity
+    // — tickPower in endTurn lines 164-178).
+    for (const inst of Object.values(next.instances)) {
+      if ((inst.powerModifierExpiresInTurns ?? 0) > 0) {
+        inst.powerModifierExpiresInTurns = (inst.powerModifierExpiresInTurns ?? 0) - 1;
+      } else if (inst.powerModifierExpiresInTurns !== undefined) {
+        inst.powerModifierOneShot = undefined;
+        inst.powerModifierExpiresInTurns = undefined;
       }
-      if (inst.costModifierExpiresInTurns !== undefined) {
-        inst.costModifierExpiresInTurns -= 1;
+      if ((inst.costModifierExpiresInTurns ?? 0) > 0) {
+        inst.costModifierExpiresInTurns = (inst.costModifierExpiresInTurns ?? 0) - 1;
+      } else if (inst.costModifierExpiresInTurns !== undefined) {
+        inst.costModifierOneShot = undefined;
+        inst.costModifierExpiresInTurns = undefined;
       }
-      if (inst.basePowerOverrideExpiresInTurns !== undefined) {
-        inst.basePowerOverrideExpiresInTurns -= 1;
+      if ((inst.basePowerOverrideExpiresInTurns ?? 0) > 0) {
+        inst.basePowerOverrideExpiresInTurns = (inst.basePowerOverrideExpiresInTurns ?? 0) - 1;
+      } else if (inst.basePowerOverrideExpiresInTurns !== undefined) {
+        inst.basePowerOverrideOneShot = undefined;
+        inst.basePowerOverrideExpiresInTurns = undefined;
       }
     }
 
     // (3) Clear THIS_BATTLE scope (powerModifierThisBattle survives only
     // within an attack; if any leaked past damage_resolution, scrub here).
-    for (const inst of Object.values(state.instances)) {
+    for (const inst of Object.values(next.instances)) {
       inst.powerModifierThisBattle = undefined;
     }
 
-    // (4) Hand-size limit: CR §6-5-7. If active player's hand > 10, they
+    // (4) V1 parity: nextPlayCostModifier expires at end of turn if not
+    // consumed; lifeFaceUp orphan prune (V1 endTurn lines 180-191).
+    for (const pid of ['A', 'B'] as PlayerId[]) {
+      next.players[pid].nextPlayCostModifier = undefined;
+      const pl = next.players[pid];
+      const liveSet = new Set(pl.life);
+      for (const id of Object.keys(pl.lifeFaceUp)) {
+        if (!liveSet.has(id)) {
+          // Mutate in place — `lifeFaceUp` is Record<string, boolean>.
+          delete (pl.lifeFaceUp as Record<string, boolean>)[id];
+        }
+      }
+    }
+
+    // (5) Broadcast at_end_of_turn_self (active player's field) and
+    // at_end_of_turn (both fields) — V1 endTurn lines 196-221.
+    if (triggerEmitters.has('at_end_of_turn_self')) {
+      next = triggerEmitters.get('at_end_of_turn_self')(next, { kind: 'at_end_of_turn_self' }, ap);
+    }
+    if (triggerEmitters.has('at_end_of_turn')) {
+      next = triggerEmitters.get('at_end_of_turn')(next, { kind: 'at_end_of_turn' }, ap);
+    }
+    void EffectDispatcher; // reserved for future on_take_damage-style dispatches inside end phase
+
+    // (6) Hand-size limit: CR §6-5-7. If active player's hand > 10, they
     // must discard down. Suspends via PendingDiscard.
+    state = next;
     const HAND_LIMIT = 10;
     if (apZ.hand.length > HAND_LIMIT) {
       const excess = apZ.hand.length - HAND_LIMIT;
