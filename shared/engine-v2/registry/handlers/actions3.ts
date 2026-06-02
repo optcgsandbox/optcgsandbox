@@ -27,6 +27,7 @@ import {
   type ActionHandler,
   actionHandlers,
 } from '../types.js';
+import { resolveCount } from './formula.js';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
@@ -35,16 +36,6 @@ function num(a: EffectActionV2, key: string, fallback = 0): number {
   return typeof v === 'number' ? v : fallback;
 }
 
-// Canonical "how many" reader — cards.json uses magnitude / count / n.
-function count(a: EffectActionV2, fallback = 0): number {
-  const m = a['magnitude'];
-  if (typeof m === 'number') return m;
-  const c = a['count'];
-  if (typeof c === 'number') return c;
-  const n = a['n'];
-  if (typeof n === 'number') return n;
-  return fallback;
-}
 function str(a: EffectActionV2, key: string): string {
   const v = a[key];
   return typeof v === 'string' ? v : '';
@@ -88,7 +79,7 @@ const oppDiscardFromHand: ActionHandler = (state, ctx, action) =>
 
 // ─── give_don_to_opp_target: like give_don_to_target but opp's DON
 const giveDonToOppTarget: ActionHandler = (state, ctx, action, targets) => {
-  const n = count(action, 1);
+  const n = resolveCount(state, ctx, action, 1);
   const opp = state.players[OTHER[ctx.controller]];
   for (const id of targets) {
     const inst = state.instances[id];
@@ -166,7 +157,7 @@ const turnAllOwnLifeFaceDown: ActionHandler = (state, ctx) => {
 };
 
 const takeDamageSelf: ActionHandler = (state, ctx, action) => {
-  const n = count(action, 1);
+  const n = resolveCount(state, ctx, action, 1);
   const pl = state.players[ctx.controller];
   for (let i = 0; i < n; i++) {
     const id = pl.life.shift();
@@ -180,7 +171,7 @@ const takeDamageSelf: ActionHandler = (state, ctx, action) => {
 };
 
 const dealDamageOpp: ActionHandler = (state, ctx, action) => {
-  const n = count(action, 1);
+  const n = resolveCount(state, ctx, action, 1);
   const opp = state.players[OTHER[ctx.controller]];
   for (let i = 0; i < n; i++) {
     const id = opp.life.shift();
@@ -282,7 +273,7 @@ const bottomOfDeckToOppDeck: ActionHandler = (state, ctx, _action, targets) => {
 };
 
 const discardFromHand: ActionHandler = (state, ctx, action) => {
-  const n = count(action, 1);
+  const n = resolveCount(state, ctx, action, 1);
   const pl = state.players[ctx.controller];
   for (let i = 0; i < n; i++) {
     const id = pl.hand.shift();
@@ -305,8 +296,8 @@ const takeFromOppHand: ActionHandler = (state, ctx, _action, targets) => {
 };
 
 // ─── cost / power modifiers
-const giveCostBuff: ActionHandler = (state, _ctx, action, targets) => {
-  const n = count(action, 0);
+const giveCostBuff: ActionHandler = (state, ctx, action, targets) => {
+  const n = resolveCount(state, ctx, action, 0);
   for (const id of targets) {
     const inst = state.instances[id];
     if (inst === undefined) continue;
@@ -317,14 +308,14 @@ const giveCostBuff: ActionHandler = (state, _ctx, action, targets) => {
 };
 
 const costReduction: ActionHandler = (state, ctx, action) => {
-  const n = count(action, -1);
+  const n = resolveCount(state, ctx, action, -1);
   state.players[ctx.controller].nextPlayCostModifier =
     (state.players[ctx.controller].nextPlayCostModifier ?? 0) + n;
   return state;
 };
 
-const removalCostReduce: ActionHandler = (state, _ctx, action, targets) => {
-  const n = count(action, -1);
+const removalCostReduce: ActionHandler = (state, ctx, action, targets) => {
+  const n = resolveCount(state, ctx, action, -1);
   for (const id of targets) {
     const inst = state.instances[id];
     if (inst === undefined) continue;
@@ -334,9 +325,9 @@ const removalCostReduce: ActionHandler = (state, _ctx, action, targets) => {
   return state;
 };
 
-const setBasePower: ActionHandler = (state, _ctx, action, targets) => {
+const setBasePower: ActionHandler = (state, ctx, action, targets) => {
   // cards.json uses `basePower` (preferred) OR `magnitude` for the value.
-  const n = num(action, 'basePower', count(action, 0));
+  const n = num(action, 'basePower', resolveCount(state, ctx, action, 0));
   for (const id of targets) {
     const inst = state.instances[id];
     if (inst === undefined) continue;
@@ -561,7 +552,7 @@ const attackRedirectToTarget: ActionHandler = (state, _ctx, _action, targets) =>
 
 // ─── opp DON manipulation
 const restOppDon: ActionHandler = (state, ctx, action) => {
-  const n = count(action, 1);
+  const n = resolveCount(state, ctx, action, 1);
   const opp = state.players[OTHER[ctx.controller]];
   for (let i = 0; i < n; i++) {
     const id = opp.donCostArea.shift();
@@ -592,7 +583,7 @@ const activateEventFromHand: ActionHandler = (state, ctx, _action, targets) => {
 // ─── peek_opp_deck: deterministic exposure. Take top N of opp deck, add to
 //     knownByViewer[ctx.controller]. No PendingPeek (no player decision).
 const peekOppDeck: ActionHandler = (state, ctx, action) => {
-  const n = count(action, 1);
+  const n = resolveCount(state, ctx, action, 1);
   const opp = state.players[OTHER[ctx.controller]];
   const peeked = opp.deck.slice(0, Math.min(n, opp.deck.length));
   const known = state.knownByViewer[ctx.controller] ?? [];
@@ -620,7 +611,7 @@ const revealOppHand: ActionHandler = (state, ctx) => {
 //     resolvePeekReducer (choiceResolve.ts) moves picked → hand and leftovers
 //     → top of deck in original order, then resumes phase.
 const searcherPeek: ActionHandler = (state, ctx, action) => {
-  const lookCount = num(action, 'lookCount', count(action, 1));
+  const lookCount = num(action, 'lookCount', resolveCount(state, ctx, action, 1));
   const addCount = num(action, 'addCount', 1);
   const pl = state.players[ctx.controller];
   const peeked = pl.deck.slice(0, Math.min(lookCount, pl.deck.length));
@@ -774,14 +765,14 @@ function exposeToKnown(state: GameState, viewer: PlayerId, ids: ReadonlyArray<In
 }
 
 const peekAndReorderOwnDeck: ActionHandler = (state, ctx, action) => {
-  const n = count(action, state.players[ctx.controller].deck.length);
+  const n = resolveCount(state, ctx, action, state.players[ctx.controller].deck.length);
   const ids = state.players[ctx.controller].deck.slice(0, Math.min(n, state.players[ctx.controller].deck.length));
   exposeToKnown(state, ctx.controller, ids);
   return state;
 };
 
 const peekAndReorderOwnLife: ActionHandler = (state, ctx, action) => {
-  const n = count(action, state.players[ctx.controller].life.length);
+  const n = resolveCount(state, ctx, action, state.players[ctx.controller].life.length);
   const ids = state.players[ctx.controller].life.slice(0, Math.min(n, state.players[ctx.controller].life.length));
   exposeToKnown(state, ctx.controller, ids);
   return state;
@@ -789,7 +780,7 @@ const peekAndReorderOwnLife: ActionHandler = (state, ctx, action) => {
 
 const peekAndReorderOppLife: ActionHandler = (state, ctx, action) => {
   const opp = state.players[OTHER[ctx.controller]];
-  const n = count(action, opp.life.length);
+  const n = resolveCount(state, ctx, action, opp.life.length);
   const ids = opp.life.slice(0, Math.min(n, opp.life.length));
   exposeToKnown(state, ctx.controller, ids);
   return state;

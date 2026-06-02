@@ -22,23 +22,13 @@ import {
   type ActionHandler,
   actionHandlers,
 } from '../types.js';
+import { resolveCount } from './formula.js';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
 function num(a: EffectActionV2, key: string, fallback = 0): number {
   const v = a[key];
   return typeof v === 'number' ? v : fallback;
-}
-
-// Canonical "how many" reader — cards.json uses magnitude / count / n.
-function count(a: EffectActionV2, fallback = 0): number {
-  const m = a['magnitude'];
-  if (typeof m === 'number') return m;
-  const c = a['count'];
-  if (typeof c === 'number') return c;
-  const n = a['n'];
-  if (typeof n === 'number') return n;
-  return fallback;
 }
 
 function findInstZone(state: GameState, instanceId: InstanceId): {
@@ -95,7 +85,7 @@ const recursion: ActionHandler = (state, ctx, _action, targets) => {
 
 // ─── mill: trash N from top of opp's deck
 const mill: ActionHandler = (state, ctx, action) => {
-  const n = count(action, 1);
+  const n = resolveCount(state, ctx, action, 1);
   const pl = state.players[OTHER[ctx.controller]];
   for (let i = 0; i < n; i++) {
     const id = pl.deck.shift();
@@ -121,7 +111,7 @@ const shuffleDeck: ActionHandler = (state, ctx) => {
 //     (Closes AC2-1 audit finding.)
 const transferAttachedDon: ActionHandler = (state, ctx, action, targets) => {
   if (targets.length === 0) return state;
-  const n = count(action, 1);
+  const n = resolveCount(state, ctx, action, 1);
   const source = state.instances[ctx.sourceInstanceId];
   const dest = state.instances[targets[0]!];
   if (source === undefined || dest === undefined) return state;
@@ -145,7 +135,7 @@ const transferAttachedDon: ActionHandler = (state, ctx, action, targets) => {
 
 // ─── set_active_don: un-rest N DON in controller's donRested → donCostArea
 const setActiveDon: ActionHandler = (state, ctx, action) => {
-  const n = count(action, 1);
+  const n = resolveCount(state, ctx, action, 1);
   const pl = state.players[ctx.controller];
   let moved = 0;
   while (moved < n && pl.donRested.length > 0) {
@@ -160,7 +150,7 @@ const setActiveDon: ActionHandler = (state, ctx, action) => {
 
 // ─── return_opp_don_to_deck: opp's donCostArea N → donDeck
 const returnOppDonToDeck: ActionHandler = (state, ctx, action) => {
-  const n = count(action, 1);
+  const n = resolveCount(state, ctx, action, 1);
   const opp = state.players[OTHER[ctx.controller]];
   let moved = 0;
   while (moved < n && opp.donCostArea.length > 0) {
@@ -177,7 +167,7 @@ const returnOppDonToDeck: ActionHandler = (state, ctx, action) => {
 // ─── give_next_play_cost_modifier: set nextPlayCostModifier (e.g., -1 reduces
 //     next play cost by 1)
 const giveNextPlayCostModifier: ActionHandler = (state, ctx, action) => {
-  const n = count(action, 0);
+  const n = resolveCount(state, ctx, action, 0);
   state.players[ctx.controller].nextPlayCostModifier =
     (state.players[ctx.controller].nextPlayCostModifier ?? 0) + n;
   return state;
