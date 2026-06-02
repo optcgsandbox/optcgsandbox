@@ -191,6 +191,7 @@ export function buildBasicGameState(): GameState {
     knownByViewer: { A: [], B: [] },
     gameRules: {},
     continuousApplyDepth: 0,
+    cardsTrashedThisResolution: 0,
   };
   return state;
 }

@@ -103,6 +103,7 @@ const discardHand: CostHandler = {
       const id = pl.hand.shift();
       if (id === undefined) return null;
       pl.trash.push(id);
+      state.cardsTrashedThisResolution += 1;
     }
     return state;
   },
@@ -139,6 +140,7 @@ const discardHandFilter: CostHandler = {
       const idx = pl.hand.indexOf(id);
       if (idx !== -1) pl.hand.splice(idx, 1);
       pl.trash.push(id);
+      state.cardsTrashedThisResolution += 1;
     }
     return state;
   },

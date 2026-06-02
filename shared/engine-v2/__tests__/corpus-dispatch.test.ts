@@ -225,6 +225,7 @@ function buildStateWithCard(testCard: Card, cardLibrary: Record<CardId, Card>): 
     knownByViewer: { A: [], B: [] },
     gameRules: {},
     continuousApplyDepth: 0,
+    cardsTrashedThisResolution: 0,
   };
   return { state, testInstanceId: testInst.instanceId };
 }

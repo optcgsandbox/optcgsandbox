@@ -54,9 +54,7 @@ const restSource: CostHandler = {
   },
 };
 
-// ─── trashFromHand: discard N cards from controller's hand (V0 deterministic
-//     from head of hand; player-choice routing via PendingDiscard wires up
-//     in Phase 3)
+// ─── trashFromHand: discard N cards from controller's hand
 const trashFromHand: CostHandler = {
   canPay(state, ctx, cost) {
     return state.players[ctx.controller].hand.length >= num(cost, 'trashFromHand');
@@ -69,6 +67,7 @@ const trashFromHand: CostHandler = {
       const id = pl.hand.shift();
       if (id === undefined) return null;
       pl.trash.push(id);
+      state.cardsTrashedThisResolution += 1;
     }
     return state;
   },

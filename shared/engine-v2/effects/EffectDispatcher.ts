@@ -106,6 +106,9 @@ export const EffectDispatcher = {
       const clause = clauses[i]!;
       if (clause.trigger !== trigger) continue;
 
+      // Reset per-clause-resolution counters before each clause fires.
+      working.cardsTrashedThisResolution = 0;
+
       // (0) OPT-gate — skip clauses already used this turn (closes CR-2 audit
       // finding; aligns with ReplacementManager.tryReplace OPT gate).
       if (clause.opt === true) {

@@ -191,6 +191,7 @@ function buildState(card: Card): { state: GameState; sourceId: InstanceId } {
     knownByViewer: { A: [], B: [] },
     gameRules: {},
     continuousApplyDepth: 0,
+    cardsTrashedThisResolution: 0,
   };
   return { state, sourceId: source.instanceId };
 }

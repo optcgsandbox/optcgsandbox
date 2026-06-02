@@ -323,6 +323,11 @@ export interface GameState {
 
   // Continuous-fold recursion guard
   continuousApplyDepth: number;
+
+  // Per-clause-resolution counter of cards trashed by THIS dispatch (cost or
+  // action). Reset to 0 at the start of each clause; read by formula
+  // magnitudes (per_count countSource:'cards_trashed_this_resolution').
+  cardsTrashedThisResolution: number;
 }
 
 export interface GameResult {

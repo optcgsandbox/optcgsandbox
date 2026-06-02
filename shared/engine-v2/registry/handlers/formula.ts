@@ -48,10 +48,8 @@ function readCountSource(
       }
       return n;
     }
-    case 'cards_trashed_this_resolution': {
-      // V0: not tracked yet — would require per-resolution counter. Return 0.
-      return 0;
-    }
+    case 'cards_trashed_this_resolution':
+      return state.cardsTrashedThisResolution;
     default:
       return fallback;
   }
