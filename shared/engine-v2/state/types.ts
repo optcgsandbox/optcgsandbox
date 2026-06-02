@@ -306,8 +306,10 @@ export interface GameState {
   // Mulligan tracking
   mulliganUsed: Record<PlayerId, boolean>;
 
-  // Dice-roll result (used during setup)
-  diceRoll: { rolledBy: PlayerId; value: number } | null;
+  // Dice-roll result (used during setup). Both slots fill independently;
+  // ties null both and increment `rolls`. Once non-null + unequal, the high
+  // roller becomes the chooser for first/second.
+  diceRoll: { A: number | null; B: number | null; rolls: number } | null;
 
   // View-side metadata (per-player visibility tracking)
   knownByViewer: Record<PlayerId, InstanceId[]>;

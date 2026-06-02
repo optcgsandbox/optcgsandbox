@@ -7,16 +7,17 @@
  */
 
 import { registerAttackFlowReducers } from './attackFlow.js';
+import { registerChoiceResolveReducers } from './choiceResolve.js';
 import { registerMainPhaseReducers } from './mainPhase.js';
+import { registerSetupReducers } from './setup.js';
 import { registerTurnFlowReducers } from './turnFlow.js';
 
 export function registerAllReducers(): void {
+  registerSetupReducers();
   registerTurnFlowReducers();
   registerMainPhaseReducers();
   registerAttackFlowReducers();
-  // TODO: choiceResolve.ts (RESOLVE_TRIGGER, RESOLVE_PEEK, RESOLVE_DISCARD,
-  //       RESOLVE_CHOOSE_ONE, RESOLVE_TARGET_PICK)
-  // TODO: setup.ts (ROLL_DICE, CHOOSE_FIRST, CHOOSE_SECOND, MULLIGAN, KEEP_HAND)
+  registerChoiceResolveReducers();
 }
 
 export { applyAction } from './applyAction.js';
