@@ -10,9 +10,10 @@
  * RULES (do not break):
  *   - All DON detachment goes through `detachAllAttachedDon`.
  *   - Continuous refold happens AFTER every state mutation (not yet wired —
- *     ContinuousManager is later in Phase 2).
- *   - Trigger broadcasts go through TriggerEngine (stubbed; populated when
- *     TriggerEngine module lands).
+ *     ContinuousManager is later in Phase 2). ~21% of the corpus (531 cards)
+ *     has non-empty continuous clauses that depend on this.
+ *   - Trigger broadcasts go through the emitter registry at
+ *     `registry/handlers/triggers.ts` — populated, not stubbed.
  *
  * Cross-references:
  * - Implementation spec §11
@@ -178,7 +179,6 @@ export const PhaseScheduler = {
       }
     }
 
-    // TODO: TriggerEngine.broadcast(state, 'at_draw_phase', ap);
     return setPhase(state, expectStaticNext('draw')); // → 'don'
   },
 
@@ -203,7 +203,6 @@ export const PhaseScheduler = {
       }
     }
 
-    // TODO: TriggerEngine.broadcast(state, 'at_don_phase', ap);
     return setPhase(state, expectStaticNext('don')); // → 'main'
   },
 
@@ -214,7 +213,6 @@ export const PhaseScheduler = {
    * input via Action dispatcher; scheduler resumes on enterEnd or attack.
    */
   enterMain(state: GameState): GameState {
-    // TODO: TriggerEngine.broadcast(state, 'at_main_phase', state.activePlayer);
     return setPhase(state, 'main');
   },
 
@@ -351,7 +349,6 @@ export function finalizeEndTurn(
   state.turn += 1;
   state.koSourceStack = [];
   state.pendingDonReturned = {};
-  // TODO: TriggerEngine.broadcast(state, 'at_end_phase', ap);
   void ap;
   return setPhase(state, expectStaticNext('end')); // → 'refresh' (next turn)
 }

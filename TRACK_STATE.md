@@ -2,7 +2,7 @@
 
 **Single source of truth for project state. Read this FIRST in every new session.**
 
-Last updated: 2026-06-01
+Last updated: 2026-06-02
 
 ---
 
@@ -21,7 +21,7 @@ Last updated: 2026-06-01
 
 **Goal:** clean-slate engine that handles every primitive correctly.
 
-**Status: PLAN VERIFIED. IMPLEMENTATION NOT STARTED.**
+**Status: SHIPPED AND RUNNING THE LIVE SIM.** Cutover landed across commits `8cebcf4` → `b0152f9`. Site at `https://optcgsandbox.pages.dev` runs engine-v2.
 
 - Plan docs:
   - `ENGINE_V2_DEFINITIVE_PLAN.md` (1555 lines, v1 base)
@@ -30,21 +30,23 @@ Last updated: 2026-06-01
   - Cert 1 (bug-class coverage): CLOSED ✓ (40 V1-V5 bug classes + C41)
   - Cert 2 (primitive catalog): CLOSED ✓ (187 handlers verified against cards.json)
   - Cert 3 (architecture soundness): CLOSED ✓ (19 v1 gaps absorbed in v2)
-- Effort estimate: 1517 active engineering hours (~7.5mo at 8h/day, ~14mo at 4h/day, P90 10-12mo elapsed)
-- 17 modules planned: state container, dispatcher, effect resolver, trigger engine, continuous engine, counter-window, replacement engine, phase scheduler, pending-state manager, serializer, cost payer, target resolver, AI driver, M16 SetupMulligan, M17 ViewModule, helper modules (power/cost/keyword/totalDon)
-- 187 primitive handlers (22 triggers + 56 conditions + 71 actions + 18 continuous + 14-15 targets + 21 costs + combinators)
-- Registry pattern with TS discriminated unions
-- Test strategy: per-primitive unit + per-card dispatch + property + AI-vs-AI soak + serialization round-trip + cross-card matrix + V1↔V2 golden snapshot
 
-**Next action:** Phase 1 — architecture finalization → implementation spec doc (build-bible defining every type signature, module export, handler signature).
+**Phase progression (verified against codebase 2026-06-02):**
+- [x] Phase 1: Architecture spec + state shape definition + module skeleton
+- [x] Phase 2: Core engine infrastructure (state container, dispatcher, registry)
+- [x] Phase 3: Register primitives — `actionHandlers`, `triggerEmitters` (22 emitters at `registry/handlers/triggers.ts:141`), reducers wired
+- [x] Cutover: `src/store/game.ts` + all UI components reference `@shared/engine-v2/*`; 18/18 smoke tests pass; paced R/D/D pipeline restored (commit `9fca0e0` — PhaseScheduler clones state at top of every enter*)
 
-**Phase progression:**
-- [ ] Phase 1: Architecture spec + state shape definition + module skeleton
-- [ ] Phase 2: Core engine infrastructure (state container, dispatcher, registry)
-- [ ] Phase 3: Register all 187 primitives + per-primitive unit tests
-- [ ] Phase 4: Per-card dispatch tests + integration
-- [ ] Phase 5: Property tests + AI soak + cert validation
-- [ ] Cutover (when V2 acceptance gates green)
+**Known open V2 gaps (verified 2026-06-02):**
+- **ContinuousManager NOT WIRED** — no `shared/engine-v2/continuous/` directory exists. **531 of 2489 cards (~21%)** have non-empty continuous clauses. "While X, gain Y" effects on these cards won't fold correctly
+- **ReplacementManager status** — 67 of 2489 cards have non-empty replacement clauses; wired state in engine-v2 not yet verified this session
+- 4 phase-trigger TODOs in PhaseScheduler (at_draw_phase, at_don_phase, at_main_phase, at_end_phase) were deleted — zero cards in corpus use those triggers, stubs not needed
+
+**Closed (do not re-investigate):**
+- ~~`add_to_opp_life_top` crash on 8 cards~~ — was a V1-harness-on-V1-engine failure; V2 has the handler at `registry/handlers/actions3.ts:937`
+- ~~Phase pacing collapsed in V2~~ — fixed `9fca0e0` (clone at top of enterRefresh/Draw/Don/End)
+- ~~End-turn chained R/D/D internally~~ — fixed `b0152f9` (yields at phase='refresh', host paces)
+- ~~Mulligan_second activePlayer convention mismatch~~ — fixed `22b07f5`
 
 ---
 
@@ -52,7 +54,9 @@ Last updated: 2026-06-01
 
 **Goal:** every one of 2489 cards in `shared/data/cards.json` audited per the same 5-axis protocol used for the 100-scope.
 
-**Status: 100 of 2489 done. 2389 REMAINING.**
+**Status: 100 of 2489 done against V1 engine. 2389 REMAINING.**
+
+**Important caveat (2026-06-02):** the 100 audited cards were verified against V1's reducer paths. The app now runs engine-v2 (Track 1 cutover). Before extending the audit past #100, the 100-scope needs a V1↔V2 parity spot-check to confirm those cards still play correctly under V2. Otherwise the audit will keep extending against an outdated baseline.
 
 - 100-scope completed (cards #1-100): EB01-001..EB01-061 + EB02-001..EB02-039
   - 96 root `human-reviewed` + 4 `ground-truth`
