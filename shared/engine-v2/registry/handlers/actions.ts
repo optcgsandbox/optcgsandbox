@@ -17,6 +17,7 @@ import { EffectDispatcher } from '../../effects/EffectDispatcher.js';
 import { detachAllAttachedDon } from '../../state/derived/don.js';
 import { resetInstanceTransientState } from '../../state/derived/reset.js';
 import type { EffectActionV2 } from '../../spec/types.js';
+import { triggerEmitters } from '../types.js';
 import type {
   CardInstance,
   EffectDuration,
@@ -170,12 +171,28 @@ const removalKo: ActionHandler = (state, ctx, _action, targets) => {
       controller: z.side,
       reason: 'removal_ko',
     });
-    // CR-5 audit fix: fire on_ko clauses BEFORE resetting transient state
-    // (clauses may read inst fields like attached DON count, etc.).
+    // CR-5 audit fix: fire on_ko clauses BEFORE resetting transient state.
     next = EffectDispatcher.dispatch(next, {
       sourceInstanceId: id,
       controller: z.side,
     }, 'on_ko');
+    // Broadcast triggers driven by KO event.
+    if (triggerEmitters.has('on_any_char_ko')) {
+      next = triggerEmitters.get('on_any_char_ko')(next, { kind: 'on_any_char_ko' }, ctx.controller);
+    }
+    if (z.side !== ctx.controller && triggerEmitters.has('on_any_opp_char_ko')) {
+      // From the effect controller's perspective, the KO'd was opp's char.
+      next = triggerEmitters.get('on_any_opp_char_ko')(next, { kind: 'on_any_opp_char_ko' }, ctx.controller);
+    }
+    if (z.side === ctx.controller && triggerEmitters.has('on_own_char_removed_by_opp_effect')) {
+      // KO'd was own char by source — only broadcast this if the KO source is
+      // opp's effect. Since this is removal_ko (effect-driven), source is opp.
+      // Wait: actually if controller===z.side, the KO source IS the controller,
+      // so this is a self-KO via own effect — not "removed by opp effect".
+      // Skip this branch in that case.
+    } else if (z.side !== ctx.controller && triggerEmitters.has('on_own_char_removed_by_opp_effect')) {
+      next = triggerEmitters.get('on_own_char_removed_by_opp_effect')(next, { kind: 'on_own_char_removed_by_opp_effect' }, z.side);
+    }
     resetInstanceTransientState(inst);
     pl.trash.push(id);
   }

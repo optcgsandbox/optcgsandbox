@@ -14,6 +14,7 @@
  */
 
 import { EffectDispatcher } from '../effects/EffectDispatcher.js';
+import { triggerEmitters } from '../registry/types.js';
 import type {
   ActionActivateMain,
   ActionAttachDon,
@@ -151,11 +152,17 @@ function playCardReducer(
     cost,
   });
 
-  // Fire on_play
-  return EffectDispatcher.dispatch(state, {
+  // Fire on_play on the source
+  let next = EffectDispatcher.dispatch(state, {
     sourceInstanceId: inst.instanceId,
     controller: player,
   }, 'on_play');
+  // Broadcast on_opp_play_character to opponent's live sources.
+  if (triggerEmitters.has('on_opp_play_character')) {
+    const emitter = triggerEmitters.get('on_opp_play_character');
+    next = emitter(next, { kind: 'on_opp_play_character' }, player);
+  }
+  return next;
 }
 
 // ─── PLAY_STAGE

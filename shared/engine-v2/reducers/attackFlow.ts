@@ -24,6 +24,7 @@
 import type { Card } from '../cards/Card.js';
 import { isCharacter, isEvent, isLeader } from '../cards/Card.js';
 import { EffectDispatcher } from '../effects/EffectDispatcher.js';
+import { triggerEmitters } from '../registry/types.js';
 import type {
   ActionDeclareAttack,
   ActionDeclareBlocker,
@@ -68,18 +69,30 @@ function koCharacter(state: GameState, target: CardInstance, side: PlayerId): Ga
   if (idx === -1) return state; // not on field (e.g., bounced mid-flow)
   detachAllAttachedDon(state, target, side);
   pl.field.splice(idx, 1);
-  resetInstanceTransientState(target);
   pl.trash.push(target.instanceId);
   (state.history as Array<unknown>).push({
     type: 'CHARACTER_KOD',
     instanceId: target.instanceId,
     controller: side,
   });
-  // Fire on_ko clauses on the KO'd character.
-  return EffectDispatcher.dispatch(state, {
+  // Fire on_ko on the KO'd character (before reset so it can read attached DON).
+  let next = EffectDispatcher.dispatch(state, {
     sourceInstanceId: target.instanceId,
     controller: side,
   }, 'on_ko');
+  resetInstanceTransientState(target);
+  // Broadcast on_battle_ko + on_any_char_ko / on_any_opp_char_ko.
+  if (triggerEmitters.has('on_battle_ko')) {
+    next = triggerEmitters.get('on_battle_ko')(next, { kind: 'on_battle_ko' }, side);
+  }
+  if (triggerEmitters.has('on_any_char_ko')) {
+    next = triggerEmitters.get('on_any_char_ko')(next, { kind: 'on_any_char_ko' }, side);
+  }
+  const opp = OTHER_PLAYER[side];
+  if (triggerEmitters.has('on_any_opp_char_ko')) {
+    next = triggerEmitters.get('on_any_opp_char_ko')(next, { kind: 'on_any_opp_char_ko' }, opp);
+  }
+  return next;
 }
 
 function flipTopLifeToHand(state: GameState, side: PlayerId): {
@@ -89,7 +102,6 @@ function flipTopLifeToHand(state: GameState, side: PlayerId): {
   const pl = state.players[side];
   const top = pl.life.shift();
   if (top === undefined) {
-    // No life cards — leader takes a hit it can't absorb → loss.
     state.result = { loser: side, reason: 'life_zero' };
     return { state, flippedInstanceId: null };
   }
@@ -99,7 +111,19 @@ function flipTopLifeToHand(state: GameState, side: PlayerId): {
     instanceId: top,
     controller: side,
   });
-  return { state, flippedInstanceId: top };
+  // Broadcast on_life_changed (both sides) + on_take_damage (defender) +
+  // on_damage_taken (defender).
+  let next = state;
+  if (triggerEmitters.has('on_life_changed')) {
+    next = triggerEmitters.get('on_life_changed')(next, { kind: 'on_life_changed' }, side);
+  }
+  if (triggerEmitters.has('on_take_damage')) {
+    next = triggerEmitters.get('on_take_damage')(next, { kind: 'on_take_damage' }, side);
+  }
+  if (triggerEmitters.has('on_damage_taken')) {
+    next = triggerEmitters.get('on_damage_taken')(next, { kind: 'on_damage_taken' }, side);
+  }
+  return { state: next, flippedInstanceId: top };
 }
 
 // ────────────────────────────────────────────────────────────────────
@@ -165,10 +189,15 @@ function declareAttackReducer(
   });
 
   // Fire when_attacking clauses on the attacker.
-  return EffectDispatcher.dispatch(state, {
+  let next = EffectDispatcher.dispatch(state, {
     sourceInstanceId: attackerInst.instanceId,
     controller: player,
   }, 'when_attacking');
+  // Broadcast on_opp_attack to defender's live sources.
+  if (triggerEmitters.has('on_opp_attack')) {
+    next = triggerEmitters.get('on_opp_attack')(next, { kind: 'on_opp_attack' }, OTHER_PLAYER[player]);
+  }
+  return next;
 }
 
 // ────────────────────────────────────────────────────────────────────
