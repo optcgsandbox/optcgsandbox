@@ -14,6 +14,7 @@
  */
 
 import { EffectDispatcher } from '../../effects/EffectDispatcher.js';
+import { ReplacementManager } from '../../effects/ReplacementManager.js';
 import { detachAllAttachedDon } from '../../state/derived/don.js';
 import { resetInstanceTransientState } from '../../state/derived/reset.js';
 import type { EffectActionV2 } from '../../spec/types.js';
@@ -153,6 +154,23 @@ const removalKo: ActionHandler = (state, ctx, _action, targets) => {
   for (const id of targets) {
     const z = findInstZone(next, id);
     if (z === null || z.zone !== 'field') continue;
+
+    // Give the target a chance to replace the would-be KO.
+    const repl = ReplacementManager.tryReplace(
+      next,
+      { sourceInstanceId: id, controller: z.side, source: 'effect' },
+      'would_be_ko',
+    );
+    next = repl.state;
+    if (repl.replaced) {
+      (next.history as Array<unknown>).push({
+        type: 'KO_REPLACED',
+        instanceId: id,
+        reason: 'would_be_ko',
+      });
+      continue;
+    }
+
     const pl = next.players[z.side];
     const idx = pl.field.findIndex((c) => c.instanceId === id);
     if (idx === -1) continue;
@@ -203,10 +221,27 @@ const removalKo: ActionHandler = (state, ctx, _action, targets) => {
 // removal_bounce  — return target to controller's hand
 // ────────────────────────────────────────────────────────────────────
 const removalBounce: ActionHandler = (state, _ctx, _action, targets) => {
+  let next = state;
   for (const id of targets) {
-    const z = findInstZone(state, id);
+    const z = findInstZone(next, id);
     if (z === null || (z.zone !== 'field' && z.zone !== 'stage')) continue;
-    const pl = state.players[z.side];
+
+    // Replacement: would_be_removed.
+    const repl = ReplacementManager.tryReplace(
+      next,
+      { sourceInstanceId: id, controller: z.side, source: 'effect' },
+      'would_be_removed',
+    );
+    next = repl.state;
+    if (repl.replaced) {
+      (next.history as Array<unknown>).push({
+        type: 'BOUNCE_REPLACED',
+        instanceId: id,
+      });
+      continue;
+    }
+
+    const pl = next.players[z.side];
     let inst: CardInstance | undefined;
     if (z.zone === 'field') {
       const idx = pl.field.findIndex((c) => c.instanceId === id);
@@ -218,16 +253,16 @@ const removalBounce: ActionHandler = (state, _ctx, _action, targets) => {
       pl.stage = null;
     }
     if (inst === undefined) continue;
-    detachAllAttachedDon(state, inst, z.side);
+    detachAllAttachedDon(next, inst, z.side);
     resetInstanceTransientState(inst);
     pl.hand.push(id);
-    (state.history as Array<unknown>).push({
+    (next.history as Array<unknown>).push({
       type: 'CARD_BOUNCED',
       instanceId: id,
       controller: z.side,
     });
   }
-  return state;
+  return next;
 };
 
 // ────────────────────────────────────────────────────────────────────

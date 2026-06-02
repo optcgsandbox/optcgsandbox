@@ -24,6 +24,7 @@
 import type { Card } from '../cards/Card.js';
 import { isCharacter, isEvent, isLeader } from '../cards/Card.js';
 import { EffectDispatcher } from '../effects/EffectDispatcher.js';
+import { ReplacementManager } from '../effects/ReplacementManager.js';
 import { triggerEmitters } from '../registry/types.js';
 import type {
   ActionDeclareAttack,
@@ -64,19 +65,35 @@ function clearPendingAttack(state: GameState): GameState {
 }
 
 function koCharacter(state: GameState, target: CardInstance, side: PlayerId): GameState {
-  const pl = state.players[side];
+  // Replacement: would_be_ko (battle-source).
+  const repl = ReplacementManager.tryReplace(
+    state,
+    { sourceInstanceId: target.instanceId, controller: side, source: 'battle' },
+    'would_be_ko',
+  );
+  let next = repl.state;
+  if (repl.replaced) {
+    (next.history as Array<unknown>).push({
+      type: 'KO_REPLACED',
+      instanceId: target.instanceId,
+      reason: 'would_be_ko_battle',
+    });
+    return next;
+  }
+
+  const pl = next.players[side];
   const idx = pl.field.findIndex((c) => c.instanceId === target.instanceId);
-  if (idx === -1) return state; // not on field (e.g., bounced mid-flow)
-  detachAllAttachedDon(state, target, side);
+  if (idx === -1) return next;
+  detachAllAttachedDon(next, target, side);
   pl.field.splice(idx, 1);
   pl.trash.push(target.instanceId);
-  (state.history as Array<unknown>).push({
+  (next.history as Array<unknown>).push({
     type: 'CHARACTER_KOD',
     instanceId: target.instanceId,
     controller: side,
   });
   // Fire on_ko on the KO'd character (before reset so it can read attached DON).
-  let next = EffectDispatcher.dispatch(state, {
+  next = EffectDispatcher.dispatch(next, {
     sourceInstanceId: target.instanceId,
     controller: side,
   }, 'on_ko');
@@ -99,21 +116,39 @@ function flipTopLifeToHand(state: GameState, side: PlayerId): {
   state: GameState;
   flippedInstanceId: string | null;
 } {
-  const pl = state.players[side];
+  // Replacement: would_take_damage (damage to leader).
+  const repl = ReplacementManager.tryReplace(
+    state,
+    {
+      sourceInstanceId: state.players[side].leader.instanceId,
+      controller: side,
+      source: 'battle',
+    },
+    'would_take_damage',
+  );
+  if (repl.replaced) {
+    (repl.state.history as Array<unknown>).push({
+      type: 'DAMAGE_REPLACED',
+      side,
+    });
+    return { state: repl.state, flippedInstanceId: null };
+  }
+
+  const pl = repl.state.players[side];
   const top = pl.life.shift();
   if (top === undefined) {
-    state.result = { loser: side, reason: 'life_zero' };
-    return { state, flippedInstanceId: null };
+    repl.state.result = { loser: side, reason: 'life_zero' };
+    return { state: repl.state, flippedInstanceId: null };
   }
   pl.hand.push(top);
-  (state.history as Array<unknown>).push({
+  let next = repl.state;
+  (next.history as Array<unknown>).push({
     type: 'LIFE_CARD_TO_HAND',
     instanceId: top,
     controller: side,
   });
   // Broadcast on_life_changed (both sides) + on_take_damage (defender) +
   // on_damage_taken (defender).
-  let next = state;
   if (triggerEmitters.has('on_life_changed')) {
     next = triggerEmitters.get('on_life_changed')(next, { kind: 'on_life_changed' }, side);
   }
