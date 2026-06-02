@@ -67,7 +67,7 @@ describe('engine-v2 smoke', () => {
     expect(attachRes.state.players['A'].donCostArea.length).toBe(0);
   });
 
-  it('END_TURN: passes turn to opponent and runs refresh→draw→don→main', () => {
+  it('END_TURN: passes turn to opponent and yields at refresh for the host to pace', () => {
     const state = buildBasicGameState();
     const beforeTurn = state.turn;
     const beforeAP = state.activePlayer;
@@ -76,14 +76,17 @@ describe('engine-v2 smoke', () => {
       type: 'END_TURN',
     }, { checkInvariants: false });
 
+    // Engine flips activePlayer + turn, then yields at 'refresh'. The host
+    // (src/store/game.ts:runPhasePipelineWithDelays) drives refresh→draw→don
+    // visibly. Engine no longer chains those internally — that collapsed the
+    // R/D/D animation pre-2026-06-02.
     expect(next.activePlayer).not.toBe(beforeAP);
     expect(next.activePlayer).toBe('B');
     expect(next.turn).toBe(beforeTurn + 1);
-    expect(next.phase).toBe('main');
-    // B is not first player → draw on turn 2 should give 1 card
-    expect(next.players['B'].hand.length).toBe(1);
-    // B should have 2 DON (turn>1 ramp)
-    expect(next.players['B'].donCostArea.length).toBe(2);
+    expect(next.phase).toBe('refresh');
+    // No draw / DON yet — those happen when the host calls enterDraw/enterDon.
+    expect(next.players['B'].hand.length).toBe(0);
+    expect(next.players['B'].donCostArea.length).toBe(0);
   });
 
   it('CONCEDE: sets game result, drops subsequent actions', () => {

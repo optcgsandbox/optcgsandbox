@@ -82,6 +82,11 @@ export const PhaseScheduler = {
    * during the turn.
    */
   enterRefresh(state: GameState): GameState {
+    // Clone so Zustand selectors on state.players[ap].* see a new ref and
+    // re-render zones between paced phase pills. V1 engine cloned at the top
+    // of every enter* (shared/engine/phases/turn.ts:21); engine-v2 used to
+    // mutate in place, which collapsed the visible R/D/D animation.
+    state = structuredClone(state);
     const ap = state.activePlayer;
     const pl = state.players[ap];
     const opp = OTHER_PLAYER[ap];
@@ -156,6 +161,8 @@ export const PhaseScheduler = {
    * game rule "first-player-no-draw" applies (default rule). Per CR §6-2-1.
    */
   enterDraw(state: GameState): GameState {
+    // Clone (see enterRefresh) so the new hand ref triggers the draw animation.
+    state = structuredClone(state);
     const ap = state.activePlayer;
     const pl = state.players[ap];
     const skipDraw = state.turn === 1 && state.firstPlayer === ap;
@@ -180,6 +187,9 @@ export const PhaseScheduler = {
    * (1 DON on the first turn). Per CR §6-3-1.
    */
   enterDon(state: GameState): GameState {
+    // Clone (see enterRefresh) so the new donCostArea ref triggers the DON
+    // travel animation.
+    state = structuredClone(state);
     const ap = state.activePlayer;
     const pl = state.players[ap];
     const addCount = state.turn === 1 && state.firstPlayer === ap ? 1 : 2;
@@ -217,6 +227,9 @@ export const PhaseScheduler = {
    * Hand-size limit (10) check happens here (CR §6-5-7).
    */
   enterEnd(state: GameState): GameState {
+    // Clone (see enterRefresh) so end-of-turn mutations + the activePlayer
+    // flip in finalizeEndTurn produce a state with new player refs.
+    state = structuredClone(state);
     const ap = state.activePlayer;
     const opp = OTHER_PLAYER[ap];
     const apZ = state.players[ap];
