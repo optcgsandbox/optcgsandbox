@@ -105,6 +105,7 @@ export interface CardInstance {
 
   // --- Effect-negation flag (continuous effects target this) ---
   effectsNegated?: boolean | undefined;
+  effectsNegatedExpiresInTurns?: number | undefined;
 }
 
 // ────────────────────────────────────────────────────────────────────

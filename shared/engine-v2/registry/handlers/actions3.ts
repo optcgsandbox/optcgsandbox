@@ -427,17 +427,12 @@ const grantImmunity: ActionHandler = (state, _ctx, action, targets) => {
 };
 
 const negateTargetEffects: ActionHandler = (state, _ctx, action, targets) => {
-  // duration: 'this_turn' is by far the common case in cards.json.
-  // Permanent negation is rare; engine has no per-duration negation field —
-  // a future tick at enterEnd of action.duration scope handles clearing.
-  // For V0: set effectsNegated=true; PhaseScheduler.enterEnd does NOT yet
-  // clear this. TODO: tie this to a duration-aware ticker.
-  const _duration = action['duration'];
-  void _duration;
+  const expires = expiresInTurnsFor(action['duration']);
   for (const id of targets) {
     const inst = state.instances[id];
     if (inst === undefined) continue;
     inst.effectsNegated = true;
+    inst.effectsNegatedExpiresInTurns = expires;
   }
   return state;
 };

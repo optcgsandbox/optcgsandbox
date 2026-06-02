@@ -259,6 +259,12 @@ export const PhaseScheduler = {
         inst.basePowerOverrideOneShot = undefined;
         inst.basePowerOverrideExpiresInTurns = undefined;
       }
+      if ((inst.effectsNegatedExpiresInTurns ?? 0) > 0) {
+        inst.effectsNegatedExpiresInTurns = (inst.effectsNegatedExpiresInTurns ?? 0) - 1;
+      } else if (inst.effectsNegatedExpiresInTurns !== undefined) {
+        inst.effectsNegated = undefined;
+        inst.effectsNegatedExpiresInTurns = undefined;
+      }
     }
 
     // (3) Clear THIS_BATTLE scope (powerModifierThisBattle survives only
