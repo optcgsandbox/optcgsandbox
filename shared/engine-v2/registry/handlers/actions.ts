@@ -33,11 +33,12 @@ import {
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
 // Canonical "how many" reader for action handlers. cards.json uses
-// `magnitude` for action counts (verified across 30+ action kinds, 268+
-// cards); a few specs use `n`. Read magnitude first, fall back to n.
+// `magnitude` for most action counts; some use `count`; a few use `n`.
 function count(a: EffectActionV2, fallback = 0): number {
   const m = a['magnitude'];
   if (typeof m === 'number') return m;
+  const c = a['count'];
+  if (typeof c === 'number') return c;
   const n = a['n'];
   if (typeof n === 'number') return n;
   return fallback;
@@ -241,16 +242,18 @@ const activeTarget: ActionHandler = (state, _ctx, _action, targets) => {
 };
 
 // ────────────────────────────────────────────────────────────────────
-// ramp  — { kind: 'ramp', n }: move n DON from donDeck → donCostArea (active)
+// ramp — donDeck → donCostArea (active) OR donRested (if action.rested).
 // ────────────────────────────────────────────────────────────────────
 const ramp: ActionHandler = (state, ctx, action) => {
   const n = count(action, 1);
+  const rested = action['rested'] === true;
   const pl = state.players[ctx.controller];
   let moved = 0;
   while (moved < n && pl.donDeck.length > 0) {
     const id = pl.donDeck.shift();
     if (id !== undefined) {
-      pl.donCostArea.push(id);
+      if (rested) pl.donRested.push(id);
+      else pl.donCostArea.push(id);
       moved += 1;
     }
   }
@@ -258,11 +261,12 @@ const ramp: ActionHandler = (state, ctx, action) => {
 };
 
 // ────────────────────────────────────────────────────────────────────
-// give_don_to_target  — { kind: 'give_don_to_target', n }: attach n DON from
-// controller's donCostArea to each target.
+// give_don_to_target — drain controller's donCostArea → target.attachedDon
+// (or .attachedDonRested if action.rested).
 // ────────────────────────────────────────────────────────────────────
 const giveDonToTarget: ActionHandler = (state, ctx, action, targets) => {
   const n = count(action, 1);
+  const rested = action['rested'] === true;
   const pl = state.players[ctx.controller];
   for (const id of targets) {
     const inst = state.instances[id];
@@ -270,7 +274,8 @@ const giveDonToTarget: ActionHandler = (state, ctx, action, targets) => {
     for (let i = 0; i < n; i++) {
       const donId = pl.donCostArea.shift();
       if (donId === undefined) break;
-      inst.attachedDon.push(donId);
+      if (rested) inst.attachedDonRested.push(donId);
+      else inst.attachedDon.push(donId);
     }
   }
   return state;

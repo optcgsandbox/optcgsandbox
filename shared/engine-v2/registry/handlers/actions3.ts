@@ -35,10 +35,12 @@ function num(a: EffectActionV2, key: string, fallback = 0): number {
   return typeof v === 'number' ? v : fallback;
 }
 
-// Canonical "how many" reader — cards.json uses `magnitude` for action counts.
+// Canonical "how many" reader — cards.json uses magnitude / count / n.
 function count(a: EffectActionV2, fallback = 0): number {
   const m = a['magnitude'];
   if (typeof m === 'number') return m;
+  const c = a['count'];
+  if (typeof c === 'number') return c;
   const n = a['n'];
   if (typeof n === 'number') return n;
   return fallback;
@@ -163,7 +165,19 @@ const turnAllOwnLifeFaceDown: ActionHandler = (state, ctx) => {
   return state;
 };
 
-const takeDamageSelf: ActionHandler = (state, ctx) => lifeToHand(state, ctx, { kind: 'take_damage_self' }, []);
+const takeDamageSelf: ActionHandler = (state, ctx, action) => {
+  const n = count(action, 1);
+  const pl = state.players[ctx.controller];
+  for (let i = 0; i < n; i++) {
+    const id = pl.life.shift();
+    if (id === undefined) {
+      state.result = { loser: ctx.controller, reason: 'life_zero' };
+      return state;
+    }
+    pl.hand.push(id);
+  }
+  return state;
+};
 
 const dealDamageOpp: ActionHandler = (state, ctx, action) => {
   const n = count(action, 1);
@@ -321,12 +335,13 @@ const removalCostReduce: ActionHandler = (state, _ctx, action, targets) => {
 };
 
 const setBasePower: ActionHandler = (state, _ctx, action, targets) => {
-  const n = count(action, 0);
+  // cards.json uses `basePower` (preferred) OR `magnitude` for the value.
+  const n = num(action, 'basePower', count(action, 0));
   for (const id of targets) {
     const inst = state.instances[id];
     if (inst === undefined) continue;
     inst.basePowerOverrideOneShot = n;
-    inst.basePowerOverrideExpiresInTurns = inst.basePowerOverrideExpiresInTurns ?? 0;
+    inst.basePowerOverrideExpiresInTurns = expiresInTurnsFor(action['duration']);
   }
   return state;
 };
@@ -420,7 +435,14 @@ const grantImmunity: ActionHandler = (state, _ctx, action, targets) => {
   return state;
 };
 
-const negateTargetEffects: ActionHandler = (state, _ctx, _action, targets) => {
+const negateTargetEffects: ActionHandler = (state, _ctx, action, targets) => {
+  // duration: 'this_turn' is by far the common case in cards.json.
+  // Permanent negation is rare; engine has no per-duration negation field —
+  // a future tick at enterEnd of action.duration scope handles clearing.
+  // For V0: set effectsNegated=true; PhaseScheduler.enterEnd does NOT yet
+  // clear this. TODO: tie this to a duration-aware ticker.
+  const _duration = action['duration'];
+  void _duration;
   for (const id of targets) {
     const inst = state.instances[id];
     if (inst === undefined) continue;
@@ -439,9 +461,19 @@ const restrictOppBlocker: ActionHandler = (state, ctx) => {
   return state;
 };
 
+// restrict_opp_attack uses { unless: <cost-key/value> } per cards.json.
+// V0: interpret as "opp must discard N cards or skip attack" — extract from
+// unless object if numeric; fall back to discardCount/legacy `n`.
 const restrictOppAttack: ActionHandler = (state, ctx, action) => {
   const opp = state.players[OTHER[ctx.controller]];
-  const n = num(action, 'discardCount', 1);
+  const unless = action['unless'];
+  let n = 1;
+  if (typeof unless === 'number') n = unless;
+  else if (typeof unless === 'object' && unless !== null) {
+    const u = unless as { discardHand?: unknown; donCost?: unknown };
+    if (typeof u.discardHand === 'number') n = u.discardHand;
+    else if (typeof u.donCost === 'number') n = u.donCost;
+  }
   opp.restrictions = {
     ...(opp.restrictions ?? {}),
     oppAttackUnlessDiscard: n,

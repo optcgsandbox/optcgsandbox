@@ -30,10 +30,12 @@ function num(a: EffectActionV2, key: string, fallback = 0): number {
   return typeof v === 'number' ? v : fallback;
 }
 
-// Canonical "how many" reader — cards.json uses `magnitude` for action counts.
+// Canonical "how many" reader — cards.json uses magnitude / count / n.
 function count(a: EffectActionV2, fallback = 0): number {
   const m = a['magnitude'];
   if (typeof m === 'number') return m;
+  const c = a['count'];
+  if (typeof c === 'number') return c;
   const n = a['n'];
   if (typeof n === 'number') return n;
   return fallback;
