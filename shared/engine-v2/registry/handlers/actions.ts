@@ -17,8 +17,8 @@ import { EffectDispatcher } from '../../effects/EffectDispatcher.js';
 import { ReplacementManager } from '../../effects/ReplacementManager.js';
 import { detachAllAttachedDon } from '../../state/derived/don.js';
 import { resetInstanceTransientState } from '../../state/derived/reset.js';
-import type { EffectActionV2 } from '../../spec/types.js';
 import { triggerEmitters } from '../types.js';
+import { resolveCount } from './formula.js';
 import type {
   CardInstance,
   EffectDuration,
@@ -33,18 +33,6 @@ import {
 } from '../types.js';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
-
-// Canonical "how many" reader for action handlers. cards.json uses
-// `magnitude` for most action counts; some use `count`; a few use `n`.
-function count(a: EffectActionV2, fallback = 0): number {
-  const m = a['magnitude'];
-  if (typeof m === 'number') return m;
-  const c = a['count'];
-  if (typeof c === 'number') return c;
-  const n = a['n'];
-  if (typeof n === 'number') return n;
-  return fallback;
-}
 
 function findInstZone(state: GameState, instanceId: InstanceId): {
   side: PlayerId;
@@ -68,7 +56,7 @@ function findInstZone(state: GameState, instanceId: InstanceId): {
 // draw  — { kind: 'draw', n }
 // ────────────────────────────────────────────────────────────────────
 const draw: ActionHandler = (state, ctx, action) => {
-  const n = count(action, 1);
+  const n = resolveCount(state, ctx, action, 1);
   const pl = state.players[ctx.controller];
   for (let i = 0; i < n; i++) {
     const top = pl.deck.shift();
@@ -85,8 +73,8 @@ const draw: ActionHandler = (state, ctx, action) => {
 // ────────────────────────────────────────────────────────────────────
 // give_power  — { kind: 'give_power', n, duration }
 // ────────────────────────────────────────────────────────────────────
-const givePower: ActionHandler = (state, _ctx, action, targets) => {
-  const amount = count(action, 0);
+const givePower: ActionHandler = (state, ctx, action, targets) => {
+  const amount = resolveCount(state, ctx, action, 0);
   const durationRaw = action['duration'];
   const duration: EffectDuration =
     durationRaw === 'this_battle' ||
@@ -297,7 +285,7 @@ const activeTarget: ActionHandler = (state, _ctx, _action, targets) => {
 // ramp — donDeck → donCostArea (active) OR donRested (if action.rested).
 // ────────────────────────────────────────────────────────────────────
 const ramp: ActionHandler = (state, ctx, action) => {
-  const n = count(action, 1);
+  const n = resolveCount(state, ctx, action, 1);
   const rested = action['rested'] === true;
   const pl = state.players[ctx.controller];
   let moved = 0;
@@ -317,7 +305,7 @@ const ramp: ActionHandler = (state, ctx, action) => {
 // (or .attachedDonRested if action.rested).
 // ────────────────────────────────────────────────────────────────────
 const giveDonToTarget: ActionHandler = (state, ctx, action, targets) => {
-  const n = count(action, 1);
+  const n = resolveCount(state, ctx, action, 1);
   const rested = action['rested'] === true;
   const pl = state.players[ctx.controller];
   for (const id of targets) {
@@ -337,7 +325,7 @@ const giveDonToTarget: ActionHandler = (state, ctx, action, targets) => {
 // trash_top_of_deck  — { kind: 'trash_top_of_deck', n }
 // ────────────────────────────────────────────────────────────────────
 const trashTopOfDeck: ActionHandler = (state, ctx, action) => {
-  const n = count(action, 1);
+  const n = resolveCount(state, ctx, action, 1);
   const pl = state.players[ctx.controller];
   for (let i = 0; i < n; i++) {
     const id = pl.deck.shift();
@@ -353,7 +341,7 @@ const trashTopOfDeck: ActionHandler = (state, ctx, action) => {
 // player-choice routing arrives with PendingDiscard wiring in Phase 3)
 // ────────────────────────────────────────────────────────────────────
 const discardOppHand: ActionHandler = (state, ctx, action) => {
-  const n = count(action, 1);
+  const n = resolveCount(state, ctx, action, 1);
   const oppSide = OTHER[ctx.controller];
   const opp = state.players[oppSide];
   for (let i = 0; i < n; i++) {
