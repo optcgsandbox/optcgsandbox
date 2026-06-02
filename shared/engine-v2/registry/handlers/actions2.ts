@@ -104,8 +104,10 @@ const shuffleDeck: ActionHandler = (state, ctx) => {
   return state;
 };
 
-// ─── transfer_attached_don: move N DON from source's attached → first target
-//     (the action's `from` and `to` semantics — V0: from source to target[0])
+// ─── transfer_attached_don: move N DON from source's attached → first target.
+//     Drains source.attachedDon FIRST (active), then attachedDonRested. Dest
+//     receives them on the matching pool to preserve DON state per CR §6-5-5-4.
+//     (Closes AC2-1 audit finding.)
 const transferAttachedDon: ActionHandler = (state, ctx, action, targets) => {
   if (targets.length === 0) return state;
   const n = num(action, 'n', 1);
@@ -117,6 +119,13 @@ const transferAttachedDon: ActionHandler = (state, ctx, action, targets) => {
     const id = source.attachedDon.shift();
     if (id !== undefined) {
       dest.attachedDon.push(id);
+      moved += 1;
+    }
+  }
+  while (moved < n && source.attachedDonRested.length > 0) {
+    const id = source.attachedDonRested.shift();
+    if (id !== undefined) {
+      dest.attachedDonRested.push(id);
       moved += 1;
     }
   }
@@ -243,22 +252,67 @@ const trashOppField: ActionHandler = (state, _ctx, _action, targets) => {
   return state;
 };
 
-// ─── search_deck: V0 deterministic — pull top N matching card, add to hand,
-//     reshuffle rest. Full peek/choose flow lands when PendingPeek wires
-//     through dispatch.
+// ─── search_deck: look at top `lookCount`, take up to `addCount` matching
+//     `filter`, reshuffle rest. V0 deterministic — picks FIRST matches in
+//     top-down order; full player-choice flow lands when PendingPeek wires
+//     through dispatch. (Closes AC2-2 audit finding — previous V0 ignored
+//     lookCount + filter entirely.)
 const searchDeck: ActionHandler = (state, ctx, action) => {
+  const lookCount = num(action, 'lookCount', state.players[ctx.controller].deck.length);
   const addCount = num(action, 'addCount', 1);
-  // V0: just draw addCount from top — full deck-search with filter requires
-  // PendingPeek continuation, not yet plumbed.
+  const filter = action['filter'];
+  const f = typeof filter === 'object' && filter !== null
+    ? (filter as { trait?: string; color?: string; type?: string; minCost?: number; maxCost?: number; keyword?: string })
+    : undefined;
   const pl = state.players[ctx.controller];
-  for (let i = 0; i < addCount; i++) {
-    const id = pl.deck.shift();
-    if (id === undefined) break;
-    pl.hand.push(id);
+
+  const peek = pl.deck.slice(0, Math.min(lookCount, pl.deck.length));
+  const picked: string[] = [];
+  const leftovers: string[] = [];
+
+  for (const id of peek) {
+    if (picked.length < addCount) {
+      const inst = state.instances[id];
+      const card = inst !== undefined
+        ? (state.cardLibrary[inst.cardId] as { traits: ReadonlyArray<string>; colors: ReadonlyArray<string>; cost?: number; keywords?: ReadonlyArray<string> } | undefined)
+        : undefined;
+      let matches = true;
+      if (f !== undefined && card !== undefined) {
+        if (f.trait !== undefined && !card.traits.includes(f.trait)) matches = false;
+        if (matches && f.color !== undefined && !card.colors.includes(f.color)) matches = false;
+        if (matches && f.type !== undefined && !card.traits.some((t) => t.includes(f.type!))) matches = false;
+        if (matches && f.minCost !== undefined && (card.cost ?? 0) < f.minCost) matches = false;
+        if (matches && f.maxCost !== undefined && (card.cost ?? 0) > f.maxCost) matches = false;
+        if (matches && f.keyword !== undefined && !(card.keywords ?? []).includes(f.keyword)) matches = false;
+      }
+      if (matches) {
+        picked.push(id);
+        continue;
+      }
+    }
+    leftovers.push(id);
   }
-  // Reshuffle remaining deck.
+
+  // Remove the peeked slice from the deck head.
+  pl.deck.splice(0, peek.length);
+
+  // Picked cards → hand.
+  for (const id of picked) pl.hand.push(id);
+
+  // Leftovers + remaining deck → reshuffle bottom.
+  // Per CR §10-1-3-1: non-picked peeked cards go to bottom of deck in shuffled order.
+  const rest = leftovers;
+  pl.deck.push(...rest);
+
   const rng = RngService.pull(state);
   rng.shuffle(pl.deck);
+
+  (state.history as Array<unknown>).push({
+    type: 'DECK_SEARCHED',
+    controller: ctx.controller,
+    lookCount: peek.length,
+    pickedCount: picked.length,
+  });
   return state;
 };
 
