@@ -11,9 +11,6 @@
  * - V1 reference: shared/engine/effectSpec/runner-v2.ts:470-...
  */
 
-import type { Card } from '../../cards/Card.js';
-import { instHasKeyword } from '../../state/derived/keyword.js';
-import { effectivePower } from '../../state/derived/power.js';
 import type { EffectTargetV2 } from '../../spec/types.js';
 import {
   type CardInstance,
@@ -26,30 +23,13 @@ import {
   type TargetResolver,
   targetResolvers,
 } from '../types.js';
+import { type CardFilter, matchesCardFilter } from './filter.js';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
-// ────────────────────────────────────────────────────────────────────
-// Filter matcher
-// ────────────────────────────────────────────────────────────────────
-
-interface TargetFilter {
-  readonly color?: string;
-  readonly trait?: string;
-  readonly type?: string;
-  readonly keyword?: string;
-  readonly minCost?: number;
-  readonly maxCost?: number;
-  readonly minPower?: number;
-  readonly maxPower?: number;
-  readonly notSelf?: boolean;
-  readonly rested?: boolean;
-  readonly active?: boolean;
-}
-
-function getFilter(target: EffectTargetV2): TargetFilter | undefined {
+function getFilter(target: EffectTargetV2): CardFilter | undefined {
   const f = target['filter'];
-  return typeof f === 'object' && f !== null ? (f as TargetFilter) : undefined;
+  return typeof f === 'object' && f !== null ? (f as CardFilter) : undefined;
 }
 
 function getCount(target: EffectTargetV2): number {
@@ -60,37 +40,15 @@ function getCount(target: EffectTargetV2): number {
 function matchesFilter(
   state: GameState,
   inst: CardInstance,
-  filter: TargetFilter | undefined,
+  filter: CardFilter | undefined,
   selfInstanceId?: InstanceId,
 ): boolean {
   if (filter === undefined) return true;
-  const card = state.cardLibrary[inst.cardId] as Card | undefined;
-  if (card === undefined) return false;
-
-  if (filter.color !== undefined && !card.colors.includes(filter.color as never)) return false;
-  if (filter.trait !== undefined && !card.traits.includes(filter.trait)) return false;
-  if (filter.type !== undefined && !card.traits.some((t) => t.includes(filter.type!))) return false;
-  if (filter.keyword !== undefined && !instHasKeyword(state, inst, filter.keyword)) return false;
-
-  if (filter.minCost !== undefined || filter.maxCost !== undefined) {
-    const cost = (card.kind === 'character' || card.kind === 'event' || card.kind === 'stage')
-      ? card.cost
-      : 0;
-    if (filter.minCost !== undefined && cost < filter.minCost) return false;
-    if (filter.maxCost !== undefined && cost > filter.maxCost) return false;
-  }
-  if (filter.minPower !== undefined || filter.maxPower !== undefined) {
-    const power = effectivePower(state, inst);
-    if (filter.minPower !== undefined && power < filter.minPower) return false;
-    if (filter.maxPower !== undefined && power > filter.maxPower) return false;
-  }
+  // notSelf is target-only (not a cost-filter concept) — handle inline.
   if (filter.notSelf === true && selfInstanceId !== undefined && inst.instanceId === selfInstanceId) {
     return false;
   }
-  if (filter.rested === true && inst.rested !== true) return false;
-  if (filter.active === true && inst.rested === true) return false;
-
-  return true;
+  return matchesCardFilter(state, inst, filter);
 }
 
 // ────────────────────────────────────────────────────────────────────

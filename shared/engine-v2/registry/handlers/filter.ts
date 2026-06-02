@@ -18,9 +18,11 @@ export interface CardFilter {
   readonly kind?: string;
   readonly kindsAny?: ReadonlyArray<string>;
   readonly trait?: string;
+  readonly traitsAny?: ReadonlyArray<string>;
   readonly typeIncludes?: string;
   readonly color?: string;
   readonly colors?: ReadonlyArray<string>;
+  readonly attribute?: string;
   readonly nameIs?: string;
   readonly nameExcludes?: string;
   readonly costMin?: number;
@@ -33,6 +35,12 @@ export interface CardFilter {
   readonly basePowerMax?: number;
   readonly keyword?: string;
   readonly hasTrigger?: boolean;
+  readonly noBaseEffect?: boolean;
+  readonly rested?: boolean;
+  readonly active?: boolean;
+  readonly notSelf?: boolean;
+  readonly attachedDonMin?: number;
+  readonly costEqualsAttachedDon?: boolean;
 }
 
 function cardCost(card: Card): number {
@@ -62,9 +70,11 @@ export function matchesCardFilter(
   if (filter.kind !== undefined && card.kind !== filter.kind) return false;
   if (filter.kindsAny !== undefined && !filter.kindsAny.includes(card.kind)) return false;
   if (filter.trait !== undefined && !card.traits.includes(filter.trait)) return false;
+  if (filter.traitsAny !== undefined && !filter.traitsAny.some((t) => card.traits.includes(t))) return false;
   if (filter.typeIncludes !== undefined && !card.traits.some((t) => t.includes(filter.typeIncludes!))) return false;
   if (filter.color !== undefined && !card.colors.includes(filter.color as never)) return false;
   if (filter.colors !== undefined && !filter.colors.some((c) => card.colors.includes(c as never))) return false;
+  if (filter.attribute !== undefined && card.attribute !== filter.attribute) return false;
   if (filter.nameIs !== undefined && card.name !== filter.nameIs) return false;
   if (filter.nameExcludes !== undefined && card.name === filter.nameExcludes) return false;
 
@@ -85,15 +95,33 @@ export function matchesCardFilter(
   if (filter.keyword !== undefined && !instHasKeyword(state, inst, filter.keyword)) return false;
 
   // hasTrigger: spec.clauses includes trigger:'trigger'
-  if (filter.hasTrigger === true) {
+  if (filter.hasTrigger !== undefined) {
     const spec = card.effectSpecV2;
     const hasTrig = spec !== undefined && Array.isArray(spec.clauses) && spec.clauses.some((cl) => cl.trigger === 'trigger');
-    if (!hasTrig) return false;
+    if (filter.hasTrigger !== hasTrig) return false;
   }
-  if (filter.hasTrigger === false) {
+
+  // noBaseEffect: card has no effectSpecV2 clauses (vanilla)
+  if (filter.noBaseEffect === true) {
     const spec = card.effectSpecV2;
-    const hasTrig = spec !== undefined && Array.isArray(spec.clauses) && spec.clauses.some((cl) => cl.trigger === 'trigger');
-    if (hasTrig) return false;
+    const hasClauses = spec !== undefined && Array.isArray(spec.clauses) && spec.clauses.length > 0;
+    if (hasClauses) return false;
+  }
+
+  // rested / active: instance state
+  if (filter.rested === true && inst.rested !== true) return false;
+  if (filter.active === true && inst.rested === true) return false;
+
+  // attachedDonMin: count of attached DON (active + rested)
+  if (filter.attachedDonMin !== undefined) {
+    const attached = inst.attachedDon.length + inst.attachedDonRested.length;
+    if (attached < filter.attachedDonMin) return false;
+  }
+
+  // costEqualsAttachedDon: target's printed cost == its attached DON count
+  if (filter.costEqualsAttachedDon === true) {
+    const attached = inst.attachedDon.length + inst.attachedDonRested.length;
+    if (cardCost(card) !== attached) return false;
   }
 
   return true;

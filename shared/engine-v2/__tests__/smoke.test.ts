@@ -139,6 +139,52 @@ describe('engine-v2 smoke', () => {
     expect(restored.players['A'].leader.instanceId).toBe(state.players['A'].leader.instanceId);
   });
 
+  it('target resolver honors costMin filter (regression for cards.json field-name shape)', async () => {
+    const { targetResolvers } = await import('../registry/types.js');
+    const state = buildBasicGameState();
+    // Place 2 chars on B's field with different costs.
+    const cheapCard = {
+      id: 'TEST-CHEAP',
+      kind: 'character' as const,
+      name: 'Cheap',
+      cost: 1,
+      power: 1000,
+      counterValue: 1000,
+      colors: ['red' as const],
+      traits: [],
+      keywords: [],
+      effectText: '',
+    };
+    const expensiveCard = {
+      id: 'TEST-EXP',
+      kind: 'character' as const,
+      name: 'Expensive',
+      cost: 6,
+      power: 7000,
+      counterValue: null,
+      colors: ['red' as const],
+      traits: [],
+      keywords: [],
+      effectText: '',
+    };
+    state.cardLibrary[cheapCard.id] = cheapCard;
+    state.cardLibrary[expensiveCard.id] = expensiveCard;
+    const c = { instanceId: 'cheap-1', cardId: cheapCard.id, controller: 'B' as const, rested: false, summoningSick: false, attachedDon: [], attachedDonRested: [], perTurn: { hasAttacked: false, effectsUsed: [] } };
+    const e = { instanceId: 'exp-1', cardId: expensiveCard.id, controller: 'B' as const, rested: false, summoningSick: false, attachedDon: [], attachedDonRested: [], perTurn: { hasAttacked: false, effectsUsed: [] } };
+    state.instances[c.instanceId] = c;
+    state.instances[e.instanceId] = e;
+    state.players['B'].field.push(c, e);
+
+    // cards.json shape: filter:{costMin:5}. Pre-fix would have ignored
+    // costMin (only honored minCost) and returned BOTH chars.
+    const resolver = targetResolvers.get('opp_character');
+    const result = resolver(state, {
+      sourceInstanceId: state.players['A'].leader.instanceId,
+      controller: 'A',
+    }, { kind: 'opp_character', filter: { costMin: 5 }, count: 5 });
+    expect(result).toEqual(['exp-1']);
+  });
+
   it('choose_one: PendingChoose roundtrip with sub-option targets + condition', async () => {
     const { actionHandlers } = await import('../registry/types.js');
     const state = buildBasicGameState();
