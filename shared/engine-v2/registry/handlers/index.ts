@@ -6,6 +6,7 @@
  */
 
 import { registerActionHandlers } from './actions.js';
+import { registerActionHandlers2 } from './actions2.js';
 import { registerConditionHandlers } from './conditions.js';
 import { registerContinuousHandlers } from './continuous.js';
 import { registerCostHandlers } from './costs.js';
@@ -17,6 +18,7 @@ export function registerAllHandlers(): void {
   registerConditionHandlers();
   registerTargetResolvers();
   registerActionHandlers();
+  registerActionHandlers2();
   registerTriggerEmitters();
   registerCostHandlers();
   registerContinuousHandlers();
