@@ -139,6 +139,35 @@ describe('engine-v2 smoke', () => {
     expect(restored.players['A'].leader.instanceId).toBe(state.players['A'].leader.instanceId);
   });
 
+  it('viewForPlayer redacts opp hand + own deck + face-down life', async () => {
+    const { viewForPlayer, UNKNOWN_CARD } = await import('../view/ViewModule.js');
+    const state = buildBasicGameState();
+    // Establish a known card in opp's hand by moving a deck card to hand for B.
+    const oppHandId = state.players['B'].deck.shift()!;
+    state.players['B'].hand.push(oppHandId);
+    const oppHandCardId = state.instances[oppHandId]!.cardId;
+
+    // From viewer A: opp hand should be redacted; A's own hand visible (empty here).
+    const viewA = viewForPlayer(state, 'A');
+    expect(viewA.instances[oppHandId]!.cardId).toBe(UNKNOWN_CARD.id);
+    // A's deck should be redacted (face-down).
+    const aDeckTop = state.players['A'].deck[0]!;
+    expect(viewA.instances[aDeckTop]!.cardId).toBe(UNKNOWN_CARD.id);
+    // A's life (face-down by default) redacted.
+    const aLife0 = state.players['A'].life[0]!;
+    expect(viewA.instances[aLife0]!.cardId).toBe(UNKNOWN_CARD.id);
+    // Field/leader cards untouched.
+    expect(viewA.instances[viewA.players['A'].leader.instanceId]!.cardId).toBe(viewA.players['A'].leader.cardId);
+
+    // Original state unchanged (viewForPlayer is non-mutating wrt opp hand).
+    expect(state.instances[oppHandId]!.cardId).toBe(oppHandCardId);
+
+    // knownByViewer lifts redaction.
+    state.knownByViewer['A'] = [oppHandId];
+    const viewA2 = viewForPlayer(state, 'A');
+    expect(viewA2.instances[oppHandId]!.cardId).toBe(oppHandCardId);
+  });
+
   it('target resolver honors costMin filter (regression for cards.json field-name shape)', async () => {
     const { targetResolvers } = await import('../registry/types.js');
     const state = buildBasicGameState();
