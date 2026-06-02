@@ -15,11 +15,11 @@
  * test suite (Phase 4 work).
  */
 
-// @ts-expect-error
+// @ts-expect-error Node built-ins resolve at runtime via vitest
 import { readFileSync } from 'node:fs';
-// @ts-expect-error
+// @ts-expect-error Node built-ins resolve at runtime via vitest
 import { resolve } from 'node:path';
-// @ts-expect-error
+// @ts-expect-error Node built-ins resolve at runtime via vitest
 import { fileURLToPath } from 'node:url';
 import { beforeAll, describe, expect, it } from 'vitest';
 
@@ -37,9 +37,7 @@ import {
   type PlayerId,
 } from '../state/types.js';
 
-// @ts-expect-error
 const __filename = fileURLToPath(import.meta.url);
-// @ts-expect-error
 const __dirname = resolve(__filename, '..');
 
 beforeAll(() => {

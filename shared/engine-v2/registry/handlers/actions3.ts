@@ -34,6 +34,15 @@ function num(a: EffectActionV2, key: string, fallback = 0): number {
   const v = a[key];
   return typeof v === 'number' ? v : fallback;
 }
+
+// Canonical "how many" reader — cards.json uses `magnitude` for action counts.
+function count(a: EffectActionV2, fallback = 0): number {
+  const m = a['magnitude'];
+  if (typeof m === 'number') return m;
+  const n = a['n'];
+  if (typeof n === 'number') return n;
+  return fallback;
+}
 function str(a: EffectActionV2, key: string): string {
   const v = a[key];
   return typeof v === 'string' ? v : '';
@@ -77,7 +86,7 @@ const oppDiscardFromHand: ActionHandler = (state, ctx, action) =>
 
 // ─── give_don_to_opp_target: like give_don_to_target but opp's DON
 const giveDonToOppTarget: ActionHandler = (state, ctx, action, targets) => {
-  const n = num(action, 'n', 1);
+  const n = count(action, 1);
   const opp = state.players[OTHER[ctx.controller]];
   for (const id of targets) {
     const inst = state.instances[id];
@@ -157,7 +166,7 @@ const turnAllOwnLifeFaceDown: ActionHandler = (state, ctx) => {
 const takeDamageSelf: ActionHandler = (state, ctx) => lifeToHand(state, ctx, { kind: 'take_damage_self' }, []);
 
 const dealDamageOpp: ActionHandler = (state, ctx, action) => {
-  const n = num(action, 'n', 1);
+  const n = count(action, 1);
   const opp = state.players[OTHER[ctx.controller]];
   for (let i = 0; i < n; i++) {
     const id = opp.life.shift();
@@ -259,7 +268,7 @@ const bottomOfDeckToOppDeck: ActionHandler = (state, ctx, _action, targets) => {
 };
 
 const discardFromHand: ActionHandler = (state, ctx, action) => {
-  const n = num(action, 'n', 1);
+  const n = count(action, 1);
   const pl = state.players[ctx.controller];
   for (let i = 0; i < n; i++) {
     const id = pl.hand.shift();
@@ -283,7 +292,7 @@ const takeFromOppHand: ActionHandler = (state, ctx, _action, targets) => {
 
 // ─── cost / power modifiers
 const giveCostBuff: ActionHandler = (state, _ctx, action, targets) => {
-  const n = num(action, 'n', 0);
+  const n = count(action, 0);
   for (const id of targets) {
     const inst = state.instances[id];
     if (inst === undefined) continue;
@@ -294,14 +303,14 @@ const giveCostBuff: ActionHandler = (state, _ctx, action, targets) => {
 };
 
 const costReduction: ActionHandler = (state, ctx, action) => {
-  const n = num(action, 'n', -1);
+  const n = count(action, -1);
   state.players[ctx.controller].nextPlayCostModifier =
     (state.players[ctx.controller].nextPlayCostModifier ?? 0) + n;
   return state;
 };
 
 const removalCostReduce: ActionHandler = (state, _ctx, action, targets) => {
-  const n = num(action, 'n', -1);
+  const n = count(action, -1);
   for (const id of targets) {
     const inst = state.instances[id];
     if (inst === undefined) continue;
@@ -312,7 +321,7 @@ const removalCostReduce: ActionHandler = (state, _ctx, action, targets) => {
 };
 
 const setBasePower: ActionHandler = (state, _ctx, action, targets) => {
-  const n = num(action, 'n', 0);
+  const n = count(action, 0);
   for (const id of targets) {
     const inst = state.instances[id];
     if (inst === undefined) continue;
@@ -520,7 +529,7 @@ const attackRedirectToTarget: ActionHandler = (state, _ctx, _action, targets) =>
 
 // ─── opp DON manipulation
 const restOppDon: ActionHandler = (state, ctx, action) => {
-  const n = num(action, 'n', 1);
+  const n = count(action, 1);
   const opp = state.players[OTHER[ctx.controller]];
   for (let i = 0; i < n; i++) {
     const id = opp.donCostArea.shift();
@@ -548,18 +557,146 @@ const activateEventFromHand: ActionHandler = (state, ctx, _action, targets) => {
   return state;
 };
 
-// ─── Complex primitives (PendingPeek / PendingChoose required) — V0 noops
-const peekOppDeck: ActionHandler = noop;
+// ─── peek_opp_deck: deterministic exposure. Take top N of opp deck, add to
+//     knownByViewer[ctx.controller]. No PendingPeek (no player decision).
+const peekOppDeck: ActionHandler = (state, ctx, action) => {
+  const n = count(action, 1);
+  const opp = state.players[OTHER[ctx.controller]];
+  const peeked = opp.deck.slice(0, Math.min(n, opp.deck.length));
+  const known = state.knownByViewer[ctx.controller] ?? [];
+  for (const id of peeked) {
+    if (!known.includes(id)) known.push(id);
+  }
+  state.knownByViewer[ctx.controller] = known;
+  return state;
+};
+
+// ─── reveal_opp_hand: deterministic exposure. Add opp's hand IDs to viewer's
+//     knownByViewer.
+const revealOppHand: ActionHandler = (state, ctx) => {
+  const opp = state.players[OTHER[ctx.controller]];
+  const known = state.knownByViewer[ctx.controller] ?? [];
+  for (const id of opp.hand) {
+    if (!known.includes(id)) known.push(id);
+  }
+  state.knownByViewer[ctx.controller] = known;
+  return state;
+};
+
+// ─── searcher_peek: suspend via PendingPeek so the player can pick up to
+//     `addCount` cards from top `lookCount` of own deck. Existing
+//     resolvePeekReducer (choiceResolve.ts) moves picked → hand and leftovers
+//     → top of deck in original order, then resumes phase.
+const searcherPeek: ActionHandler = (state, ctx, action) => {
+  const lookCount = num(action, 'lookCount', count(action, 1));
+  const addCount = num(action, 'addCount', 1);
+  const pl = state.players[ctx.controller];
+  const peeked = pl.deck.slice(0, Math.min(lookCount, pl.deck.length));
+  if (peeked.length === 0) return state;
+  state.pending = {
+    kind: 'peek',
+    pendingPeek: {
+      controller: ctx.controller,
+      sourceInstanceId: ctx.sourceInstanceId,
+      peekedIds: peeked,
+      addCount,
+      resumePhase: state.phase,
+    },
+  };
+  state.phase = 'peek_choice';
+  // Mark peeked IDs as known to the viewer.
+  const known = state.knownByViewer[ctx.controller] ?? [];
+  for (const id of peeked) {
+    if (!known.includes(id)) known.push(id);
+  }
+  state.knownByViewer[ctx.controller] = known;
+  return state;
+};
+
+// ─── reveal_top_and_conditional_play: reveal top of deck; if it matches the
+//     filter, play it for free; else return it (or trash per spec). V0:
+//     plays on match, returns to top of deck on miss.
+const revealTopAndConditionalPlay: ActionHandler = (state, ctx, action) => {
+  const pl = state.players[ctx.controller];
+  const topId = pl.deck[0];
+  if (topId === undefined) return state;
+  const inst = state.instances[topId];
+  if (inst === undefined) return state;
+  const card = state.cardLibrary[inst.cardId] as { kind: string; cost?: number | null; traits?: ReadonlyArray<string>; colors?: ReadonlyArray<string> } | undefined;
+  if (card === undefined) return state;
+  const f = action['filter'];
+  const filter = typeof f === 'object' && f !== null
+    ? (f as { kind?: string; trait?: string; color?: string; minCost?: number; maxCost?: number })
+    : undefined;
+  let matches = true;
+  if (filter !== undefined) {
+    if (filter.kind !== undefined && card.kind !== filter.kind) matches = false;
+    if (matches && filter.trait !== undefined && !(card.traits ?? []).includes(filter.trait)) matches = false;
+    if (matches && filter.color !== undefined && !(card.colors ?? []).includes(filter.color)) matches = false;
+    const cost = typeof card.cost === 'number' ? card.cost : 0;
+    if (matches && filter.minCost !== undefined && cost < filter.minCost) matches = false;
+    if (matches && filter.maxCost !== undefined && cost > filter.maxCost) matches = false;
+  }
+
+  if (matches) {
+    pl.deck.shift();
+    if (card.kind === 'character') {
+      // play_for_free flow inline
+      resetInstanceTransientState(inst);
+      inst.summoningSick = true;
+      pl.field.push(inst);
+      (state.history as Array<unknown>).push({
+        type: 'CHARACTER_PLAYED',
+        instanceId: topId,
+        cardId: inst.cardId,
+        controller: ctx.controller,
+        cost: 0,
+        reason: 'reveal_top_and_conditional_play',
+      });
+    } else {
+      // events / stages: trash post-reveal (V0 — events don't have on_play
+      // dispatch from this path)
+      pl.trash.push(topId);
+    }
+  }
+  // On miss: leave top card alone (don't move). Expose to viewer.
+  const known = state.knownByViewer[ctx.controller] ?? [];
+  if (!known.includes(topId)) known.push(topId);
+  state.knownByViewer[ctx.controller] = known;
+  return state;
+};
+
+const revealTopThenIfCostMin: ActionHandler = (state, ctx, action) =>
+  revealTopAndConditionalPlay(state, ctx, action, []);
+
+const revealTopThenIfFilter: ActionHandler = (state, ctx, action) =>
+  revealTopAndConditionalPlay(state, ctx, action, []);
+
+// ─── peek_and_reorder_*: needs PendingReorder shape — out of scope for this
+//     batch. V0 noops (cards: rare; deferred to dedicated reorder PR).
 const peekAndReorderOwnDeck: ActionHandler = noop;
 const peekAndReorderOwnLife: ActionHandler = noop;
 const peekAndReorderOppLife: ActionHandler = noop;
-const searcherPeek: ActionHandler = noop;
-const revealOppHand: ActionHandler = noop;
-const revealTopAndConditionalPlay: ActionHandler = noop;
-const revealTopThenIfCostMin: ActionHandler = noop;
-const revealTopThenIfFilter: ActionHandler = noop;
+
+// ─── choose_one: suspend via PendingChoose with the supplied options array.
+//     resolveChooseOneReducer (choiceResolve.ts) fires options[optionIndex].action.
+const chooseOne: ActionHandler = (state, ctx, action) => {
+  const options = action['options'];
+  if (!Array.isArray(options) || options.length === 0) return state;
+  state.pending = {
+    kind: 'choose_one',
+    pendingChoose: {
+      controller: ctx.controller,
+      sourceInstanceId: ctx.sourceInstanceId,
+      options: options as ReadonlyArray<unknown>,
+      resumePhase: state.phase,
+    },
+  };
+  state.phase = 'choose_one';
+  return state;
+};
+
 const chooseCostRevealOppMatch: ActionHandler = noop;
-const chooseOne: ActionHandler = noop;
 
 // ────────────────────────────────────────────────────────────────────
 // Registration

@@ -21,9 +21,7 @@ import { registerAllHandlers } from '../registry/handlers/index.js';
 import { validateCardsAgainstRegistry } from '../registry/validate.js';
 import { registerAllReducers } from '../reducers/index.js';
 
-// @ts-expect-error import.meta.url resolves at runtime
 const __filename = fileURLToPath(import.meta.url);
-// @ts-expect-error
 const __dirname = resolve(__filename, '..');
 
 beforeAll(() => {

@@ -32,9 +32,15 @@ import {
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
-function num(a: EffectActionV2, key: string, fallback = 0): number {
-  const v = a[key];
-  return typeof v === 'number' ? v : fallback;
+// Canonical "how many" reader for action handlers. cards.json uses
+// `magnitude` for action counts (verified across 30+ action kinds, 268+
+// cards); a few specs use `n`. Read magnitude first, fall back to n.
+function count(a: EffectActionV2, fallback = 0): number {
+  const m = a['magnitude'];
+  if (typeof m === 'number') return m;
+  const n = a['n'];
+  if (typeof n === 'number') return n;
+  return fallback;
 }
 
 function findInstZone(state: GameState, instanceId: InstanceId): {
@@ -59,7 +65,7 @@ function findInstZone(state: GameState, instanceId: InstanceId): {
 // draw  — { kind: 'draw', n }
 // ────────────────────────────────────────────────────────────────────
 const draw: ActionHandler = (state, ctx, action) => {
-  const n = num(action, 'n', 1);
+  const n = count(action, 1);
   const pl = state.players[ctx.controller];
   for (let i = 0; i < n; i++) {
     const top = pl.deck.shift();
@@ -77,7 +83,7 @@ const draw: ActionHandler = (state, ctx, action) => {
 // give_power  — { kind: 'give_power', n, duration }
 // ────────────────────────────────────────────────────────────────────
 const givePower: ActionHandler = (state, _ctx, action, targets) => {
-  const amount = num(action, 'n', 0);
+  const amount = count(action, 0);
   const durationRaw = action['duration'];
   const duration: EffectDuration =
     durationRaw === 'this_battle' ||
@@ -238,7 +244,7 @@ const activeTarget: ActionHandler = (state, _ctx, _action, targets) => {
 // ramp  — { kind: 'ramp', n }: move n DON from donDeck → donCostArea (active)
 // ────────────────────────────────────────────────────────────────────
 const ramp: ActionHandler = (state, ctx, action) => {
-  const n = num(action, 'n', 1);
+  const n = count(action, 1);
   const pl = state.players[ctx.controller];
   let moved = 0;
   while (moved < n && pl.donDeck.length > 0) {
@@ -256,7 +262,7 @@ const ramp: ActionHandler = (state, ctx, action) => {
 // controller's donCostArea to each target.
 // ────────────────────────────────────────────────────────────────────
 const giveDonToTarget: ActionHandler = (state, ctx, action, targets) => {
-  const n = num(action, 'n', 1);
+  const n = count(action, 1);
   const pl = state.players[ctx.controller];
   for (const id of targets) {
     const inst = state.instances[id];
@@ -274,7 +280,7 @@ const giveDonToTarget: ActionHandler = (state, ctx, action, targets) => {
 // trash_top_of_deck  — { kind: 'trash_top_of_deck', n }
 // ────────────────────────────────────────────────────────────────────
 const trashTopOfDeck: ActionHandler = (state, ctx, action) => {
-  const n = num(action, 'n', 1);
+  const n = count(action, 1);
   const pl = state.players[ctx.controller];
   for (let i = 0; i < n; i++) {
     const id = pl.deck.shift();
@@ -290,7 +296,7 @@ const trashTopOfDeck: ActionHandler = (state, ctx, action) => {
 // player-choice routing arrives with PendingDiscard wiring in Phase 3)
 // ────────────────────────────────────────────────────────────────────
 const discardOppHand: ActionHandler = (state, ctx, action) => {
-  const n = num(action, 'n', 1);
+  const n = count(action, 1);
   const oppSide = OTHER[ctx.controller];
   const opp = state.players[oppSide];
   for (let i = 0; i < n; i++) {
