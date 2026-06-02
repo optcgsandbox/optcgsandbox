@@ -181,29 +181,53 @@ const endOfTurnTrash: ActionHandler = (state, ctx) => {
   return state;
 };
 
-// ─── play_for_free: move card from hand to field/stage without paying cost
-//     V0: only applies to characters (the most common case)
-const playForFree: ActionHandler = (state, ctx, _action, targets) => {
+// ─── play_for_free: zone (hand/trash) → field at zero cost.
+//     Honors action.from ('hand' default, 'trash'), action.rested
+//     (plays the card rested if true), action.count (limits how many of the
+//     resolved targets to actually play — cards.json provides count).
+//     Filter params (colorMustDifferFromLastBounced, nameMatchesLastDiscarded,
+//     uniqueByName) are V0 best-effort — gate via resolved target list since
+//     the parent clause's target resolver already filtered.
+const playForFree: ActionHandler = (state, ctx, action, targets) => {
   const pl = state.players[ctx.controller];
+  const from = typeof action['from'] === 'string' ? (action['from'] as string) : 'hand';
+  const rested = action['rested'] === true;
+  const count = typeof action['count'] === 'number' ? (action['count'] as number) : targets.length;
+  let played = 0;
   for (const id of targets) {
+    if (played >= count) break;
     const z = findInstZone(state, id);
-    if (z === null || z.zone !== 'hand') continue;
-    if (z.side !== ctx.controller) continue; // only own hand
+    if (z === null) continue;
+    if (z.side !== ctx.controller) continue; // only own zone
+    if (from === 'hand' && z.zone !== 'hand') continue;
+    if (from === 'trash' && z.zone !== 'trash') continue;
     const inst = state.instances[id];
     if (inst === undefined) continue;
-    // Remove from hand
-    const handIdx = pl.hand.indexOf(id);
-    if (handIdx === -1) continue;
-    pl.hand.splice(handIdx, 1);
+    // Remove from source zone
+    if (z.zone === 'hand') {
+      const idx = pl.hand.indexOf(id);
+      if (idx === -1) continue;
+      pl.hand.splice(idx, 1);
+    } else if (z.zone === 'trash') {
+      const idx = pl.trash.indexOf(id);
+      if (idx === -1) continue;
+      pl.trash.splice(idx, 1);
+    } else {
+      continue;
+    }
     resetInstanceTransientState(inst);
     inst.summoningSick = true;
+    inst.rested = rested;
     pl.field.push(inst);
+    played += 1;
     (state.history as Array<unknown>).push({
       type: 'CHARACTER_PLAYED',
       instanceId: id,
       cardId: inst.cardId,
       controller: ctx.controller,
       cost: 0,
+      from,
+      rested,
       reason: 'play_for_free',
     });
   }
