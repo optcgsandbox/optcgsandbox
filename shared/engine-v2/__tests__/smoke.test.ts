@@ -262,35 +262,24 @@ describe('engine-v2 smoke', () => {
     expect(next.players['A'].hand.length).toBe(beforeHand + 3);
   });
 
-  it('searcher_peek + RESOLVE_PEEK roundtrip', async () => {
-    const { EffectDispatcher } = await import('../effects/EffectDispatcher.js');
+  it('searcher_peek deterministic V0 (no filter → take top to hand)', async () => {
     const { actionHandlers } = await import('../registry/types.js');
     const state = buildBasicGameState();
-    // Force a known top-of-deck (already vanilla chars)
     const topThreeBefore = state.players['A'].deck.slice(0, 3);
 
-    // Manually invoke searcher_peek by routing the action handler directly,
-    // since no Action.type maps to "searcher_peek" — it's a clause-action.
     const handler = actionHandlers.get('searcher_peek');
-    const afterPeek = handler(state, {
+    const next = handler(state, {
       sourceInstanceId: state.players['A'].leader.instanceId,
       controller: 'A',
     }, { kind: 'searcher_peek', lookCount: 3, addCount: 1 }, []);
-    expect(afterPeek.pending).not.toBeNull();
-    expect(afterPeek.pending?.kind).toBe('peek');
-    expect(afterPeek.phase).toBe('peek_choice');
-
-    // Resolve: pick the first id, return the other two to top.
-    const r = applyAction(afterPeek, 'A', {
-      type: 'RESOLVE_PEEK',
-      pickedIds: [topThreeBefore[0]!],
-    }, { checkInvariants: false });
-    expect(r.state.players['A'].hand).toContain(topThreeBefore[0]);
-    expect(r.state.players['A'].deck[0]).toBe(topThreeBefore[1]);
-    expect(r.state.players['A'].deck[1]).toBe(topThreeBefore[2]);
-    expect(r.state.pending).toBeNull();
-    expect(r.state.phase).toBe('main'); // restored from resumePhase
-    void EffectDispatcher; // silence import-only warning
+    // V0 deterministic: top 1 → hand, rest 2 → back to top of deck.
+    expect(next.players['A'].hand).toContain(topThreeBefore[0]);
+    expect(next.players['A'].deck[0]).toBe(topThreeBefore[1]);
+    expect(next.players['A'].deck[1]).toBe(topThreeBefore[2]);
+    // No pending — V0 deterministic doesn't suspend.
+    expect(next.pending).toBeNull();
+    // Peeked IDs marked known.
+    expect(next.knownByViewer['A']).toContain(topThreeBefore[0]);
   });
 
   it('peek_opp_deck updates knownByViewer', async () => {

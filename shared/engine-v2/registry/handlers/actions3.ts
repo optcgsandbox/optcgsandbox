@@ -651,33 +651,97 @@ const revealOppHand: ActionHandler = (state, ctx) => {
   return state;
 };
 
-// ─── searcher_peek: suspend via PendingPeek so the player can pick up to
-//     `addCount` cards from top `lookCount` of own deck. Existing
-//     resolvePeekReducer (choiceResolve.ts) moves picked → hand and leftovers
-//     → top of deck in original order, then resumes phase.
+// ─── searcher_peek: V0 deterministic. Top `lookCount` of own deck →
+//     filter → first `addCount` matches → hand OR field (if playInsteadOfHand).
+//     Honors action.rested when playing. Non-picks return to top of deck
+//     in original peek order.
 const searcherPeek: ActionHandler = (state, ctx, action) => {
   const lookCount = num(action, 'lookCount', resolveCount(state, ctx, action, 1));
   const addCount = num(action, 'addCount', 1);
+  const playInsteadOfHand = action['playInsteadOfHand'] === true;
+  const rested = action['rested'] === true;
+  const f = action['filter'];
+  const filter = typeof f === 'object' && f !== null ? (f as Record<string, unknown>) : undefined;
+
   const pl = state.players[ctx.controller];
   const peeked = pl.deck.slice(0, Math.min(lookCount, pl.deck.length));
   if (peeked.length === 0) return state;
-  state.pending = {
-    kind: 'peek',
-    pendingPeek: {
-      controller: ctx.controller,
-      sourceInstanceId: ctx.sourceInstanceId,
-      peekedIds: peeked,
-      addCount,
-      resumePhase: state.phase,
-    },
-  };
-  state.phase = 'peek_choice';
-  // Mark peeked IDs as known to the viewer.
+
+  const picked: string[] = [];
+  const leftover: string[] = [];
+  for (const id of peeked) {
+    if (picked.length < addCount) {
+      const inst = state.instances[id];
+      const card = inst !== undefined
+        ? (state.cardLibrary[inst.cardId] as { kind?: string; name?: string; cost?: number | null; traits?: ReadonlyArray<string>; colors?: ReadonlyArray<string> } | undefined)
+        : undefined;
+      let matches = true;
+      if (filter !== undefined && card !== undefined) {
+        const cost = typeof card.cost === 'number' ? card.cost : 0;
+        if (filter['kind'] !== undefined && card.kind !== filter['kind']) matches = false;
+        if (matches && typeof filter['trait'] === 'string' && !(card.traits ?? []).includes(filter['trait'] as string)) matches = false;
+        if (matches && typeof filter['typeIncludes'] === 'string' && !(card.traits ?? []).some((t) => t.includes(filter['typeIncludes'] as string))) matches = false;
+        if (matches && typeof filter['color'] === 'string' && !(card.colors ?? []).includes(filter['color'] as string)) matches = false;
+        if (matches && typeof filter['nameIs'] === 'string' && card.name !== filter['nameIs']) matches = false;
+        if (matches && typeof filter['nameExcludes'] === 'string' && card.name === filter['nameExcludes']) matches = false;
+        if (matches && typeof filter['costMin'] === 'number' && cost < (filter['costMin'] as number)) matches = false;
+        if (matches && typeof filter['costMax'] === 'number' && cost > (filter['costMax'] as number)) matches = false;
+      }
+      if (matches) {
+        picked.push(id);
+        continue;
+      }
+    }
+    leftover.push(id);
+  }
+
+  // Remove peeked slice from deck head.
+  pl.deck.splice(0, peeked.length);
+
+  for (const id of picked) {
+    const inst = state.instances[id];
+    if (inst === undefined) continue;
+    if (playInsteadOfHand) {
+      const card = state.cardLibrary[inst.cardId] as { kind?: string } | undefined;
+      if (card?.kind === 'character') {
+        resetInstanceTransientState(inst);
+        inst.summoningSick = true;
+        inst.rested = rested;
+        pl.field.push(inst);
+        (state.history as Array<unknown>).push({
+          type: 'CHARACTER_PLAYED',
+          instanceId: id,
+          cardId: inst.cardId,
+          controller: ctx.controller,
+          cost: 0,
+          rested,
+          reason: 'searcher_peek_play',
+        });
+      } else {
+        pl.hand.push(id);
+      }
+    } else {
+      pl.hand.push(id);
+    }
+  }
+
+  for (let i = leftover.length - 1; i >= 0; i--) {
+    pl.deck.unshift(leftover[i]!);
+  }
+
   const known = state.knownByViewer[ctx.controller] ?? [];
   for (const id of peeked) {
     if (!known.includes(id)) known.push(id);
   }
   state.knownByViewer[ctx.controller] = known;
+
+  (state.history as Array<unknown>).push({
+    type: 'SEARCHER_PEEK_RESOLVED',
+    controller: ctx.controller,
+    lookCount: peeked.length,
+    pickedCount: picked.length,
+    playInsteadOfHand,
+  });
   return state;
 };
 
