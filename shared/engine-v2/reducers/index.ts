@@ -6,14 +6,14 @@
  * (kind, handler) pairs and rejects duplicates.
  */
 
+import { registerAttackFlowReducers } from './attackFlow.js';
 import { registerMainPhaseReducers } from './mainPhase.js';
 import { registerTurnFlowReducers } from './turnFlow.js';
 
 export function registerAllReducers(): void {
   registerTurnFlowReducers();
   registerMainPhaseReducers();
-  // TODO: attackFlow.ts (DECLARE_ATTACK, DECLARE_BLOCKER, PLAY_COUNTER,
-  //       SKIP_COUNTER, SKIP_BLOCKER)
+  registerAttackFlowReducers();
   // TODO: choiceResolve.ts (RESOLVE_TRIGGER, RESOLVE_PEEK, RESOLVE_DISCARD,
   //       RESOLVE_CHOOSE_ONE, RESOLVE_TARGET_PICK)
   // TODO: setup.ts (ROLL_DICE, CHOOSE_FIRST, CHOOSE_SECOND, MULLIGAN, KEEP_HAND)

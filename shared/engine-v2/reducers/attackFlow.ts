@@ -1,0 +1,380 @@
+/**
+ * Engine V2 — attack-flow reducers.
+ *
+ * Phase chain: main → block_window → counter_window → damage_resolution
+ *   → (trigger_window if life flipped) → back to main.
+ *
+ * Per-action reducers:
+ *   - DECLARE_ATTACK    (main → block_window): set up PendingAttack
+ *   - DECLARE_BLOCKER   (block_window → counter_window): redirect target
+ *   - SKIP_BLOCKER      (block_window → counter_window)
+ *   - PLAY_COUNTER      (counter_window): counter event from hand; stay in
+ *                        counter_window for chain (re-enters until SKIP)
+ *   - SKIP_COUNTER      (counter_window → damage_resolution): resolve damage
+ *
+ * Single source of truth for clearing PendingAttack: `clearPendingAttack`.
+ * Single source of truth for detaching DON on KO: `detachAllAttachedDon`.
+ *
+ * Cross-references:
+ * - Implementation spec §9 (counter-window)
+ * - Plan v1 §4.3 + §4.5
+ * - CR §7-1 / §7-2 / §7-3
+ */
+
+import type { Card } from '../cards/Card.js';
+import { isCharacter, isEvent, isLeader } from '../cards/Card.js';
+import { EffectDispatcher } from '../effects/EffectDispatcher.js';
+import type {
+  ActionDeclareAttack,
+  ActionDeclareBlocker,
+  ActionPlayCounter,
+  ActionSkipBlocker,
+  ActionSkipCounter,
+} from '../protocol/actions.js';
+import { detachAllAttachedDon } from '../state/derived/don.js';
+import {
+  instAttackLocked,
+  instHasKeyword,
+} from '../state/derived/keyword.js';
+import { effectivePower } from '../state/derived/power.js';
+import { resetInstanceTransientState } from '../state/derived/reset.js';
+import {
+  type CardInstance,
+  type GameState,
+  OTHER_PLAYER,
+  type PlayerId,
+} from '../state/types.js';
+import { registerActionReducer } from './registry.js';
+
+// ────────────────────────────────────────────────────────────────────
+// Helpers
+// ────────────────────────────────────────────────────────────────────
+
+function clearPendingAttack(state: GameState): GameState {
+  if (state.pending === null || state.pending.kind !== 'attack') return state;
+  for (const side of ['A', 'B'] as PlayerId[]) {
+    const pl = state.players[side];
+    pl.leader.powerModifierThisBattle = undefined;
+    for (const inst of pl.field) inst.powerModifierThisBattle = undefined;
+    if (pl.stage !== null) pl.stage.powerModifierThisBattle = undefined;
+  }
+  state.pending = null;
+  return state;
+}
+
+function koCharacter(state: GameState, target: CardInstance, side: PlayerId): GameState {
+  const pl = state.players[side];
+  const idx = pl.field.findIndex((c) => c.instanceId === target.instanceId);
+  if (idx === -1) return state; // not on field (e.g., bounced mid-flow)
+  detachAllAttachedDon(state, target, side);
+  pl.field.splice(idx, 1);
+  resetInstanceTransientState(target);
+  pl.trash.push(target.instanceId);
+  (state.history as Array<unknown>).push({
+    type: 'CHARACTER_KOD',
+    instanceId: target.instanceId,
+    controller: side,
+  });
+  // Fire on_ko clauses on the KO'd character.
+  return EffectDispatcher.dispatch(state, {
+    sourceInstanceId: target.instanceId,
+    controller: side,
+  }, 'on_ko');
+}
+
+function flipTopLifeToHand(state: GameState, side: PlayerId): {
+  state: GameState;
+  flippedInstanceId: string | null;
+} {
+  const pl = state.players[side];
+  const top = pl.life.shift();
+  if (top === undefined) {
+    // No life cards — leader takes a hit it can't absorb → loss.
+    state.result = { loser: side, reason: 'life_zero' };
+    return { state, flippedInstanceId: null };
+  }
+  pl.hand.push(top);
+  (state.history as Array<unknown>).push({
+    type: 'LIFE_CARD_TO_HAND',
+    instanceId: top,
+    controller: side,
+  });
+  return { state, flippedInstanceId: top };
+}
+
+// ────────────────────────────────────────────────────────────────────
+// DECLARE_ATTACK
+// ────────────────────────────────────────────────────────────────────
+
+function declareAttackReducer(
+  state: GameState,
+  action: ActionDeclareAttack,
+  player: PlayerId,
+): GameState {
+  if (state.activePlayer !== player) return state;
+  if (state.phase !== 'main') return state;
+  if (state.pending !== null) return state;
+
+  // Attacker must be controller's leader or active field char.
+  const pl = state.players[player];
+  const attackerInst =
+    pl.leader.instanceId === action.attackerInstanceId
+      ? pl.leader
+      : pl.field.find((c) => c.instanceId === action.attackerInstanceId);
+  if (attackerInst === undefined) return state;
+  if (attackerInst.rested === true) return state;
+  if (attackerInst.summoningSick === true && !instHasKeyword(state, attackerInst, 'rush')) {
+    return state;
+  }
+  if (attackerInst.perTurn.hasAttacked === true) return state;
+  if (instAttackLocked(attackerInst)) return state;
+
+  // Target must be opp's leader or a rested opp character.
+  const opp = OTHER_PLAYER[player];
+  const oppZ = state.players[opp];
+  const targetInst =
+    oppZ.leader.instanceId === action.targetInstanceId
+      ? oppZ.leader
+      : oppZ.field.find(
+          (c) =>
+            c.instanceId === action.targetInstanceId && c.rested === true,
+        );
+  if (targetInst === undefined) return state;
+
+  // Rest the attacker.
+  attackerInst.rested = true;
+  attackerInst.perTurn.hasAttacked = true;
+
+  // Set PendingAttack + phase.
+  state.pending = {
+    kind: 'attack',
+    pendingAttack: {
+      attackerInstanceId: attackerInst.instanceId,
+      targetInstanceId: targetInst.instanceId,
+      counterBoost: 0,
+      armedReplacements: [],
+    },
+  };
+  state.phase = 'block_window';
+
+  (state.history as Array<unknown>).push({
+    type: 'ATTACK_DECLARED',
+    attackerInstanceId: attackerInst.instanceId,
+    targetInstanceId: targetInst.instanceId,
+    controller: player,
+  });
+
+  // Fire when_attacking clauses on the attacker.
+  return EffectDispatcher.dispatch(state, {
+    sourceInstanceId: attackerInst.instanceId,
+    controller: player,
+  }, 'when_attacking');
+}
+
+// ────────────────────────────────────────────────────────────────────
+// DECLARE_BLOCKER
+// ────────────────────────────────────────────────────────────────────
+
+function declareBlockerReducer(
+  state: GameState,
+  action: ActionDeclareBlocker,
+  player: PlayerId,
+): GameState {
+  if (state.phase !== 'block_window') return state;
+  if (state.pending === null || state.pending.kind !== 'attack') return state;
+  // Only defender (non-active player) blocks.
+  if (state.activePlayer === player) return state;
+
+  const pl = state.players[player];
+  const blocker = pl.field.find((c) => c.instanceId === action.blockerInstanceId);
+  if (blocker === undefined) return state;
+  if (blocker.rested === true) return state;
+  if (!instHasKeyword(state, blocker, 'blocker')) return state;
+
+  // Redirect the attack onto the blocker.
+  state.pending.pendingAttack.targetInstanceId = blocker.instanceId;
+  blocker.rested = true;
+  state.phase = 'counter_window';
+
+  (state.history as Array<unknown>).push({
+    type: 'BLOCKER_DECLARED',
+    blockerInstanceId: blocker.instanceId,
+    controller: player,
+  });
+
+  // Fire on_block clauses on the blocker.
+  return EffectDispatcher.dispatch(state, {
+    sourceInstanceId: blocker.instanceId,
+    controller: player,
+  }, 'on_block');
+}
+
+// ────────────────────────────────────────────────────────────────────
+// SKIP_BLOCKER
+// ────────────────────────────────────────────────────────────────────
+
+function skipBlockerReducer(
+  state: GameState,
+  _action: ActionSkipBlocker,
+  player: PlayerId,
+): GameState {
+  if (state.phase !== 'block_window') return state;
+  if (state.pending === null || state.pending.kind !== 'attack') return state;
+  if (state.activePlayer === player) return state;
+  state.phase = 'counter_window';
+  return state;
+}
+
+// ────────────────────────────────────────────────────────────────────
+// PLAY_COUNTER (counter event from hand)
+// ────────────────────────────────────────────────────────────────────
+
+function playCounterReducer(
+  state: GameState,
+  action: ActionPlayCounter,
+  player: PlayerId,
+): GameState {
+  if (state.phase !== 'counter_window') return state;
+  if (state.pending === null || state.pending.kind !== 'attack') return state;
+  if (state.activePlayer === player) return state; // only defender
+
+  const pl = state.players[player];
+  if (!pl.hand.includes(action.instanceId)) return state;
+  const inst = state.instances[action.instanceId];
+  if (inst === undefined) return state;
+  const card = state.cardLibrary[inst.cardId] as Card | undefined;
+  if (card === undefined || !isEvent(card)) return state;
+
+  // Pay DON cost.
+  const cost = Math.max(0, card.cost + (pl.nextPlayCostModifier ?? 0));
+  if (pl.donCostArea.length < cost) return state;
+  for (let i = 0; i < cost; i++) {
+    const id = pl.donCostArea.shift();
+    if (id !== undefined) pl.donRested.push(id);
+  }
+  pl.nextPlayCostModifier = undefined;
+
+  // Move event hand → trash.
+  const handIdx = pl.hand.indexOf(action.instanceId);
+  pl.hand.splice(handIdx, 1);
+  pl.trash.push(action.instanceId);
+
+  // Add the printed counter boost to the pending attack.
+  const boost = card.counterEventBoost ?? 0;
+  if (boost > 0) state.pending.pendingAttack.counterBoost += boost;
+
+  (state.history as Array<unknown>).push({
+    type: 'COUNTER_PLAYED',
+    instanceId: action.instanceId,
+    controller: player,
+    boost,
+  });
+
+  // Fire any on_play clauses on the event.
+  return EffectDispatcher.dispatch(state, {
+    sourceInstanceId: action.instanceId,
+    controller: player,
+  }, 'on_play');
+}
+
+// ────────────────────────────────────────────────────────────────────
+// SKIP_COUNTER → damage_resolution → trigger_window or back to main
+// ────────────────────────────────────────────────────────────────────
+
+function resolveDamage(state: GameState, defender: PlayerId): GameState {
+  const pa = state.pending !== null && state.pending.kind === 'attack'
+    ? state.pending.pendingAttack
+    : null;
+  if (pa === null) return state;
+  state.phase = 'damage_resolution';
+
+  const attackerInst = state.instances[pa.attackerInstanceId];
+  const targetInst = state.instances[pa.targetInstanceId];
+  if (attackerInst === undefined || targetInst === undefined) {
+    return clearPendingAttack(state);
+  }
+
+  const attackerPower = effectivePower(state, attackerInst);
+  const baseTargetPower = effectivePower(state, targetInst);
+  const targetPower = baseTargetPower + pa.counterBoost;
+
+  (state.history as Array<unknown>).push({
+    type: 'DAMAGE_RESOLVED',
+    attackerPower,
+    targetPower,
+    counterBoost: pa.counterBoost,
+  });
+
+  // CR §7-2: attack succeeds if attackerPower >= targetPower.
+  const success = attackerPower >= targetPower;
+  if (!success) {
+    return clearPendingAttack(state);
+  }
+
+  // Determine target type.
+  const targetCard = state.cardLibrary[targetInst.cardId] as Card | undefined;
+  if (targetCard !== undefined && isLeader(targetCard)) {
+    // Damage leader → flip top life → hand. If 0 life → loss.
+    const flipResult = flipTopLifeToHand(state, defender);
+    if (state.result !== null) {
+      return clearPendingAttack(flipResult.state);
+    }
+    // Suspend on trigger_window if the flipped life card has a `trigger` clause.
+    if (flipResult.flippedInstanceId !== null) {
+      const lifeInst = state.instances[flipResult.flippedInstanceId];
+      const lifeCard = lifeInst !== undefined
+        ? (state.cardLibrary[lifeInst.cardId] as Card | undefined)
+        : undefined;
+      const hasTrigger =
+        lifeCard?.effectSpecV2?.clauses.some((cl) => cl.trigger === 'trigger') ?? false;
+      if (hasTrigger && lifeInst !== undefined) {
+        state.pending = {
+          kind: 'trigger',
+          pendingTrigger: {
+            lifeCardInstanceId: lifeInst.instanceId,
+            controller: defender,
+            resumePhase: 'main',
+          },
+        };
+        state.phase = 'trigger_window';
+        // Note: don't clear pendingAttack yet — preserved across the trigger
+        // window via state.pending swap. After RESOLVE_TRIGGER fires, the
+        // resolver should restore phase and clear.
+        return state;
+      }
+    }
+    return clearPendingAttack(state);
+  }
+
+  if (targetCard !== undefined && isCharacter(targetCard)) {
+    // KO the character.
+    state = koCharacter(state, targetInst, defender);
+    return clearPendingAttack(state);
+  }
+
+  return clearPendingAttack(state);
+}
+
+function skipCounterReducer(
+  state: GameState,
+  _action: ActionSkipCounter,
+  player: PlayerId,
+): GameState {
+  if (state.phase !== 'counter_window') return state;
+  if (state.pending === null || state.pending.kind !== 'attack') return state;
+  if (state.activePlayer === player) return state; // only defender
+  const defender = player;
+  return resolveDamage(state, defender);
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Registration
+// ────────────────────────────────────────────────────────────────────
+
+export function registerAttackFlowReducers(): void {
+  registerActionReducer('DECLARE_ATTACK', declareAttackReducer);
+  registerActionReducer('DECLARE_BLOCKER', declareBlockerReducer);
+  registerActionReducer('SKIP_BLOCKER', skipBlockerReducer);
+  registerActionReducer('PLAY_COUNTER', playCounterReducer);
+  registerActionReducer('SKIP_COUNTER', skipCounterReducer);
+}
