@@ -79,7 +79,7 @@ export const ContinuousManager = {
             };
             if (!evaluateCondition(state, ctx, eff.condition)) continue;
             const handler = continuousHandlers.get(eff.action.kind);
-            state = handler.fold(state, source, eff.action);
+            state = handler.fold(state, source, eff);
           }
         }
       }

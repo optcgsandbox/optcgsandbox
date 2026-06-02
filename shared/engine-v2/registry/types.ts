@@ -19,6 +19,7 @@ import type {
   PlayerId,
 } from '../state/types.js';
 import type {
+  ContinuousEffectV2,
   EffectActionV2,
   EffectConditionV2,
   EffectCostV2,
@@ -62,8 +63,9 @@ export interface ContinuousHandler {
   readonly resets: ReadonlyArray<keyof CardInstance>;
   /**
    * Fold this continuous effect onto state. Called once per source per refold tick.
+   * Receives the full ContinuousEffectV2 so the handler can use `eff.target`.
    */
-  readonly fold: (state: GameState, source: CardInstance, action: EffectActionV2) => GameState;
+  readonly fold: (state: GameState, source: CardInstance, eff: ContinuousEffectV2) => GameState;
 }
 
 export type TargetResolver = (
