@@ -24,8 +24,8 @@ describe('engine-v2 per-card behavior harness', () => {
       }
     }
     expect(total).toBeGreaterThan(2000);
-    // No hard fail-count assertion yet — V0 has stub assertions for many
-    // actions. Use this test as a corpus-wide diagnostic; future work can
-    // narrow the assertion (e.g., expect fail<100).
+    // Hard gate: every clause-bearing card must pass behavior assertion.
+    // Failure here means engine produced wrong-magnitude action effect.
+    expect(result.fail).toBe(0);
   });
 });

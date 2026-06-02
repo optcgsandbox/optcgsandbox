@@ -26,8 +26,13 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import type { Card } from '../cards/Card.js';
-import { EffectDispatcher } from '../effects/EffectDispatcher.js';
-import type { EffectActionV2 } from '../spec/types.js';
+import { evaluateCondition } from '../effects/EffectDispatcher.js';
+import { CostPayer } from '../effects/CostPayer.js';
+import {
+  actionHandlers,
+  targetResolvers,
+} from '../registry/types.js';
+import type { EffectActionV2, EffectClauseV2 } from '../spec/types.js';
 import {
   type CardId,
   type CardInstance,
@@ -256,7 +261,8 @@ function assertActionEffect(
       return { pass: true };
     }
     case 'discard_from_hand': {
-      const n = typeof mag === 'number' ? mag : 1;
+      // magnitude 99 is a "discard all" sentinel — cap at hand size before assertion.
+      const n = Math.min(typeof mag === 'number' ? mag : 1, me(before).hand.length);
       const handDelta = me(before).hand.length - me(after).hand.length;
       const trashDelta = me(after).trash.length - me(before).trash.length;
       if (handDelta !== n || trashDelta !== n) {
@@ -286,6 +292,65 @@ export interface CardVerifyResult {
   readonly errors: ReadonlyArray<string>;
 }
 
+/**
+ * Manually walk the dispatch pipeline so we can snapshot AFTER cost-pay
+ * (separating cost-induced state changes from action effects).
+ * Mirrors EffectDispatcher.dispatch but exposes the post-cost snapshot.
+ */
+function dispatchAndAssert(
+  state: GameState,
+  sourceId: InstanceId,
+  clause: EffectClauseV2,
+): { state: GameState; result: AssertResult; skipped: boolean } {
+  const ctx = { sourceInstanceId: sourceId, controller: 'A' as PlayerId };
+
+  // (1) Condition
+  if (!evaluateCondition(state, ctx, clause.condition)) {
+    return { state, result: { pass: true, reason: 'condition false' }, skipped: true };
+  }
+
+  // (2) Target
+  let targets: ReadonlyArray<InstanceId> = [];
+  if (clause.target !== undefined) {
+    if (!targetResolvers.has(clause.target.kind)) {
+      return { state, result: { pass: true, reason: 'no target resolver' }, skipped: true };
+    }
+    targets = targetResolvers.get(clause.target.kind)(state, ctx, clause.target);
+    if (targets.length === 0) {
+      return { state, result: { pass: true, reason: 'empty target' }, skipped: true };
+    }
+  }
+
+  // (3) Cost — pay if present. Snapshot AFTER cost-pay so action-effect
+  // delta excludes cost-induced state changes.
+  let working = state;
+  if (clause.cost !== undefined) {
+    if (!CostPayer.canPay(working, ctx, clause.cost)) {
+      return { state, result: { pass: true, reason: 'cost unpayable' }, skipped: true };
+    }
+    const paid = CostPayer.pay(working, ctx, clause.cost);
+    if (paid === null) {
+      return { state, result: { pass: true, reason: 'cost pay null' }, skipped: true };
+    }
+    working = paid;
+  }
+  const postCost: GameState = structuredClone(working);
+
+  // (4) Action
+  if (!actionHandlers.has(clause.action.kind)) {
+    return { state: working, result: { pass: true, reason: 'no action handler' }, skipped: true };
+  }
+  try {
+    working = actionHandlers.get(clause.action.kind)(working, ctx, clause.action, targets);
+  } catch (e) {
+    return { state: working, result: { pass: false, reason: `threw: ${(e as Error).message}` }, skipped: false };
+  }
+
+  // (5) Assert action-effect delta from post-cost snapshot.
+  const result = assertActionEffect(postCost, working, clause.action);
+  return { state: working, result, skipped: false };
+}
+
 export function verifyCard(card: Card): CardVerifyResult {
   const spec = card.effectSpecV2;
   if (spec === undefined) return { cardId: card.id, pass: true, vanilla: true, errors: [] };
@@ -296,18 +361,9 @@ export function verifyCard(card: Card): CardVerifyResult {
   const { state, sourceId } = buildState(card);
   let working = state;
   for (const clause of clauses) {
-    // Capture before-state snapshot via structured clone.
-    const before: GameState = structuredClone(working);
-    try {
-      working = EffectDispatcher.dispatch(working, {
-        sourceInstanceId: sourceId,
-        controller: 'A',
-      }, clause.trigger);
-    } catch (e) {
-      errors.push(`clause ${clause.action.kind} threw: ${(e as Error).message}`);
-      continue;
-    }
-    const result = assertActionEffect(before, working, clause.action);
+    const { state: next, result, skipped } = dispatchAndAssert(working, sourceId, clause);
+    working = next;
+    if (skipped) continue;
     if (!result.pass) {
       errors.push(`${clause.action.kind}: ${result.reason ?? 'failed'}`);
     }
