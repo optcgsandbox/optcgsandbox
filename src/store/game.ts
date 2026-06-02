@@ -170,10 +170,11 @@ async function runPhasePipelineWithDelays(
   const refreshDidWork = hasRefreshWork(get().state);
   let s = PhaseScheduler.enterRefresh(get().state);
   const last = s.history.length - 1;
-  if (last >= 0 && s.history[last].type === 'PHASE_CHANGED') {
-    s.history.splice(last, 0, { type: 'PHASE_CHANGED', phase: 'refresh' });
+  const hist = s.history as Array<{ type: string; phase?: string }>;
+  if (last >= 0 && hist[last]?.type === 'PHASE_CHANGED') {
+    hist.splice(last, 0, { type: 'PHASE_CHANGED', phase: 'refresh' });
   } else {
-    s.history.push({ type: 'PHASE_CHANGED', phase: 'refresh' });
+    hist.push({ type: 'PHASE_CHANGED', phase: 'refresh' });
   }
   s = { ...s, phase: 'refresh' };
   set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });

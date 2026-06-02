@@ -52,8 +52,8 @@ import { DonDeckSlot } from './zones/DonDeckSlot';
 import { CostAreaBand } from './zones/CostAreaBand';
 import { PhaseColumn } from './zones/PhaseColumn';
 import { EndTurnButton } from './EndTurnButton';
-import type { CardInstance, PlayerId, PlayerZones } from '@shared/engine/GameState';
-import type { Card } from '@shared/engine/cards/Card';
+import type { CardInstance, PlayerId, PlayerZones } from '@shared/engine-v2/state/types';
+import type { Card } from '@shared/engine-v2/cards/Card';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Tap-routing affordances.

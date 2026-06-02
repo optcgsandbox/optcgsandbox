@@ -16,7 +16,7 @@ import { useGameStore } from '../store/game';
 import { fanPosition, HAND_CARD_W, HAND_CARD_H } from '../lib/fanLayout';
 import { springs } from '../lib/animationTokens';
 import { CardArt } from './CardArt';
-import type { PlayerId } from '@shared/engine/GameState';
+import type { PlayerId } from '@shared/engine-v2/state/types';
 
 interface HandFanProps {
   /** Which seat's hand to render. Defaults to viewAs. */

@@ -13,7 +13,7 @@
 import { memo } from 'react';
 import { useGameStore } from '../../store/game';
 import { ZoneSlot } from '../ZoneSlot';
-import type { PlayerId } from '@shared/engine/GameState';
+import type { PlayerId } from '@shared/engine-v2/state/types';
 
 interface DonDeckSlotProps {
   playerId: PlayerId;

@@ -14,7 +14,9 @@ import { CardArt } from './CardArt';
 
 export const PeekChoicePrompt = memo(function PeekChoicePrompt() {
   const phase = useGameStore((s) => s.state.phase);
-  const pendingPeek = useGameStore((s) => s.state.pendingPeek);
+  const pendingPeek = useGameStore((s) =>
+    s.state.pending?.kind === 'peek' ? s.state.pending.pendingPeek : null,
+  );
   const viewAs = useGameStore((s) => s.viewAs);
   const instances = useGameStore((s) => s.state.instances);
   const library = useGameStore((s) => s.state.cardLibrary);
@@ -26,13 +28,13 @@ export const PeekChoicePrompt = memo(function PeekChoicePrompt() {
 
   const onPick = useCallback(
     (instanceId: string) => {
-      dispatch({ type: 'RESOLVE_PEEK', instanceIds: [instanceId] });
+      dispatch({ type: 'RESOLVE_PEEK', pickedIds: [instanceId] });
     },
     [dispatch],
   );
 
   const onSkip = useCallback(() => {
-    dispatch({ type: 'SKIP_PEEK' });
+    dispatch({ type: 'RESOLVE_PEEK', pickedIds: [] });
   }, [dispatch]);
 
   return (

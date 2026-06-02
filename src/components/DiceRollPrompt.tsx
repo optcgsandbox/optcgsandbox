@@ -26,7 +26,7 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { springs } from '../lib/animationTokens';
-import type { PlayerId } from '@shared/engine/GameState';
+import type { PlayerId } from '@shared/engine-v2/state/types';
 
 const SPIN_MS = 1200;
 const AI_DELAY_MS = 600;

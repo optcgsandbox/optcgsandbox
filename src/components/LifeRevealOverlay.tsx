@@ -45,9 +45,11 @@ export const LifeRevealOverlay = memo(function LifeRevealOverlay() {
   useEffect(() => {
     if (history.length <= lastProcessed) return;
     for (let i = lastProcessed; i < history.length; i++) {
-      const ev = history[i];
-      if (ev.type === 'LIFE_TAKEN' && ev.player === viewAs) {
-        setActive({ eventIndex: i, instanceId: ev.instanceId });
+      const ev = history[i] as { type?: string; player?: string; controller?: string; instanceId?: string };
+      const isLifeTaken = ev?.type === 'LIFE_TAKEN' || ev?.type === 'LIFE_CARD_TO_HAND';
+      const owner = ev?.player ?? ev?.controller;
+      if (isLifeTaken && owner === viewAs) {
+        setActive({ eventIndex: i, instanceId: String(ev.instanceId ?? '') });
         setLastProcessed(i + 1);
         return;
       }

@@ -291,8 +291,8 @@ export interface GameState {
   // All instances (zone-agnostic lookup; keyed by instanceId)
   instances: Record<InstanceId, CardInstance>;
 
-  // Event log
-  history: ReadonlyArray<unknown>; // GameEvent (declared in events/types.ts)
+  // Event log. Engine emits opaque event objects; UI / replays type-narrow.
+  history: ReadonlyArray<GameEvent>;
 
   // Game result
   result: GameResult | null;
@@ -333,6 +333,16 @@ export interface GameState {
 export interface GameResult {
   readonly loser: PlayerId;
   readonly reason: 'deck_out' | 'life_zero' | 'concede' | 'timeout';
+}
+
+/**
+ * Engine emits opaque event objects to state.history. UI / replays narrow
+ * via the `type` discriminator. The engine itself does NOT validate event
+ * shapes — handlers push objects matching the conventions of this union.
+ */
+export interface GameEvent {
+  readonly type: string;
+  readonly [key: string]: unknown;
 }
 
 // ────────────────────────────────────────────────────────────────────

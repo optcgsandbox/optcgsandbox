@@ -21,7 +21,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { useDonArm } from '../store/donArm';
 import { CardArt } from './CardArt';
-import type { Action } from '@shared/protocol/actions';
+import type { Action } from '@shared/engine-v2/protocol/actions';
 
 interface ActionButton {
   label: string;

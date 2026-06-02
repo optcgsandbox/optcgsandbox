@@ -18,8 +18,8 @@
 
 import { memo, useMemo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import type { Card, CardColor, LeaderCard } from '@shared/engine/cards/Card';
-import type { CardInstance } from '@shared/engine/GameState';
+import type { Card, CardColor, LeaderCard } from '@shared/engine-v2/cards/Card';
+import type { CardInstance } from '@shared/engine-v2/state/types';
 
 export type CardArtSize = 'hand' | 'field' | 'leader' | 'modal' | 'mini' | 'lifeStack';
 
@@ -731,7 +731,7 @@ export const CardArt = memo(function CardArt({
 });
 
 // Card type augmentation kept for image URL support.
-declare module '@shared/engine/cards/Card' {
+declare module '@shared/engine-v2/cards/Card' {
   interface CardBase {
     imageUrl?: string;
   }

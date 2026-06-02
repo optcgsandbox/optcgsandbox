@@ -42,13 +42,14 @@ export const EventCardOverlay = memo(function EventCardOverlay() {
   useEffect(() => {
     if (history.length <= lastProcessed) return;
     for (let i = lastProcessed; i < history.length; i++) {
-      const ev = history[i];
-      if (ev.type !== 'CARD_PLAYED') continue;
-      const inst = instances[ev.instanceId];
+      const ev = history[i] as { type?: string; instanceId?: string };
+      if (ev?.type !== 'CARD_PLAYED' && ev?.type !== 'CHARACTER_PLAYED') continue;
+      const instanceId = String(ev.instanceId ?? '');
+      const inst = instances[instanceId];
       if (!inst) continue;
       const card = library[inst.cardId];
       if (!card || card.kind !== 'event') continue;
-      setActive({ eventIndex: i, instanceId: ev.instanceId });
+      setActive({ eventIndex: i, instanceId });
       setLastProcessed(i + 1);
       return;
     }

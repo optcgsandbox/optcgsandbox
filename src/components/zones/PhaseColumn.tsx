@@ -33,7 +33,7 @@
 
 import { memo } from 'react';
 import { useGameStore } from '../../store/game';
-import type { Phase, PlayerId } from '@shared/engine/GameState';
+import type { Phase, PlayerId } from '@shared/engine-v2/state/types';
 
 interface PhaseColumnProps {
   playerId: PlayerId;
@@ -58,7 +58,6 @@ function mapPhase(phase: Phase): PhaseLike | null {
     case 'main':
     case 'end':
       return phase;
-    case 'attack_declaration':
     case 'block_window':
     case 'counter_window':
     case 'damage_resolution':

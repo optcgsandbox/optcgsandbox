@@ -155,7 +155,7 @@ function GameOverSplash() {
                  bg-paper-cream/95 backdrop-blur-sm"
     >
       <h2 className="font-display text-[2.5rem] leading-none text-ink-black">
-        {result.winner === 'draw' ? 'Draw' : `${result.winner} wins`}
+        {`${result.loser === 'A' ? 'B' : 'A'} wins`}
       </h2>
       <p className="font-body text-[0.875rem] uppercase tracking-wider text-ink-iron">
         by {result.reason}

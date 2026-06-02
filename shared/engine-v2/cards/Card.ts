@@ -55,6 +55,8 @@ interface CardBase {
   readonly attribute?: CardAttribute;
   readonly effectText: string;
   readonly effectSpecV2?: EffectSpecV2;
+  /** Optional asset URL — UI consumer; ignored by engine. */
+  readonly imageUrl?: string;
 }
 
 export interface LeaderCard extends CardBase {

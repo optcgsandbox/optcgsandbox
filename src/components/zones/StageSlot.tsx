@@ -11,7 +11,7 @@ import { memo } from 'react';
 import { useGameStore } from '../../store/game';
 import { ZoneSlot } from '../ZoneSlot';
 import { CardArt, CARD_DIMS } from '../CardArt';
-import type { PlayerId } from '@shared/engine/GameState';
+import type { PlayerId } from '@shared/engine-v2/state/types';
 
 interface StageSlotProps {
   playerId: PlayerId;

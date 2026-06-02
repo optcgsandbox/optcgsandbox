@@ -8,7 +8,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt } from './CardArt';
 import { springs } from '../lib/animationTokens';
-import type { CardInstance } from '@shared/engine/GameState';
+import type { CardInstance } from '@shared/engine-v2/state/types';
 
 interface AttackResolutionOverlayProps {
   /** Show even when no pendingAttack exists (storybook / preview). Default false. */
@@ -29,7 +29,9 @@ export const AttackResolutionOverlay = memo(function AttackResolutionOverlay({
   forceShow,
   onPass,
 }: AttackResolutionOverlayProps) {
-  const pending = useGameStore((s) => s.state.pendingAttack);
+  const pending = useGameStore((s) =>
+    s.state.pending?.kind === 'attack' ? s.state.pending.pendingAttack : null,
+  );
   const phase = useGameStore((s) => s.state.phase);
   const instances = useGameStore((s) => s.state.instances);
   const library = useGameStore((s) => s.state.cardLibrary);

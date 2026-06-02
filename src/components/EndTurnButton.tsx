@@ -6,8 +6,8 @@
 
 import { memo, useCallback, useMemo } from 'react';
 import { useGameStore } from '../store/game';
-import type { Action } from '@shared/protocol/actions';
-import type { Phase, PlayerId } from '@shared/engine/GameState';
+import type { Action } from '@shared/engine-v2/protocol/actions';
+import type { Phase, PlayerId } from '@shared/engine-v2/state/types';
 
 interface Affordance {
   label: string;
@@ -30,7 +30,7 @@ function computeAffordance(
     if (phase === 'main') {
       return { label: 'END TURN', enabled: true, action: null, isEndTurn: true };
     }
-    if (phase === 'attack_declaration' || phase === 'damage_resolution') {
+    if (phase === 'block_window' || phase === 'damage_resolution') {
       return { label: 'ATTACKING…', enabled: false, action: null, isEndTurn: false };
     }
     if (phase === 'trigger_window') {

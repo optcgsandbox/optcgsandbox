@@ -11,7 +11,9 @@ import { CardArt } from './CardArt';
 
 export const DiscardChoicePrompt = memo(function DiscardChoicePrompt() {
   const phase = useGameStore((s) => s.state.phase);
-  const pendingDiscard = useGameStore((s) => s.state.pendingDiscard);
+  const pendingDiscard = useGameStore((s) =>
+    s.state.pending?.kind === 'discard' ? s.state.pending.pendingDiscard : null,
+  );
   const viewAs = useGameStore((s) => s.viewAs);
   const players = useGameStore((s) => s.state.players);
   const instances = useGameStore((s) => s.state.instances);
@@ -26,13 +28,17 @@ export const DiscardChoicePrompt = memo(function DiscardChoicePrompt() {
 
   const onPick = useCallback(
     (instanceId: string) => {
-      dispatch({ type: 'RESOLVE_DISCARD', instanceId });
+      dispatch({ type: 'RESOLVE_DISCARD', pickedId: instanceId });
     },
     [dispatch],
   );
 
   if (!open || !pendingDiscard) return null;
-  const oppHand = players[pendingDiscard.revealedFrom].hand;
+  // V2 revealedFrom: 'self_hand' (active player picks own hand) or 'opp_hand'.
+  const handSide = pendingDiscard.revealedFrom === 'self_hand'
+    ? pendingDiscard.controller
+    : (pendingDiscard.controller === 'A' ? 'B' : 'A');
+  const oppHand = players[handSide].hand;
 
   return (
     <AnimatePresence>

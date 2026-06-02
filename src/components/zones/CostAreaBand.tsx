@@ -16,7 +16,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../../store/game';
 import { useDonArm } from '../../store/donArm';
 import { STAGGER_DON } from '../../lib/animationTokens';
-import type { PlayerId } from '@shared/engine/GameState';
+import type { PlayerId } from '@shared/engine-v2/state/types';
 
 interface CostAreaBandProps {
   playerId: PlayerId;

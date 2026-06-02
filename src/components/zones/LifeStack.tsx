@@ -16,7 +16,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { NavyCardBack } from './NavyCardBack';
 import { springs } from '../../lib/animationTokens';
 import { useGameStore } from '../../store/game';
-import type { PlayerId } from '@shared/engine/GameState';
+import type { PlayerId } from '@shared/engine-v2/state/types';
 
 interface LifeStackProps {
   /** Whose life pile to render. */

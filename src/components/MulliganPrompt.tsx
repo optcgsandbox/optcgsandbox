@@ -22,7 +22,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt } from './CardArt';
 import { springs } from '../lib/animationTokens';
-import type { PlayerId } from '@shared/engine/GameState';
+import type { PlayerId } from '@shared/engine-v2/state/types';
 
 export const MulliganPrompt = memo(function MulliganPrompt() {
   const phase = useGameStore((s) => s.state.phase);

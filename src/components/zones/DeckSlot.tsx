@@ -10,7 +10,7 @@ import { useGameStore } from '../../store/game';
 import { ZoneSlot } from '../ZoneSlot';
 import { CARD_DIMS } from '../CardArt';
 import { NavyCardBack } from './NavyCardBack';
-import type { PlayerId } from '@shared/engine/GameState';
+import type { PlayerId } from '@shared/engine-v2/state/types';
 
 interface DeckSlotProps {
   playerId: PlayerId;

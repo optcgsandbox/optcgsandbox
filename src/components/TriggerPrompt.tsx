@@ -20,7 +20,9 @@ import { CardArt } from './CardArt';
 import { springs } from '../lib/animationTokens';
 
 export const TriggerPrompt = memo(function TriggerPrompt() {
-  const pendingTrigger = useGameStore((s) => s.state.pendingTrigger);
+  const pendingTrigger = useGameStore((s) =>
+    s.state.pending?.kind === 'trigger' ? s.state.pending.pendingTrigger : null,
+  );
   const viewAs = useGameStore((s) => s.viewAs);
   const instances = useGameStore((s) => s.state.instances);
   const library = useGameStore((s) => s.state.cardLibrary);
