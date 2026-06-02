@@ -185,8 +185,8 @@ export interface PendingPeek {
 
 export interface PendingDiscard {
   readonly controller: PlayerId;
-  readonly sourceInstanceId: InstanceId;
-  readonly revealedFrom: 'opp_hand';
+  readonly sourceInstanceId: InstanceId; // 'system' for hand-size-limit enforcement
+  readonly revealedFrom: 'opp_hand' | 'self_hand'; // self_hand = hand-size limit (CR §6-5-7)
   readonly count: number;
   readonly resumePhase: Phase;
 }
