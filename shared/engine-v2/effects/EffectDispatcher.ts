@@ -23,7 +23,7 @@
  */
 
 import type { Card } from '../cards/Card.js';
-import { makeOptKey, markOptUsed } from '../state/derived/opt.js';
+import { isOptUsed, makeOptKey, markOptUsed } from '../state/derived/opt.js';
 import type {
   EffectClauseV2,
   EffectConditionV2,
@@ -106,6 +106,14 @@ export const EffectDispatcher = {
       const clause = clauses[i]!;
       if (clause.trigger !== trigger) continue;
 
+      // (0) OPT-gate — skip clauses already used this turn (closes CR-2 audit
+      // finding; aligns with ReplacementManager.tryReplace OPT gate).
+      if (clause.opt === true) {
+        const optKey = makeOptKey('opt', trigger, i);
+        const gateInst = working.instances[ctx.sourceInstanceId];
+        if (gateInst !== undefined && isOptUsed(gateInst, optKey)) continue;
+      }
+
       // (1) Condition
       if (!evaluateCondition(working, ctx, clause.condition)) continue;
 
@@ -118,10 +126,9 @@ export const EffectDispatcher = {
         if (targets.length === 0) continue;
       }
 
-      // (3,4) Cost
+      // (3,4) Cost — atomic: snapshot working before pay loop; restore on
+      // partial-pay failure (closes CR-1 audit finding).
       if (clause.cost !== undefined) {
-        // Cost handlers are keyed by cost-key NAME (top-level keys of the
-        // EffectCostV2 object). Each key is evaluated independently.
         let allCanPay = true;
         for (const key of Object.keys(clause.cost)) {
           const cost = costHandlers.get(key);
@@ -131,17 +138,23 @@ export const EffectDispatcher = {
           }
         }
         if (!allCanPay) continue;
+        const preCostSnapshot = structuredClone(working);
+        let payState: typeof working = working;
         let payFailed = false;
         for (const key of Object.keys(clause.cost)) {
           const cost = costHandlers.get(key);
-          const next = cost.pay(working, ctx, clause.cost);
+          const next = cost.pay(payState, ctx, clause.cost);
           if (next === null) {
             payFailed = true;
             break;
           }
-          working = next;
+          payState = next;
         }
-        if (payFailed) continue;
+        if (payFailed) {
+          working = preCostSnapshot;
+          continue;
+        }
+        working = payState;
       }
 
       // (5) Action

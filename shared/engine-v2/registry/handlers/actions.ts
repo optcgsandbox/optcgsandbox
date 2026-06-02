@@ -13,6 +13,7 @@
  * - V1 reference: shared/engine/effectSpec/runner-v2.ts:660-...
  */
 
+import { EffectDispatcher } from '../../effects/EffectDispatcher.js';
 import { detachAllAttachedDon } from '../../state/derived/don.js';
 import { resetInstanceTransientState } from '../../state/derived/reset.js';
 import type { EffectActionV2 } from '../../spec/types.js';
@@ -139,30 +140,39 @@ const giveKeyword: ActionHandler = (state, _ctx, action, targets) => {
 // ────────────────────────────────────────────────────────────────────
 // removal_ko  — KO target characters
 // ────────────────────────────────────────────────────────────────────
-const removalKo: ActionHandler = (state, _ctx, _action, targets) => {
+const removalKo: ActionHandler = (state, ctx, _action, targets) => {
+  let next = state;
   for (const id of targets) {
-    const z = findInstZone(state, id);
+    const z = findInstZone(next, id);
     if (z === null || z.zone !== 'field') continue;
-    const pl = state.players[z.side];
+    const pl = next.players[z.side];
     const idx = pl.field.findIndex((c) => c.instanceId === id);
     if (idx === -1) continue;
     const inst = pl.field[idx]!;
-    detachAllAttachedDon(state, inst, z.side);
+    detachAllAttachedDon(next, inst, z.side);
     pl.field.splice(idx, 1);
-    state.koSourceStack.push({
+    // CR-4 audit fix: source is 'own_effect' when source controller equals
+    // KO'd char's side (self-sac); otherwise 'opp_effect'.
+    next.koSourceStack.push({
       instanceId: id,
-      source: 'opp_effect', // assume effect-driven KO; battle KO uses a separate path
+      source: z.side === ctx.controller ? 'own_effect' : 'opp_effect',
     });
-    resetInstanceTransientState(inst);
-    pl.trash.push(id);
-    (state.history as Array<unknown>).push({
+    (next.history as Array<unknown>).push({
       type: 'CHARACTER_KOD',
       instanceId: id,
       controller: z.side,
       reason: 'removal_ko',
     });
+    // CR-5 audit fix: fire on_ko clauses BEFORE resetting transient state
+    // (clauses may read inst fields like attached DON count, etc.).
+    next = EffectDispatcher.dispatch(next, {
+      sourceInstanceId: id,
+      controller: z.side,
+    }, 'on_ko');
+    resetInstanceTransientState(inst);
+    pl.trash.push(id);
   }
-  return state;
+  return next;
 };
 
 // ────────────────────────────────────────────────────────────────────

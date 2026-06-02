@@ -21,6 +21,8 @@
  */
 
 import { EffectDispatcher } from '../effects/EffectDispatcher.js';
+import { finalizeEndTurn } from '../phases/PhaseScheduler.js';
+import { PhaseScheduler } from '../phases/PhaseScheduler.js';
 import type {
   ActionResolveChooseOne,
   ActionResolveDiscard,
@@ -30,7 +32,7 @@ import type {
 } from '../protocol/actions.js';
 import { actionHandlers } from '../registry/types.js';
 import type { EffectClauseV2 } from '../spec/types.js';
-import type { GameState, PlayerId } from '../state/types.js';
+import { OTHER_PLAYER, type GameState, type PlayerId } from '../state/types.js';
 import { registerActionReducer } from './registry.js';
 
 // ─── RESOLVE_TRIGGER
@@ -152,6 +154,24 @@ function resolveDiscardReducer(
 
   state.phase = pd.resumePhase;
   state.pending = null;
+
+  // CR-3 audit fix: if the discard was triggered by hand-size limit at end of
+  // turn (revealedFrom === 'self_hand' AND resumePhase === 'end'), the
+  // pass-turn block in PhaseScheduler.enterEnd was skipped. Finalize now and
+  // chain into the next player's turn.
+  if (pd.revealedFrom === 'self_hand' && pd.resumePhase === 'end') {
+    const ap = pd.controller;
+    const opp = OTHER_PLAYER[ap];
+    let next = finalizeEndTurn(state, ap, opp);
+    if (next.result !== null) return next;
+    next = PhaseScheduler.enterRefresh(next);
+    if (next.result !== null) return next;
+    next = PhaseScheduler.enterDraw(next);
+    if (next.result !== null) return next;
+    next = PhaseScheduler.enterDon(next);
+    if (next.result !== null) return next;
+    return PhaseScheduler.enterMain(next);
+  }
   return state;
 }
 

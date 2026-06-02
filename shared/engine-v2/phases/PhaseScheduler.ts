@@ -251,16 +251,31 @@ export const PhaseScheduler = {
       return state;
     }
 
-    // (5) Pass turn.
-    state.activePlayer = opp;
-    state.turn += 1;
-    state.koSourceStack = [];
-    state.pendingDonReturned = {};
-
-    // TODO: TriggerEngine.broadcast(state, 'at_end_phase', ap);
-    return setPhase(state, expectStaticNext('end')); // → 'refresh' (next turn)
+    return finalizeEndTurn(state, ap, opp);
   },
 } as const;
+
+/**
+ * Finalize end-of-turn: pass turn to opp, bump turn counter, reset
+ * koSourceStack + pendingDonReturned, transition phase → refresh.
+ *
+ * Exported so the hand-size-limit RESOLVE_DISCARD resumer can call it
+ * after the discard completes (closes CR-3 audit finding — without this
+ * the turn would hang at phase='end' permanently).
+ */
+export function finalizeEndTurn(
+  state: GameState,
+  ap: PlayerId,
+  opp: PlayerId,
+): GameState {
+  state.activePlayer = opp;
+  state.turn += 1;
+  state.koSourceStack = [];
+  state.pendingDonReturned = {};
+  // TODO: TriggerEngine.broadcast(state, 'at_end_phase', ap);
+  void ap;
+  return setPhase(state, expectStaticNext('end')); // → 'refresh' (next turn)
+}
 
 // ────────────────────────────────────────────────────────────────────
 // Re-exports for callers
