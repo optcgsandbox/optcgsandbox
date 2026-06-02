@@ -139,6 +139,15 @@ describe('engine-v2 smoke', () => {
     expect(restored.players['A'].leader.instanceId).toBe(state.players['A'].leader.instanceId);
   });
 
+  it('EasyAi picks a legal action and never concedes', async () => {
+    const { EasyAi } = await import('../ai/EasyAi.js');
+    const state = buildBasicGameState();
+    const ai = new EasyAi(123);
+    const action = await ai.chooseAction(state, 'A', 1000);
+    expect(action).toBeDefined();
+    expect(action.type).not.toBe('CONCEDE');
+  });
+
   it('getLegalActions: main phase includes END_TURN + ATTACH_DON + CONCEDE', async () => {
     const { getLegalActions } = await import('../rules/legality.js');
     const state = buildBasicGameState();
