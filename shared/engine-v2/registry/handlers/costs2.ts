@@ -105,30 +105,42 @@ const revealHand: CostHandler = {
   },
 };
 
-// ─── lifeToHand: top of life → hand as cost
+// ─── lifeToHand: top N life cards → hand as cost. Honors the cost-key's
+//     numeric value; defaults to 1 when the key value is non-numeric.
 const lifeToHand: CostHandler = {
-  canPay(state, ctx) {
-    return state.players[ctx.controller].life.length > 0;
+  canPay(state, ctx, cost) {
+    const n = Math.max(1, num(cost, 'lifeToHand'));
+    return state.players[ctx.controller].life.length >= n;
   },
-  pay(state, ctx) {
+  pay(state, ctx, cost) {
+    const n = Math.max(1, num(cost, 'lifeToHand'));
     const pl = state.players[ctx.controller];
-    const id = pl.life.shift();
-    if (id === undefined) return null;
-    pl.hand.push(id);
+    if (pl.life.length < n) return null;
+    for (let i = 0; i < n; i++) {
+      const id = pl.life.shift();
+      if (id === undefined) return null;
+      pl.hand.push(id);
+    }
     return state;
   },
 };
 
-// ─── flipLife: flip the top life card face-up (no zone change)
+// ─── flipLife: flip top N life cards face-up (no zone change). Honors the
+//     cost-key's numeric value; defaults to 1.
 const flipLife: CostHandler = {
-  canPay(state, ctx) {
-    return state.players[ctx.controller].life.length > 0;
+  canPay(state, ctx, cost) {
+    const n = Math.max(1, num(cost, 'flipLife'));
+    return state.players[ctx.controller].life.length >= n;
   },
-  pay(state, ctx) {
+  pay(state, ctx, cost) {
+    const n = Math.max(1, num(cost, 'flipLife'));
     const pl = state.players[ctx.controller];
-    const top = pl.life[0];
-    if (top === undefined) return null;
-    pl.lifeFaceUp[top] = true;
+    if (pl.life.length < n) return null;
+    for (let i = 0; i < n; i++) {
+      const id = pl.life[i];
+      if (id === undefined) return null;
+      pl.lifeFaceUp[id] = true;
+    }
     return state;
   },
 };
