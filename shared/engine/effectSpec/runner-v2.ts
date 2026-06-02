@@ -8,7 +8,7 @@
 import type { CardInstance, GameState, PlayerId } from '../GameState';
 import type { Card } from '../cards/Card';
 import type { EffectActionV2, EffectClauseV2, EffectConditionV2, EffectTargetV2, EffectTriggerV2, ReplacementEffectV2, TargetFilter } from './types-v2';
-import { tryApplyReplacement } from './replacements-v2';
+import { canPayClauseCost, payClauseCost, tryApplyReplacement } from './replacements-v2';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
@@ -187,9 +187,15 @@ export function evaluateConditionV2(
       return n >= cond.n;
     }
     case 'if_self_kod_by_opp_effect': {
-      const ks = (state as any).lastKoSource as
-        | { instanceId: string; source: 'opp_effect' | 'own_effect' | 'battle' }
+      // KO source stack handles cascade (on_ko fire → nested removal_ko).
+      // Read TOP of stack; falls back to legacy single-slot shape for safety.
+      const stack = (state as any).koSourceStack as
+        | Array<{ instanceId: string; source: 'opp_effect' | 'own_effect' | 'battle' }>
         | undefined;
+      const top = stack && stack.length > 0 ? stack[stack.length - 1] : undefined;
+      const ks = top ?? ((state as any).lastKoSource as
+        | { instanceId: string; source: 'opp_effect' | 'own_effect' | 'battle' }
+        | undefined);
       if (!ks || !sourceInstanceId) return false;
       return ks.instanceId === sourceInstanceId && ks.source === 'opp_effect';
     }
@@ -675,11 +681,32 @@ export function applyActionV2(
     case 'noop':
       return state;
     case 'sequence': {
+      // Each sub-action may carry its OWN `target` descriptor — re-resolve
+      // against the live state so the second action can react to the first
+      // (e.g. EB01-046 Brook cost-reduce then KO at cost 0 reads post-reduce
+      //  state; EB02-006 Yamato gives DON to leader then grants self Rush).
+      // If a sub has no `target`, it inherits the clause-level targets.
       let s = state;
       for (const inner of action.actions) {
-        s = applyActionV2(s, ctx, inner, targets);
+        const subTargetDesc = (inner as { target?: EffectTargetV2 }).target;
+        const resolved = subTargetDesc
+          ? resolveTargetV2(s, ctx.controller, ctx.sourceInstanceId, subTargetDesc)
+          : targets;
+        s = applyActionV2(s, ctx, inner, resolved);
       }
       return s;
+    }
+    case 'schedule_at_end_of_own_turn': {
+      // One-shot delayed action: enqueue on the controller's
+      // pendingEndOfTurn queue. `endTurn` drains entries belonging to the
+      // player whose turn is ending. Independent of the scheduling card's
+      // future presence on field.
+      me.pendingEndOfTurn = me.pendingEndOfTurn ?? [];
+      me.pendingEndOfTurn.push({
+        action: action.action,
+        sourceInstanceId: ctx.sourceInstanceId,
+      });
+      return state;
     }
     case 'draw': {
       const n = resolveMagnitude(state, ctx.controller, action.magnitude, 1);
@@ -1197,17 +1224,21 @@ export function applyActionV2(
           // Fire the KO'd char's OWN on_ko clauses (e.g. EB01-057 Shirahoshi,
           // EB02-036 Nico Robin). Mirrors the battle-KO path which fires
           // fireEffects(...,'on_ko',...) after trash.
-          // Stash KO-source for if_self_kod_by_opp_effect conditions:
-          // - if removal_ko's controller != koedSide → opp KO'd this char
-          //   via effect → 'opp_effect'
-          // - else (own removal_ko, e.g. self-trash) → 'own_effect'
+          // Stash KO-source via stack so nested removal_ko cascades don't
+          // clobber the outer frame's source.
           const anyState = state as any;
-          anyState.lastKoSource = {
+          anyState.koSourceStack = anyState.koSourceStack ?? [];
+          const frame = {
             instanceId: tid,
             source: ctx.controller !== koedSide ? 'opp_effect' : 'own_effect',
           };
+          anyState.koSourceStack.push(frame);
+          anyState.lastKoSource = frame;
           state = fireSpecOnInstance(state, tid, 'on_ko', koedSide);
-          delete anyState.lastKoSource;
+          anyState.koSourceStack.pop();
+          anyState.lastKoSource = anyState.koSourceStack.length > 0
+            ? anyState.koSourceStack[anyState.koSourceStack.length - 1]
+            : undefined;
           // Broadcast on_any_char_ko to BOTH players' field cards
           // (EB01-047 Laboon fires when ANY character is KO'd).
           state = broadcastTriggerToBothFields(state, 'on_any_char_ko');
@@ -1657,15 +1688,26 @@ export function broadcastTriggerToOwnField(
   for (const inst of candidates) {
     const card = state.cardLibrary[inst.cardId] as
       | { effectSpecV2?: { clauses?: EffectClauseV2[] }; keywords?: string[] } | undefined;
-    const clauses = card?.effectSpecV2?.clauses ?? [];
-    const isOpt = !!card?.keywords?.includes('once_per_turn');
-    for (const clause of clauses) {
+    const allClauses = card?.effectSpecV2?.clauses ?? [];
+    for (let idx = 0; idx < allClauses.length; idx++) {
+      const clause = allClauses[idx];
       if (clause.trigger !== trigger) continue;
-      if (isOpt && inst.perTurn.effectsUsed.includes(trigger)) continue;
+      // OPT: per-source-per-clause-index tally, same key shape as
+      // fireV2Effects and fireSpecOnInstance.
+      if (clause.opt) {
+        const tag = `opt:${trigger}:${idx}`;
+        if (inst.perTurn.effectsUsed.includes(tag)) continue;
+        inst.perTurn.effectsUsed.push(tag);
+      }
       if (clause.condition && !evaluateConditionV2(state, controller, clause.condition, inst.instanceId)) continue;
+      if (clause.cost) {
+        if (!canPayClauseCost(state, controller, inst.instanceId, clause.cost)) continue;
+        const paid = payClauseCost(state, controller, inst.instanceId, clause.cost);
+        if (!paid) continue;
+        state = paid;
+      }
       const targets = resolveTargetV2(state, controller, inst.instanceId, clause.target);
       state = applyActionV2(state, { sourceInstanceId: inst.instanceId, controller }, clause.action, targets);
-      if (isOpt && !inst.perTurn.effectsUsed.includes(trigger)) inst.perTurn.effectsUsed.push(trigger);
     }
   }
   return state;
@@ -1684,26 +1726,43 @@ export function broadcastTriggerToBothFields(
 /** Fire `trigger` clauses on EXACTLY ONE instance (by ID), regardless of
  *  the instance's current zone. Used for KO'd cards (already in trash) and
  *  similar zone-free fires where `broadcastTriggerToOwnField` would skip
- *  the instance because it has left the field. */
+ *  the instance because it has left the field.
+ *
+ *  Mirrors `fireV2Effects` semantics: pays `clause.cost`, honors OPT via
+ *  the same `opt:${trigger}:${idx}` key so the two paths share OPT state. */
 export function fireSpecOnInstance(
   state: GameState,
   instanceId: string,
   trigger: EffectTriggerV2,
   controller: PlayerId,
 ): GameState {
-  const inst = state.instances[instanceId];
-  if (!inst) return state;
-  const card = state.cardLibrary[inst.cardId] as
+  const inst0 = state.instances[instanceId];
+  if (!inst0) return state;
+  const card = state.cardLibrary[inst0.cardId] as
     | { effectSpecV2?: { clauses?: EffectClauseV2[] }; keywords?: string[] } | undefined;
-  const clauses = card?.effectSpecV2?.clauses ?? [];
-  const isOpt = !!card?.keywords?.includes('once_per_turn');
-  for (const clause of clauses) {
-    if (clause.trigger !== trigger) continue;
-    if (isOpt && inst.perTurn.effectsUsed.includes(trigger)) continue;
+  const allClauses = card?.effectSpecV2?.clauses ?? [];
+  const matching = allClauses
+    .map((c, idx) => ({ c, idx }))
+    .filter((e) => e.c.trigger === trigger);
+  for (const { c: clause, idx } of matching) {
+    // OPT: per-source-per-clause-index tally on the instance, same key
+    // shape as fireV2Effects so cross-path OPT stays consistent.
+    if (clause.opt) {
+      const inst = state.instances[instanceId];
+      if (!inst) continue;
+      const tag = `opt:${trigger}:${idx}`;
+      if (inst.perTurn.effectsUsed.includes(tag)) continue;
+      inst.perTurn.effectsUsed.push(tag);
+    }
     if (clause.condition && !evaluateConditionV2(state, controller, clause.condition, instanceId)) continue;
+    if (clause.cost) {
+      if (!canPayClauseCost(state, controller, instanceId, clause.cost)) continue;
+      const paid = payClauseCost(state, controller, instanceId, clause.cost);
+      if (!paid) continue;
+      state = paid;
+    }
     const targets = resolveTargetV2(state, controller, instanceId, clause.target);
     state = applyActionV2(state, { sourceInstanceId: instanceId, controller }, clause.action, targets);
-    if (isOpt && !inst.perTurn.effectsUsed.includes(trigger)) inst.perTurn.effectsUsed.push(trigger);
   }
   return state;
 }

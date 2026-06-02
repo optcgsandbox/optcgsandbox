@@ -263,6 +263,11 @@ export type EffectActionV2 =
   // resolution chains multiple discrete effects (EB01-013: "play X. Then,
   // draw 1.") — the alternative of multiple clauses double-pays costs.
   | { kind: 'sequence'; actions: EffectActionV2[] }
+  // EB02-015 Jewelry Bonney etc.: queue a one-shot action to fire at the
+  // controller's END phase of the CURRENT turn. The wrapped action runs once
+  // and is discarded — even if the scheduling card has left the field by
+  // then (it's a triggered ability, not a continuous effect).
+  | { kind: 'schedule_at_end_of_own_turn'; action: EffectActionV2 }
   // Card movement & draw
   | { kind: 'draw'; magnitude?: number | MagnitudeFormula }
   | { kind: 'mill_self'; magnitude?: number }                          // (gap #29)

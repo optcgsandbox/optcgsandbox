@@ -83,6 +83,7 @@ describe('EB02-023 — Crocodile', () => {
     broadcastTriggerToOwnField(s, 'on_opp_char_bounce_by_me', 'A');
     const lastPeek = (s as unknown as { lastPeek?: { ids: string[] } }).lastPeek;
     expect(lastPeek?.ids).toEqual(top3);
-    expect(s.instances['cr'].perTurn.effectsUsed).toContain('on_opp_char_bounce_by_me');
+    // OPT key shape mirrors fireV2Effects: opt:${trigger}:${clauseIndex}
+    expect(s.instances['cr'].perTurn.effectsUsed).toContain('opt:on_opp_char_bounce_by_me:0');
   });
 });

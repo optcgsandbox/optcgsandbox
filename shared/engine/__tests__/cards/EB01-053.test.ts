@@ -51,14 +51,15 @@ function placeOppChar(s: any, id: string, cost: number) {
 describe('EB01-053 — Gastino', () => {
   const clause = EB01_053.effectSpecV2!.clauses![0];
 
-  it('moves cost-3 opp char from field to TOP of opp life', () => {
+  it('moves cost-3 opp char from field to BOTTOM of opp life face-up (position:bottom is the engine\'s text-faithful choice)', () => {
     const s = boot();
     placeOppChar(s, 'c3', 3);
     const lifeBefore = s.players.B.life.length;
     applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, clause.action, ['c3']);
     expect(s.players.B.field.some((i: { instanceId: string }) => i.instanceId === 'c3')).toBe(false);
     expect(s.players.B.life.length).toBe(lifeBefore + 1);
-    expect(s.players.B.life[0]).toBe('c3');
+    expect(s.players.B.life[s.players.B.life.length - 1]).toBe('c3');
+    expect(s.players.B.lifeFaceUp['c3']).toBe(true);
   });
 
   it('cost-4 opp char is not targetable (filter rejects)', () => {

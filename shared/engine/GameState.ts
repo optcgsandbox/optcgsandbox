@@ -175,6 +175,12 @@ export interface PlayerZones {
      *  active via Character effects"). */
     cantUseEffectType?: string;
   };
+  /** EB02-015 Jewelry Bonney et al.: one-shot actions scheduled by an
+   *  on_play resolution to fire at the END of the controller's CURRENT turn.
+   *  Each entry is { action: EffectActionV2 } captured at schedule-time.
+   *  Drained + cleared by endTurn for the active player. NOT persisted as a
+   *  continuous effect — pure one-shot per scheduling event. */
+  pendingEndOfTurn?: Array<{ action: unknown; sourceInstanceId: string }>;
 }
 
 export interface GameState {

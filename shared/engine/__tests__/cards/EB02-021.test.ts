@@ -50,20 +50,20 @@ function placeSHC(s: any, id: string) {
 }
 
 describe('EB02-021 — Gum-Gum Giant Pistol', () => {
-  const [buffClause, lockClause] = EB02_021.effectSpecV2!.clauses!;
+  const clause = EB02_021.effectSpecV2!.clauses![0];
 
-  it('buff: +6000 power to SHC target this turn', () => {
+  it('sequence: +6000 power AND restLocked land on the SAME selected SHC target', () => {
     const s = boot();
     placeSHC(s, 'shc');
-    applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, buffClause.action, ['shc']);
+    applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, clause.action, ['shc']);
     expect(s.instances['shc'].powerModifier).toBe(6000);
-    expect(endTurn(s).instances['shc'].powerModifier).toBeUndefined();
+    expect(s.instances['shc'].restLocked).toBe(true);
   });
 
-  it('lock: restLocked on SHC target', () => {
+  it('+6000 buff is this-turn only (clears at end of turn)', () => {
     const s = boot();
     placeSHC(s, 'shc');
-    applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, lockClause.action, ['shc']);
-    expect(s.instances['shc'].restLocked).toBe(true);
+    applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, clause.action, ['shc']);
+    expect(endTurn(s).instances['shc'].powerModifier).toBeUndefined();
   });
 });

@@ -5,7 +5,7 @@
 import type { GameState, PlayerId } from '../GameState';
 import { RULES } from '../GameState';
 import { publishTrigger } from '../effectSpec/triggerBus-v2';
-import { broadcastTriggerToOwnField, broadcastTriggerToBothFields } from '../effectSpec/runner-v2';
+import { applyActionV2, broadcastTriggerToOwnField, broadcastTriggerToBothFields } from '../effectSpec/runner-v2';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
@@ -195,9 +195,26 @@ export function endTurn(state: GameState): GameState {
   // subscribers see "whose turn is ending" via state.activePlayer.
   publishTrigger('at_end_of_turn_self', next, { player: next.activePlayer });
   publishTrigger('at_end_of_turn', next, { player: next.activePlayer });
-  // EB02-015 Bonney etc.: also fire matching effectSpecV2 clauses on
-  // cards currently in play. TriggerBus has no spec-side subscribers, so
-  // dispatch directly to field instances here.
+  // EB02-015 Jewelry Bonney etc.: drain delayed one-shot actions scheduled
+  // earlier this turn via `schedule_at_end_of_own_turn`. Pop everything
+  // before broadcasting at_end_of_turn_self so the delayed effects resolve
+  // FIRST (they were locked in at on_play time and don't gate on the
+  // scheduler's presence).
+  {
+    const pl = next.players[next.activePlayer];
+    const queue = pl.pendingEndOfTurn ?? [];
+    pl.pendingEndOfTurn = [];
+    for (const entry of queue) {
+      const inst = next.instances[entry.sourceInstanceId];
+      const controller = inst?.controller ?? next.activePlayer;
+      next = applyActionV2(
+        next,
+        { sourceInstanceId: entry.sourceInstanceId, controller },
+        entry.action as Parameters<typeof applyActionV2>[2],
+        [],
+      );
+    }
+  }
   next = broadcastTriggerToOwnField(next, 'at_end_of_turn_self', next.activePlayer);
   // at_end_of_turn fires on BOTH sides (it's an end-of-any-turn trigger
   // per the EffectTriggerV2 doc comment "fires at end of any turn").

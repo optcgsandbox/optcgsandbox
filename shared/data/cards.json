@@ -2261,50 +2261,52 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "removal_cost_reduce",
-            "magnitude": 1,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "opp_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 0
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "when_attacking",
-          "action": {
-            "kind": "removal_cost_reduce",
-            "magnitude": 1,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "opp_character"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_cost_reduce",
+                "magnitude": 1,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "opp_character"
+                }
+              },
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 0
+                  }
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         },
         {
           "trigger": "when_attacking",
           "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 0
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_cost_reduce",
+                "magnitude": 1,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "opp_character"
+                }
+              },
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 0
+                  }
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -2623,7 +2625,8 @@
           "trigger": "on_play",
           "action": {
             "kind": "add_to_opp_life_top",
-            "faceUp": true
+            "faceUp": true,
+            "position": "bottom"
           },
           "target": {
             "kind": "opp_character",
@@ -3288,38 +3291,25 @@
             ]
           },
           "action": {
-            "kind": "give_don_to_target",
-            "magnitude": 1,
-            "rested": true
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "human-reviewed",
-          "opt": true
-        },
-        {
-          "trigger": "activate_main",
-          "condition": {
-            "type": "or",
-            "conditions": [
+            "kind": "sequence",
+            "actions": [
               {
-                "type": "if_leader_has_trait",
-                "trait": "Land of Wano"
+                "kind": "give_don_to_target",
+                "magnitude": 1,
+                "rested": true,
+                "target": {
+                  "kind": "your_leader"
+                }
               },
               {
-                "type": "if_leader_is",
-                "name": "Portgas.D.Ace"
+                "kind": "give_keyword",
+                "keyword": "rush",
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                }
               }
             ]
-          },
-          "action": {
-            "kind": "give_keyword",
-            "keyword": "rush",
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
           },
           "verified": "human-reviewed",
           "opt": true
@@ -3798,22 +3788,26 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "rest_lock_until_phase",
-            "until": "opp_next_end_phase"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "rested": true
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "at_end_of_turn_self",
-          "action": {
-            "kind": "set_active_don",
-            "magnitude": 1
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "rest_lock_until_phase",
+                "until": "opp_next_end_phase",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "rested": true
+                  }
+                }
+              },
+              {
+                "kind": "schedule_at_end_of_own_turn",
+                "action": {
+                  "kind": "set_active_don",
+                  "magnitude": 1
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -4097,23 +4091,18 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 6000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "your_character",
-            "filter": {
-              "trait": "Straw Hat Crew"
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "rest_lock_until_phase",
-            "until": "opp_next_end_phase"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": 6000,
+                "duration": "this_turn"
+              },
+              {
+                "kind": "rest_lock_until_phase",
+                "until": "opp_next_end_phase"
+              }
+            ]
           },
           "target": {
             "kind": "your_character",

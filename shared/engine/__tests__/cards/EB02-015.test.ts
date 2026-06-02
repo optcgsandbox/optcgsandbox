@@ -2,6 +2,12 @@
 //   "[On Play] Up to 1 of your opponent's rested Characters will not
 //    become active in your opponent's next Refresh Phase. Then, set up
 //    to 1 of your DON!! cards as active at the end of this turn."
+//
+// Spec shape: single on_play clause with action.kind='sequence':
+//   1. rest_lock_until_phase on opp rested char
+//   2. schedule_at_end_of_own_turn { set_active_don magnitude: 1 }
+// The delayed don-active is enqueued at on_play, fires once at end of
+// THIS turn, and is independent of Bonney's later presence on field.
 import { describe, expect, it } from 'vitest';
 import { applyActionV2 } from '../../effectSpec/runner-v2';
 import { initialState } from '../../GameState';
@@ -35,9 +41,9 @@ function boot() {
 }
 
 describe('EB02-015 — Jewelry Bonney', () => {
-  const [lockClause, donClause] = EB02_015.effectSpecV2!.clauses!;
+  const clause = EB02_015.effectSpecV2!.clauses![0];
 
-  it('lock clause: sets restLocked on rested opp char', () => {
+  it('on_play sequence: rest-lock target + schedule end-of-turn ramp', () => {
     const s = boot();
     const c: CharacterCard = {
       id: 'OC', name: 'OC', kind: 'character', colors: ['green'],
@@ -50,32 +56,21 @@ describe('EB02-015 — Jewelry Bonney', () => {
       perTurn: { hasAttacked: false, effectsUsed: [] }, summoningSick: false,
     };
     s.players.B.field.push(s.instances['oc']);
-    applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, lockClause.action, ['oc']);
+    s.players.A.donRested = ['r1'];
+    applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, clause.action, []);
     expect(s.instances['oc'].restLocked).toBe(true);
+    expect(s.players.A.pendingEndOfTurn?.length).toBe(1);
   });
 
-  it('don clause: set_active_don 1 moves 1 from rested to cost area', () => {
+  it('delayed action fires at end of THIS turn (don rest → active) and queue empties (one-shot)', () => {
     const s = boot();
     s.players.A.donRested = ['r1'];
-    const cBefore = s.players.A.donCostArea.length;
-    applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, donClause.action, []);
-    expect(s.players.A.donRested.length).toBe(0);
-    expect(s.players.A.donCostArea.length).toBe(cBefore + 1);
-  });
-
-  it('at_end_of_turn_self broadcast: Bonney on field fires don clause', () => {
-    const s = boot();
-    s.cardLibrary['EB02-015'] = EB02_015 as unknown as CharacterCard;
-    s.instances['bonney'] = {
-      instanceId: 'bonney', cardId: 'EB02-015', controller: 'A',
-      rested: false, attachedDon: [],
-      perTurn: { hasAttacked: false, effectsUsed: [] }, summoningSick: false,
-    };
-    s.players.A.field.push(s.instances['bonney']);
-    s.players.A.donRested = ['r1'];
+    applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, clause.action, []);
+    expect(s.players.A.pendingEndOfTurn?.length).toBe(1);
+    // End of A's current turn — should drain the queue and set 1 DON active.
     const s2 = endTurn(s);
-    // After endTurn the active player flips; donRested should be reduced.
     expect(s2.players.A.donRested.length).toBe(0);
     expect(s2.players.A.donCostArea.length).toBeGreaterThan(0);
+    expect(s2.players.A.pendingEndOfTurn?.length ?? 0).toBe(0);
   });
 });

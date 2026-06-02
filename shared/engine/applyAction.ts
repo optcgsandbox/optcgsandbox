@@ -702,10 +702,16 @@ function resolveDamage(state: GameState): { state: GameState; events: GameEvent[
           // instance is now in trash; fireEffects still reads it from
           // state.instances which is keyed by instanceId, not zone.
           const anyNext = next as any;
-          anyNext.lastKoSource = { instanceId: removed.instanceId, source: 'battle' };
+          anyNext.koSourceStack = anyNext.koSourceStack ?? [];
+          const frame = { instanceId: removed.instanceId, source: 'battle' };
+          anyNext.koSourceStack.push(frame);
+          anyNext.lastKoSource = frame;
           const after = fireEffects(next, removed.instanceId, 'on_ko', koedController);
           Object.assign(next, after);
-          delete anyNext.lastKoSource;
+          anyNext.koSourceStack.pop();
+          anyNext.lastKoSource = anyNext.koSourceStack.length > 0
+            ? anyNext.koSourceStack[anyNext.koSourceStack.length - 1]
+            : undefined;
 
           // F2 (EB01-047 Laboon etc.): on_any_char_ko + on_any_opp_char_ko
           // dispatch via spec-clause broadcast.

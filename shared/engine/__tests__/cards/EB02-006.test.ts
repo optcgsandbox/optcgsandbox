@@ -36,35 +36,28 @@ function boot(name: string, traits: string[]) {
 }
 
 describe('EB02-006 — Yamato (red 6-cost)', () => {
-  const [donClause, rushClause] = EB02_006.effectSpecV2!.clauses!;
+  const clause = EB02_006.effectSpecV2!.clauses![0];
 
   it('condition TRUE: Land of Wano leader', () => {
     const s = boot('Wano', ['Land of Wano']);
-    expect(evaluateConditionV2(s, 'A', donClause.condition, 'src')).toBe(true);
+    expect(evaluateConditionV2(s, 'A', clause.condition, 'src')).toBe(true);
   });
 
   it('condition TRUE: Portgas.D.Ace leader (by name)', () => {
     const s = boot('Portgas.D.Ace', ['Whitebeard Pirates']);
-    expect(evaluateConditionV2(s, 'A', donClause.condition, 'src')).toBe(true);
+    expect(evaluateConditionV2(s, 'A', clause.condition, 'src')).toBe(true);
   });
 
   it('condition FALSE: other leader', () => {
     const s = boot('Other', ['Other']);
-    expect(evaluateConditionV2(s, 'A', donClause.condition, 'src')).toBe(false);
+    expect(evaluateConditionV2(s, 'A', clause.condition, 'src')).toBe(false);
   });
 
-  it('don clause: give_don_to_target attaches 1 DON to leader', () => {
+  it('sequence: attaches 1 DON to leader AND grants rush to self in one resolution', () => {
     const s = boot('Wano', ['Land of Wano']);
     const leaderId = s.players.A.leader.instanceId;
     const cBefore = s.players.A.donCostArea.length;
     const attBefore = s.instances[leaderId].attachedDon.length;
-    applyActionV2(s, { sourceInstanceId: 'src', controller: 'A' }, donClause.action, [leaderId]);
-    expect(s.instances[leaderId].attachedDon.length).toBe(attBefore + 1);
-    expect(s.players.A.donCostArea.length).toBe(cBefore - 1);
-  });
-
-  it('rush clause: grants rush keyword to self', () => {
-    const s = boot('Wano', ['Land of Wano']);
     s.cardLibrary['YAM'] = {
       id: 'YAM', name: 'Yamato', kind: 'character', colors: ['red'],
       cost: 6, power: 7000, counterValue: null, traits: ['Land of Wano'], keywords: [], effectTags: [],
@@ -75,7 +68,9 @@ describe('EB02-006 — Yamato (red 6-cost)', () => {
       perTurn: { hasAttacked: false, effectsUsed: [] }, summoningSick: false,
     };
     s.players.A.field.push(s.instances['yam']);
-    applyActionV2(s, { sourceInstanceId: 'yam', controller: 'A' }, rushClause.action, ['yam']);
+    applyActionV2(s, { sourceInstanceId: 'yam', controller: 'A' }, clause.action, []);
+    expect(s.instances[leaderId].attachedDon.length).toBe(attBefore + 1);
+    expect(s.players.A.donCostArea.length).toBe(cBefore - 1);
     expect(s.instances['yam'].grantedKeywords).toContain('rush');
   });
 });
