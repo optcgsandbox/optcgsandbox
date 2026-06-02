@@ -139,6 +139,18 @@ describe('engine-v2 smoke', () => {
     expect(restored.players['A'].leader.instanceId).toBe(state.players['A'].leader.instanceId);
   });
 
+  it('getLegalActions: main phase includes END_TURN + ATTACH_DON + CONCEDE', async () => {
+    const { getLegalActions } = await import('../rules/legality.js');
+    const state = buildBasicGameState();
+    const actions = getLegalActions(state, 'A');
+    expect(actions.some((a) => a.type === 'END_TURN')).toBe(true);
+    expect(actions.some((a) => a.type === 'ATTACH_DON')).toBe(true);
+    expect(actions.some((a) => a.type === 'CONCEDE')).toBe(true);
+    // Inactive player gets only CONCEDE in main phase.
+    const oppActions = getLegalActions(state, 'B');
+    expect(oppActions).toEqual([{ type: 'CONCEDE' }]);
+  });
+
   it('viewForPlayer redacts opp hand + own deck + face-down life', async () => {
     const { viewForPlayer, UNKNOWN_CARD } = await import('../view/ViewModule.js');
     const state = buildBasicGameState();
