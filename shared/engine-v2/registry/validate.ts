@@ -98,21 +98,27 @@ export function validateCardsAgainstRegistry(cards: ReadonlyArray<Card>): void {
   for (const card of cards) {
     const spec = card.effectSpecV2;
     if (!spec) continue;
-    for (const cl of spec.clauses) {
+    // cards.json: any of clauses / continuous / replacements MAY be absent
+    // on cards with no effect of that kind. Coerce defensively.
+    const clauses = Array.isArray(spec.clauses) ? spec.clauses : [];
+    const continuous = Array.isArray(spec.continuous) ? spec.continuous : [];
+    const replacements = Array.isArray(spec.replacements) ? spec.replacements : [];
+
+    for (const cl of clauses) {
       if (!triggerEmitters.has(cl.trigger)) missing.add(`trigger:${cl.trigger}`);
       walkCondition(cl.condition, missing);
       walkAction(cl.action, missing);
       walkTarget(cl.target, missing);
       walkCost(cl.cost, missing);
     }
-    for (const cont of spec.continuous) {
+    for (const cont of continuous) {
       walkCondition(cont.condition, missing);
-      if (!continuousHandlers.has(cont.action.kind)) {
+      if (cont.action !== undefined && !continuousHandlers.has(cont.action.kind)) {
         missing.add(`continuous:${cont.action.kind}`);
       }
       walkTarget(cont.target, missing);
     }
-    for (const r of spec.replacements) {
+    for (const r of replacements) {
       walkReplacement(r, missing);
     }
   }
