@@ -31,6 +31,7 @@ import type {
   ActionMulligan,
   ActionRollDice,
 } from '../protocol/actions.js';
+import { triggerEmitters } from '../registry/types.js';
 import { RngService } from '../state/RngService.js';
 import {
   type GameState,
@@ -206,7 +207,14 @@ function advanceMulliganPhase(state: GameState): GameState {
       state.activePlayer = state.firstPlayer;
       state.turn = 1;
       state.phase = 'refresh';
-      let next = PhaseScheduler.enterRefresh(state);
+      // Broadcast at_start_of_game BEFORE the first refresh — listeners (e.g.,
+      // leader effects, atStartOfGamePlay scheduled placements) get to fire
+      // against the freshly dealt-life initial state per CR §5-2-1-5-1.
+      let next = state;
+      if (triggerEmitters.has('at_start_of_game')) {
+        next = triggerEmitters.get('at_start_of_game')(next, { kind: 'at_start_of_game' }, state.firstPlayer);
+      }
+      next = PhaseScheduler.enterRefresh(next);
       if (next.result !== null) return next;
       next = PhaseScheduler.enterDraw(next);
       if (next.result !== null) return next;
