@@ -760,11 +760,40 @@ const revealTopThenIfCostMin: ActionHandler = (state, ctx, action, targets) =>
 const revealTopThenIfFilter: ActionHandler = (state, ctx, action, targets) =>
   revealTopThenIf(state, ctx, action, targets);
 
-// ─── peek_and_reorder_*: needs PendingReorder shape — out of scope for this
-//     batch. V0 noops (cards: rare; deferred to dedicated reorder PR).
-const peekAndReorderOwnDeck: ActionHandler = noop;
-const peekAndReorderOwnLife: ActionHandler = noop;
-const peekAndReorderOppLife: ActionHandler = noop;
+// ─── peek_and_reorder_*: V0 look-only. Expose the relevant top N to
+//     knownByViewer[ctx.controller]; do NOT actually reorder (true reorder
+//     requires PendingReorder + player decision — see #80 follow-up).
+//     Engine learns the cards' identities; downstream effects depending on
+//     reorder behavior (rare) still won't function correctly.
+function exposeToKnown(state: GameState, viewer: PlayerId, ids: ReadonlyArray<InstanceId>): void {
+  const known = state.knownByViewer[viewer] ?? [];
+  for (const id of ids) {
+    if (!known.includes(id)) known.push(id);
+  }
+  state.knownByViewer[viewer] = known;
+}
+
+const peekAndReorderOwnDeck: ActionHandler = (state, ctx, action) => {
+  const n = count(action, state.players[ctx.controller].deck.length);
+  const ids = state.players[ctx.controller].deck.slice(0, Math.min(n, state.players[ctx.controller].deck.length));
+  exposeToKnown(state, ctx.controller, ids);
+  return state;
+};
+
+const peekAndReorderOwnLife: ActionHandler = (state, ctx, action) => {
+  const n = count(action, state.players[ctx.controller].life.length);
+  const ids = state.players[ctx.controller].life.slice(0, Math.min(n, state.players[ctx.controller].life.length));
+  exposeToKnown(state, ctx.controller, ids);
+  return state;
+};
+
+const peekAndReorderOppLife: ActionHandler = (state, ctx, action) => {
+  const opp = state.players[OTHER[ctx.controller]];
+  const n = count(action, opp.life.length);
+  const ids = opp.life.slice(0, Math.min(n, opp.life.length));
+  exposeToKnown(state, ctx.controller, ids);
+  return state;
+};
 
 // ─── choose_one: suspend via PendingChoose with the supplied options array.
 //     resolveChooseOneReducer (choiceResolve.ts) fires options[optionIndex].action.
