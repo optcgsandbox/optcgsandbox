@@ -139,6 +139,41 @@ describe('engine-v2 smoke', () => {
     expect(restored.players['A'].leader.instanceId).toBe(state.players['A'].leader.instanceId);
   });
 
+  it('choose_one: PendingChoose roundtrip with sub-option targets + condition', async () => {
+    const { actionHandlers } = await import('../registry/types.js');
+    const state = buildBasicGameState();
+    const handler = actionHandlers.get('choose_one');
+    // Mimic EB02-045 Law shape: option 0 = draw 1, option 1 = if_opp_hand_min:5 → opp_discard_from_hand 1
+    const next = handler(state, {
+      sourceInstanceId: state.players['A'].leader.instanceId,
+      controller: 'A',
+    }, {
+      kind: 'choose_one',
+      options: [
+        { trigger: 'on_play', action: { kind: 'draw', magnitude: 1 }, verified: 'human-reviewed' },
+        {
+          trigger: 'on_play',
+          condition: { type: 'if_opp_hand_min', n: 5 },
+          action: { kind: 'opp_discard_from_hand', magnitude: 1 },
+          verified: 'human-reviewed',
+        },
+      ],
+    }, []);
+    expect(next.pending?.kind).toBe('choose_one');
+    expect(next.phase).toBe('choose_one');
+
+    const handBefore = next.players['A'].hand.length;
+    const r0 = applyAction(next, 'A', { type: 'RESOLVE_CHOOSE_ONE', optionIndex: 0 }, { checkInvariants: false });
+    expect(r0.state.pending).toBeNull();
+    expect(r0.state.players['A'].hand.length).toBe(handBefore + 1);
+
+    // Option 1 condition `if_opp_hand_min: 5` — fixture has B.hand = 0 → fails.
+    const r1 = applyAction(next, 'A', { type: 'RESOLVE_CHOOSE_ONE', optionIndex: 1 }, { checkInvariants: false });
+    expect(r1.state.pending).toBeNull();
+    // Discard skipped because condition failed
+    expect(r1.events.some((e) => (e as { conditionFailed?: boolean }).conditionFailed === true)).toBe(true);
+  });
+
   it('draw action honors magnitude (regression for cards.json shape)', async () => {
     const { actionHandlers } = await import('../registry/types.js');
     const state = buildBasicGameState();

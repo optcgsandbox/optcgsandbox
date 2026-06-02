@@ -20,7 +20,8 @@
  * - Plan v2 §1.3 (decision dispatch table)
  */
 
-import { EffectDispatcher } from '../effects/EffectDispatcher.js';
+import { CostPayer } from '../effects/CostPayer.js';
+import { EffectDispatcher, evaluateCondition } from '../effects/EffectDispatcher.js';
 import { finalizeEndTurn } from '../phases/PhaseScheduler.js';
 import { PhaseScheduler } from '../phases/PhaseScheduler.js';
 import type {
@@ -30,9 +31,9 @@ import type {
   ActionResolveTargetPick,
   ActionResolveTrigger,
 } from '../protocol/actions.js';
-import { actionHandlers } from '../registry/types.js';
+import { actionHandlers, targetResolvers } from '../registry/types.js';
 import type { EffectClauseV2 } from '../spec/types.js';
-import { OTHER_PLAYER, type GameState, type PlayerId } from '../state/types.js';
+import { OTHER_PLAYER, type GameState, type InstanceId, type PlayerId } from '../state/types.js';
 import { registerActionReducer } from './registry.js';
 
 // ─── RESOLVE_TRIGGER
@@ -193,12 +194,55 @@ function resolveChooseOneReducer(
     controller: pc.controller,
   };
 
-  // Fire the chosen action directly (skip the per-clause condition+cost+OPT
-  // bookkeeping — the parent dispatch already cleared those).
   let next = state;
+
+  // Evaluate the option's own condition before firing (EB02-045 second
+  // option gates on if_opp_hand_min:5).
+  if (clause.condition !== undefined && !evaluateCondition(next, ctx, clause.condition)) {
+    // Condition failed — skip the action but still resume + clear.
+    next.phase = pc.resumePhase;
+    next.pending = null;
+    (next.history as Array<unknown>).push({
+      type: 'CHOICE_RESOLVED',
+      sourceInstanceId: pc.sourceInstanceId,
+      optionIndex: action.optionIndex,
+      conditionFailed: true,
+    });
+    return next;
+  }
+
+  // Pay the option's own cost if present (2 cards: OP03-028, OP15-054).
+  // Atomicity: snapshot before pay; restore on failure.
+  if (clause.cost !== undefined) {
+    if (!CostPayer.canPay(next, ctx, clause.cost)) {
+      next.phase = pc.resumePhase;
+      next.pending = null;
+      (next.history as Array<unknown>).push({
+        type: 'CHOICE_RESOLVED',
+        sourceInstanceId: pc.sourceInstanceId,
+        optionIndex: action.optionIndex,
+        costUnpayable: true,
+      });
+      return next;
+    }
+    const paid = CostPayer.pay(next, ctx, clause.cost);
+    if (paid === null) {
+      next.phase = pc.resumePhase;
+      next.pending = null;
+      return next;
+    }
+    next = paid;
+  }
+
+  // Resolve the option's own target list.
+  let targets: ReadonlyArray<InstanceId> = [];
+  if (clause.target !== undefined && targetResolvers.has(clause.target.kind)) {
+    targets = targetResolvers.get(clause.target.kind)(next, ctx, clause.target);
+  }
+
   if (actionHandlers.has(clause.action.kind)) {
     const handler = actionHandlers.get(clause.action.kind);
-    next = handler(next, ctx, clause.action, []);
+    next = handler(next, ctx, clause.action, targets);
   }
 
   next.phase = pc.resumePhase;
