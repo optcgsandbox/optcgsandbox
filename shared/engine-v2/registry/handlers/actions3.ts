@@ -347,9 +347,18 @@ const giveCostBuff: ActionHandler = (state, ctx, action, targets) => {
 };
 
 const costReduction: ActionHandler = (state, ctx, action) => {
-  const n = resolveCount(state, ctx, action, -1);
-  state.players[ctx.controller].nextPlayCostModifier =
-    (state.players[ctx.controller].nextPlayCostModifier ?? 0) + n;
+  // cost_reduction magnitude is the AMOUNT to reduce by (positive number);
+  // applied as a NEGATIVE modifier to nextPlayCostModifier.
+  const raw = resolveCount(state, ctx, action, 1);
+  const delta = -Math.abs(raw);
+  const pl = state.players[ctx.controller];
+  pl.nextPlayCostModifier = (pl.nextPlayCostModifier ?? 0) + delta;
+  const scope = action['scope'];
+  if (typeof scope === 'object' && scope !== null) {
+    pl.nextPlayCostModifierScope = scope as Readonly<Record<string, unknown>>;
+  } else {
+    pl.nextPlayCostModifierScope = undefined;
+  }
   return state;
 };
 
@@ -506,10 +515,12 @@ const restrictOppAttack: ActionHandler = (state, ctx, action) => {
   return state;
 };
 
-const restrictPlaySelfThisTurn: ActionHandler = (state, ctx) => {
+const restrictPlaySelfThisTurn: ActionHandler = (state, ctx, action) => {
+  const raw = action['kind_filter'];
+  const kind = raw === 'character' || raw === 'event' || raw === 'stage' ? raw : 'character';
   state.players[ctx.controller].restrictions = {
     ...(state.players[ctx.controller].restrictions ?? {}),
-    cantPlayKind: 'character',
+    cantPlayKind: kind,
   };
   return state;
 };

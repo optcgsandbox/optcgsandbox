@@ -105,29 +105,47 @@ const shuffleDeck: ActionHandler = (state, ctx) => {
   return state;
 };
 
-// ─── transfer_attached_don: move N DON from source's attached → first target.
-//     Drains source.attachedDon FIRST (active), then attachedDonRested. Dest
-//     receives them on the matching pool to preserve DON state per CR §6-5-5-4.
-//     (Closes AC2-1 audit finding.)
+// ─── transfer_attached_don: move N DON → first target. Honors action.fromKind:
+//     'your_leader' → drain from own leader's attached pools.
+//     'any_own' → drain from any own field char (first non-empty source).
+//     default → drain from source instance.
+//     Drains active pool first, then rested, preserving per-pool state.
 const transferAttachedDon: ActionHandler = (state, ctx, action, targets) => {
   if (targets.length === 0) return state;
   const n = resolveCount(state, ctx, action, 1);
-  const source = state.instances[ctx.sourceInstanceId];
   const dest = state.instances[targets[0]!];
-  if (source === undefined || dest === undefined) return state;
+  if (dest === undefined) return state;
+  const fromKind = typeof action['fromKind'] === 'string' ? (action['fromKind'] as string) : 'self';
+  const pl = state.players[ctx.controller];
+
+  const drainPool: CardInstance[] = [];
+  if (fromKind === 'your_leader') {
+    drainPool.push(pl.leader);
+  } else if (fromKind === 'any_own') {
+    drainPool.push(pl.leader, ...pl.field);
+    if (pl.stage !== null) drainPool.push(pl.stage);
+  } else {
+    const src = state.instances[ctx.sourceInstanceId];
+    if (src !== undefined) drainPool.push(src);
+  }
+
   let moved = 0;
-  while (moved < n && source.attachedDon.length > 0) {
-    const id = source.attachedDon.shift();
-    if (id !== undefined) {
-      dest.attachedDon.push(id);
-      moved += 1;
+  for (const src of drainPool) {
+    while (moved < n && src.attachedDon.length > 0) {
+      const id = src.attachedDon.shift();
+      if (id !== undefined) {
+        dest.attachedDon.push(id);
+        moved += 1;
+      }
     }
   }
-  while (moved < n && source.attachedDonRested.length > 0) {
-    const id = source.attachedDonRested.shift();
-    if (id !== undefined) {
-      dest.attachedDonRested.push(id);
-      moved += 1;
+  for (const src of drainPool) {
+    while (moved < n && src.attachedDonRested.length > 0) {
+      const id = src.attachedDonRested.shift();
+      if (id !== undefined) {
+        dest.attachedDonRested.push(id);
+        moved += 1;
+      }
     }
   }
   return state;

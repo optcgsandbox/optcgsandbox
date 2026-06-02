@@ -131,6 +131,9 @@ export interface PlayerZones {
   armedReplacementsThisTurn?: ArmedReplacement[] | undefined;
   pendingEndOfTurn?: PendingEndOfTurnEntry[] | undefined;
   nextPlayCostModifier?: number | undefined;
+  // Optional filter — if set, nextPlayCostModifier only applies to a play
+  // whose card matches this filter. Cleared when modifier is consumed.
+  nextPlayCostModifierScope?: Readonly<Record<string, unknown>> | undefined;
 
   // Restriction flags
   restrictions?: {

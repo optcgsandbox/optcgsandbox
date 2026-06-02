@@ -105,9 +105,19 @@ function playCardReducer(
   if (card === undefined) return state;
   if (!isCharacter(card)) return state;
 
-  // Cost
+  // Cost — honor nextPlayCostModifier only if no scope OR scope matches.
   const donAvailable = pl.donCostArea.length;
-  const cost = Math.max(0, card.cost + (pl.nextPlayCostModifier ?? 0));
+  let modifier = pl.nextPlayCostModifier ?? 0;
+  const scope = pl.nextPlayCostModifierScope;
+  if (scope !== undefined) {
+    const s = scope as { cardName?: unknown; costMin?: unknown; costMax?: unknown };
+    let matches = true;
+    if (typeof s.cardName === 'string' && card.name !== s.cardName) matches = false;
+    if (matches && typeof s.costMin === 'number' && card.cost < (s.costMin as number)) matches = false;
+    if (matches && typeof s.costMax === 'number' && card.cost > (s.costMax as number)) matches = false;
+    if (!matches) modifier = 0;
+  }
+  const cost = Math.max(0, card.cost + modifier);
   if (donAvailable < cost) return state;
 
   // Field cap check + replace
@@ -143,6 +153,7 @@ function playCardReducer(
 
   // Clear single-shot play-cost modifier
   pl.nextPlayCostModifier = undefined;
+  pl.nextPlayCostModifierScope = undefined;
 
   (state.history as Array<unknown>).push({
     type: 'CHARACTER_PLAYED',
