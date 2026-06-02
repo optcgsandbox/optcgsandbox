@@ -7,14 +7,16 @@
 
 import { registerActionHandlers } from './actions.js';
 import { registerConditionHandlers } from './conditions.js';
+import { registerCostHandlers } from './costs.js';
 import { registerTargetResolvers } from './targets.js';
+import { registerTriggerEmitters } from './triggers.js';
 
 export function registerAllHandlers(): void {
   registerConditionHandlers();
   registerTargetResolvers();
   registerActionHandlers();
-  // TODO: triggers.ts (22 trigger emitters)
-  // TODO: costs.ts (21 cost handlers)
+  registerTriggerEmitters();
+  registerCostHandlers();
   // TODO: continuous.ts (18 continuous handlers)
   // TODO: replacements.ts (4 replacement triggers)
   // Remaining actions to register: peek, choose_one, search_deck,
