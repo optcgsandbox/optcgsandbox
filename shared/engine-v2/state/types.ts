@@ -286,7 +286,7 @@ export interface GameState {
   players: Record<PlayerId, PlayerZones>;
 
   // Card definitions (loaded once at game start; immutable per game)
-  cardLibrary: Record<CardId, unknown>; // Card (declared in cards/Card.ts)
+  cardLibrary: Record<CardId, import('../cards/Card.js').Card>;
 
   // All instances (zone-agnostic lookup; keyed by instanceId)
   instances: Record<InstanceId, CardInstance>;

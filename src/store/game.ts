@@ -2,19 +2,30 @@
 // Source of truth = a single GameState. Actions dispatch through engine.applyAction.
 
 import { create } from 'zustand';
-import { applyAction } from '@shared/engine/applyAction';
-import { EasyAi } from '@shared/engine/ai/EasyAi';
-import { MediumAi } from '@shared/engine/ai/MediumAi';
-import { HardAi } from '@shared/engine/ai/HardAi';
-import type { AiDriver } from '@shared/engine/ai/AiDriver';
-import { initialState } from '@shared/engine/GameState';
-import { setupGame } from '@shared/engine/phases/setup';
-import { endTurn, runDonPhase, runDrawPhase, runRefreshPhase } from '@shared/engine/phases/turn';
-import { getLegalActions } from '@shared/engine/rules/legality';
-import type { Action } from '@shared/protocol/actions';
-import type { Card, LeaderCard } from '@shared/engine/cards/Card';
-import type { GameState, PlayerId } from '@shared/engine/GameState';
+import { applyAction } from '@shared/engine-v2/reducers/applyAction';
+import { EasyAi } from '@shared/engine-v2/ai/EasyAi';
+import { MediumAi } from '@shared/engine-v2/ai/MediumAi';
+import { HardAi } from '@shared/engine-v2/ai/HardAi';
+import type { AiDriver } from '@shared/engine-v2/ai/AiDriver';
+import { initialState } from '@shared/engine-v2/setup/initialState';
+import { setupGame } from '@shared/engine-v2/setup/setupGame';
+import { PhaseScheduler } from '@shared/engine-v2/phases/PhaseScheduler';
+import { getLegalActions } from '@shared/engine-v2/rules/legality';
+import { registerAllHandlers } from '@shared/engine-v2/registry/handlers/index';
+import { registerAllReducers } from '@shared/engine-v2/reducers/index';
+import type { Action } from '@shared/engine-v2/protocol/actions';
+import type { Card, LeaderCard } from '@shared/engine-v2/cards/Card';
+import type { GameState, PlayerId } from '@shared/engine-v2/state/types';
 import cardsDataRaw from '@shared/data/cards.json';
+
+// One-time engine boot.
+let _engineBooted = false;
+function bootEngineIfNeeded(): void {
+  if (_engineBooted) return;
+  registerAllReducers();
+  registerAllHandlers();
+  _engineBooted = true;
+}
 
 /** Imported OPTCG corpus from Crew Builder (synced via
  *  scripts/sync-from-crewbuilder.mjs). 2489 cards across leader/character/
@@ -65,6 +76,7 @@ function buildDeck(color: DeckColor): Card[] {
  *  dispatch path calls `runFirstTurnPhases` to deal life and run the first
  *  player's refresh → draw → don. */
 function bootGame(seed: number): GameState {
+  bootEngineIfNeeded();
   let s = initialState({
     seed,
     decks: {
@@ -156,7 +168,7 @@ async function runPhasePipelineWithDelays(
   // === REFRESH ===
   await wait(PILL_BEAT_MS);
   const refreshDidWork = hasRefreshWork(get().state);
-  let s = runRefreshPhase(get().state);
+  let s = PhaseScheduler.enterRefresh(get().state);
   const last = s.history.length - 1;
   if (last >= 0 && s.history[last].type === 'PHASE_CHANGED') {
     s.history.splice(last, 0, { type: 'PHASE_CHANGED', phase: 'refresh' });
@@ -174,7 +186,7 @@ async function runPhasePipelineWithDelays(
   set({ state: { ...get().state, phase: 'draw' } });
   await wait(PILL_BEAT_MS);
   const handBefore = get().state.players[get().state.activePlayer].hand.length;
-  s = runDrawPhase(get().state);
+  s = PhaseScheduler.enterDraw(get().state);
   s = { ...s, phase: 'draw' };
   set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });
   const drawDidWork = s.players[s.activePlayer].hand.length > handBefore;
@@ -187,7 +199,7 @@ async function runPhasePipelineWithDelays(
   set({ state: { ...get().state, phase: 'don' } });
   await wait(PILL_BEAT_MS);
   const costBefore = get().state.players[get().state.activePlayer].donCostArea.length;
-  s = runDonPhase(get().state);
+  s = PhaseScheduler.enterDon(get().state);
   s = { ...s, phase: 'don' };
   set({ state: s, legalActions: getLegalActions(s, s.activePlayer) });
   const donDidWork = s.players[s.activePlayer].donCostArea.length > costBefore;
@@ -273,7 +285,7 @@ async function runAiTurn(
     const action = await ai.chooseAction(s, AI_OPPONENT, 100);
     const { state: next } = applyAction(s, AI_OPPONENT, action);
     set({ state: next, legalActions: getLegalActions(next, next.activePlayer) });
-    if (action.type === 'END_TURN' || action.type === 'RESIGN') break;
+    if (action.type === 'END_TURN' || action.type === 'CONCEDE') break;
     // Two-stage pacing: hold AFTER the action commits so the player sees the
     // field state change (OPP_VISIBLE_HOLD_MS), THEN wait the longer think
     // delay before the next AI tick (AI_ACTION_DELAY_MS - OPP_VISIBLE_HOLD_MS).
@@ -286,7 +298,7 @@ async function runAiTurn(
   if (!get().state.result && get().state.activePlayer === AI_OPPONENT) {
     // AI hit safety cap — force end turn, then pace the human's R/D/D so each
     // step is visible (matches the post-END_TURN branch below).
-    const ended = endTurn(get().state);
+    const ended = PhaseScheduler.enterEnd(get().state);
     set({ state: ended, legalActions: getLegalActions(ended, ended.activePlayer) });
     await wait(TURN_HANDOFF_DELAY_MS);
     await runPhasePipelineWithDelays(get, set);
@@ -340,7 +352,7 @@ export const useGameStore = create<GameStore>((set, get) => {
       while (next.phase === 'block_window' || next.phase === 'counter_window') {
         const reactivePlayer = next.activePlayer === 'A' ? 'B' : 'A';
         const opts = getLegalActions(next, reactivePlayer).filter(
-          (a) => a.type !== 'RESIGN' && a.type !== 'SKIP_BLOCKER' && a.type !== 'SKIP_COUNTER'
+          (a) => a.type !== 'CONCEDE' && a.type !== 'SKIP_BLOCKER' && a.type !== 'SKIP_COUNTER'
         );
         if (opts.length > 0) break;
         const skip: Action = next.phase === 'block_window' ? { type: 'SKIP_BLOCKER' } : { type: 'SKIP_COUNTER' };
@@ -444,7 +456,7 @@ export const useGameStore = create<GameStore>((set, get) => {
       // End the active player's turn — engine flips activePlayer + sets
       // phase='refresh' for the new active player. Commit that state THEN
       // pace through R/D/D so each step is visible.
-      const ended = endTurn(get().state);
+      const ended = PhaseScheduler.enterEnd(get().state);
       set({
         state: ended,
         legalActions: getLegalActions(ended, ended.activePlayer),
