@@ -202,25 +202,18 @@ function advanceMulliganPhase(state: GameState): GameState {
     }
     (state.history as Array<unknown>).push({ type: 'LIFE_CARDS_DEALT' });
 
-    // First-player turn 1 begins.
+    // First-player turn 1 begins. Engine ONLY transitions phase to 'refresh'
+    // and broadcasts at_start_of_game; the host (store) runs the paced
+    // refresh → draw → don → main pipeline so the UI can animate each step.
     if (state.firstPlayer !== null) {
       state.activePlayer = state.firstPlayer;
       state.turn = 1;
       state.phase = 'refresh';
-      // Broadcast at_start_of_game BEFORE the first refresh — listeners (e.g.,
-      // leader effects, atStartOfGamePlay scheduled placements) get to fire
-      // against the freshly dealt-life initial state per CR §5-2-1-5-1.
       let next = state;
       if (triggerEmitters.has('at_start_of_game')) {
         next = triggerEmitters.get('at_start_of_game')(next, { kind: 'at_start_of_game' }, state.firstPlayer);
       }
-      next = PhaseScheduler.enterRefresh(next);
-      if (next.result !== null) return next;
-      next = PhaseScheduler.enterDraw(next);
-      if (next.result !== null) return next;
-      next = PhaseScheduler.enterDon(next);
-      if (next.result !== null) return next;
-      return PhaseScheduler.enterMain(next);
+      return next;
     }
   }
   return state;

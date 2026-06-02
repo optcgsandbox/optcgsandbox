@@ -26,5 +26,10 @@
       "@shared/*": ["./shared/*"]
     }
   },
-  "include": ["src", "shared"]
+  "include": ["src", "shared"],
+  "exclude": [
+    "shared/engine",
+    "shared/engine-v2/__tests__",
+    "shared/protocol"
+  ]
 }

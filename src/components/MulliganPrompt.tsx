@@ -40,10 +40,10 @@ export const MulliganPrompt = memo(function MulliganPrompt() {
   // WCAG 2.4.3 — restore focus when the dialog closes.
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
-  // Determine which player (if any) should see the prompt right now.
+  // Engine-v2: activePlayer flips at mulligan_first → mulligan_second so the
+  // decider IS activePlayer in BOTH windows.
   const decider: PlayerId | null = useMemo(() => {
-    if (phase === 'mulligan_first') return activePlayer;
-    if (phase === 'mulligan_second') return activePlayer === 'A' ? 'B' : 'A';
+    if (phase === 'mulligan_first' || phase === 'mulligan_second') return activePlayer;
     return null;
   }, [phase, activePlayer]);
 

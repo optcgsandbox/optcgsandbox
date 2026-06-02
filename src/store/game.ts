@@ -337,10 +337,12 @@ export const useGameStore = create<GameStore>((set, get) => {
       //   the dispatch's player. We still pass activePlayer here as the
       //   nominal sender for parity with other phases; the engine reads
       //   action.player for the actual slot assignment.
+      // Engine-v2: activePlayer is the decider in mulligan_second (engine
+      // flips at mulligan_first→second). Only true reactive windows route
+      // to the inactive player.
       const isInactivePlayerPhase =
         state.phase === 'block_window' ||
-        state.phase === 'counter_window' ||
-        state.phase === 'mulligan_second';
+        state.phase === 'counter_window';
       const player = isInactivePlayerPhase
         ? (state.activePlayer === 'A' ? 'B' : 'A')
         : state.activePlayer;
@@ -360,24 +362,9 @@ export const useGameStore = create<GameStore>((set, get) => {
         next = applyAction(next, reactivePlayer, skip).state;
       }
 
-      // D24: AI auto-roll for ROLL_DICE per-player flow. Engine-v2 awaits a
-      // ROLL_DICE call per player; after the human rolls, fire the AI's roll
-      // immediately so the round completes and dice_roll advances to
-      // first_player_choice.
-      while (next.phase === 'dice_roll' && next.diceRoll?.[AI_OPPONENT] === null) {
-        const aiRoll = applyAction(next, AI_OPPONENT, { type: 'ROLL_DICE', player: AI_OPPONENT });
-        next = aiRoll.state;
-      }
-
-      // D24: AI auto-choose first/second when it won the dice roll. Easy/
-      // Medium AI defaults to going first.
-      if (
-        next.phase === 'first_player_choice' &&
-        next.activePlayer === AI_OPPONENT
-      ) {
-        const aiChoose = applyAction(next, AI_OPPONENT, { type: 'CHOOSE_FIRST' });
-        next = aiChoose.state;
-      }
+      // (Dice-roll + first-player AI auto-fire live in DiceRollPrompt and
+      // FirstPlayerChoicePrompt useEffects — animations need to render, so
+      // those flows are owned by the UI prompts, not the store.)
 
       // D10: AI auto-mulligan. When the AI is player B (vs-easy / vs-medium)
       // and the engine is awaiting the AI's decision, auto-KEEP for the AI
