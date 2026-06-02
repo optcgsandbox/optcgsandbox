@@ -26,24 +26,12 @@ function endTurnReducer(state: GameState, _action: ActionEndTurn, player: Player
   // Guard: only the active player can end their turn.
   if (state.activePlayer !== player) return state;
   if (state.phase !== 'main') return state;
-  if (state.pending !== null) return state; // can't end during a pending choice
+  if (state.pending !== null) return state;
 
-  // Run the end-phase chain: end → (turn passes inside enterEnd) → next player's
-  // refresh → draw → don → main.
-  let next = PhaseScheduler.enterEnd(state);
-  // If enterEnd suspended on hand-limit discard, stop here.
-  if (next.pending !== null) return next;
-  // If the game ended via deck-out etc., stop here.
-  if (next.result !== null) return next;
-
-  next = PhaseScheduler.enterRefresh(next);
-  if (next.result !== null) return next;
-  next = PhaseScheduler.enterDraw(next);
-  if (next.result !== null) return next;
-  next = PhaseScheduler.enterDon(next);
-  if (next.result !== null) return next;
-  next = PhaseScheduler.enterMain(next);
-  return next;
+  // Engine ends turn + flips activePlayer + leaves phase='refresh' for the
+  // new active player. The host (store) runs the paced R/D/D pipeline so
+  // each phase animates visibly.
+  return PhaseScheduler.enterEnd(state);
 }
 
 function concedeReducer(state: GameState, _action: ActionConcede, player: PlayerId): GameState {
