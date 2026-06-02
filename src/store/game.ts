@@ -360,6 +360,25 @@ export const useGameStore = create<GameStore>((set, get) => {
         next = applyAction(next, reactivePlayer, skip).state;
       }
 
+      // D24: AI auto-roll for ROLL_DICE per-player flow. Engine-v2 awaits a
+      // ROLL_DICE call per player; after the human rolls, fire the AI's roll
+      // immediately so the round completes and dice_roll advances to
+      // first_player_choice.
+      while (next.phase === 'dice_roll' && next.diceRoll?.[AI_OPPONENT] === null) {
+        const aiRoll = applyAction(next, AI_OPPONENT, { type: 'ROLL_DICE', player: AI_OPPONENT });
+        next = aiRoll.state;
+      }
+
+      // D24: AI auto-choose first/second when it won the dice roll. Easy/
+      // Medium AI defaults to going first.
+      if (
+        next.phase === 'first_player_choice' &&
+        next.activePlayer === AI_OPPONENT
+      ) {
+        const aiChoose = applyAction(next, AI_OPPONENT, { type: 'CHOOSE_FIRST' });
+        next = aiChoose.state;
+      }
+
       // D10: AI auto-mulligan. When the AI is player B (vs-easy / vs-medium)
       // and the engine is awaiting the AI's decision, auto-KEEP for the AI
       // so the human isn't stuck waiting. Per the task spec, both Easy and
@@ -370,16 +389,17 @@ export const useGameStore = create<GameStore>((set, get) => {
       // and chose to go second). When that happens the AI is the decider in
       // `mulligan_first`, NOT mulligan_second — extend the auto-fire to
       // either window depending on who needs to decide next.
-      const aiMode = get().mode;
-      const aiDeciderInFirst =
-        next.phase === 'mulligan_first' && next.activePlayer === AI_OPPONENT;
-      const aiDeciderInSecond =
-        next.phase === 'mulligan_second' && next.activePlayer === AI_HUMAN;
-      if (aiDeciderInFirst || aiDeciderInSecond) {
+      // Engine-v2 flips activePlayer after mulligan_first → mulligan_second
+      // (advanceMulliganPhase in shared/engine-v2/reducers/setup.ts). So the
+      // decider in either window is ALWAYS activePlayer.
+      while (
+        (next.phase === 'mulligan_first' || next.phase === 'mulligan_second') &&
+        next.activePlayer === AI_OPPONENT
+      ) {
         const aiResult = applyAction(next, AI_OPPONENT, { type: 'KEEP_HAND' });
         next = aiResult.state;
       }
-      void aiMode;
+      void AI_HUMAN;
 
       // D10 / D24: if either the human's mulligan close OR the AI's
       // auto-KEEP just transitioned the engine into 'refresh', commit the
