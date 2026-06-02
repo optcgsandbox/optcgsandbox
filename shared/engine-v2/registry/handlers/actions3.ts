@@ -13,6 +13,7 @@
 
 import { EffectDispatcher } from '../../effects/EffectDispatcher.js';
 import { detachAllAttachedDon } from '../../state/derived/don.js';
+import { effectivePower } from '../../state/derived/power.js';
 import { resetInstanceTransientState } from '../../state/derived/reset.js';
 import type { EffectActionV2 } from '../../spec/types.js';
 import {
@@ -331,22 +332,73 @@ const setPowerZero: ActionHandler = (state, _ctx, _action, targets) => {
   return state;
 };
 
-const setBasePowerCopyFrom: ActionHandler = (state, ctx, _action, targets) => {
-  // Copy power from source (sourceInstanceId) onto targets.
-  const source = state.instances[ctx.sourceInstanceId];
-  if (source === undefined) return state;
-  const sourceCard = state.cardLibrary[source.cardId] as { power?: number | null } | undefined;
-  const sourcePower = sourceCard?.power ?? 0;
+// set_base_power_copy_from:
+//   - Anchor = resolve(action.source) — e.g., "opp_leader", "opp_character"
+//   - Destination = each target (typically "self" = source instance)
+//   - Effect: each destination's basePowerOverrideOneShot ← anchor's effectivePower
+//   - Per CR card text "This Character's base power becomes the same as <X>"
+const setBasePowerCopyFrom: ActionHandler = (state, ctx, action, targets) => {
+  const sourceKind = typeof action['source'] === 'string' ? (action['source'] as string) : 'opp_leader';
+  // Resolve the anchor through the target resolvers (same dispatch as targets).
+  const anchorIds = ((): InstanceId[] => {
+    if (sourceKind === 'opp_leader') {
+      return [state.players[OTHER[ctx.controller]].leader.instanceId];
+    }
+    if (sourceKind === 'opp_character') {
+      // V0: pick first opp character (full player-choice via PendingTargetPick).
+      const f = state.players[OTHER[ctx.controller]].field;
+      return f.length > 0 ? [f[0]!.instanceId] : [];
+    }
+    if (sourceKind === 'own_leader') {
+      return [state.players[ctx.controller].leader.instanceId];
+    }
+    return [];
+  })();
+
+  if (anchorIds.length === 0) return state;
+  const anchor = state.instances[anchorIds[0]!];
+  if (anchor === undefined) return state;
+  const anchorPower = effectivePower(state, anchor);
+  const expires = expiresInTurnsFor(action['duration']);
+
   for (const id of targets) {
-    const inst = state.instances[id];
-    if (inst === undefined) continue;
-    inst.basePowerOverrideOneShot = sourcePower;
-    inst.basePowerOverrideExpiresInTurns = 0;
+    const dest = state.instances[id];
+    if (dest === undefined) continue;
+    dest.basePowerOverrideOneShot = anchorPower;
+    dest.basePowerOverrideExpiresInTurns = expires;
   }
   return state;
 };
 
-const setBasePowerCopyFromTarget: ActionHandler = setBasePowerCopyFrom;
+// set_base_power_copy_from_target:
+//   - Anchor = targets[0] (the chosen opp character)
+//   - Destination = ctx.sourceInstanceId (the effect's source — "This Character")
+//   - Per EB01-061: "Select an opp character. This Character's base power becomes
+//     the same as the selected Character's power"
+const setBasePowerCopyFromTarget: ActionHandler = (state, ctx, action, targets) => {
+  if (targets.length === 0) return state;
+  const anchor = state.instances[targets[0]!];
+  if (anchor === undefined) return state;
+  const anchorPower = effectivePower(state, anchor);
+  const dest = state.instances[ctx.sourceInstanceId];
+  if (dest === undefined) return state;
+  dest.basePowerOverrideOneShot = anchorPower;
+  dest.basePowerOverrideExpiresInTurns = expiresInTurnsFor(action['duration']);
+  return state;
+};
+
+// Map EffectDuration → expiresInTurns counter for OneShot bookkeeping.
+//   'this_turn' / 'this_battle' → 0 (cleared at next enterEnd of controller)
+//   'opp_next_turn' / 'opp_next_end_phase' → 1
+//   'permanent' → undefined (sentinel: don't tick; effectively continuous-half
+//     would be the right home but caller chose OneShot — write 99 as "doesn't
+//     expire this game")
+function expiresInTurnsFor(duration: unknown): number {
+  if (duration === 'opp_next_turn' || duration === 'opp_next_end_phase') return 1;
+  if (duration === 'permanent') return 99;
+  // 'this_turn' | 'this_battle' | undefined
+  return 0;
+}
 
 // ─── immunity / negate
 const grantImmunity: ActionHandler = (state, _ctx, action, targets) => {
