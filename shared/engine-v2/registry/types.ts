@@ -13,6 +13,7 @@
 
 import type {
   CardInstance,
+  ClauseScratch,
   GameState,
   InstanceId,
   PendingDecision,
@@ -36,6 +37,7 @@ export interface HandlerCtx {
   readonly sourceInstanceId: InstanceId;
   readonly controller: PlayerId;
   readonly source?: 'battle' | 'effect';
+  readonly scratch?: ClauseScratch;
 }
 
 // ────────────────────────────────────────────────────────────────────

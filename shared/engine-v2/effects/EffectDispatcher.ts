@@ -30,6 +30,7 @@ import type {
 } from '../spec/types.js';
 import {
   type CardInstance,
+  type ClauseScratch,
   type GameState,
   type InstanceId,
 } from '../state/types.js';
@@ -40,6 +41,11 @@ import {
   type HandlerCtx,
   targetResolvers,
 } from '../registry/types.js';
+import {
+  attachScratchToPending,
+  newClauseScratch,
+  writeBinding,
+} from './clauseScratch.js';
 
 // ────────────────────────────────────────────────────────────────────
 // evaluateCondition — exported for ContinuousManager + ReplacementManager
@@ -117,16 +123,28 @@ export const EffectDispatcher = {
         if (gateInst !== undefined && isOptUsed(gateInst, optKey)) continue;
       }
 
+      // Per-clause ClauseScratch — clause-local cross-step binding context.
+      // Created here, destroyed at clause completion, OR moved into
+      // state.pending.<kind>.scratch on suspension (see end of loop).
+      const scratch: ClauseScratch = newClauseScratch();
+      const clauseCtx: HandlerCtx = { ...ctx, scratch };
+
       // (1) Condition
-      if (!evaluateCondition(working, ctx, clause.condition)) continue;
+      if (!evaluateCondition(working, clauseCtx, clause.condition)) continue;
 
       // (2) Target
       let targets: ReadonlyArray<InstanceId> = [];
       if (clause.target !== undefined) {
         const resolver = targetResolvers.get(clause.target.kind);
-        targets = resolver(working, ctx, clause.target);
+        targets = resolver(working, clauseCtx, clause.target);
         // Empty target with required cardinality means clause cannot fire.
         if (targets.length === 0) continue;
+        // Auto-bind: if clause.target.bind is declared, write the first
+        // resolved instance into ctx.scratch[bind] for later steps to read.
+        const tBind = (clause.target as { bind?: unknown }).bind;
+        if (typeof tBind === 'string' && tBind !== '' && targets[0] !== undefined) {
+          writeBinding(working, scratch, tBind, targets[0]);
+        }
       }
 
       // (3,4) Cost — atomic: snapshot working before pay loop; restore on
@@ -134,8 +152,11 @@ export const EffectDispatcher = {
       if (clause.cost !== undefined) {
         let allCanPay = true;
         for (const key of Object.keys(clause.cost)) {
+          // `bind` is a meta-key on the cost shape, not a cost-handler kind.
+          // Skip it during the canPay/pay walk.
+          if (key === 'bind') continue;
           const cost = costHandlers.get(key);
-          if (!cost.canPay(working, ctx, clause.cost)) {
+          if (!cost.canPay(working, clauseCtx, clause.cost)) {
             allCanPay = false;
             break;
           }
@@ -145,8 +166,9 @@ export const EffectDispatcher = {
         let payState: typeof working = working;
         let payFailed = false;
         for (const key of Object.keys(clause.cost)) {
+          if (key === 'bind') continue;
           const cost = costHandlers.get(key);
-          const next = cost.pay(payState, ctx, clause.cost);
+          const next = cost.pay(payState, clauseCtx, clause.cost);
           if (next === null) {
             payFailed = true;
             break;
@@ -158,11 +180,31 @@ export const EffectDispatcher = {
           continue;
         }
         working = payState;
+        // Auto-bind on cost: if clause.cost.bind is declared, write the
+        // cost-step's primary chosen card into ctx.scratch[bind]. Cost
+        // handlers that resolve a card (discard-from-hand-by-filter,
+        // trash-self, return-self, etc.) write a sentinel binding to
+        // clauseCtx.scratch under the literal key '_costPicked'. The
+        // dispatcher renames it to the declared bind name here.
+        const cBind = (clause.cost as { bind?: unknown }).bind;
+        if (typeof cBind === 'string' && cBind !== '' && scratch['_costPicked'] !== undefined) {
+          scratch[cBind] = scratch['_costPicked']!;
+          delete scratch['_costPicked'];
+        }
       }
 
       // (5) Action
       const actionHandler = actionHandlers.get(clause.action.kind);
-      working = actionHandler(working, ctx, clause.action, targets);
+      working = actionHandler(working, clauseCtx, clause.action, targets);
+
+      // Auto-bind on action: if clause.action.bind is declared, write the
+      // primary resolved target (targets[0]) into ctx.scratch[bind]. Action
+      // handlers can override this by writing their own binding via the
+      // clauseCtx.scratch reference before returning.
+      const aBind = (clause.action as { bind?: unknown }).bind;
+      if (typeof aBind === 'string' && aBind !== '' && targets[0] !== undefined) {
+        writeBinding(working, scratch, aBind, targets[0]);
+      }
 
       // (6) History event for the fired clause
       (working.history as Array<unknown>).push({
@@ -184,11 +226,14 @@ export const EffectDispatcher = {
 
       // (8) Pending-state pause (Plan §1.3 + §4.12). If clause i's action
       // suspended the engine (peek/choose_one/discard/attack_target_pick),
-      // subsequent clauses must NOT fire on the un-resumed state. Break and
-      // let the host resume via the pending decision. Resume-continuation
-      // for remaining clauses is a follow-up (matches the existing
-      // RESOLVE_TARGET_PICK stub pattern at choiceResolve.ts:269).
-      if (working.pending !== null) break;
+      // subsequent clauses must NOT fire on the un-resumed state. Move the
+      // ClauseScratch onto the inner pending payload so RESOLVE_* can
+      // restore it. Then break — let the host resume via the pending
+      // decision.
+      if (working.pending !== null) {
+        working = attachScratchToPending(working, scratch);
+        break;
+      }
     }
 
     return working;

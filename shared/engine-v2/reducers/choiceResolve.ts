@@ -22,6 +22,7 @@
 
 import { CostPayer } from '../effects/CostPayer.js';
 import { EffectDispatcher, evaluateCondition } from '../effects/EffectDispatcher.js';
+import { safeProcessSimEvent } from '../../sim/integrate.js';
 import { finalizeEndTurn } from '../phases/PhaseScheduler.js';
 import { PhaseScheduler } from '../phases/PhaseScheduler.js';
 import type {
@@ -48,11 +49,15 @@ function resolveTriggerReducer(
 
   let next = state;
   if (action.activate === true) {
-    // Fire the life card's `trigger` clause.
+    // Fire the life card's `trigger` clause. Thread ClauseScratch from
+    // the pending payload so cross-step bindings written before the
+    // pending-suspension are restored.
     next = EffectDispatcher.dispatch(next, {
       sourceInstanceId: pt.lifeCardInstanceId,
       controller: pt.controller,
+      scratch: pt.scratch,
     }, 'trigger');
+    next = safeProcessSimEvent(next, { sourceInstanceId: pt.lifeCardInstanceId, controller: pt.controller }, 'trigger');
   }
 
   // Wipe this-battle power modifiers (attack chain ends here).
@@ -189,9 +194,13 @@ function resolveChooseOneReducer(
 
   const clause = pc.options[action.optionIndex] as EffectClauseV2;
 
+  // Reconstitute ctx with ClauseScratch from the pending payload so
+  // option-clause execution can read bindings written before the
+  // choose-one suspension.
   const ctx = {
     sourceInstanceId: pc.sourceInstanceId,
     controller: pc.controller,
+    scratch: pc.scratch,
   };
 
   let next = state;

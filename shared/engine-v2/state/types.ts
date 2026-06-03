@@ -39,6 +39,31 @@ export type EffectDuration =
   | 'permanent';
 
 // ────────────────────────────────────────────────────────────────────
+// 2b. ClauseScratch — clause-local cross-step binding context
+// ────────────────────────────────────────────────────────────────────
+//
+// One scratch per clause-firing. Holds named BindingSnapshot entries
+// written by earlier steps (cost / target / action) and read by later
+// steps in the SAME clause. Lifecycle: created at clause entry by the
+// dispatcher loop, destroyed at clause completion, OR moved into
+// state.pending.<kind>.scratch on suspension and restored on resolve.
+// Never enters ContinuousManager.refold, triggerEmitters, or history.
+
+export interface BindingSnapshot {
+  readonly instanceId: InstanceId | null;
+  readonly cardId: CardId;
+  readonly name: string;
+  readonly traits: ReadonlyArray<string>;
+  readonly colors: ReadonlyArray<string>;
+  readonly cost: number;
+  readonly basePower: number;
+  readonly kind: 'leader' | 'character' | 'event' | 'stage';
+  readonly attribute: string | null;
+}
+
+export type ClauseScratch = Record<string, BindingSnapshot>;
+
+// ────────────────────────────────────────────────────────────────────
 // 3. CardInstance — every field has explicit Lifecycle + Reset policy
 // ────────────────────────────────────────────────────────────────────
 
@@ -98,10 +123,6 @@ export interface CardInstance {
   // --- Mid-game stateful flags ---
   restLockedUntilTurn?: number | undefined; // absolute turn-number; refresh skips when state.turn <= this
   endOfTurnTrash?: boolean | undefined; // set by self_trash_at_end_of_turn
-
-  // --- Look-behind context stamps (used by chained effects like Chambres) ---
-  lastBouncedColors?: string[] | undefined;
-  lastDiscardedName?: string | undefined;
 
   // --- Effect-negation flag (continuous effects target this) ---
   effectsNegated?: boolean | undefined;
@@ -182,6 +203,7 @@ export interface PendingTrigger {
   readonly lifeCardInstanceId: InstanceId;
   readonly controller: PlayerId;
   readonly resumePhase: Phase;
+  readonly scratch?: ClauseScratch;
 }
 
 export interface PendingPeek {
@@ -190,6 +212,7 @@ export interface PendingPeek {
   readonly peekedIds: InstanceId[];
   readonly addCount: number;
   readonly resumePhase: Phase;
+  readonly scratch?: ClauseScratch;
 }
 
 export interface PendingDiscard {
@@ -198,6 +221,7 @@ export interface PendingDiscard {
   readonly revealedFrom: 'opp_hand' | 'self_hand'; // self_hand = hand-size limit (CR §6-5-7)
   readonly count: number;
   readonly resumePhase: Phase;
+  readonly scratch?: ClauseScratch;
 }
 
 export interface PendingChoose {
@@ -205,6 +229,7 @@ export interface PendingChoose {
   readonly sourceInstanceId: InstanceId;
   readonly options: ReadonlyArray<unknown>; // EffectClauseV2[] (declared in spec.ts)
   readonly resumePhase: Phase;
+  readonly scratch?: ClauseScratch;
 }
 
 export interface PendingTargetPick {
@@ -212,6 +237,7 @@ export interface PendingTargetPick {
   readonly sourceInstanceId: InstanceId;
   readonly candidateIds: ReadonlyArray<InstanceId>;
   readonly resumePhase: Phase;
+  readonly scratch?: ClauseScratch;
 }
 
 // ────────────────────────────────────────────────────────────────────

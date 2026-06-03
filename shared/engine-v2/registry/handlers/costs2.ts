@@ -8,6 +8,7 @@ import {
   type CostHandler,
   costHandlers,
 } from '../types.js';
+import { writeBinding } from '../../effects/clauseScratch.js';
 import { filterCostCount, filterCostFilter, matchesCardFilter } from './filter.js';
 
 function num(c: EffectCostV2, key: string): number {
@@ -90,6 +91,43 @@ const restOwnCharFilter: CostHandler = {
   },
 };
 
+// ─── returnOwnCharFilter: return `count` own chars matching filter from
+//     field → owner's hand. Sister to restOwnCharFilter. Used by EB01-021
+//     (Hannyabal) and similar "return X to owner's hand:" cost clauses.
+const returnOwnCharFilter: CostHandler = {
+  canPay(state, ctx, cost) {
+    const value = cost['returnOwnCharFilter'];
+    const count = filterCostCount(value);
+    const filter = filterCostFilter(value);
+    const eligible = state.players[ctx.controller].field.filter(
+      (c) => matchesCardFilter(state, c, filter),
+    );
+    return eligible.length >= count;
+  },
+  pay(state, ctx, cost) {
+    const value = cost['returnOwnCharFilter'];
+    const count = filterCostCount(value);
+    const filter = filterCostFilter(value);
+    const pl = state.players[ctx.controller];
+    const eligible = pl.field.filter((c) => matchesCardFilter(state, c, filter));
+    if (eligible.length < count) return null;
+    for (let i = 0; i < count; i++) {
+      const inst = eligible[i]!;
+      const idx = pl.field.findIndex((c) => c.instanceId === inst.instanceId);
+      if (idx === -1) return null;
+      // Detach attached DON before moving the instance off field. Attached
+      // DON returns to its owner's donRested pile.
+      for (const donId of inst.attachedDon) pl.donRested.push(donId);
+      for (const donId of inst.attachedDonRested) pl.donRested.push(donId);
+      inst.attachedDon = [];
+      inst.attachedDonRested = [];
+      pl.field.splice(idx, 1);
+      pl.hand.push(inst.instanceId);
+    }
+    return state;
+  },
+};
+
 // ─── discardHand: discard N from controller's hand (V0 from head)
 const discardHand: CostHandler = {
   canPay(state, ctx, cost) {
@@ -141,6 +179,13 @@ const discardHandFilter: CostHandler = {
       if (idx !== -1) pl.hand.splice(idx, 1);
       pl.trash.push(id);
       state.cardsTrashedThisResolution += 1;
+    }
+    // ClauseScratch binding: if cost.bind is declared, write the first
+    // discarded card under the sentinel key '_costPicked'. The dispatcher
+    // renames it to the declared bind name after the cost loop completes.
+    const bind = cost['bind'];
+    if (typeof bind === 'string' && bind !== '' && toDiscard[0] !== undefined) {
+      writeBinding(state, ctx.scratch, '_costPicked', toDiscard[0]);
     }
     return state;
   },
@@ -443,6 +488,7 @@ export function registerCostHandlers2(): void {
   costHandlers.register('restLeader', restLeader);
   costHandlers.register('restLeaderOrStageFilter', restLeaderOrStageFilter);
   costHandlers.register('restOwnCharFilter', restOwnCharFilter);
+  costHandlers.register('returnOwnCharFilter', returnOwnCharFilter);
   costHandlers.register('discardHand', discardHand);
   costHandlers.register('discardHandFilter', discardHandFilter);
   costHandlers.register('revealHand', revealHand);

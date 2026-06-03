@@ -22,8 +22,12 @@ import type { CardInstance } from '../types.js';
  *  - OneShot fields (all)
  *  - Per-turn: effectsUsed, hasAttacked
  *  - Mid-game flags: restLockedUntilTurn, endOfTurnTrash
- *  - Look-behind stamps: lastBouncedColors, lastDiscardedName
  *  - effectsNegated
+ *
+ * Cross-step bindings within a single clause-resolution flow through
+ * ClauseScratch (see shared/engine-v2/effects/clauseScratch.ts) — not
+ * through per-instance fields — so no instance-level cleanup is needed
+ * for those bindings.
  *
  * NOT reset (caller responsibility):
  *  - attachedDon / attachedDonRested — drained separately via detachAllAttachedDon
@@ -63,7 +67,5 @@ export function resetInstanceTransientState(inst: CardInstance): void {
   // Mid-game flags
   inst.restLockedUntilTurn = undefined;
   inst.endOfTurnTrash = undefined;
-  inst.lastBouncedColors = undefined;
-  inst.lastDiscardedName = undefined;
   inst.effectsNegated = undefined;
 }

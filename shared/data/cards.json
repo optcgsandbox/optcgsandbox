@@ -1014,14 +1014,20 @@
                 "from": "hand",
                 "filter": {
                   "costMax": 2,
-                  "kind": "character"
-                },
-                "colorMustDifferFromLastBounced": true
+                  "kind": "character",
+                  "colors": {
+                    "kind": "binding",
+                    "name": "returned_card",
+                    "field": "colors",
+                    "op": "ne"
+                  }
+                }
               }
             ]
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_character",
+            "bind": "returned_card"
           },
           "verified": "human-reviewed"
         }
@@ -1063,7 +1069,7 @@
         {
           "trigger": "at_end_of_turn_self",
           "cost": {
-            "returnSelfChar": {
+            "returnOwnCharFilter": {
               "filter": {
                 "trait": "Impel Down",
                 "costMin": 2
@@ -5006,6 +5012,7 @@
             "type": "if_own_don_le_opp"
           },
           "cost": {
+            "bind": "discarded_card",
             "discardHandFilter": {
               "count": 1,
               "filter": {
@@ -5021,9 +5028,14 @@
             "filter": {
               "powerMin": 5000,
               "powerMax": 7000,
-              "kind": "character"
-            },
-            "nameMatchesLastDiscarded": true
+              "kind": "character",
+              "nameIs": {
+                "kind": "binding",
+                "name": "discarded_card",
+                "field": "name",
+                "op": "eq"
+              }
+            }
           },
           "verified": "human-reviewed"
         }

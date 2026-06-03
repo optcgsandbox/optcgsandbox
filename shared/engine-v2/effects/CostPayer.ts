@@ -17,6 +17,9 @@ import type { GameState } from '../state/types.js';
 export const CostPayer = {
   canPay(state: GameState, ctx: HandlerCtx, cost: EffectCostV2): boolean {
     for (const key of Object.keys(cost)) {
+      // `bind` is a ClauseScratch meta-key on the cost shape, not a
+      // cost-handler kind. Skip it during the canPay walk.
+      if (key === 'bind') continue;
       const handler = costHandlers.get(key);
       if (!handler.canPay(state, ctx, cost)) return false;
     }
@@ -30,6 +33,9 @@ export const CostPayer = {
   pay(state: GameState, ctx: HandlerCtx, cost: EffectCostV2): GameState | null {
     let working = state;
     for (const key of Object.keys(cost)) {
+      // `bind` is a ClauseScratch meta-key on the cost shape, not a
+      // cost-handler kind. Skip it during the pay walk.
+      if (key === 'bind') continue;
       const handler = costHandlers.get(key);
       const next = handler.pay(working, ctx, cost);
       if (next === null) return null;

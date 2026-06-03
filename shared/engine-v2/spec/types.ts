@@ -19,6 +19,40 @@ export type EffectActionV2Kind = string;
 export type EffectTargetV2Kind = string;
 export type EffectCostKey = string;
 
+// ────────────────────────────────────────────────────────────────────
+// BindingRef — clause-local cross-step binding reference
+// ────────────────────────────────────────────────────────────────────
+//
+// Used as a parameter value inside filter/condition/action shapes when
+// the value should be resolved at runtime from a ClauseScratch entry
+// written by an earlier step in the SAME clause. The resolver reads
+// ctx.scratch[name][field] and applies the optional comparison op
+// (default 'eq'). Absent binding returns undefined → safe no-op per
+// the cross-step propagation invariants.
+
+export interface BindingRef {
+  readonly kind: 'binding';
+  readonly name: string;
+  readonly field:
+    | 'instanceId'
+    | 'cardId'
+    | 'name'
+    | 'traits'
+    | 'colors'
+    | 'cost'
+    | 'basePower'
+    | 'kind'
+    | 'attribute';
+  readonly op?: 'eq' | 'ne';
+}
+
+// Type guard for runtime detection inside resolvers.
+export function isBindingRef(value: unknown): value is BindingRef {
+  if (typeof value !== 'object' || value === null) return false;
+  const v = value as { kind?: unknown };
+  return v.kind === 'binding';
+}
+
 export interface EffectTriggerV2 {
   readonly kind: EffectTriggerV2Kind;
 }
@@ -30,15 +64,27 @@ export interface EffectConditionV2 {
 
 export interface EffectActionV2 {
   readonly kind: EffectActionV2Kind;
+  // Optional clause-local binding name; if set, the action writes its
+  // primary resolved instance into ctx.scratch[bind] for later steps to
+  // read via BindingRef.
+  readonly bind?: string;
   readonly [key: string]: unknown;
 }
 
 export interface EffectTargetV2 {
   readonly kind: EffectTargetV2Kind;
+  // Optional clause-local binding name; if set, the target resolver
+  // writes its first resolved instance (target_0) into ctx.scratch[bind].
+  readonly bind?: string;
   readonly [key: string]: unknown;
 }
 
 export interface EffectCostV2 {
+  // Optional clause-local binding name; if set, cost handlers that
+  // resolve a chosen card (discard, trash-self, return-self, place-at-
+  // deck-bottom-from-hand-by-filter) write the chosen card into
+  // ctx.scratch[bind] for later effect steps in the same clause.
+  readonly bind?: string;
   readonly [key: string]: unknown;
 }
 

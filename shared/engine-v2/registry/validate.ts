@@ -77,7 +77,70 @@ function walkTarget(t: EffectTargetV2 | undefined, missing: Set<string>): void {
 function walkCost(c: EffectCostV2 | undefined, missing: Set<string>): void {
   if (!c) return;
   for (const key of Object.keys(c)) {
+    // `bind` is a meta-key on the cost shape (ClauseScratch binding name),
+    // not a cost-handler kind.
+    if (key === 'bind') continue;
     if (!costHandlers.has(key)) missing.add(`cost:${key}`);
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────
+// Binding-write/read order validation
+// ────────────────────────────────────────────────────────────────────
+//
+// For each clause, ensure every BindingRef.name read by a later step
+// was written by an earlier step in the SAME clause. Step order is:
+//   target → cost → action (condition does not have access to scratch
+//   written within the same clause — it runs before any writer).
+//
+// Writers: target.bind, cost.bind, action.bind (string field).
+// Readers: any { kind: 'binding', name, field } value nested inside
+// target / cost / action shapes.
+
+function bindingsWrittenBy(shape: { readonly bind?: unknown } | undefined): string | undefined {
+  if (shape === undefined) return undefined;
+  const b = shape.bind;
+  return typeof b === 'string' && b !== '' ? b : undefined;
+}
+
+function collectBindingReads(value: unknown, into: Set<string>): void {
+  if (typeof value !== 'object' || value === null) return;
+  const v = value as { kind?: unknown; name?: unknown };
+  if (v.kind === 'binding' && typeof v.name === 'string') {
+    into.add(v.name);
+    return;
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) collectBindingReads(item, into);
+    return;
+  }
+  for (const key of Object.keys(value as Record<string, unknown>)) {
+    collectBindingReads((value as Record<string, unknown>)[key], into);
+  }
+}
+
+function validateClauseBindings(cl: EffectClauseV2, missing: Set<string>): void {
+  const written = new Set<string>();
+  // Step 1: target (writes target.bind, no reads of same-clause bindings).
+  const targetBind = bindingsWrittenBy(cl.target);
+  if (targetBind !== undefined) written.add(targetBind);
+  // Step 2: cost (reads may reference target.bind; writes cost.bind).
+  if (cl.cost !== undefined) {
+    const costReads = new Set<string>();
+    collectBindingReads(cl.cost, costReads);
+    for (const name of costReads) {
+      if (!written.has(name)) missing.add(`binding-read-before-write:${name}`);
+    }
+    const costBind = bindingsWrittenBy(cl.cost);
+    if (costBind !== undefined) written.add(costBind);
+  }
+  // Step 3: action (reads may reference target.bind or cost.bind; writes action.bind).
+  if (cl.action !== undefined) {
+    const actionReads = new Set<string>();
+    collectBindingReads(cl.action, actionReads);
+    for (const name of actionReads) {
+      if (!written.has(name)) missing.add(`binding-read-before-write:${name}`);
+    }
   }
 }
 
@@ -110,6 +173,7 @@ export function validateCardsAgainstRegistry(cards: ReadonlyArray<Card>): void {
       walkAction(cl.action, missing);
       walkTarget(cl.target, missing);
       walkCost(cl.cost, missing);
+      validateClauseBindings(cl, missing);
     }
     for (const cont of continuous) {
       walkCondition(cont.condition, missing);

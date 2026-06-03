@@ -1,0 +1,253 @@
+{
+  "_meta": {
+    "compiler": "OP Sim — V2 Continuous Cross-Reference",
+    "doc": "Mirrors the effectSpecV2.continuous entries already present in shared/data/cards.json for batch1 (cards #1-100). The V2 engine is the single source of truth for continuous effects via ContinuousManager.refold + continuousHandlers. This file is the compiler's audit of which cards in this batch carry V2-continuous data, so the sim library can stay strictly event-driven.",
+    "v2_handler_registry": "shared/engine-v2/registry/handlers/continuous.ts:372-413",
+    "v2_condition_registry": "shared/engine-v2/registry/handlers/conditions.ts:176-223 + shared/engine-v2/registry/handlers/conditions2.ts:233-254",
+    "v2_filter_keys": "shared/engine-v2/registry/handlers/filter.ts:17-44",
+    "engine_data_source": "shared/data/cards.json",
+    "compiled_at": "2026-06-03",
+    "batch": "cards #1-100 by cards.json array index",
+    "range": "EB01-001 through EB02-039",
+    "totals": {
+      "v2_continuous_entries": 19,
+      "by_action_kind": {
+        "grant_keyword_to_self": 11,
+        "self_power_buff": 5,
+        "aura_power_buff": 1,
+        "aura_counter_buff": 1
+      }
+    },
+    "rule": "Sim layer is event-driven only (21 triggers). All passive/aura/while-on-field/turn-gated continuous logic lives here and is executed by V2's ContinuousManager.refold."
+  },
+  "cards": [
+    {
+      "card_id": "EB01-001",
+      "name": "Kouzuki Oden",
+      "kind": "leader",
+      "continuous": [
+        {
+          "action": {
+            "kind": "aura_counter_buff",
+            "filter": { "trait": "Land of Wano", "kind": "character", "counterValueMax": 0 },
+            "magnitude": 1000
+          }
+        }
+      ]
+    },
+    {
+      "card_id": "EB01-003",
+      "name": "Kid & Killer",
+      "kind": "character",
+      "continuous": [
+        { "action": { "kind": "grant_keyword_to_self", "keyword": "rush" } }
+      ]
+    },
+    {
+      "card_id": "EB01-006",
+      "name": "Tony Tony.Chopper",
+      "kind": "character",
+      "continuous": [
+        { "action": { "kind": "grant_keyword_to_self", "keyword": "blocker" } }
+      ]
+    },
+    {
+      "card_id": "EB01-014",
+      "name": "Sanji",
+      "kind": "character",
+      "continuous": [
+        {
+          "condition": {
+            "type": "and",
+            "conditions": [
+              { "type": "if_attached_don_min", "n": 1 },
+              { "type": "is_own_turn" }
+            ]
+          },
+          "action": {
+            "kind": "self_power_buff",
+            "magnitude": {
+              "kind": "per_count",
+              "countSource": "own_rested_don_count",
+              "divisor": 3,
+              "perUnit": 1000
+            }
+          }
+        }
+      ]
+    },
+    {
+      "card_id": "EB01-017",
+      "name": "Blueno",
+      "kind": "character",
+      "continuous": [
+        { "action": { "kind": "grant_keyword_to_self", "keyword": "blocker" } }
+      ]
+    },
+    {
+      "card_id": "EB01-024",
+      "name": "Hamlet",
+      "kind": "character",
+      "continuous": [
+        {
+          "condition": { "type": "if_hand_max", "n": 4 },
+          "action": {
+            "kind": "aura_power_buff",
+            "filter": { "trait": "SMILE", "kind": "character" },
+            "magnitude": 1000
+          }
+        }
+      ]
+    },
+    {
+      "card_id": "EB01-027",
+      "name": "Mr.1(Daz.Bonez)",
+      "kind": "character",
+      "continuous": [
+        {
+          "condition": { "type": "if_leader_has_type", "typeString": "Baroque Works" },
+          "action": {
+            "kind": "self_power_buff",
+            "magnitude": {
+              "kind": "per_count",
+              "countSource": "own_trash_event_count",
+              "divisor": 2,
+              "perUnit": 1000
+            }
+          }
+        }
+      ]
+    },
+    {
+      "card_id": "EB01-034",
+      "name": "Ms. Wednesday",
+      "kind": "character",
+      "continuous": [
+        { "action": { "kind": "grant_keyword_to_self", "keyword": "blocker" } }
+      ]
+    },
+    {
+      "card_id": "EB01-036",
+      "name": "Minochihuahua",
+      "kind": "character",
+      "continuous": [
+        { "action": { "kind": "grant_keyword_to_self", "keyword": "rush" } }
+      ]
+    },
+    {
+      "card_id": "EB01-052",
+      "name": "Viola",
+      "kind": "character",
+      "continuous": [
+        { "action": { "kind": "grant_keyword_to_self", "keyword": "blocker" } }
+      ]
+    },
+    {
+      "card_id": "EB01-054",
+      "name": "Gan.Fall",
+      "kind": "character",
+      "continuous": [
+        { "action": { "kind": "grant_keyword_to_self", "keyword": "blocker" } }
+      ]
+    },
+    {
+      "card_id": "EB01-057",
+      "name": "Shirahoshi",
+      "kind": "character",
+      "continuous": [
+        { "action": { "kind": "grant_keyword_to_self", "keyword": "blocker" } }
+      ]
+    },
+    {
+      "card_id": "EB01-058",
+      "name": "Mont Blanc Cricket",
+      "kind": "character",
+      "continuous": [
+        {
+          "condition": {
+            "type": "and",
+            "conditions": [
+              { "type": "if_attached_don_min", "n": 1 },
+              { "type": "is_own_turn" },
+              { "type": "if_own_life_max", "n": 2 }
+            ]
+          },
+          "action": { "kind": "self_power_buff", "magnitude": 2000 }
+        }
+      ]
+    },
+    {
+      "card_id": "EB02-003",
+      "name": "Tony Tony.Chopper",
+      "kind": "character",
+      "continuous": [
+        {
+          "condition": {
+            "type": "and",
+            "conditions": [
+              { "type": "if_attached_don_min", "n": 2 },
+              { "type": "is_opp_turn" }
+            ]
+          },
+          "action": { "kind": "self_power_buff", "magnitude": 2000 }
+        }
+      ]
+    },
+    {
+      "card_id": "EB02-005",
+      "name": "Fake Straw Hat Crew",
+      "kind": "character",
+      "continuous": [
+        {
+          "condition": { "type": "is_own_turn" },
+          "action": { "kind": "self_power_buff", "magnitude": 2000 }
+        },
+        {
+          "condition": { "type": "is_opp_turn" },
+          "action": { "kind": "self_power_buff", "magnitude": -2000 }
+        }
+      ]
+    },
+    {
+      "card_id": "EB02-012",
+      "name": "Gaimon",
+      "kind": "character",
+      "continuous": [
+        {
+          "condition": { "type": "if_owned_other_with_name", "name": "Sarfunkel" },
+          "action": { "kind": "grant_keyword_to_self", "keyword": "blocker" }
+        }
+      ]
+    },
+    {
+      "card_id": "EB02-019",
+      "name": "Roronoa Zoro",
+      "kind": "character",
+      "continuous": [
+        {
+          "condition": { "type": "if_opp_chars_min", "n": 2 },
+          "action": { "kind": "grant_keyword_to_self", "keyword": "rush_character" }
+        }
+      ]
+    },
+    {
+      "card_id": "EB02-033",
+      "name": "Klabautermann",
+      "kind": "character",
+      "continuous": [
+        {
+          "condition": { "type": "if_owned_other_with_name", "name": "Merry Go" },
+          "action": { "kind": "grant_keyword_to_self", "keyword": "blocker" }
+        }
+      ]
+    },
+    {
+      "card_id": "EB02-036",
+      "name": "Nico Robin",
+      "kind": "character",
+      "continuous": [
+        { "action": { "kind": "grant_keyword_to_self", "keyword": "blocker" } }
+      ]
+    }
+  ]
+}

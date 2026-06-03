@@ -26,6 +26,7 @@ import { isCharacter, isEvent, isLeader } from '../cards/Card.js';
 import { EffectDispatcher } from '../effects/EffectDispatcher.js';
 import { ReplacementManager } from '../effects/ReplacementManager.js';
 import { triggerEmitters } from '../registry/types.js';
+import { safeProcessSimEvent } from '../../sim/integrate.js';
 import type {
   ActionDeclareAttack,
   ActionDeclareBlocker,
@@ -104,6 +105,7 @@ function koCharacter(state: GameState, target: CardInstance, side: PlayerId): Ga
     sourceInstanceId: target.instanceId,
     controller: side,
   }, 'on_ko');
+  next = safeProcessSimEvent(next, { sourceInstanceId: target.instanceId, controller: side }, 'on_ko');
   resetInstanceTransientState(target);
   // Broadcast on_battle_ko + on_any_char_ko / on_any_opp_char_ko.
   if (triggerEmitters.has('on_battle_ko')) {
@@ -235,6 +237,7 @@ function declareAttackReducer(
     sourceInstanceId: attackerInst.instanceId,
     controller: player,
   }, 'when_attacking');
+  next = safeProcessSimEvent(next, { sourceInstanceId: attackerInst.instanceId, controller: player, attackingInstanceId: attackerInst.instanceId }, 'when_attacking');
   // Broadcast on_opp_attack to defender's live sources.
   if (triggerEmitters.has('on_opp_attack')) {
     next = triggerEmitters.get('on_opp_attack')(next, { kind: 'on_opp_attack' }, OTHER_PLAYER[player]);
@@ -274,10 +277,13 @@ function declareBlockerReducer(
   });
 
   // Fire on_block clauses on the blocker.
-  return EffectDispatcher.dispatch(state, {
-    sourceInstanceId: blocker.instanceId,
-    controller: player,
-  }, 'on_block');
+  {
+    const next = EffectDispatcher.dispatch(state, {
+      sourceInstanceId: blocker.instanceId,
+      controller: player,
+    }, 'on_block');
+    return safeProcessSimEvent(next, { sourceInstanceId: blocker.instanceId, controller: player }, 'on_block');
+  }
 }
 
 // ────────────────────────────────────────────────────────────────────
@@ -385,6 +391,7 @@ function playCounterReducer(
       sourceInstanceId: action.instanceId,
       controller: player,
     }, 'on_play');
+    next = safeProcessSimEvent(next, { sourceInstanceId: action.instanceId, controller: player }, 'on_play');
     if (triggerEmitters.has('on_self_activate_event')) {
       const emitter = triggerEmitters.get('on_self_activate_event');
       next = emitter(next, { kind: 'on_self_activate_event' }, player);

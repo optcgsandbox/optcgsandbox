@@ -106,7 +106,12 @@ function visitTarget(target: unknown, used: UsedKinds): void {
 
 function visitCost(cost: unknown, used: UsedKinds): void {
   if (typeof cost !== 'object' || cost === null) return;
-  for (const key of Object.keys(cost)) used.costs.add(key);
+  for (const key of Object.keys(cost)) {
+    // `bind` is a ClauseScratch meta-key on the cost shape, not a
+    // cost-handler kind. Skip it from the coverage walk.
+    if (key === 'bind') continue;
+    used.costs.add(key);
+  }
 }
 
 describe('engine-v2 registry coverage', () => {

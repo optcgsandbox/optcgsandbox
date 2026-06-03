@@ -111,9 +111,14 @@ export const ReplacementManager = {
         continue;
       }
 
+      // Thread the originating clause's ClauseScratch (if any) so a
+      // replacement clause invoked inside a clause-resolution can read
+      // bindings written by earlier steps of the originating clause and
+      // can write its own bindings visible to subsequent steps.
       const repCtx: HandlerCtx = {
         sourceInstanceId: entry.sourceInstanceId,
         controller: entry.controller,
+        scratch: ctx.scratch,
       };
 
       // Condition

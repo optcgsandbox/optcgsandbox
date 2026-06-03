@@ -16,6 +16,7 @@
 import { ContinuousManager } from '../effects/ContinuousManager.js';
 import { EffectDispatcher } from '../effects/EffectDispatcher.js';
 import { triggerEmitters } from '../registry/types.js';
+import { safeProcessSimEvent } from '../../sim/integrate.js';
 import type {
   ActionActivateMain,
   ActionAttachDon,
@@ -147,6 +148,7 @@ function playCardReducer(
       sourceInstanceId: inst.instanceId,
       controller: player,
     }, 'on_play');
+    next = safeProcessSimEvent(next, { sourceInstanceId: inst.instanceId, controller: player }, 'on_play');
     if (triggerEmitters.has('on_self_activate_event')) {
       const emitter = triggerEmitters.get('on_self_activate_event');
       next = emitter(next, { kind: 'on_self_activate_event' }, player);
@@ -209,6 +211,7 @@ function playCardReducer(
     sourceInstanceId: inst.instanceId,
     controller: player,
   }, 'on_play');
+  next = safeProcessSimEvent(next, { sourceInstanceId: inst.instanceId, controller: player }, 'on_play');
   // Broadcast on_opp_play_character to opponent's live sources.
   if (triggerEmitters.has('on_opp_play_character')) {
     const emitter = triggerEmitters.get('on_opp_play_character');
@@ -270,10 +273,13 @@ function playStageReducer(
     cost,
   });
 
-  return EffectDispatcher.dispatch(state, {
-    sourceInstanceId: inst.instanceId,
-    controller: player,
-  }, 'on_play');
+  {
+    const next = EffectDispatcher.dispatch(state, {
+      sourceInstanceId: inst.instanceId,
+      controller: player,
+    }, 'on_play');
+    return safeProcessSimEvent(next, { sourceInstanceId: inst.instanceId, controller: player }, 'on_play');
+  }
 }
 
 // ─── ACTIVATE_MAIN
@@ -299,10 +305,13 @@ function activateMainReducer(
   // Summoning sickness only blocks characters' attacks, not their activate_main
   // (per CR §6-4-2 — activate_main works on the turn played). No guard needed.
 
-  return EffectDispatcher.dispatch(state, {
-    sourceInstanceId: inst.instanceId,
-    controller: player,
-  }, 'activate_main');
+  {
+    const next = EffectDispatcher.dispatch(state, {
+      sourceInstanceId: inst.instanceId,
+      controller: player,
+    }, 'activate_main');
+    return safeProcessSimEvent(next, { sourceInstanceId: inst.instanceId, controller: player }, 'activate_main');
+  }
 }
 
 export function registerMainPhaseReducers(): void {
