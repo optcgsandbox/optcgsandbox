@@ -11,6 +11,7 @@
  * real V0 implementations.
  */
 
+import { ContinuousManager } from '../../effects/ContinuousManager.js';
 import { EffectDispatcher } from '../../effects/EffectDispatcher.js';
 import { detachAllAttachedDon } from '../../state/derived/don.js';
 import { effectivePower } from '../../state/derived/power.js';
@@ -144,12 +145,37 @@ const addToOppLifeTop: ActionHandler = (state, ctx, action, targets) => {
   const from = typeof action['from'] === 'string' ? (action['from'] as string) : 'top_of_deck';
   const faceUp = action['faceUp'] === true;
   const position = action['position'] === 'bottom' ? 'bottom' : 'top';
-  // For opp life, source is usually opp's deck (default) or our targets.
+  // Source: usually opp's deck (default) or a specific instance picked from
+  // some other zone. When sourcing by target, REMOVE the instance from its
+  // current zone before pushing to opp life — otherwise the same id ends up
+  // in two zones (violates Plan §7.3 instance-count-stable invariant).
   let id: string | undefined;
   if (from === 'top_of_deck') {
     id = opp.deck.shift();
   } else if (targets.length > 0) {
     id = targets[0];
+    if (id !== undefined) {
+      const z = findInstZone(state, id);
+      if (z !== null) {
+        const zonePl = state.players[z.side];
+        if (z.zone === 'hand') {
+          const idx = zonePl.hand.indexOf(id);
+          if (idx !== -1) zonePl.hand.splice(idx, 1);
+        } else if (z.zone === 'trash') {
+          const idx = zonePl.trash.indexOf(id);
+          if (idx !== -1) zonePl.trash.splice(idx, 1);
+        } else if (z.zone === 'field') {
+          const idx = zonePl.field.findIndex((c) => c.instanceId === id);
+          if (idx !== -1) {
+            detachAllAttachedDon(state, zonePl.field[idx]!, z.side);
+            zonePl.field.splice(idx, 1);
+          }
+        } else if (z.zone === 'life') {
+          const idx = zonePl.life.indexOf(id);
+          if (idx !== -1) zonePl.life.splice(idx, 1);
+        }
+      }
+    }
   }
   if (id === undefined) return state;
   if (position === 'bottom') opp.life.push(id);
@@ -180,11 +206,16 @@ const trashFaceUpLife: ActionHandler = (state, ctx) => {
 };
 
 const trashOwnLifeUntil: ActionHandler = (state, ctx, action) => {
-  const target = num(action, 'until', 0);
+  // Spec field is `n` (count of life cards to trash from top). Previous
+  // implementation read `until` defaulting to 0, which trimmed life to zero
+  // and instantly lost the game — opposite of intent for cards like
+  // EB01-059 / EB01-060 ("Trash 1 of your Life cards").
+  const n = num(action, 'n', resolveCount(state, ctx, action, 1));
   const pl = state.players[ctx.controller];
-  while (pl.life.length > target) {
+  for (let i = 0; i < n; i++) {
     const id = pl.life.shift();
-    if (id !== undefined) pl.trash.push(id);
+    if (id === undefined) break;
+    pl.trash.push(id);
   }
   return state;
 };
@@ -337,11 +368,12 @@ const takeFromOppHand: ActionHandler = (state, ctx, _action, targets) => {
 // ─── cost / power modifiers
 const giveCostBuff: ActionHandler = (state, ctx, action, targets) => {
   const n = resolveCount(state, ctx, action, 0);
+  const expires = expiresInTurnsFor(action['duration']);
   for (const id of targets) {
     const inst = state.instances[id];
     if (inst === undefined) continue;
     inst.costModifierOneShot = (inst.costModifierOneShot ?? 0) + n;
-    inst.costModifierExpiresInTurns = inst.costModifierExpiresInTurns ?? 0;
+    inst.costModifierExpiresInTurns = expires;
   }
   return state;
 };
@@ -363,12 +395,17 @@ const costReduction: ActionHandler = (state, ctx, action) => {
 };
 
 const removalCostReduce: ActionHandler = (state, ctx, action, targets) => {
-  const n = resolveCount(state, ctx, action, -1);
+  // cards.json spec uses `magnitude` as the AMOUNT to reduce by (positive
+  // number) — semantics matches `cost_reduction` sibling. Apply as a NEGATIVE
+  // modifier so the target's effective cost goes DOWN, not up.
+  const raw = resolveCount(state, ctx, action, 1);
+  const delta = -Math.abs(raw);
+  const expires = expiresInTurnsFor(action['duration']);
   for (const id of targets) {
     const inst = state.instances[id];
     if (inst === undefined) continue;
-    inst.costModifierOneShot = (inst.costModifierOneShot ?? 0) + n;
-    inst.costModifierExpiresInTurns = inst.costModifierExpiresInTurns ?? 0;
+    inst.costModifierOneShot = (inst.costModifierOneShot ?? 0) + delta;
+    inst.costModifierExpiresInTurns = expires;
   }
   return state;
 };
@@ -608,7 +645,9 @@ const restOppDon: ActionHandler = (state, ctx, action) => {
 };
 
 // ─── activate_event_from_hand: play counter event from hand without paying
-//     cost (rare; some cards do this for free during counter window)
+//     cost (rare; some cards do this for free during counter window).
+//     Mirrors playCounterReducer's event path for boost + replacement arming
+//     but skips the DON pay.
 const activateEventFromHand: ActionHandler = (state, ctx, _action, targets) => {
   const pl = state.players[ctx.controller];
   for (const id of targets) {
@@ -616,7 +655,39 @@ const activateEventFromHand: ActionHandler = (state, ctx, _action, targets) => {
     if (idx === -1) continue;
     pl.hand.splice(idx, 1);
     pl.trash.push(id);
-    // Fire on_play on the event
+
+    const inst = state.instances[id];
+    const card = inst !== undefined
+      ? state.cardLibrary[inst.cardId] as { counterEventBoost?: number | null; effectSpecV2?: { replacements?: ReadonlyArray<unknown> } } | undefined
+      : undefined;
+
+    // Apply counterEventBoost + arm replacements onto the pending attack
+    // (battle-scoped) AND the controller's turn-scoped armed list — only when
+    // we're in the middle of a defender's counter window.
+    if (card !== undefined && state.pending !== null && state.pending.kind === 'attack') {
+      const pa = state.pending.pendingAttack;
+      const boost = card.counterEventBoost ?? 0;
+      if (boost > 0) pa.counterBoost += boost;
+
+      const reps = card.effectSpecV2?.replacements ?? [];
+      if (reps.length > 0) {
+        const battleList = pa.armedReplacements ?? [];
+        const turnList = pl.armedReplacementsThisTurn ?? [];
+        for (const rep of reps) {
+          const armed = {
+            replacement: rep,
+            sourceInstanceId: id,
+            controller: ctx.controller,
+          };
+          battleList.push(armed);
+          turnList.push(armed);
+        }
+        pa.armedReplacements = battleList;
+        pl.armedReplacementsThisTurn = turnList;
+      }
+    }
+
+    // Fire on_play on the event.
     return EffectDispatcher.dispatch(state, {
       sourceInstanceId: id,
       controller: ctx.controller,
@@ -698,6 +769,7 @@ const searcherPeek: ActionHandler = (state, ctx, action) => {
   // Remove peeked slice from deck head.
   pl.deck.splice(0, peeked.length);
 
+  const playedIds: InstanceId[] = [];
   for (const id of picked) {
     const inst = state.instances[id];
     if (inst === undefined) continue;
@@ -708,6 +780,7 @@ const searcherPeek: ActionHandler = (state, ctx, action) => {
         inst.summoningSick = true;
         inst.rested = rested;
         pl.field.push(inst);
+        playedIds.push(id);
         (state.history as Array<unknown>).push({
           type: 'CHARACTER_PLAYED',
           instanceId: id,
@@ -742,7 +815,17 @@ const searcherPeek: ActionHandler = (state, ctx, action) => {
     pickedCount: picked.length,
     playInsteadOfHand,
   });
-  return state;
+
+  // Refold so newly-placed chars' continuous clauses apply BEFORE on_play
+  // (Plan §4.7 placeCharacterOnField).
+  let next = playedIds.length > 0 ? ContinuousManager.refold(state) : state;
+  for (const id of playedIds) {
+    next = EffectDispatcher.dispatch(next, {
+      sourceInstanceId: id,
+      controller: ctx.controller,
+    }, 'on_play');
+  }
+  return next;
 };
 
 // Shared filter check used by all reveal_* variants. Reads filter fields
@@ -808,6 +891,13 @@ const revealTopAndConditionalPlay: ActionHandler = (state, ctx, action) => {
       cost: 0,
       reason: 'reveal_top_and_conditional_play',
     });
+    // Refold so the new char's continuous clauses apply BEFORE on_play
+    // (Plan §4.7 placeCharacterOnField).
+    const refolded = ContinuousManager.refold(state);
+    return EffectDispatcher.dispatch(refolded, {
+      sourceInstanceId: topId,
+      controller: ctx.controller,
+    }, 'on_play');
   } else {
     // No match OR not a character → bottom of deck.
     pl.deck.push(topId);

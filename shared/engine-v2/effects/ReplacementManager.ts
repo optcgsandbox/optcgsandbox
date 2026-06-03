@@ -128,7 +128,14 @@ export const ReplacementManager = {
       if (rep.cost !== undefined) {
         const payable = CostPayer.canPay(working, repCtx, rep.cost);
         if (!payable) {
-          if (rep.conditional === true) continue; // skip silently; try next
+          // Per CR §8-1-3-4-2:
+          //   - conditional === true (or undefined): fall through; try next
+          //     armed entry. If none fire, the original event proceeds.
+          //   - conditional === false: the replacement CONSUMES the would-be
+          //     trigger as a no-op. Original event does NOT proceed.
+          if (rep.conditional === false) {
+            return { replaced: true, state };
+          }
           continue;
         }
         const paid = CostPayer.pay(working, repCtx, rep.cost);

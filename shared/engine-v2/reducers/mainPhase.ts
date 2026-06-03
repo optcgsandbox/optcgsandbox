@@ -13,6 +13,7 @@
  * - Plan v1 §4.7 (C10, C11)
  */
 
+import { ContinuousManager } from '../effects/ContinuousManager.js';
 import { EffectDispatcher } from '../effects/EffectDispatcher.js';
 import { triggerEmitters } from '../registry/types.js';
 import type {
@@ -103,7 +104,7 @@ function playCardReducer(
 
   const card = lookupCard(state, inst);
   if (card === undefined) return state;
-  if (!isCharacter(card)) return state;
+  if (!isCharacter(card) && card.kind !== 'event') return state;
 
   // Cost — honor nextPlayCostModifier only if no scope OR scope matches.
   const donAvailable = pl.donCostArea.length;
@@ -120,6 +121,44 @@ function playCardReducer(
   const cost = Math.max(0, card.cost + modifier);
   if (donAvailable < cost) return state;
 
+  if (card.kind === 'event') {
+    // Events: pay DON, hand → trash, fire on_play (event effect text), broadcast
+    // on_self_activate_event + on_opp_activate_event. No field placement.
+    for (let i = 0; i < cost; i++) {
+      const id = pl.donCostArea.shift();
+      if (id !== undefined) pl.donRested.push(id);
+    }
+    const handIdx = pl.hand.indexOf(inst.instanceId);
+    pl.hand.splice(handIdx, 1);
+    pl.trash.push(inst.instanceId);
+
+    pl.nextPlayCostModifier = undefined;
+    pl.nextPlayCostModifierScope = undefined;
+
+    (state.history as Array<unknown>).push({
+      type: 'EVENT_ACTIVATED',
+      instanceId: inst.instanceId,
+      cardId: inst.cardId,
+      controller: player,
+      cost,
+    });
+
+    let next = EffectDispatcher.dispatch(state, {
+      sourceInstanceId: inst.instanceId,
+      controller: player,
+    }, 'on_play');
+    if (triggerEmitters.has('on_self_activate_event')) {
+      const emitter = triggerEmitters.get('on_self_activate_event');
+      next = emitter(next, { kind: 'on_self_activate_event' }, player);
+    }
+    if (triggerEmitters.has('on_opp_activate_event')) {
+      const emitter = triggerEmitters.get('on_opp_activate_event');
+      next = emitter(next, { kind: 'on_opp_activate_event' }, player);
+    }
+    return next;
+  }
+
+  // Character path.
   // Field cap check + replace
   const charCount = pl.field.length;
   if (charCount >= FIELD_CAP) {
@@ -163,8 +202,10 @@ function playCardReducer(
     cost,
   });
 
-  // Fire on_play on the source
-  let next = EffectDispatcher.dispatch(state, {
+  // Refold so the new character's own continuous clauses (if any) apply
+  // BEFORE its on_play fires (Plan §4.7 placeCharacterOnField).
+  let next = ContinuousManager.refold(state);
+  next = EffectDispatcher.dispatch(next, {
     sourceInstanceId: inst.instanceId,
     controller: player,
   }, 'on_play');

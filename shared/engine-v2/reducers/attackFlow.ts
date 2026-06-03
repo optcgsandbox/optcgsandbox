@@ -87,6 +87,13 @@ function koCharacter(state: GameState, target: CardInstance, side: PlayerId): Ga
   detachAllAttachedDon(next, target, side);
   pl.field.splice(idx, 1);
   pl.trash.push(target.instanceId);
+  // Track the KO source so on_ko clauses + conditions like
+  // if_self_kod_by_opp_effect can distinguish battle vs effect KO
+  // (mirrors removal_ko pattern at registry/handlers/actions.ts:170-173).
+  next.koSourceStack.push({
+    instanceId: target.instanceId,
+    source: 'battle',
+  });
   (next.history as Array<unknown>).push({
     type: 'CHARACTER_KOD',
     instanceId: target.instanceId,
@@ -307,38 +314,104 @@ function playCounterReducer(
   const inst = state.instances[action.instanceId];
   if (inst === undefined) return state;
   const card = state.cardLibrary[inst.cardId] as Card | undefined;
-  if (card === undefined || !isEvent(card)) return state;
+  if (card === undefined) return state;
 
-  // Pay DON cost.
-  const cost = Math.max(0, card.cost + (pl.nextPlayCostModifier ?? 0));
-  if (pl.donCostArea.length < cost) return state;
-  for (let i = 0; i < cost; i++) {
-    const id = pl.donCostArea.shift();
-    if (id !== undefined) pl.donRested.push(id);
+  // Two counter paths per OPTCG CR §8-6:
+  //   1. Counter event — pay DON cost, trash, apply counterEventBoost, fire on_play.
+  //   2. Any other card with counterValue > 0 — no cost, trash, apply counterValue.
+  // Both consume the hand card and boost the pending attack's defender power.
+  const isEventCard = isEvent(card);
+  if (isEventCard) {
+    // Cost — honor nextPlayCostModifier scope (matches mainPhase event path).
+    let modifier = pl.nextPlayCostModifier ?? 0;
+    const scope = pl.nextPlayCostModifierScope;
+    if (scope !== undefined) {
+      const s = scope as { cardName?: unknown; costMin?: unknown; costMax?: unknown };
+      let matches = true;
+      if (typeof s.cardName === 'string' && card.name !== s.cardName) matches = false;
+      if (matches && typeof s.costMin === 'number' && card.cost < (s.costMin as number)) matches = false;
+      if (matches && typeof s.costMax === 'number' && card.cost > (s.costMax as number)) matches = false;
+      if (!matches) modifier = 0;
+    }
+    const cost = Math.max(0, card.cost + modifier);
+    if (pl.donCostArea.length < cost) return state;
+    for (let i = 0; i < cost; i++) {
+      const id = pl.donCostArea.shift();
+      if (id !== undefined) pl.donRested.push(id);
+    }
+    pl.nextPlayCostModifier = undefined;
+    pl.nextPlayCostModifierScope = undefined;
+
+    // hand → trash.
+    const handIdx = pl.hand.indexOf(action.instanceId);
+    pl.hand.splice(handIdx, 1);
+    pl.trash.push(action.instanceId);
+
+    const boost = card.counterEventBoost ?? 0;
+    if (boost > 0) state.pending.pendingAttack.counterBoost += boost;
+
+    (state.history as Array<unknown>).push({
+      type: 'COUNTER_PLAYED',
+      instanceId: action.instanceId,
+      controller: player,
+      boost,
+    });
+
+    // Arm event's replacements (Plan §4.3 step 7) onto BOTH the battle-scoped
+    // pendingAttack.armedReplacements AND the turn-scoped pl.armedReplacementsThisTurn.
+    // Counter events with would_be_ko / would_take_damage replacements (e.g.,
+    // EB02-030) silently fizzled without this step.
+    const reps = (card.effectSpecV2?.replacements ?? []) as ReadonlyArray<unknown>;
+    if (reps.length > 0) {
+      const pa = state.pending.pendingAttack;
+      const battleList = pa.armedReplacements ?? [];
+      const turnList = pl.armedReplacementsThisTurn ?? [];
+      for (const rep of reps) {
+        const armed = {
+          replacement: rep,
+          sourceInstanceId: action.instanceId,
+          controller: player,
+        };
+        battleList.push(armed);
+        turnList.push(armed);
+      }
+      pa.armedReplacements = battleList;
+      pl.armedReplacementsThisTurn = turnList;
+    }
+
+    // Fire on_play, then broadcast event-activation (mirrors mainPhase event path).
+    let next = EffectDispatcher.dispatch(state, {
+      sourceInstanceId: action.instanceId,
+      controller: player,
+    }, 'on_play');
+    if (triggerEmitters.has('on_self_activate_event')) {
+      const emitter = triggerEmitters.get('on_self_activate_event');
+      next = emitter(next, { kind: 'on_self_activate_event' }, player);
+    }
+    if (triggerEmitters.has('on_opp_activate_event')) {
+      const emitter = triggerEmitters.get('on_opp_activate_event');
+      next = emitter(next, { kind: 'on_opp_activate_event' }, player);
+    }
+    return next;
   }
-  pl.nextPlayCostModifier = undefined;
 
-  // Move event hand → trash.
+  // Non-event counter: discard for printed counterValue. No DON cost.
+  const counterValue = card.counterValue ?? 0;
+  if (counterValue <= 0) return state;
+
   const handIdx = pl.hand.indexOf(action.instanceId);
   pl.hand.splice(handIdx, 1);
   pl.trash.push(action.instanceId);
 
-  // Add the printed counter boost to the pending attack.
-  const boost = card.counterEventBoost ?? 0;
-  if (boost > 0) state.pending.pendingAttack.counterBoost += boost;
+  state.pending.pendingAttack.counterBoost += counterValue;
 
   (state.history as Array<unknown>).push({
     type: 'COUNTER_PLAYED',
     instanceId: action.instanceId,
     controller: player,
-    boost,
+    boost: counterValue,
   });
-
-  // Fire any on_play clauses on the event.
-  return EffectDispatcher.dispatch(state, {
-    sourceInstanceId: action.instanceId,
-    controller: player,
-  }, 'on_play');
+  return state;
 }
 
 // ────────────────────────────────────────────────────────────────────

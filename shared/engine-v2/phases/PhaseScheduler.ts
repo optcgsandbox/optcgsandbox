@@ -21,6 +21,7 @@
  * - CR §6 (turn structure)
  */
 
+import { ContinuousManager } from '../effects/ContinuousManager.js';
 import { EffectDispatcher } from '../effects/EffectDispatcher.js';
 import { triggerEmitters } from '../registry/types.js';
 import type { EffectActionV2 } from '../spec/types.js';
@@ -153,7 +154,7 @@ export const PhaseScheduler = {
     }
     pl.armedReplacementsThisTurn = [];
 
-    return setPhase(next, expectStaticNext('refresh')); // → 'draw'
+    return ContinuousManager.refold(setPhase(next, expectStaticNext('refresh'))); // → 'draw'
   },
 
   /**
@@ -179,7 +180,7 @@ export const PhaseScheduler = {
       }
     }
 
-    return setPhase(state, expectStaticNext('draw')); // → 'don'
+    return ContinuousManager.refold(setPhase(state, expectStaticNext('draw'))); // → 'don'
   },
 
   /**
@@ -203,7 +204,7 @@ export const PhaseScheduler = {
       }
     }
 
-    return setPhase(state, expectStaticNext('don')); // → 'main'
+    return ContinuousManager.refold(setPhase(state, expectStaticNext('don'))); // → 'main'
   },
 
   /**
@@ -213,7 +214,7 @@ export const PhaseScheduler = {
    * input via Action dispatcher; scheduler resumes on enterEnd or attack.
    */
   enterMain(state: GameState): GameState {
-    return setPhase(state, 'main');
+    return ContinuousManager.refold(setPhase(state, 'main'));
   },
 
   /**
@@ -308,6 +309,25 @@ export const PhaseScheduler = {
     }
     void EffectDispatcher; // reserved for future on_take_damage-style dispatches inside end phase
 
+    // (5b) End-of-turn self-trash (Plan §2.5 step 9). Cards marked
+    // `endOfTurnTrash === true` by self_trash_at_end_of_turn / end_of_turn_trash
+    // primitives are removed from the active player's field — rule-based
+    // cleanup, not a KO event, so on_ko does NOT fire.
+    const activeField = next.players[ap].field;
+    for (let i = activeField.length - 1; i >= 0; i--) {
+      const inst = activeField[i]!;
+      if (inst.endOfTurnTrash !== true) continue;
+      detachAllAttachedDon(next, inst, ap);
+      activeField.splice(i, 1);
+      resetInstanceTransientState(inst); // also clears endOfTurnTrash flag
+      next.players[ap].trash.push(inst.instanceId);
+      (next.history as Array<unknown>).push({
+        type: 'CARD_TRASHED_BY_RULE',
+        instanceId: inst.instanceId,
+        reason: 'end_of_turn_self_trash',
+      });
+    }
+
     // (6) Hand-size limit: CR §6-5-7. If active player's hand > 10, they
     // must discard down. Suspends via PendingDiscard.
     state = next;
@@ -325,7 +345,7 @@ export const PhaseScheduler = {
         },
       };
       state.phase = 'discard_choice';
-      return state;
+      return ContinuousManager.refold(state);
     }
 
     return finalizeEndTurn(state, ap, opp);
@@ -350,7 +370,7 @@ export function finalizeEndTurn(
   state.koSourceStack = [];
   state.pendingDonReturned = {};
   void ap;
-  return setPhase(state, expectStaticNext('end')); // → 'refresh' (next turn)
+  return ContinuousManager.refold(setPhase(state, expectStaticNext('end'))); // → 'refresh' (next turn)
 }
 
 // ────────────────────────────────────────────────────────────────────

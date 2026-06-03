@@ -33,7 +33,4 @@ export function registerAllHandlers(): void {
   registerContinuousHandlers();
   registerContinuousHandlers2();
   registerReplacementHandlers();
-  // Remaining actions to register: peek, choose_one, search_deck,
-  //   transfer_attached_don, set_active_don, return_opp_don_to_deck,
-  //   play_for_free, recursion (trash→hand), shuffle_hand_to_deck, etc.
 }

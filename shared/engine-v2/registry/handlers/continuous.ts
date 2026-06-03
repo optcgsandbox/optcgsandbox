@@ -320,6 +320,13 @@ const auraCounterBuff: ContinuousHandler = {
     for (const id of targets) {
       const inst = state.instances[id];
       if (inst === undefined) continue;
+      // CR §3-5-2 (counter chip): aura buffs that grant a counter value to
+      // characters apply ONLY to characters without a printed counter
+      // (e.g., EB01-001 "without a Counter"). Skip targets that already
+      // print a counter value > 0.
+      const card = state.cardLibrary[inst.cardId];
+      const printed = (card as { counterValue?: number | null } | undefined)?.counterValue;
+      if (typeof printed === 'number' && printed > 0) continue;
       inst.counterBonus = (inst.counterBonus ?? 0) + n;
     }
     return state;

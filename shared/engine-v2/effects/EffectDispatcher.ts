@@ -181,6 +181,14 @@ export const EffectDispatcher = {
           markOptUsed(freshInst, makeOptKey('opt', trigger, i));
         }
       }
+
+      // (8) Pending-state pause (Plan §1.3 + §4.12). If clause i's action
+      // suspended the engine (peek/choose_one/discard/attack_target_pick),
+      // subsequent clauses must NOT fire on the un-resumed state. Break and
+      // let the host resume via the pending decision. Resume-continuation
+      // for remaining clauses is a follow-up (matches the existing
+      // RESOLVE_TARGET_PICK stub pattern at choiceResolve.ts:269).
+      if (working.pending !== null) break;
     }
 
     return working;

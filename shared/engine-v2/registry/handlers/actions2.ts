@@ -8,6 +8,8 @@
  *   give_next_play_cost_modifier, end_of_turn_trash.
  */
 
+import { ContinuousManager } from '../../effects/ContinuousManager.js';
+import { EffectDispatcher } from '../../effects/EffectDispatcher.js';
 import { detachAllAttachedDon } from '../../state/derived/don.js';
 import { resetInstanceTransientState } from '../../state/derived/reset.js';
 import { RngService } from '../../state/RngService.js';
@@ -31,7 +33,7 @@ function num(a: EffectActionV2, key: string, fallback = 0): number {
   return typeof v === 'number' ? v : fallback;
 }
 
-function findInstZone(state: GameState, instanceId: InstanceId): {
+export function findInstZone(state: GameState, instanceId: InstanceId): {
   side: PlayerId;
   zone: 'leader' | 'field' | 'stage' | 'hand' | 'deck' | 'trash' | 'life' | 'exile';
 } | null {
@@ -212,6 +214,7 @@ const playForFree: ActionHandler = (state, ctx, action, targets) => {
   const rested = action['rested'] === true;
   const count = typeof action['count'] === 'number' ? (action['count'] as number) : targets.length;
   let played = 0;
+  const playedIds: InstanceId[] = [];
   for (const id of targets) {
     if (played >= count) break;
     const z = findInstZone(state, id);
@@ -238,6 +241,7 @@ const playForFree: ActionHandler = (state, ctx, action, targets) => {
     inst.rested = rested;
     pl.field.push(inst);
     played += 1;
+    playedIds.push(id);
     (state.history as Array<unknown>).push({
       type: 'CHARACTER_PLAYED',
       instanceId: id,
@@ -249,7 +253,16 @@ const playForFree: ActionHandler = (state, ctx, action, targets) => {
       reason: 'play_for_free',
     });
   }
-  return state;
+  // Refold so newly-placed chars' continuous clauses (if any) apply BEFORE
+  // each char's on_play fires (Plan §4.7 placeCharacterOnField).
+  let next = playedIds.length > 0 ? ContinuousManager.refold(state) : state;
+  for (const id of playedIds) {
+    next = EffectDispatcher.dispatch(next, {
+      sourceInstanceId: id,
+      controller: ctx.controller,
+    }, 'on_play');
+  }
+  return next;
 };
 
 // ─── return_to_hand_from_field: alias for removal_bounce but acts on controller's
