@@ -366,11 +366,12 @@ function playCounterReducer(
       const pa = state.pending.pendingAttack;
       const battleList = pa.armedReplacements ?? [];
       const turnList = pl.armedReplacementsThisTurn ?? [];
-      for (const rep of reps) {
+      for (let idx = 0; idx < reps.length; idx++) {
         const armed = {
-          replacement: rep,
+          replacement: reps[idx],
           sourceInstanceId: action.instanceId,
           controller: player,
+          cardReplacementIndex: idx,
         };
         battleList.push(armed);
         turnList.push(armed);

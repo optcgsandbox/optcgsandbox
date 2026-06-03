@@ -48,6 +48,7 @@ interface ArmedEntry {
   readonly replacement: ReplacementEffectV2;
   readonly sourceInstanceId: InstanceId;
   readonly controller: PlayerId;
+  readonly cardReplacementIndex: number;
 }
 
 function buildArmedList(
@@ -68,10 +69,11 @@ function buildArmedList(
     ? (state.cardLibrary[inst.cardId] as Card | undefined)
     : undefined;
   const cardOwned: ArmedReplacement[] = (card?.effectSpecV2?.replacements ?? []).map(
-    (rep) => ({
+    (rep, idx) => ({
       replacement: rep,
       sourceInstanceId: ctx.sourceInstanceId,
       controller: ctx.controller,
+      cardReplacementIndex: idx,
     }),
   );
 
@@ -85,6 +87,7 @@ function buildArmedList(
     replacement: a.replacement as ReplacementEffectV2,
     sourceInstanceId: a.sourceInstanceId,
     controller: a.controller,
+    cardReplacementIndex: a.cardReplacementIndex ?? 0,
   }));
 }
 
@@ -116,8 +119,15 @@ export const ReplacementManager = {
       // Condition
       if (!evaluateCondition(state, repCtx, rep.condition)) continue;
 
-      // OPT gate (per Plan v1 §4.6)
-      const optKey = makeOptKey('repl', trigger, i);
+      // OPT gate (per Plan v1 §4.6). Key is STABLE across pool reordering:
+      // identifies the replacement by (trigger, sourceInstance, cardIndex).
+      // Previously used the merged-list index `i`, which shifted whenever
+      // battle/turn pools mutated mid-turn — could collide or bypass OPT.
+      const optKey = makeOptKey(
+        'repl',
+        trigger,
+        `${entry.sourceInstanceId}:${entry.cardReplacementIndex}`,
+      );
       const sourceInst = state.instances[entry.sourceInstanceId];
       if (rep.opt === true && sourceInst !== undefined && isOptUsed(sourceInst, optKey)) {
         continue;

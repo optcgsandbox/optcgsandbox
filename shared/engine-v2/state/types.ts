@@ -147,6 +147,11 @@ export interface ArmedReplacement {
   readonly replacement: unknown; // ReplacementEffectV2 (declared in spec.ts)
   readonly sourceInstanceId: InstanceId;
   readonly controller: PlayerId;
+  // Index of `replacement` within the source card's effectSpecV2.replacements
+  // array. Used to build a STABLE OPT key (repl:trigger:sourceInstance:index)
+  // so reordering across battle/turn/card-intrinsic pools doesn't change the
+  // OPT identity. Optional for backwards compat; defaults to 0 if absent.
+  readonly cardReplacementIndex?: number;
 }
 
 export interface PendingEndOfTurnEntry {
