@@ -286,20 +286,26 @@ describe('engine-v2 smoke', () => {
     expect(next.players['A'].hand.length).toBe(beforeHand + 3);
   });
 
-  it('searcher_peek deterministic V0 (no filter → take top to hand)', async () => {
+  it('searcher_peek deterministic V0 (no filter → take top to hand; leftovers to bottom by default)', async () => {
     const { actionHandlers } = await import('../registry/types.js');
     const state = buildBasicGameState();
     const topThreeBefore = state.players['A'].deck.slice(0, 3);
+    const deckLenBefore = state.players['A'].deck.length;
 
     const handler = actionHandlers.get('searcher_peek');
     const next = handler(state, {
       sourceInstanceId: state.players['A'].leader.instanceId,
       controller: 'A',
     }, { kind: 'searcher_peek', lookCount: 3, addCount: 1 }, []);
-    // V0 deterministic: top 1 → hand, rest 2 → back to top of deck.
+    // V0 deterministic: top 1 → hand. Leftover routing is data-driven via
+    // action.leftoverPlacement; default = 'bottom'.
     expect(next.players['A'].hand).toContain(topThreeBefore[0]);
-    expect(next.players['A'].deck[0]).toBe(topThreeBefore[1]);
-    expect(next.players['A'].deck[1]).toBe(topThreeBefore[2]);
+    // Leftovers (originally at deck positions 1 and 2) now appended to BOTTOM
+    // in original peek order; deck size shrinks by 1 (top 1 → hand).
+    const deckAfter = next.players['A'].deck;
+    expect(deckAfter.length).toBe(deckLenBefore - 1);
+    expect(deckAfter[deckAfter.length - 2]).toBe(topThreeBefore[1]);
+    expect(deckAfter[deckAfter.length - 1]).toBe(topThreeBefore[2]);
     // No pending — V0 deterministic doesn't suspend.
     expect(next.pending).toBeNull();
     // Peeked IDs marked known.

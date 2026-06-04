@@ -13,6 +13,7 @@
 
 import { ContinuousManager } from '../../effects/ContinuousManager.js';
 import { EffectDispatcher } from '../../effects/EffectDispatcher.js';
+import { RngService } from '../../state/RngService.js';
 import { detachAllAttachedDon } from '../../state/derived/don.js';
 import { effectivePower } from '../../state/derived/power.js';
 import { resetInstanceTransientState } from '../../state/derived/reset.js';
@@ -27,6 +28,7 @@ import {
 import {
   type ActionHandler,
   actionHandlers,
+  type HandlerCtx,
 } from '../types.js';
 import { resolveCount } from './formula.js';
 
@@ -127,12 +129,58 @@ function pullFromSource(state: GameState, pl: GameState['players'][PlayerId], fr
   void state;
 }
 
+// P-LIFE-POSITION: when `action.position === "controller_choice"`, set up a
+// PendingChoose so the controller picks top or bottom at resolution time.
+// Each option carries the same handler kind with the literal position baked
+// in, plus the originally-resolved targets bound via `_preBoundTargets` so
+// the resume-path handler doesn't re-resolve target.
+function suspendLifePositionChoice(
+  state: GameState,
+  ctx: HandlerCtx,
+  action: EffectActionV2,
+  targets: ReadonlyArray<InstanceId>,
+  actionKind: 'add_to_own_life_top' | 'add_to_opp_life_top',
+): GameState {
+  const baseTop = { ...action, kind: actionKind, position: 'top', _preBoundTargets: [...targets] };
+  const baseBot = { ...action, kind: actionKind, position: 'bottom', _preBoundTargets: [...targets] };
+  const resumePhase = state.phase;
+  state.pending = {
+    kind: 'choose_one',
+    pendingChoose: {
+      controller: ctx.controller,
+      sourceInstanceId: ctx.sourceInstanceId,
+      options: [
+        { trigger: 'on_play', action: baseTop, verified: 'human-reviewed' },
+        { trigger: 'on_play', action: baseBot, verified: 'human-reviewed' },
+      ],
+      resumePhase,
+      scratch: ctx.scratch,
+    },
+  };
+  // Match phase to pending kind per engine invariant (PENDING_PHASE).
+  state.phase = 'choose_one';
+  return state;
+}
+
+function readPreBoundTargets(
+  action: EffectActionV2,
+  fallback: ReadonlyArray<InstanceId>,
+): ReadonlyArray<InstanceId> {
+  const pb = action['_preBoundTargets'];
+  if (Array.isArray(pb)) return pb as ReadonlyArray<InstanceId>;
+  return fallback;
+}
+
 const addToOwnLifeTop: ActionHandler = (state, ctx, action, targets) => {
+  if (action['position'] === 'controller_choice') {
+    return suspendLifePositionChoice(state, ctx, action, targets, 'add_to_own_life_top');
+  }
   const pl = state.players[ctx.controller];
   const from = typeof action['from'] === 'string' ? (action['from'] as string) : 'top_of_deck';
   const faceUp = action['faceUp'] === true;
   const position = action['position'] === 'bottom' ? 'bottom' : 'top';
-  const id = pullFromSource(state, pl, from, targets);
+  const effectiveTargets = readPreBoundTargets(action, targets);
+  const id = pullFromSource(state, pl, from, effectiveTargets);
   if (id === undefined) return state;
   if (position === 'bottom') pl.life.push(id);
   else pl.life.unshift(id);
@@ -141,10 +189,14 @@ const addToOwnLifeTop: ActionHandler = (state, ctx, action, targets) => {
 };
 
 const addToOppLifeTop: ActionHandler = (state, ctx, action, targets) => {
+  if (action['position'] === 'controller_choice') {
+    return suspendLifePositionChoice(state, ctx, action, targets, 'add_to_opp_life_top');
+  }
   const opp = state.players[OTHER[ctx.controller]];
   const from = typeof action['from'] === 'string' ? (action['from'] as string) : 'top_of_deck';
   const faceUp = action['faceUp'] === true;
   const position = action['position'] === 'bottom' ? 'bottom' : 'top';
+  targets = readPreBoundTargets(action, targets);
   // Source: usually opp's deck (default) or a specific instance picked from
   // some other zone. When sourcing by target, REMOVE the instance from its
   // current zone before pushing to opp life — otherwise the same id ends up
@@ -224,6 +276,45 @@ const turnAllOwnLifeFaceDown: ActionHandler = (state, ctx) => {
   const pl = state.players[ctx.controller];
   for (const id of pl.life) pl.lifeFaceUp[id] = false;
   return state;
+};
+
+// P-TRIGGER-FROM-LIFE consumer action.
+// `play_self_from_life`: the source instance (a life card revealed during
+// damage resolution and confirmed via RESOLVE_TRIGGER) leaves the life
+// zone and enters its controller's field. Mirrors play_for_free's
+// post-placement hooks (continuous refold + on_play dispatch).
+// The damage→life→PendingTrigger emission already exists in
+// attackFlow.ts:467-489; this handler is the action consumer for
+// `[Trigger] Play this card` patterns (e.g., OP01-009 Carrot).
+const playSelfFromLife: ActionHandler = (state, ctx) => {
+  const pl = state.players[ctx.controller];
+  const id = ctx.sourceInstanceId;
+  const idx = pl.life.indexOf(id);
+  if (idx === -1) return state;
+  pl.life.splice(idx, 1);
+  delete pl.lifeFaceUp[id];
+  const inst = state.instances[id];
+  if (inst === undefined) return state;
+  resetInstanceTransientState(inst);
+  inst.summoningSick = true;
+  inst.rested = false;
+  pl.field.push(inst);
+  (state.history as Array<unknown>).push({
+    type: 'CHARACTER_PLAYED',
+    instanceId: id,
+    cardId: inst.cardId,
+    controller: ctx.controller,
+    cost: 0,
+    from: 'life',
+    rested: false,
+    reason: 'trigger_play_self',
+  });
+  let next = ContinuousManager.refold(state);
+  next = EffectDispatcher.dispatch(next, {
+    sourceInstanceId: id,
+    controller: ctx.controller,
+  }, 'on_play');
+  return next;
 };
 
 const takeDamageSelf: ActionHandler = (state, ctx, action) => {
@@ -725,8 +816,11 @@ const revealOppHand: ActionHandler = (state, ctx) => {
 
 // ─── searcher_peek: V0 deterministic. Top `lookCount` of own deck →
 //     filter → first `addCount` matches → hand OR field (if playInsteadOfHand).
-//     Honors action.rested when playing. Non-picks return to top of deck
-//     in original peek order.
+//     Honors action.rested when playing.
+//     Leftover (non-picked) routing is data-driven via
+//     `action.leftoverPlacement: 'top' | 'bottom' | 'trash' | 'shuffle'`.
+//     If unspecified, defaults to 'bottom' (matches the printed text on
+//     ~88% of the searcher_peek corpus).
 const searcherPeek: ActionHandler = (state, ctx, action) => {
   const lookCount = num(action, 'lookCount', resolveCount(state, ctx, action, 1));
   const addCount = num(action, 'addCount', 1);
@@ -799,8 +893,32 @@ const searcherPeek: ActionHandler = (state, ctx, action) => {
     }
   }
 
-  for (let i = leftover.length - 1; i >= 0; i--) {
-    pl.deck.unshift(leftover[i]!);
+  // Data-driven leftover routing. Default = 'bottom'.
+  const placement = (action['leftoverPlacement'] ?? 'bottom') as
+    'top' | 'bottom' | 'trash' | 'shuffle';
+  switch (placement) {
+    case 'top':
+      for (let i = leftover.length - 1; i >= 0; i--) {
+        pl.deck.unshift(leftover[i]!);
+      }
+      break;
+    case 'trash':
+      for (const id of leftover) {
+        pl.trash.push(id);
+      }
+      break;
+    case 'shuffle':
+      for (const id of leftover) {
+        pl.deck.push(id);
+      }
+      RngService.pull(state).shuffle(pl.deck);
+      break;
+    case 'bottom':
+    default:
+      for (const id of leftover) {
+        pl.deck.push(id);
+      }
+      break;
   }
 
   const known = state.knownByViewer[ctx.controller] ?? [];
@@ -1030,6 +1148,7 @@ export function registerActionHandlers3(): void {
   actionHandlers.register('trash_face_up_life', trashFaceUpLife);
   actionHandlers.register('trash_own_life_until', trashOwnLifeUntil);
   actionHandlers.register('turn_all_own_life_face_down', turnAllOwnLifeFaceDown);
+  actionHandlers.register('play_self_from_life', playSelfFromLife);
   actionHandlers.register('take_damage_self', takeDamageSelf);
   actionHandlers.register('deal_damage_opp', dealDamageOpp);
 

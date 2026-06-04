@@ -59,9 +59,7 @@ export function getLegalActions(state: GameState, player: PlayerId): Action[] {
   }
 
   if (state.phase === 'mulligan_first' || state.phase === 'mulligan_second') {
-    const decider: PlayerId = state.phase === 'mulligan_first'
-      ? state.activePlayer
-      : OTHER_PLAYER[state.activePlayer];
+    const decider: PlayerId = state.activePlayer;
     if (player !== decider) return [{ type: 'CONCEDE' }];
     return [{ type: 'MULLIGAN' }, { type: 'KEEP_HAND' }, { type: 'CONCEDE' }];
   }
