@@ -16,7 +16,7 @@
 //   mini    28 × 40
 //   lifeStack 24 × 34
 
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import type { Card, CardColor, LeaderCard } from '@shared/engine-v2/cards/Card';
 import type { CardInstance } from '@shared/engine-v2/state/types';
@@ -585,6 +585,30 @@ function DonBadge({ count }: { count: number }) {
   );
 }
 
+/**
+ * Public R2 base for the Crew Builder card-image bucket. Mirrors
+ * `scripts/card-sync/index.mjs:77 IMAGE_BASE_URL` on the Crew Builder
+ * side — every primary print is uploaded as `{cardId}.png` (e.g.
+ * `OP09-042.png`). Same bucket also serves `lib/features/collection/
+ * presentation/collection_screen.dart:537` (set thumbs).
+ */
+const R2_IMAGE_BASE = 'https://pub-bed2e18730014af1aeb9e1e85e692e3c.r2.dev';
+
+/**
+ * Map a card id → its public R2 URL. Returns null for non-OPTCG ids
+ * (e.g. internal `DON` and unit-test ids like `red-5-2` per the
+ * `cardNumber` derivation at line 329 of this file) so we don't 404.
+ *
+ * Pattern: uppercase set prefix + dash + digits, e.g. `OP09-042`,
+ * `EB01-001`, `ST01-001`, `P-001`, `PRB01-001`. Matches every set in
+ * the corpus (TRACK_STATE.md "Cards.json structure" enumerates them).
+ */
+function cardIdToR2Url(cardId: string | undefined): string | null {
+  if (!cardId) return null;
+  if (!/^[A-Z][A-Z0-9]*-\d+$/.test(cardId)) return null;
+  return `${R2_IMAGE_BASE}/${cardId}.png`;
+}
+
 export const CardArt = memo(function CardArt({
   inst,
   card,
@@ -603,12 +627,30 @@ export const CardArt = memo(function CardArt({
   const isLeader = card?.kind === 'leader';
   const lifeCount = deriveLifeCount({ isLeader, liveLifeCount });
 
+  // Real-art fallback path. If the card has no explicit `imageUrl` we
+  // derive one from its id against the Crew Builder R2 bucket. If the
+  // fetch fails (404 / network), we flip to the placeholder so the slot
+  // never goes blank. State is keyed implicitly to this CardArt instance
+  // — a different card mounting fresh resets `imgError` to false.
+  const [imgError, setImgError] = useState(false);
+  // DON!! cards have id="DON" (no set/number) so they don't match the R2
+  // pattern. Source the face-up DON front from the bundled Bandai art at
+  // `public/backs/don-front.png` (extracted from rule_manual.pdf p.4).
+  const derivedImageUrl =
+    card?.imageUrl
+      ?? (card?.kind === 'don' ? '/backs/don-front.png' : null)
+      ?? cardIdToR2Url(card?.id);
+
   const a11y = describeForA11y(card, inst);
   const interactive = !!onTap && size !== 'mini' && size !== 'lifeStack';
 
-  // Used to build the box-shadow stack so multiple states can compose.
+  // State rings (selected / valid-drop / pending / highlighted) compose as
+  // box-shadow on the button rectangle. The base "card sits above mat"
+  // drop shadow lives on the inner render via `filter: drop-shadow(...)`
+  // instead so it follows the image's natural transparent rounded corners
+  // (owner caught the rectangular shadow halo 2026-06-03).
   const shadowStack = useMemo(() => {
-    const parts: string[] = ['0 1px 3px rgba(15,20,15,0.30)'];
+    const parts: string[] = [];
     if (selectedAttacker) {
       parts.unshift('0 0 0 2px var(--color-brass-canary)');
     }
@@ -621,8 +663,13 @@ export const CardArt = memo(function CardArt({
     if (highlighted) {
       parts.unshift('0 0 0 2px var(--color-brass-canary)');
     }
-    return parts.join(', ');
+    return parts.length > 0 ? parts.join(', ') : 'none';
   }, [selectedAttacker, validDrop, donDropTarget, pendingTarget, highlighted]);
+
+  // Alpha-respecting drop shadow string reused by the three render
+  // branches (img / CardBack / PlaceholderArt) so the shadow follows
+  // the card's natural rounded corners instead of painting a rectangle.
+  const cardDropShadow = 'drop-shadow(0 1px 3px rgba(15,20,15,0.30))';
 
   // Selected attacker lifts -8px and scales 1.05 per design-reference §7.
   const attackerHover = selectedAttacker ? { y: -8, scale: 1.05 } : {};
@@ -705,24 +752,41 @@ export const CardArt = memo(function CardArt({
         // transition tweens smoothly instead of snapping via Tailwind class.
       ].join(' ')}
     >
-      <div
-        className="absolute inset-0 overflow-hidden"
-        style={{ borderRadius: size === 'modal' ? 8 : size === 'leader' ? 5 : 4 }}
-      >
-        {faceDown || !card ? (
+      {faceDown || !card ? (
+        // CardBack / PlaceholderArt are flat rectangles — wrapper clips
+        // their corners via borderRadius + overflow-hidden.
+        <div
+          className="absolute inset-0 overflow-hidden"
+          style={{ borderRadius: size === 'modal' ? 8 : size === 'leader' ? 5 : 4, filter: cardDropShadow }}
+        >
           <CardBack />
-        ) : card.imageUrl ? (
-          <img
-            src={card.imageUrl}
-            alt=""
-            className="w-full h-full object-cover"
-            decoding={size === 'hand' || size === 'leader' ? 'sync' : 'async'}
-            loading={size === 'mini' ? 'lazy' : 'eager'}
-          />
-        ) : (
+        </div>
+      ) : derivedImageUrl && !imgError ? (
+        // Real Bandai card scans (R2) already carry their own transparent
+        // rounded corners. Clipping with overflow-hidden + borderRadius
+        // would fight the natural alpha and produce squarish corners
+        // (owner caught 2026-06-03). `object-contain` shows the full card;
+        // any margin is transparent so it composites cleanly into the slot.
+        // `filter: drop-shadow(...)` follows the image's natural alpha so
+        // the card's drop shadow is rounded too (not a rectangle around
+        // the button — the artifact owner caught 2026-06-03 round 2).
+        <img
+          src={derivedImageUrl}
+          alt=""
+          className="absolute inset-0 w-full h-full object-contain"
+          style={{ filter: cardDropShadow }}
+          decoding={size === 'hand' || size === 'leader' ? 'sync' : 'async'}
+          loading={size === 'mini' ? 'lazy' : 'eager'}
+          onError={() => setImgError(true)}
+        />
+      ) : (
+        <div
+          className="absolute inset-0 overflow-hidden"
+          style={{ borderRadius: size === 'modal' ? 8 : size === 'leader' ? 5 : 4, filter: cardDropShadow }}
+        >
           <PlaceholderArt card={card} size={size} />
-        )}
-      </div>
+        </div>
+      )}
       {isLeader && typeof lifeCount === 'number' && <LifePill count={lifeCount} />}
       {inst && inst.attachedDon.length > 0 && <DonBadge count={inst.attachedDon.length} />}
     </motion.button>

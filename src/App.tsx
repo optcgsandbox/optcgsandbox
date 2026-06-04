@@ -63,11 +63,15 @@ export default function App() {
           style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
         >
           <div className="flex flex-col">
-            <h1 className="font-display text-[1rem] leading-none text-ink-black">
+            <h1
+              className="font-display text-[1rem] leading-none"
+              style={{ color: 'var(--color-text-1)' }}
+            >
               OPTCG<span className="text-sun-brass">Sandbox</span>
             </h1>
             <p
-              className="text-[0.6rem] font-body font-bold uppercase tracking-wider text-ink-iron"
+              className="text-[0.6rem] font-body font-bold uppercase tracking-wider"
+              style={{ color: 'var(--color-text-2)' }}
               role="status"
               aria-live="polite"
             >

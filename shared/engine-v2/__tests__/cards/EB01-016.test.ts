@@ -4,6 +4,11 @@
  * Printed text (cards.json):
  *   "[Activate: Main] You may rest this Character: K.O. up to 1 of your
  *    opponent's rested Characters with a cost of 1 or less."
+ *
+ * 5-axis: clause activate_main / cost restSelf / target opp_character with
+ *   filter {costMax:1, rested:true} / action removal_ko.
+ *
+ * All primitives registered. No spec gap. No engine gap.
  */
 
 // @ts-expect-error Node built-ins resolve at runtime via vitest
@@ -16,7 +21,8 @@ import { beforeAll, describe, expect, it } from 'vitest';
 
 import type { Card, CharacterCard, LeaderCard } from '../../cards/Card.js';
 import { CostPayer } from '../../effects/CostPayer.js';
-import { actionHandlers, targetResolvers } from '../../registry/types.js';
+import { EffectDispatcher } from '../../effects/EffectDispatcher.js';
+import { targetResolvers } from '../../registry/types.js';
 import { registerAllHandlers } from '../../registry/handlers/index.js';
 import { registerAllReducers } from '../../reducers/index.js';
 
@@ -36,8 +42,8 @@ function loadCards(): Card[] {
 }
 
 const VANILLA_LEADER: LeaderCard = {
-  id: 'TEST_LEADER',
-  name: 'Vanilla Leader',
+  id: 'TEST_LEADER_EB016',
+  name: 'TEST',
   kind: 'leader',
   colors: ['green'],
   cost: null,
@@ -66,26 +72,26 @@ function oppChar(id: string, cost: number): CharacterCard {
 
 describe('EB01-016 — Bingoh (character)', () => {
   const allCards = loadCards();
-  const bingoh = allCards.find((c) => c.id === 'EB01-016');
-  if (bingoh === undefined) throw new Error('EB01-016 not in cards.json');
-  if (bingoh.kind !== 'character') throw new Error('EB01-016 should be a character');
-  const bingohChar = bingoh as CharacterCard;
-  const clause = bingohChar.effectSpecV2?.clauses?.[0];
+  const eb = allCards.find((c) => c.id === 'EB01-016');
+  if (eb === undefined) throw new Error('EB01-016 not in cards.json');
+  if (eb.kind !== 'character') throw new Error('EB01-016 should be a character');
+  const bingoh = eb as CharacterCard;
+  const clause = bingoh.effectSpecV2?.clauses?.[0];
   if (clause === undefined || clause.cost === undefined || clause.target === undefined) {
-    throw new Error('EB01-016 missing clause / cost / target');
+    throw new Error('EB01-016 missing clause/cost/target');
   }
 
-  describe('cost — restSelf', () => {
-    it('payable when Bingoh is active', () => {
-      const { state, fieldA } = buildState({ leaderA: VANILLA_LEADER, charsA: [bingohChar] });
+  describe('cost restSelf', () => {
+    it('payable when Bingoh active', () => {
+      const { state, fieldA } = buildState({ leaderA: VANILLA_LEADER, charsA: [bingoh] });
       const bId = fieldA[0]!.instanceId;
       expect(
         CostPayer.canPay(state, { sourceInstanceId: bId, controller: 'A' }, clause.cost!),
       ).toBe(true);
     });
 
-    it('unpayable when Bingoh is already rested', () => {
-      const { state, fieldA } = buildState({ leaderA: VANILLA_LEADER, charsA: [bingohChar] });
+    it('unpayable when Bingoh already rested', () => {
+      const { state, fieldA } = buildState({ leaderA: VANILLA_LEADER, charsA: [bingoh] });
       const bId = fieldA[0]!.instanceId;
       state.instances[bId]!.rested = true;
       expect(
@@ -93,8 +99,8 @@ describe('EB01-016 — Bingoh (character)', () => {
       ).toBe(false);
     });
 
-    it('paying cost rests Bingoh', () => {
-      const { state, fieldA } = buildState({ leaderA: VANILLA_LEADER, charsA: [bingohChar] });
+    it('paying rests Bingoh', () => {
+      const { state, fieldA } = buildState({ leaderA: VANILLA_LEADER, charsA: [bingoh] });
       const bId = fieldA[0]!.instanceId;
       const next = CostPayer.pay(state, { sourceInstanceId: bId, controller: 'A' }, clause.cost!);
       expect(next).not.toBeNull();
@@ -102,72 +108,56 @@ describe('EB01-016 — Bingoh (character)', () => {
     });
   });
 
-  describe('target resolver — opp rested characters cost ≤ 1', () => {
-    it('EXCLUDES an active (unrested) opp char', () => {
-      const active = oppChar('TEST_ACTIVE', 1);
-      const { state, fieldA, fieldB } = buildState({
-        leaderA: VANILLA_LEADER,
-        charsA: [bingohChar],
-        charsB: [active],
-      });
-      const bId = fieldA[0]!.instanceId;
-      const activeId = fieldB[0]!.instanceId;
+  describe('target resolver — opp_character costMax:1 rested:true', () => {
+    it('EXCLUDES an active opp char (rested:true requires rested)', () => {
+      const c = oppChar('TEST_ACTIVE', 1);
+      const { state, fieldB } = buildState({ leaderA: VANILLA_LEADER, charsB: [c] });
+      const cId = fieldB[0]!.instanceId;
       const resolver = targetResolvers.get(clause.target.kind);
-      const ids = resolver(state, { sourceInstanceId: bId, controller: 'A' }, clause.target);
-      expect(ids).not.toContain(activeId);
+      const ids = resolver(state, { sourceInstanceId: 'src', controller: 'A' }, clause.target);
+      expect(ids).not.toContain(cId);
     });
 
     it('INCLUDES a rested cost-1 opp char', () => {
-      const cheap = oppChar('TEST_CHEAP', 1);
-      const { state, fieldA, fieldB } = buildState({
-        leaderA: VANILLA_LEADER,
-        charsA: [bingohChar],
-        charsB: [cheap],
-      });
-      const bId = fieldA[0]!.instanceId;
-      const cheapId = fieldB[0]!.instanceId;
-      state.instances[cheapId]!.rested = true;
+      const c = oppChar('TEST_REST_C1', 1);
+      const { state, fieldB } = buildState({ leaderA: VANILLA_LEADER, charsB: [c] });
+      const cId = fieldB[0]!.instanceId;
+      state.instances[cId]!.rested = true;
       const resolver = targetResolvers.get(clause.target.kind);
-      const ids = resolver(state, { sourceInstanceId: bId, controller: 'A' }, clause.target);
-      expect(ids).toContain(cheapId);
+      const ids = resolver(state, { sourceInstanceId: 'src', controller: 'A' }, clause.target);
+      expect(ids).toContain(cId);
     });
 
-    it('EXCLUDES a rested cost-2 opp char (cost cap is 1)', () => {
-      const big = oppChar('TEST_BIG', 2);
-      const { state, fieldA, fieldB } = buildState({
-        leaderA: VANILLA_LEADER,
-        charsA: [bingohChar],
-        charsB: [big],
-      });
-      const bId = fieldA[0]!.instanceId;
-      const bigId = fieldB[0]!.instanceId;
-      state.instances[bigId]!.rested = true;
+    it('EXCLUDES a rested cost-2 opp char (costMax:1)', () => {
+      const c = oppChar('TEST_REST_C2', 2);
+      const { state, fieldB } = buildState({ leaderA: VANILLA_LEADER, charsB: [c] });
+      const cId = fieldB[0]!.instanceId;
+      state.instances[cId]!.rested = true;
       const resolver = targetResolvers.get(clause.target.kind);
-      const ids = resolver(state, { sourceInstanceId: bId, controller: 'A' }, clause.target);
-      expect(ids).not.toContain(bigId);
+      const ids = resolver(state, { sourceInstanceId: 'src', controller: 'A' }, clause.target);
+      expect(ids).not.toContain(cId);
     });
   });
 
-  describe('removal_ko action', () => {
-    it('KOs the targeted rested opp char', () => {
-      const cheap = oppChar('TEST_KOCHEAP', 1);
+  describe('activate_main dispatch — restSelf → KO rested cost-1 opp char', () => {
+    it('rests Bingoh + KOs the rested cost-1 opp char', () => {
+      const c = oppChar('TEST_KO_C1', 1);
       const { state, fieldA, fieldB } = buildState({
         leaderA: VANILLA_LEADER,
-        charsA: [bingohChar],
-        charsB: [cheap],
+        charsA: [bingoh],
+        charsB: [c],
       });
       const bId = fieldA[0]!.instanceId;
-      const cheapId = fieldB[0]!.instanceId;
-      state.instances[cheapId]!.rested = true;
-      const handler = actionHandlers.get(clause.action.kind);
-      const next = handler(
+      const oppId = fieldB[0]!.instanceId;
+      state.instances[oppId]!.rested = true;
+      const next = EffectDispatcher.dispatch(
         state,
         { sourceInstanceId: bId, controller: 'A' },
-        clause.action,
-        [cheapId],
+        'activate_main',
       );
-      expect(next.players.B.field.some((i) => i.instanceId === cheapId)).toBe(false);
-      expect(next.players.B.trash).toContain(cheapId);
+      expect(next.instances[bId]!.rested).toBe(true);
+      expect(next.players.B.field.some((i) => i.instanceId === oppId)).toBe(false);
+      expect(next.players.B.trash).toContain(oppId);
     });
   });
 });

@@ -1,8 +1,11 @@
 /**
  * Per-card semantic test — EB01-005 Doma (vanilla character).
  *
- * No printed effect. Test asserts spec is vanilla shape (no clauses,
- * continuous, or replacements) and stats match the card frame.
+ * Printed text (cards.json): "-" (no printed effect)
+ * Stats: 1 cost / 3000 power / 1000 counter / Whitebeard Pirates Allies / red
+ *
+ * 5-axis: nothing to verify. Spec is empty (no clauses / continuous /
+ * replacements). Test asserts the vanilla shape + printed stats.
  */
 
 // @ts-expect-error Node built-ins resolve at runtime via vitest
@@ -32,27 +35,26 @@ describe('EB01-005 — Doma (vanilla character)', () => {
     expect(card.kind).toBe('character');
   });
 
-  it('has cost 1 / power 3000 / counter 1000', () => {
+  it('printed stats: cost 1 / power 3000 / counter 1000', () => {
     const c = card as { cost: number; power: number; counterValue: number };
     expect(c.cost).toBe(1);
     expect(c.power).toBe(3000);
     expect(c.counterValue).toBe(1000);
   });
 
-  it('is red and has the Whitebeard Pirates Allies trait', () => {
+  it('red color + Whitebeard Pirates Allies trait', () => {
     expect(card.colors).toContain('red');
     expect(card.traits).toContain('Whitebeard Pirates Allies');
   });
 
-  it('has no clauses, no continuous, no replacements (vanilla)', () => {
-    const spec = card.effectSpecV2;
-    expect(spec).toBeDefined();
-    expect(spec!.clauses ?? []).toHaveLength(0);
-    expect(spec!.continuous ?? []).toHaveLength(0);
-    expect(spec!.replacements ?? []).toHaveLength(0);
+  it('spec has no clauses, no continuous, no replacements (vanilla)', () => {
+    const spec = card.effectSpecV2!;
+    expect(spec.clauses ?? []).toHaveLength(0);
+    expect(spec.continuous ?? []).toHaveLength(0);
+    expect(spec.replacements ?? []).toHaveLength(0);
   });
 
-  it('has no keywords (no Rush / Blocker / Banish / Double Attack)', () => {
+  it('no keywords', () => {
     expect((card as { keywords: string[] }).keywords).toEqual([]);
   });
 });

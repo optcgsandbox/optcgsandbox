@@ -16,20 +16,24 @@
  *     - Magnitude: +1000
  *   Sentence 2 → clause when_attacking
  *     - Trigger: when_attacking
- *     - Conditions: AND(if_attached_don_min: 1, if_own_chars_min_cost: 1 minCost 5)
+ *     - Conditions: AND(if_attached_don_min: 1,
+ *                       if_own_chars_min_filter{n:1, filter:{trait:'Land of Wano', minCost:5}})
  *     - Action: power_buff +1000 on self, duration opp_next_turn
  *
- * Spec was UPDATED 2026-06-02 to add `counterValueMax: 0` to the filter.
- * The engine's `CardFilter` (filter.ts:17-44) does NOT yet honor that field —
- * the new filter entry is INERT until the engine catches up (logged in
- * BUGS_FOUND.md under EB01-001 as an engine gap, queued for post-audit fix).
+ * SPEC FIX (2026-06-02 re-audit, Rule 2):
+ *   Old spec used `if_own_chars_min_cost{n:1, minCost:5}` — that handler at
+ *   conditions2.ts:55-61 only reads n+minCost, no trait check. Would fire
+ *   on any cost-5+ char regardless of trait, contradicting printed
+ *   "{Land of Wano} type Character".
+ *   Switched to `if_own_chars_min_filter{n:1, filter:{trait:'Land of Wano',
+ *   minCost:5}}` — handler at conditions2.ts:210-224 supports trait + minCost.
  *
- * EB01-001 still plays correctly today because the `auraCounterBuff` handler
- * has an intrinsic counter-check at continuous.ts:322-329 that excludes
- * targets with printed counterValue > 0. That intrinsic is what makes the
- * "NO bonus on Land-of-Wano with printed counter > 0" tests pass; once the
- * engine learns to honor `counterValueMax` the intrinsic can be removed
- * without changing test outcomes.
+ * Continuous filter `counterValueMax: 0`: engine's `CardFilter` does NOT
+ * yet honor that field. The auraCounterBuff handler at continuous.ts:315-334
+ * has an INTRINSIC guard at line 329 that skips targets with printed
+ * counterValue > 0 — that intrinsic is what enforces "without a Counter"
+ * today. Once filter.ts learns `counterValueMax`, the intrinsic guard can
+ * be removed without changing test outcomes.
  */
 
 // @ts-expect-error Node built-ins resolve at runtime via vitest
@@ -208,6 +212,30 @@ describe('EB01-001 — Kouzuki Oden (leader)', () => {
     it('NO buff when DON!! x1 missing (gate fails)', () => {
       const { state, leaderInstA } = buildState({ leaderA: leader, charsA: [leaderHelper] });
       // 0 DON attached, cost-5+ Wano on field — should not fire.
+      const next = EffectDispatcher.dispatch(
+        state,
+        { sourceInstanceId: leaderInstA.instanceId, controller: 'A' },
+        'when_attacking',
+      );
+      expect(next.instances[leaderInstA.instanceId]!.powerModifierOneShot ?? 0).toBe(0);
+    });
+
+    it('NO buff when own cost-5+ char is NOT Land of Wano (trait gate — spec-fix verification)', () => {
+      const nonWanoBig: CharacterCard = {
+        id: 'TEST_NONWANO_C5',
+        name: 'NonWano Big',
+        kind: 'character',
+        colors: ['blue'],
+        cost: 5,
+        power: 6000,
+        counterValue: 1000,
+        traits: ['Straw Hat Crew'],
+        keywords: [],
+        effectTags: [],
+      };
+      const { state, leaderInstA } = buildState({ leaderA: leader, charsA: [nonWanoBig] });
+      const donId = state.players.A.donCostArea.shift()!;
+      state.instances[leaderInstA.instanceId]!.attachedDon.push(donId);
       const next = EffectDispatcher.dispatch(
         state,
         { sourceInstanceId: leaderInstA.instanceId, controller: 'A' },

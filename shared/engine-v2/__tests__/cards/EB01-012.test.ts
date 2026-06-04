@@ -6,8 +6,11 @@
  *    and you have no other [Cavendish] Characters, set up to 2 of your
  *    DON!! cards as active."
  *
- * Validates the dual condition (leader trait + no-other-by-name) and
- * the set_active_don action (rested DON → active cost area).
+ * 5-axis: TWO clauses (on_play + when_attacking) each with condition
+ *   AND(if_leader_has_trait Supernovas, if_no_other_with_name Cavendish)
+ *   and action set_active_don magnitude:2.
+ *
+ * All primitives registered. No spec gap. No engine gap.
  */
 
 // @ts-expect-error Node built-ins resolve at runtime via vitest
@@ -19,8 +22,7 @@ import { fileURLToPath } from 'node:url';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import type { Card, CharacterCard, LeaderCard } from '../../cards/Card.js';
-import { evaluateCondition } from '../../effects/EffectDispatcher.js';
-import { actionHandlers } from '../../registry/types.js';
+import { EffectDispatcher, evaluateCondition } from '../../effects/EffectDispatcher.js';
 import { registerAllHandlers } from '../../registry/handlers/index.js';
 import { registerAllReducers } from '../../reducers/index.js';
 
@@ -42,7 +44,7 @@ function loadCards(): Card[] {
 function makeLeader(traits: string[]): LeaderCard {
   return {
     id: 'TEST_LEADER_EB012',
-    name: 'TEST_LEADER',
+    name: 'TEST',
     kind: 'leader',
     colors: ['green'],
     cost: null,
@@ -55,40 +57,33 @@ function makeLeader(traits: string[]): LeaderCard {
   };
 }
 
-const CAV: CharacterCard = {
-  id: 'TEST_CAV',
-  name: 'Cavendish',
-  kind: 'character',
-  colors: ['green'],
-  cost: 5,
-  power: 6000,
-  counterValue: 1000,
-  traits: ['Supernovas', 'Beautiful Pirates'],
-  keywords: [],
-  effectTags: [],
-};
-
 describe('EB01-012 — Cavendish (character)', () => {
   const allCards = loadCards();
-  const eb01012 = allCards.find((c) => c.id === 'EB01-012');
-  if (eb01012 === undefined) throw new Error('EB01-012 not in cards.json');
-  if (eb01012.kind !== 'character') throw new Error('EB01-012 should be a character');
-  const clause = eb01012.effectSpecV2?.clauses?.[0];
-  if (clause === undefined) throw new Error('EB01-012 missing clause');
+  const eb = allCards.find((c) => c.id === 'EB01-012');
+  if (eb === undefined) throw new Error('EB01-012 not in cards.json');
+  if (eb.kind !== 'character') throw new Error('EB01-012 should be a character');
+  // Use the REAL EB01-012 entry from cards.json so the source card carries
+  // effectSpecV2.clauses (EffectDispatcher reads clauses from source's
+  // card definition). Hand-built duplicates miss those clauses.
+  const CAV = eb as CharacterCard;
+  const clauses = eb.effectSpecV2?.clauses ?? [];
+  if (clauses.length < 2) throw new Error('EB01-012 expected 2 clauses');
+  const onPlay = clauses[0]!;
+  const whenAttacking = clauses[1]!;
 
-  describe('condition — Supernovas leader AND no other Cavendish', () => {
-    it('TRUE when Supernovas leader + sole Cavendish on field', () => {
+  describe('condition AND(Supernovas leader, no other Cavendish)', () => {
+    it('TRUE: Supernovas leader + sole Cavendish', () => {
       const { state, fieldA } = buildState({ leaderA: makeLeader(['Supernovas']), charsA: [CAV] });
       expect(
         evaluateCondition(
           state,
           { sourceInstanceId: fieldA[0]!.instanceId, controller: 'A' },
-          clause.condition,
+          onPlay.condition,
         ),
       ).toBe(true);
     });
 
-    it('FALSE when ANOTHER Cavendish is on field', () => {
+    it('FALSE: another Cavendish on field', () => {
       const { state, fieldA } = buildState({
         leaderA: makeLeader(['Supernovas']),
         charsA: [CAV, CAV],
@@ -97,58 +92,85 @@ describe('EB01-012 — Cavendish (character)', () => {
         evaluateCondition(
           state,
           { sourceInstanceId: fieldA[0]!.instanceId, controller: 'A' },
-          clause.condition,
+          onPlay.condition,
         ),
       ).toBe(false);
     });
 
-    it('FALSE when leader lacks Supernovas trait', () => {
-      const { state, fieldA } = buildState({
-        leaderA: makeLeader(['Whitebeard Pirates']),
-        charsA: [CAV],
-      });
+    it('FALSE: leader lacks Supernovas trait', () => {
+      const { state, fieldA } = buildState({ leaderA: makeLeader(['Other']), charsA: [CAV] });
       expect(
         evaluateCondition(
           state,
           { sourceInstanceId: fieldA[0]!.instanceId, controller: 'A' },
-          clause.condition,
+          onPlay.condition,
         ),
       ).toBe(false);
     });
   });
 
-  describe('action — set_active_don moves 2 rested DON → cost area', () => {
-    it('moves 2 rested DON to cost area when 2 are available', () => {
+  describe('action set_active_don 2 — moves 2 rested DON → cost area', () => {
+    it('on_play: dispatch fires set_active_don 2 when condition true', () => {
       const { state, fieldA } = buildState({ leaderA: makeLeader(['Supernovas']), charsA: [CAV] });
-      // Move 2 cost-area DON into rested pool to set up.
+      // Move 2 DON from cost to rested to set up.
+      state.players.A.donRested.push(
+        state.players.A.donCostArea.shift()!,
+        state.players.A.donCostArea.shift()!,
+      );
+      const costBefore = state.players.A.donCostArea.length;
+      const next = EffectDispatcher.dispatch(
+        state,
+        { sourceInstanceId: fieldA[0]!.instanceId, controller: 'A' },
+        'on_play',
+      );
+      expect(next.players.A.donRested.length).toBe(0);
+      expect(next.players.A.donCostArea.length).toBe(costBefore + 2);
+    });
+
+    it('when_attacking: dispatch fires set_active_don 2 when condition true', () => {
+      const { state, fieldA } = buildState({ leaderA: makeLeader(['Supernovas']), charsA: [CAV] });
+      state.players.A.donRested.push(
+        state.players.A.donCostArea.shift()!,
+        state.players.A.donCostArea.shift()!,
+      );
+      const next = EffectDispatcher.dispatch(
+        state,
+        { sourceInstanceId: fieldA[0]!.instanceId, controller: 'A' },
+        'when_attacking',
+      );
+      expect(next.players.A.donRested.length).toBe(0);
+      void whenAttacking;
+    });
+
+    it('clamps to available rested DON when fewer than 2', () => {
+      const { state, fieldA } = buildState({ leaderA: makeLeader(['Supernovas']), charsA: [CAV] });
+      state.players.A.donRested = [state.players.A.donCostArea.shift()!];
+      const costBefore = state.players.A.donCostArea.length;
+      const next = EffectDispatcher.dispatch(
+        state,
+        { sourceInstanceId: fieldA[0]!.instanceId, controller: 'A' },
+        'on_play',
+      );
+      expect(next.players.A.donRested.length).toBe(0);
+      expect(next.players.A.donCostArea.length).toBe(costBefore + 1);
+    });
+
+    it('no action when condition false (Supernovas leader + duplicate Cavendish)', () => {
+      const { state, fieldA } = buildState({
+        leaderA: makeLeader(['Supernovas']),
+        charsA: [CAV, CAV],
+      });
       state.players.A.donRested.push(
         state.players.A.donCostArea.shift()!,
         state.players.A.donCostArea.shift()!,
       );
       const restedBefore = state.players.A.donRested.length;
-      const costBefore = state.players.A.donCostArea.length;
-      const handler = actionHandlers.get(clause.action.kind);
-      const next = handler(
+      const next = EffectDispatcher.dispatch(
         state,
         { sourceInstanceId: fieldA[0]!.instanceId, controller: 'A' },
-        clause.action,
-        [],
+        'on_play',
       );
-      expect(next.players.A.donRested.length).toBe(restedBefore - 2);
-      expect(next.players.A.donCostArea.length).toBe(costBefore + 2);
-    });
-
-    it('clamps to available rested DON when fewer than 2 are available', () => {
-      const { state, fieldA } = buildState({ leaderA: makeLeader(['Supernovas']), charsA: [CAV] });
-      state.players.A.donRested = [state.players.A.donCostArea.shift()!];
-      const handler = actionHandlers.get(clause.action.kind);
-      const next = handler(
-        state,
-        { sourceInstanceId: fieldA[0]!.instanceId, controller: 'A' },
-        clause.action,
-        [],
-      );
-      expect(next.players.A.donRested.length).toBe(0);
+      expect(next.players.A.donRested.length).toBe(restedBefore);
     });
   });
 });

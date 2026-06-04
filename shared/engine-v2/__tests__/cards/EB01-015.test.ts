@@ -2,11 +2,13 @@
  * Per-card semantic test — EB01-015 Scratchmen Apoo (character).
  *
  * Printed text (cards.json):
- *   "[On Play] Rest up to 1 of your opponent's Characters with a cost
- *    of 2 or less."
+ *   "[On Play] Rest up to 1 of your opponent's Characters with a cost of
+ *    2 or less."
  *
- * Validates the target resolver (opp_character with costMax filter)
- * and the rest_target action.
+ * 5-axis: clause on_play / action rest_target / target opp_character with
+ *   filter costMax:2.
+ *
+ * All primitives registered. No spec gap. No engine gap.
  */
 
 // @ts-expect-error Node built-ins resolve at runtime via vitest
@@ -18,7 +20,8 @@ import { fileURLToPath } from 'node:url';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import type { Card, CharacterCard, LeaderCard } from '../../cards/Card.js';
-import { actionHandlers, targetResolvers } from '../../registry/types.js';
+import { EffectDispatcher } from '../../effects/EffectDispatcher.js';
+import { targetResolvers } from '../../registry/types.js';
 import { registerAllHandlers } from '../../registry/handlers/index.js';
 import { registerAllReducers } from '../../reducers/index.js';
 
@@ -38,8 +41,8 @@ function loadCards(): Card[] {
 }
 
 const VANILLA_LEADER: LeaderCard = {
-  id: 'TEST_LEADER',
-  name: 'Vanilla Leader',
+  id: 'TEST_LEADER_EB015',
+  name: 'TEST',
   kind: 'leader',
   colors: ['green'],
   cost: null,
@@ -68,40 +71,41 @@ function oppChar(id: string, cost: number): CharacterCard {
 
 describe('EB01-015 — Scratchmen Apoo (character)', () => {
   const allCards = loadCards();
-  const apoo = allCards.find((c) => c.id === 'EB01-015');
-  if (apoo === undefined) throw new Error('EB01-015 not in cards.json');
-  if (apoo.kind !== 'character') throw new Error('EB01-015 should be a character');
+  const eb = allCards.find((c) => c.id === 'EB01-015');
+  if (eb === undefined) throw new Error('EB01-015 not in cards.json');
+  if (eb.kind !== 'character') throw new Error('EB01-015 should be a character');
+  const apoo = eb as CharacterCard;
   const clause = apoo.effectSpecV2?.clauses?.[0];
   if (clause === undefined || clause.target === undefined) {
-    throw new Error('EB01-015 missing clause / target');
+    throw new Error('EB01-015 missing clause/target');
   }
 
-  describe('target resolution — opp_character with costMax', () => {
+  describe('target resolver — opp_character with costMax:2', () => {
     it('INCLUDES a cost-1 opp char', () => {
-      const c1 = oppChar('TEST_C1', 1);
-      const { state, fieldB } = buildState({ leaderA: VANILLA_LEADER, charsB: [c1] });
-      const c1Id = fieldB[0]!.instanceId;
+      const c = oppChar('TEST_C1', 1);
+      const { state, fieldB } = buildState({ leaderA: VANILLA_LEADER, charsB: [c] });
+      const cId = fieldB[0]!.instanceId;
       const resolver = targetResolvers.get(clause.target.kind);
       const ids = resolver(state, { sourceInstanceId: 'src', controller: 'A' }, clause.target);
-      expect(ids).toContain(c1Id);
+      expect(ids).toContain(cId);
     });
 
-    it('INCLUDES a cost-2 opp char (boundary)', () => {
-      const c2 = oppChar('TEST_C2', 2);
-      const { state, fieldB } = buildState({ leaderA: VANILLA_LEADER, charsB: [c2] });
-      const c2Id = fieldB[0]!.instanceId;
+    it('INCLUDES a cost-2 opp char (boundary, inclusive)', () => {
+      const c = oppChar('TEST_C2', 2);
+      const { state, fieldB } = buildState({ leaderA: VANILLA_LEADER, charsB: [c] });
+      const cId = fieldB[0]!.instanceId;
       const resolver = targetResolvers.get(clause.target.kind);
       const ids = resolver(state, { sourceInstanceId: 'src', controller: 'A' }, clause.target);
-      expect(ids).toContain(c2Id);
+      expect(ids).toContain(cId);
     });
 
     it('EXCLUDES a cost-3 opp char', () => {
-      const c3 = oppChar('TEST_C3', 3);
-      const { state, fieldB } = buildState({ leaderA: VANILLA_LEADER, charsB: [c3] });
-      const c3Id = fieldB[0]!.instanceId;
+      const c = oppChar('TEST_C3', 3);
+      const { state, fieldB } = buildState({ leaderA: VANILLA_LEADER, charsB: [c] });
+      const cId = fieldB[0]!.instanceId;
       const resolver = targetResolvers.get(clause.target.kind);
       const ids = resolver(state, { sourceInstanceId: 'src', controller: 'A' }, clause.target);
-      expect(ids).not.toContain(c3Id);
+      expect(ids).not.toContain(cId);
     });
 
     it('does NOT return own leader', () => {
@@ -112,21 +116,40 @@ describe('EB01-015 — Scratchmen Apoo (character)', () => {
     });
   });
 
-  describe('rest_target action', () => {
-    it('rests the targeted opp char', () => {
-      const c1 = oppChar('TEST_REST_C1', 1);
-      const { state, fieldB } = buildState({ leaderA: VANILLA_LEADER, charsB: [c1] });
-      const c1Id = fieldB[0]!.instanceId;
-      expect(state.instances[c1Id]!.rested).toBe(false);
-
-      const handler = actionHandlers.get(clause.action.kind);
-      const next = handler(
+  describe('on_play dispatch — rests the targeted cost ≤ 2 opp char', () => {
+    it('rests cost-1 opp char', () => {
+      const c = oppChar('TEST_REST_C1', 1);
+      const { state, fieldA, fieldB } = buildState({
+        leaderA: VANILLA_LEADER,
+        charsA: [apoo],
+        charsB: [c],
+      });
+      const apooId = fieldA[0]!.instanceId;
+      const oppId = fieldB[0]!.instanceId;
+      expect(state.instances[oppId]!.rested).toBe(false);
+      const next = EffectDispatcher.dispatch(
         state,
-        { sourceInstanceId: 'src', controller: 'A' },
-        clause.action,
-        [c1Id],
+        { sourceInstanceId: apooId, controller: 'A' },
+        'on_play',
       );
-      expect(next.instances[c1Id]!.rested).toBe(true);
+      expect(next.instances[oppId]!.rested).toBe(true);
+    });
+
+    it('does NOT rest cost-3 opp char (filter excludes target)', () => {
+      const c = oppChar('TEST_REST_C3', 3);
+      const { state, fieldA, fieldB } = buildState({
+        leaderA: VANILLA_LEADER,
+        charsA: [apoo],
+        charsB: [c],
+      });
+      const apooId = fieldA[0]!.instanceId;
+      const oppId = fieldB[0]!.instanceId;
+      const next = EffectDispatcher.dispatch(
+        state,
+        { sourceInstanceId: apooId, controller: 'A' },
+        'on_play',
+      );
+      expect(next.instances[oppId]!.rested).toBe(false);
     });
   });
 });

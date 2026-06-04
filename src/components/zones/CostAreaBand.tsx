@@ -23,103 +23,35 @@ interface CostAreaBandProps {
   isYou: boolean;
 }
 
-// DON card front — Bandai's "+1000" stamp on a cream body with a ど!! mark.
-// 38×52 base inside the 60px-tall COST band so the cards read clearly.
+// DON card front — official Bandai art from `public/backs/don-front.png`
+// (extracted from rule_manual.pdf p.4, image #18). 38×52 base inside the
+// 60px-tall COST band so the cards read clearly.
 const DON_CARD_W = 38;
 const DON_CARD_H = 52;
 const DON_STRIDE = 12; // tight overlap, life-card style
 const REST_GAP = 16;   // gap between active group and rested group
 
-/** 12 radial dashes behind the ど!! mark — speed-line burst. */
-function SpeedLines() {
-  const dashes = Array.from({ length: 12 }, (_, i) => i * 30);
-  return (
-    <svg
-      viewBox="0 0 38 52"
-      className="absolute inset-0 h-full w-full"
-      aria-hidden="true"
-      preserveAspectRatio="none"
-    >
-      <g
-        stroke="var(--color-ink-black)"
-        strokeOpacity={0.20}
-        strokeWidth={0.7}
-        strokeLinecap="round"
-      >
-        {dashes.map((deg) => (
-          <line
-            key={deg}
-            x1={19}
-            y1={20}
-            x2={19}
-            y2={12}
-            transform={`rotate(${deg} 19 20)`}
-          />
-        ))}
-      </g>
-    </svg>
-  );
-}
-
 function DonCardArt({ active }: { active: boolean }) {
   return (
     <div
-      className={[
-        'absolute inset-0 overflow-hidden rounded-[4px]',
-        'bg-paper-cream paper-grain',
-        active
-          ? 'shadow-[0_2px_5px_rgba(15,20,15,0.40)]'
-          : 'shadow-[0_1px_2px_rgba(15,20,15,0.18)]',
-      ].join(' ')}
+      className="absolute inset-0"
       style={{
-        border: '0.75px solid var(--color-ink-black)',
-        // Thin brass inset hairline — matches the back design language.
-        backgroundImage:
-          'radial-gradient(ellipse at 50% 30%, rgba(255,248,225,0.7) 0%, transparent 60%)',
+        // `drop-shadow` follows the PNG's transparent rounded corners (no
+        // rectangular halo). Stronger when active, dim when rested.
+        filter: active
+          ? 'drop-shadow(0 2px 5px rgba(15,20,15,0.40))'
+          : 'drop-shadow(0 1px 2px rgba(15,20,15,0.18))',
       }}
       aria-hidden="true"
     >
-      <SpeedLines />
-      {/* ど!! mark — Lilita One ink-black with a 4° forward lean. */}
-      <div
-        className="absolute left-1/2 top-[36%] -translate-x-1/2 -translate-y-1/2"
-        style={{ transform: 'translate(-50%, -50%) rotate(-4deg)' }}
-      >
-        <span
-          className="font-display leading-none text-ink-black"
-          style={{
-            fontSize: 14,
-            letterSpacing: '-0.02em',
-            textShadow: '0 1px 0 var(--color-paper-cream)',
-            fontWeight: 700,
-          }}
-        >
-          ど!!
-        </span>
-      </div>
-      {/* Brass underline beneath the mark. */}
-      <div
-        className="absolute left-1/2 -translate-x-1/2 bg-brass-canary"
-        style={{ top: '52%', width: 14, height: 1 }}
-        aria-hidden="true"
+      <img
+        src="/backs/don-front.png"
+        alt=""
+        className="w-full h-full object-contain"
+        decoding="async"
+        loading="eager"
+        draggable={false}
       />
-      {/* Brass +1000 stamp inside an ink bottom band — Bandai's signature. */}
-      <div
-        className="absolute inset-x-0 bottom-0 flex items-center justify-center bg-ink-black"
-        style={{ height: 14, borderRadius: '0 0 4px 4px' }}
-      >
-        <span
-          className="font-display tabular text-brass-canary"
-          style={{
-            fontSize: 10,
-            letterSpacing: '0.06em',
-            lineHeight: 1,
-            fontWeight: 700,
-          }}
-        >
-          +1000
-        </span>
-      </div>
     </div>
   );
 }

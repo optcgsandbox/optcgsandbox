@@ -1,21 +1,29 @@
 // DiceRollPrompt — D24 (CR §5-2-1-4) dice-roll first-player decision.
 //
-// V0 is single-player vs AI. Human (player A) presses YOU; the AI auto-rolls
-// AFTER the human has rolled, with a 600ms beat to keep the dramatic pacing.
-// Future remote MP: each socket dispatches `{ player: <theirId> }` from their
-// own client; this prompt only ever surfaces a button for the seat whose
-// slot is currently null.
+// Rolls are INDEPENDENT per seat:
+//   - AI auto-rolls on its own timer the moment the modal opens — not gated
+//     on the human's roll. (Owner direction 2026-06-03.)
+//   - PvP: both players have roll buttons that can fire concurrently.
+//   - Spins run in parallel — no cross-seat serialization.
 //
 // Visibility rules:
 //   - state.phase === 'dice_roll'.
-//   - Only YOU renders; OPP shows "AI is rolling…" once it's the AI's turn
-//     to fire, or stays blank waiting on YOU first.
+//   - YOU renders a roll button until the YOU slot is filled.
+//   - OPP renders a roll button in PvP mode; in vs-AI mode it shows
+//     "AI is rolling…" / "Rolled" status.
 //
-// Animation: the die being rolled spins for 1.2s then settles on its face
-// value. The other die holds its current state. Once both slots are filled,
-// the winning die gets a brass-canary ring (briefly visible before the modal
-// unmounts on the phase advance). Reduced-motion users see snap-in values
-// with no spin.
+// Tie behavior:
+//   - On tie, the engine increments `diceRoll.rolls` and nulls both slots.
+//   - We watch that increment and hold a 1500ms "TIE — rolling again"
+//     overlay before re-enabling roll buttons + AI's next auto-roll.
+//   - Without the overlay the tie message would only flash for one frame
+//     because the engine reset clears the slots instantly. (Owner direction
+//     2026-06-03.)
+//
+// Animation: the rolling die spins for 1.2s then settles on its face value.
+// Once both slots are filled, the winning die gets a brass-canary ring
+// (briefly visible before the modal unmounts on the phase advance).
+// Reduced-motion users see snap-in values with no spin.
 //
 // Engine note: the engine handles per-player slot assignment + tie reset +
 // phase transition; this prompt is purely the affordance + theatre. After a
@@ -100,15 +108,14 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
   const spring = springs(reduced);
 
   const open = phase === 'dice_roll';
-  // V0 is always a vs-AI game (vs-easy / vs-medium / vs-hard); kept as a
-  // boolean for symmetry + future MP gating.
   const isAiGame = mode === 'vs-easy' || mode === 'vs-medium' || mode === 'vs-hard';
   void mode;
 
-  // Theatre flow per side: clicking the YOU button kicks off a 1.2s spin;
-  // at the end of the spin the dispatch fires and the engine populates that
-  // slot. The AI's spin is driven independently by the effect below.
-  const [spinningSide, setSpinningSide] = useState<PlayerId | null>(null);
+  // Spinning is tracked per-seat so YOU and OPP can spin concurrently.
+  // (Owner direction 2026-06-03: rolls must be independent per seat.)
+  const [spinningSides, setSpinningSides] = useState<ReadonlySet<PlayerId>>(
+    () => new Set(),
+  );
   const youButtonRef = useRef<HTMLButtonElement>(null);
 
   // Seat mapping: from the viewer's perspective YOU is `viewAs` and OPP is
@@ -118,58 +125,88 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
 
   const youValue = diceRoll?.[youPlayer] ?? null;
   const oppValue = diceRoll?.[oppPlayer] ?? null;
-  const youSpinning = spinningSide === youPlayer;
-  const oppSpinning = spinningSide === oppPlayer;
+  const youSpinning = spinningSides.has(youPlayer);
+  const oppSpinning = spinningSides.has(oppPlayer);
 
-  // Buttons enable on null slot + not already spinning that side. The OPP
-  // button is hidden entirely — the AI rolls itself.
-  const youEnabled = open && youValue === null && !youSpinning;
+  // Tie-hold overlay: the engine instantly nulls both slots on tie + bumps
+  // `diceRoll.rolls`. Without holding the UI, the "Tie!" message would only
+  // appear for a single frame. We watch the increment and freeze a 1500ms
+  // overlay before re-enabling roll buttons + AI's next auto-roll.
+  const rollsCount = diceRoll?.rolls ?? 0;
+  const prevRollsCountRef = useRef(rollsCount);
+  const [tieDisplaying, setTieDisplaying] = useState(false);
+  useEffect(() => {
+    if (rollsCount > prevRollsCountRef.current) {
+      prevRollsCountRef.current = rollsCount;
+      setTieDisplaying(true);
+      const t = window.setTimeout(
+        () => setTieDisplaying(false),
+        reduced ? 0 : 1500,
+      );
+      return () => window.clearTimeout(t);
+    }
+    prevRollsCountRef.current = rollsCount;
+    return undefined;
+  }, [rollsCount, reduced]);
 
-  // Round-close detection: when both slots are non-null briefly (before the
-  // engine transitions to first_player_choice or resets on tie), the modal
-  // shows a "Tie!" status. Otherwise the winner die gets highlighted on
-  // round close — but that happens in the same tick as the phase advance
-  // so the user mainly sees it via FirstPlayerChoicePrompt's recap.
+  // Buttons enable on null slot, not already spinning, and not while a tie
+  // is being displayed. OPP renders as a button in PvP mode (non-AI); in
+  // vs-AI mode OPP is the AI and shows status text instead.
+  const youEnabled = open && youValue === null && !youSpinning && !tieDisplaying;
+  const oppEnabled =
+    open && !isAiGame && oppValue === null && !oppSpinning && !tieDisplaying;
+
   const bothFilled = youValue !== null && oppValue !== null;
-  const isTie = bothFilled && youValue === oppValue;
+  const isTie =
+    (bothFilled && youValue === oppValue) || tieDisplaying;
 
   const rollFor = useCallback(
     (player: PlayerId) => {
-      if (spinningSide) return; // serialize spins to keep theatre coherent
-      setSpinningSide(player);
+      // Button-disable gates (`youEnabled` / `oppEnabled`) already block
+      // double-clicks while spinning. Engine's `setup.ts:56` is also
+      // idempotent — ROLL_DICE on a filled slot returns state unchanged.
+      // So we don't need a sync dedup check (a prior one mis-used React
+      // state updater side effects, which run async — `didStart` was
+      // always false at the sync check and the dispatch never fired,
+      // leaving both dice stuck on "Rolling…").
+      setSpinningSides((prev) => {
+        if (prev.has(player)) return prev;
+        const next = new Set(prev);
+        next.add(player);
+        return next;
+      });
       window.setTimeout(
         () => {
           dispatch({ type: 'ROLL_DICE', player });
-          setSpinningSide(null);
+          setSpinningSides((prev) => {
+            if (!prev.has(player)) return prev;
+            const next = new Set(prev);
+            next.delete(player);
+            return next;
+          });
         },
         reduced ? 0 : SPIN_MS,
       );
     },
-    [dispatch, reduced, spinningSide],
+    [dispatch, reduced],
   );
 
   const handleRollYou = useCallback(() => rollFor(youPlayer), [rollFor, youPlayer]);
+  const handleRollOpp = useCallback(() => rollFor(oppPlayer), [rollFor, oppPlayer]);
 
-  // vs-AI: the AI only rolls AFTER the human has rolled. Trigger condition is
-  // strictly local to the engine state — `diceRoll.A !== null && diceRoll.B
-  // === null` (or the symmetric case if a future build flips seats). The
-  // 600ms beat gives the human a moment to register their own roll settling.
-  //
-  // On a tie the engine resets both slots back to null; this effect then
-  // pauses (human re-presses YOU first) until the human rolls again, after
-  // which the same condition re-fires for the AI.
+  // vs-AI: the AI rolls on its OWN timer, independent of the human. As soon
+  // as the modal opens (or after a tie reset), schedule the AI's roll with a
+  // short 600ms beat so both dice land within ~2s of each other but neither
+  // waits for the other. (Owner direction 2026-06-03.)
   useEffect(() => {
     if (!open) return undefined;
     if (!isAiGame) return undefined;
-    if (spinningSide) return undefined; // wait for any spin to finish
-    // Human (A) has rolled, AI (B) has not → schedule AI roll.
-    const humanSlot = diceRoll?.A ?? null;
-    const aiSlot = diceRoll?.B ?? null;
-    if (humanSlot === null) return undefined;
-    if (aiSlot !== null) return undefined;
+    if (tieDisplaying) return undefined; // hold during tie overlay
+    if (spinningSides.has('B')) return undefined; // already spinning
+    if ((diceRoll?.B ?? null) !== null) return undefined; // already rolled
     const t = window.setTimeout(() => rollFor('B'), AI_DELAY_MS);
     return () => window.clearTimeout(t);
-  }, [open, isAiGame, spinningSide, diceRoll, rollFor]);
+  }, [open, isAiGame, tieDisplaying, spinningSides, diceRoll, rollFor]);
 
   // Auto-focus the YOU roll button when the modal opens (and re-focus after
   // a tie clears the slots).
@@ -182,8 +219,10 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
 
   // Highlight winner ring briefly on round close (before phase advance
   // unmounts the modal).
-  const youWon = bothFilled && !isTie && youValue! > oppValue!;
-  const oppWon = bothFilled && !isTie && oppValue! > youValue!;
+  const youWon =
+    bothFilled && !tieDisplaying && youValue !== oppValue && youValue! > oppValue!;
+  const oppWon =
+    bothFilled && !tieDisplaying && youValue !== oppValue && oppValue! > youValue!;
 
   return (
     <AnimatePresence>
@@ -250,7 +289,7 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
               </button>
             </div>
 
-            {/* OPP side */}
+            {/* OPP side — button in PvP mode, status text in vs-AI mode. */}
             <div className="flex flex-col items-center gap-3">
               <DieFace
                 value={oppValue}
@@ -258,20 +297,39 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
                 highlighted={!oppSpinning && oppWon}
                 label="Opp"
               />
-              <span
-                className="min-h-[44px] min-w-[120px] flex items-center justify-center
-                           font-display text-[0.75rem] uppercase tracking-[0.16em]
-                           text-ink-iron px-2 text-center"
-                role="status"
-                aria-live="polite"
-                aria-atomic="true"
-              >
-                {oppSpinning
-                  ? 'AI is rolling…'
-                  : oppValue !== null
-                    ? 'Rolled'
-                    : 'Waiting…'}
-              </span>
+              {isAiGame ? (
+                <span
+                  className="min-h-[44px] min-w-[120px] flex items-center justify-center
+                             font-display text-[0.75rem] uppercase tracking-[0.16em]
+                             text-ink-iron px-2 text-center"
+                  role="status"
+                  aria-live="polite"
+                  aria-atomic="true"
+                >
+                  {oppSpinning
+                    ? 'AI is rolling…'
+                    : oppValue !== null
+                      ? 'Rolled'
+                      : 'Waiting…'}
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleRollOpp}
+                  disabled={!oppEnabled}
+                  aria-busy={oppSpinning}
+                  aria-label={oppSpinning ? "Rolling opponent's die" : "Roll opponent's die"}
+                  className="min-h-[44px] min-w-[120px] rounded-2xl px-5 py-2
+                             font-body font-extrabold uppercase tracking-wider
+                             bg-hull-teal text-paper-cream text-[0.875rem]
+                             shadow-[0_4px_12px_rgba(15,69,73,0.30)]
+                             focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none
+                             disabled:opacity-40 disabled:cursor-not-allowed
+                             disabled:shadow-none"
+                >
+                  {oppSpinning ? 'Rolling…' : oppValue !== null ? 'Rolled' : 'Roll'}
+                </button>
+              )}
             </div>
           </div>
 
@@ -283,7 +341,7 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
               className="font-display text-[1rem] uppercase tracking-[0.16em] text-seal-red"
               role="status"
             >
-              Tie! Roll again.
+              Tie! Rolling again…
             </motion.p>
           )}
         </motion.div>

@@ -134,6 +134,7 @@ export const EffectDispatcher = {
 
       // (2) Target
       let targets: ReadonlyArray<InstanceId> = [];
+      let oppChoiceSuspended = false;
       if (clause.target !== undefined) {
         const resolver = targetResolvers.get(clause.target.kind);
         targets = resolver(working, clauseCtx, clause.target);
@@ -145,7 +146,43 @@ export const EffectDispatcher = {
         if (typeof tBind === 'string' && tBind !== '' && targets[0] !== undefined) {
           writeBinding(working, scratch, tBind, targets[0]);
         }
+        // P-OPP-FORCED-ACTION: when target.oppSelect === true, the
+        // OPPONENT (not ctx.controller) picks which candidate the action
+        // acts on. Suspend into PendingChoose with controller=opponent
+        // and one option per candidate; the option's action carries
+        // `_preBoundTargets` so resolveChooseOneReducer passes them
+        // through without re-resolving. Single-candidate case auto-fires.
+        // Most target resolvers default count to 1 (targets.ts:35-38),
+        // so re-resolve with a wide count to gather all candidates for
+        // the opp to choose among.
+        const oppSel = (clause.target as { oppSelect?: unknown }).oppSelect === true;
+        if (oppSel) {
+          const wideTarget = { ...clause.target, count: 99 } as typeof clause.target;
+          targets = resolver(working, clauseCtx, wideTarget);
+          if (targets.length === 0) continue;
+        }
+        if (oppSel && targets.length > 1) {
+          const oppController = ctx.controller === 'A' ? 'B' : 'A';
+          const options = targets.map((cid) => ({
+            trigger: clause.trigger,
+            action: { ...clause.action, _preBoundTargets: [cid] },
+            verified: 'human-reviewed',
+          }));
+          working.pending = {
+            kind: 'choose_one',
+            pendingChoose: {
+              controller: oppController,
+              sourceInstanceId: ctx.sourceInstanceId,
+              options,
+              resumePhase: working.phase,
+              scratch: clauseCtx.scratch,
+            },
+          };
+          working.phase = 'choose_one';
+          oppChoiceSuspended = true;
+        }
       }
+      if (oppChoiceSuspended) break;
 
       // (3,4) Cost — atomic: snapshot working before pay loop; restore on
       // partial-pay failure (closes CR-1 audit finding).

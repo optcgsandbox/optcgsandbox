@@ -243,9 +243,15 @@ function resolveChooseOneReducer(
     next = paid;
   }
 
-  // Resolve the option's own target list.
+  // Resolve the option's own target list. If the option's action carries
+  // `_preBoundTargets` (P-LIFE-POSITION / P-OPP-FORCED-ACTION), use those
+  // directly instead of re-resolving — preserves the candidate already
+  // selected when the parent clause suspended.
   let targets: ReadonlyArray<InstanceId> = [];
-  if (clause.target !== undefined && targetResolvers.has(clause.target.kind)) {
+  const preBound = (clause.action as { _preBoundTargets?: unknown })._preBoundTargets;
+  if (Array.isArray(preBound)) {
+    targets = preBound as ReadonlyArray<InstanceId>;
+  } else if (clause.target !== undefined && targetResolvers.has(clause.target.kind)) {
     targets = targetResolvers.get(clause.target.kind)(next, ctx, clause.target);
   }
 

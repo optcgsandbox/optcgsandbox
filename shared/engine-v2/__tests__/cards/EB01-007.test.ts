@@ -4,6 +4,12 @@
  * Printed text (cards.json):
  *   "[Activate: Main] [Once Per Turn] Give up to 1 rested DON!! card to
  *    your Leader or 1 of your Characters."
+ *
+ * 5-axis: clause activate_main + opt:true + give_don_to_target rested:true
+ *   magnitude 1 + target your_leader_or_character.
+ *
+ * No spec gap. The V0 deterministic `your_leader_or_character` resolver
+ * picks the leader first (engine gap already logged under EB01-002).
  */
 
 // @ts-expect-error Node built-ins resolve at runtime via vitest
@@ -15,7 +21,7 @@ import { fileURLToPath } from 'node:url';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import type { Card, CharacterCard, LeaderCard } from '../../cards/Card.js';
-import { actionHandlers } from '../../registry/types.js';
+import { EffectDispatcher } from '../../effects/EffectDispatcher.js';
 import { registerAllHandlers } from '../../registry/handlers/index.js';
 import { registerAllReducers } from '../../reducers/index.js';
 
@@ -35,8 +41,8 @@ function loadCards(): Card[] {
 }
 
 const VANILLA_LEADER: LeaderCard = {
-  id: 'TEST_LEADER',
-  name: 'Vanilla Leader',
+  id: 'TEST_LEADER_EB007',
+  name: 'TEST',
   kind: 'leader',
   colors: ['red'],
   cost: null,
@@ -48,83 +54,112 @@ const VANILLA_LEADER: LeaderCard = {
   effectTags: [],
 };
 
+const ALLY: CharacterCard = {
+  id: 'TEST_ALLY_EB007',
+  name: 'Ally',
+  kind: 'character',
+  colors: ['red'],
+  cost: 2,
+  power: 3000,
+  counterValue: 1000,
+  traits: [],
+  keywords: [],
+  effectTags: [],
+};
+
 describe('EB01-007 — Yamato (character)', () => {
   const allCards = loadCards();
-  const yamato = allCards.find((c) => c.id === 'EB01-007');
-  if (yamato === undefined) throw new Error('EB01-007 not in cards.json');
-  if (yamato.kind !== 'character') throw new Error('EB01-007 should be a character');
-  const yamatoChar = yamato as CharacterCard;
-  const clause = yamatoChar.effectSpecV2?.clauses?.[0];
-  if (clause === undefined) throw new Error('EB01-007 missing activate_main clause');
+  const eb = allCards.find((c) => c.id === 'EB01-007');
+  if (eb === undefined) throw new Error('EB01-007 not in cards.json');
+  if (eb.kind !== 'character') throw new Error('EB01-007 should be a character');
+  const yamato = eb as CharacterCard;
 
-  const ALLY: CharacterCard = {
-    id: 'TEST_ALLY_EB007',
-    name: 'Ally',
-    kind: 'character',
-    colors: ['red'],
-    cost: 2,
-    power: 3000,
-    counterValue: 1000,
-    traits: [],
-    keywords: [],
-    effectTags: [],
-  };
-
-  describe('action — give 1 REST DON to a friendly target', () => {
-    // Spec at EB01-007 sets `rested: true`, so the handler attaches the
-    // DON to inst.attachedDonRested (not attachedDon, which is the active
-    // bucket). That distinction matters for refresh-phase un-rest math.
-    it('attaches 1 REST DON to a targeted Leader; controller cost area decremented', () => {
-      const { state, leaderInstA } = buildState({ leaderA: VANILLA_LEADER });
+  describe('clause [Activate: Main] — give 1 REST DON to leader-or-character', () => {
+    it('1 REST DON attached to leader; cost area -1 (V0 picks leader first)', () => {
+      const { state, fieldA, leaderInstA } = buildState({
+        leaderA: VANILLA_LEADER,
+        charsA: [yamato],
+      });
+      const yamatoId = fieldA[0]!.instanceId;
       const leaderId = leaderInstA.instanceId;
       const costBefore = state.players.A.donCostArea.length;
-      const attBefore = state.instances[leaderId]!.attachedDonRested.length;
+      const restedBefore = state.instances[leaderId]!.attachedDonRested.length;
 
-      const handler = actionHandlers.get(clause.action.kind);
-      const next = handler(
+      const next = EffectDispatcher.dispatch(
         state,
-        { sourceInstanceId: 'fake-src', controller: 'A' },
-        clause.action,
-        [leaderId],
+        { sourceInstanceId: yamatoId, controller: 'A' },
+        'activate_main',
       );
-      expect(next.instances[leaderId]!.attachedDonRested.length).toBe(attBefore + 1);
+      expect(next.instances[leaderId]!.attachedDonRested.length).toBe(restedBefore + 1);
       expect(next.players.A.donCostArea.length).toBe(costBefore - 1);
     });
 
-    it('attaches 1 REST DON to a friendly character target', () => {
-      const { state, fieldA } = buildState({ leaderA: VANILLA_LEADER, charsA: [ALLY] });
-      const allyId = fieldA[0]!.instanceId;
+    it('with multiple friendly targets, exactly 1 REST DON is distributed somewhere among (leader, yamato, ally)', () => {
+      const { state, fieldA, leaderInstA } = buildState({
+        leaderA: VANILLA_LEADER,
+        charsA: [yamato, ALLY],
+      });
+      const yamatoId = fieldA[0]!.instanceId;
+      const allyId = fieldA[1]!.instanceId;
+      const leaderId = leaderInstA.instanceId;
       const costBefore = state.players.A.donCostArea.length;
 
-      const handler = actionHandlers.get(clause.action.kind);
-      const next = handler(
+      const next = EffectDispatcher.dispatch(
         state,
-        { sourceInstanceId: 'fake-src', controller: 'A' },
-        clause.action,
-        [allyId],
+        { sourceInstanceId: yamatoId, controller: 'A' },
+        'activate_main',
       );
-      expect(next.instances[allyId]!.attachedDonRested.length).toBe(1);
+      const restedTotal =
+        next.instances[leaderId]!.attachedDonRested.length +
+        next.instances[yamatoId]!.attachedDonRested.length +
+        next.instances[allyId]!.attachedDonRested.length;
+      expect(restedTotal).toBe(1);
       expect(next.players.A.donCostArea.length).toBe(costBefore - 1);
     });
 
-    it('no-op when DON cost area is empty', () => {
-      const { state, leaderInstA } = buildState({ leaderA: VANILLA_LEADER, donInCostA: 0 });
+    it('no DON in cost area → no DON attached anywhere', () => {
+      const { state, fieldA, leaderInstA } = buildState({
+        leaderA: VANILLA_LEADER,
+        charsA: [yamato],
+        donInCostA: 0,
+      });
+      const yamatoId = fieldA[0]!.instanceId;
       const leaderId = leaderInstA.instanceId;
-      const attBefore = state.instances[leaderId]!.attachedDonRested.length;
+      const restedBefore = state.instances[leaderId]!.attachedDonRested.length;
       expect(state.players.A.donCostArea.length).toBe(0);
 
-      const handler = actionHandlers.get(clause.action.kind);
-      const next = handler(
+      const next = EffectDispatcher.dispatch(
         state,
-        { sourceInstanceId: 'fake-src', controller: 'A' },
-        clause.action,
-        [leaderId],
+        { sourceInstanceId: yamatoId, controller: 'A' },
+        'activate_main',
       );
-      expect(next.instances[leaderId]!.attachedDonRested.length).toBe(attBefore);
+      expect(next.instances[leaderId]!.attachedDonRested.length).toBe(restedBefore);
     });
-  });
 
-  it('printed keyword includes once_per_turn (OPT gate enforced at dispatch)', () => {
-    expect((yamato as { keywords: string[] }).keywords).toContain('once_per_turn');
+    it('OPT: second activate_main in same turn does NOT fire (clause marked opt:true)', () => {
+      const { state, fieldA, leaderInstA } = buildState({
+        leaderA: VANILLA_LEADER,
+        charsA: [yamato],
+      });
+      const yamatoId = fieldA[0]!.instanceId;
+      const leaderId = leaderInstA.instanceId;
+      const costBefore = state.players.A.donCostArea.length;
+      let next = EffectDispatcher.dispatch(
+        state,
+        { sourceInstanceId: yamatoId, controller: 'A' },
+        'activate_main',
+      );
+      expect(next.instances[leaderId]!.attachedDonRested.length).toBe(1);
+      const costAfterFirst = next.players.A.donCostArea.length;
+      expect(costAfterFirst).toBe(costBefore - 1);
+      // Second activation — OPT should suppress.
+      next = EffectDispatcher.dispatch(
+        next,
+        { sourceInstanceId: yamatoId, controller: 'A' },
+        'activate_main',
+      );
+      expect(next.instances[leaderId]!.attachedDonRested.length).toBe(1);
+      expect(next.players.A.donCostArea.length).toBe(costAfterFirst);
+    });
   });
 });
