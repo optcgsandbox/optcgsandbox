@@ -176,8 +176,8 @@ describe('EB01-020 — Chambres ([Main] event)', () => {
       expect(bouncedEvents.length).toBeGreaterThan(0);
     });
 
-    it.fails(
-      'net effect = char stays bounced (engine gap — BUGS_FOUND.md EB01-020 play_for_free at actions2.ts:211-265 reuses parent targets + ignores colorMustDifferFromLastBounced; replays the bounced char)',
+    it(
+      'net effect = char stays bounced (play_for_free filter.colors BindingRef[op:ne] excludes the bounced color)',
       () => {
         const own = character('TEST_OWN_GREEN_3', 'green', 2);
         const { state, fieldA } = buildState({ leaderA: SUPERNOVAS_LEADER, charsA: [own] });

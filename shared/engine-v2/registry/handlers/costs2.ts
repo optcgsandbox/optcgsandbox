@@ -309,17 +309,23 @@ const returnSelfChar: CostHandler = {
       pl.stage?.instanceId === ctx.sourceInstanceId
     );
   },
-  pay(state, ctx) {
+  pay(state, ctx, cost) {
     const pl = state.players[ctx.controller];
     const fieldIdx = pl.field.findIndex((c) => c.instanceId === ctx.sourceInstanceId);
     if (fieldIdx !== -1) {
       pl.field.splice(fieldIdx, 1);
       pl.hand.push(ctx.sourceInstanceId);
+      if (typeof cost['bind'] === 'string') {
+        writeBinding(state, ctx.scratch, '_costPicked', ctx.sourceInstanceId);
+      }
       return state;
     }
     if (pl.stage?.instanceId === ctx.sourceInstanceId) {
       pl.stage = null;
       pl.hand.push(ctx.sourceInstanceId);
+      if (typeof cost['bind'] === 'string') {
+        writeBinding(state, ctx.scratch, '_costPicked', ctx.sourceInstanceId);
+      }
       return state;
     }
     return null;

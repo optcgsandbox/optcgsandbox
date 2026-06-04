@@ -136,8 +136,8 @@ describe('EB02-039 — GERMA 66', () => {
     expect(next.players.A.hand).toContain(handAInstances[1]!.instanceId);
   });
 
-  it.fails(
-    'cost + condition pass: GERMA 66 small in hand + matching name big GERMA in trash → played onto field (engine gap — play_for_free no clause-target)',
+  it(
+    'cost + condition pass: GERMA 66 small in hand + matching name big GERMA in trash → played onto field',
     () => {
       const small = germaSmall('TEST_SMALL_FIRE_E39', 'Niji');
       const matchBig = germaBig('TEST_BIG_MATCH_E39', 'Niji');

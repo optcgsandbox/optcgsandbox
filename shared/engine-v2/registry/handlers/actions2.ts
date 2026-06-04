@@ -9,11 +9,12 @@
  */
 
 import { ContinuousManager } from '../../effects/ContinuousManager.js';
-import { EffectDispatcher } from '../../effects/EffectDispatcher.js';
+import { EffectDispatcher, evaluateCondition } from '../../effects/EffectDispatcher.js';
+import { resolveBindingRef } from '../../effects/clauseScratch.js';
 import { detachAllAttachedDon } from '../../state/derived/don.js';
 import { resetInstanceTransientState } from '../../state/derived/reset.js';
 import { RngService } from '../../state/RngService.js';
-import type { EffectActionV2 } from '../../spec/types.js';
+import type { EffectActionV2, EffectConditionV2 } from '../../spec/types.js';
 import {
   type CardInstance,
   type GameState,
@@ -24,6 +25,7 @@ import {
   type ActionHandler,
   actionHandlers,
 } from '../types.js';
+import { type CardFilter, matchesCardFilter } from './filter.js';
 import { resolveCount } from './formula.js';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
@@ -31,6 +33,65 @@ const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 function num(a: EffectActionV2, key: string, fallback = 0): number {
   const v = a[key];
   return typeof v === 'number' ? v : fallback;
+}
+
+// Filter pre-processing for play_for_free hand/trash scan: resolves BindingRef
+// values out of CardFilter scalar fields so the shared matcher (which is not
+// scratch-aware) gets concrete literals. `colors`/`nameIs`/`nameExcludes` may
+// carry a BindingRef with an optional `op` ('eq' default | 'ne'); on op='ne'
+// the field is stripped from the matcher filter — exclusion is enforced via
+// a separate post-resolution step in playForFree.
+function flattenBindingFilter(
+  raw: Record<string, unknown>,
+  scratch: import('../../state/types.js').ClauseScratch | undefined,
+): { filter: CardFilter; excludedColors?: ReadonlyArray<string>; excludedName?: string } {
+  const out: Record<string, unknown> = { ...raw };
+  let excludedColors: ReadonlyArray<string> | undefined;
+  let excludedName: string | undefined;
+
+  // colors: literal array | BindingRef{op?}
+  const colorsV = out['colors'];
+  if (typeof colorsV === 'object' && colorsV !== null && (colorsV as { kind?: unknown }).kind === 'binding') {
+    const op = (colorsV as { op?: unknown }).op;
+    const resolved = resolveBindingRef(scratch, colorsV);
+    if (Array.isArray(resolved)) {
+      if (op === 'ne') {
+        excludedColors = resolved as ReadonlyArray<string>;
+        delete out['colors'];
+      } else {
+        out['colors'] = resolved;
+      }
+    } else {
+      delete out['colors'];
+    }
+  }
+
+  // nameIs: literal string | BindingRef{op?}
+  const nameIsV = out['nameIs'];
+  if (typeof nameIsV === 'object' && nameIsV !== null && (nameIsV as { kind?: unknown }).kind === 'binding') {
+    const op = (nameIsV as { op?: unknown }).op;
+    const resolved = resolveBindingRef(scratch, nameIsV);
+    if (typeof resolved === 'string') {
+      if (op === 'ne') {
+        excludedName = resolved;
+        delete out['nameIs'];
+      } else {
+        out['nameIs'] = resolved;
+      }
+    } else {
+      delete out['nameIs'];
+    }
+  }
+
+  // nameExcludes: literal string | BindingRef
+  const nameExV = out['nameExcludes'];
+  if (typeof nameExV === 'object' && nameExV !== null && (nameExV as { kind?: unknown }).kind === 'binding') {
+    const resolved = resolveBindingRef(scratch, nameExV);
+    if (typeof resolved === 'string') out['nameExcludes'] = resolved;
+    else delete out['nameExcludes'];
+  }
+
+  return { filter: out as CardFilter, excludedColors, excludedName };
 }
 
 export function findInstZone(state: GameState, instanceId: InstanceId): {
@@ -51,7 +112,11 @@ export function findInstZone(state: GameState, instanceId: InstanceId): {
   return null;
 }
 
-// ─── sequence: run sub-actions in order, sharing state
+// ─── sequence: run sub-actions in order, sharing state.
+// SP-1 completion: sub-action MAY carry its own `condition`
+// (EffectConditionV2). When present, the sub-action is gated. Cost is
+// paid once at the clause root regardless of which sub-actions fire.
+// Reuses EffectDispatcher.evaluateCondition; no new condition system.
 const sequence: ActionHandler = (state, ctx, action, targets) => {
   const subs = action['actions'];
   if (!Array.isArray(subs)) return state;
@@ -59,6 +124,8 @@ const sequence: ActionHandler = (state, ctx, action, targets) => {
   for (const sub of subs as EffectActionV2[]) {
     if (typeof sub !== 'object' || sub === null || typeof sub.kind !== 'string') continue;
     if (!actionHandlers.has(sub.kind)) continue;
+    const subCond = (sub as { condition?: EffectConditionV2 }).condition;
+    if (subCond !== undefined && !evaluateCondition(next, ctx, subCond)) continue;
     const handler = actionHandlers.get(sub.kind);
     next = handler(next, ctx, sub, targets);
   }
@@ -202,9 +269,14 @@ const endOfTurnTrash: ActionHandler = (state, ctx) => {
 };
 
 // ─── play_for_free: zone (hand/trash) → field at zero cost.
-//     Honors action.from ('hand' default, 'trash'), action.rested
-//     (plays the card rested if true), action.count (limits how many of the
-//     resolved targets to actually play — cards.json provides count).
+//     Honors action.from ('hand' default, 'trash', 'hand_or_trash'),
+//     action.rested (plays the card rested if true), action.count
+//     (caps how many cards to play — defaults to 1 when scanning a zone).
+//     When `targets` is empty AND `action.from` is set, scans the controller's
+//     hand/trash (post-resolution filter step inside the existing pipeline,
+//     not a new resolver). `action.filter` is honored; BindingRef-typed
+//     scalar fields (nameIs) and the dedicated `colorsExcludeBinding` field
+//     are resolved from clauseCtx.scratch.
 //     Filter params (colorMustDifferFromLastBounced, nameMatchesLastDiscarded,
 //     uniqueByName) are V0 best-effort — gate via resolved target list since
 //     the parent clause's target resolver already filtered.
@@ -212,10 +284,54 @@ const playForFree: ActionHandler = (state, ctx, action, targets) => {
   const pl = state.players[ctx.controller];
   const from = typeof action['from'] === 'string' ? (action['from'] as string) : 'hand';
   const rested = action['rested'] === true;
-  const count = typeof action['count'] === 'number' ? (action['count'] as number) : targets.length;
+
+  // When `action.from` is explicitly set, scan the controller's hand/trash
+  // by filter (post-resolution filter step inside the existing pipeline,
+  // not a new resolver). Parent `targets` are only used as a play list when
+  // `action.from` is absent.
+  let workingTargets: ReadonlyArray<InstanceId> = targets;
+  if (typeof action['from'] === 'string') {
+    const rawFilter = action['filter'];
+    const flattened = typeof rawFilter === 'object' && rawFilter !== null
+      ? flattenBindingFilter(rawFilter as Record<string, unknown>, ctx.scratch)
+      : { filter: undefined as CardFilter | undefined };
+    const cap = typeof action['count'] === 'number' ? (action['count'] as number) : 1;
+    const zones: Array<'hand' | 'trash'> =
+      from === 'hand' ? ['hand']
+      : from === 'trash' ? ['trash']
+      : from === 'hand_or_trash' ? ['hand', 'trash']
+      : ['hand'];
+    const collected: InstanceId[] = [];
+    for (const zone of zones) {
+      const ids = zone === 'hand' ? pl.hand : pl.trash;
+      for (const id of ids) {
+        if (collected.length >= cap) break;
+        const inst = state.instances[id];
+        if (inst === undefined) continue;
+        if (flattened.filter !== undefined && !matchesCardFilter(state, inst, flattened.filter)) continue;
+        const card = state.cardLibrary[inst.cardId];
+        if (card === undefined) continue;
+        if (flattened.excludedColors !== undefined) {
+          const cardColors = (card as { colors?: ReadonlyArray<string> }).colors ?? [];
+          if (cardColors.some((c) => flattened.excludedColors!.includes(c))) continue;
+        }
+        if (flattened.excludedName !== undefined) {
+          const cardName = (card as { name?: string }).name;
+          if (cardName === flattened.excludedName) continue;
+        }
+        collected.push(id);
+      }
+      if (collected.length >= cap) break;
+    }
+    workingTargets = collected;
+  }
+
+  const count = typeof action['count'] === 'number'
+    ? (action['count'] as number)
+    : workingTargets.length;
   let played = 0;
   const playedIds: InstanceId[] = [];
-  for (const id of targets) {
+  for (const id of workingTargets) {
     if (played >= count) break;
     const z = findInstZone(state, id);
     if (z === null) continue;
