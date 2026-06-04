@@ -39,6 +39,7 @@ import {
   continuousHandlers,
 } from '../types.js';
 import { type CardFilter, matchesCardFilter } from './filter.js';
+import { resolveMagnitude } from './formula.js';
 
 const OTHER: Record<PlayerId, PlayerId> = { A: 'B', B: 'A' };
 
@@ -51,10 +52,31 @@ function readStr(a: EffectActionV2, key: string): string {
   return typeof v === 'string' ? v : '';
 }
 
-// Read action.magnitude OR action.n (canonical reader for aura_power_buff etc.)
-function readMagnitude(a: EffectActionV2): number {
+// Read action.magnitude OR action.n (canonical reader for aura_power_buff etc.).
+// Cluster C fix: when caller supplies state + source, formula objects on
+// `magnitude` are evaluated via the shared resolveMagnitude path. Without
+// state/source, behavior is unchanged (formula → 0 fallback) so existing
+// callers that pass only the action retain their current semantics.
+function readMagnitude(
+  a: EffectActionV2,
+  state?: GameState,
+  source?: CardInstance,
+): number {
   const m = a['magnitude'];
   if (typeof m === 'number') return m;
+  if (
+    state !== undefined &&
+    source !== undefined &&
+    m !== null &&
+    typeof m === 'object'
+  ) {
+    return resolveMagnitude(
+      state,
+      { controller: source.controller, sourceInstanceId: source.instanceId },
+      m,
+      0,
+    );
+  }
   const n = a['n'];
   if (typeof n === 'number') return n;
   return 0;
@@ -98,7 +120,7 @@ function oppFieldMatching(
 const auraPowerBuff: ContinuousHandler = {
   resets: ['powerModifierContinuous'],
   fold(state, source, eff) {
-    const n = readMagnitude(eff.action);
+    const n = readMagnitude(eff.action, state, source);
     const targets = ownFieldMatching(state, source, actionFilter(eff.action));
     for (const id of targets) {
       const inst = state.instances[id];
@@ -112,7 +134,7 @@ const auraPowerBuff: ContinuousHandler = {
 const oppAuraPowerBuff: ContinuousHandler = {
   resets: ['powerModifierContinuous'],
   fold(state, source, eff) {
-    const n = readMagnitude(eff.action);
+    const n = readMagnitude(eff.action, state, source);
     const targets = oppFieldMatching(state, source, actionFilter(eff.action));
     for (const id of targets) {
       const inst = state.instances[id];
@@ -126,7 +148,7 @@ const oppAuraPowerBuff: ContinuousHandler = {
 const selfPowerBuff: ContinuousHandler = {
   resets: ['powerModifierContinuous'],
   fold(state, source, eff) {
-    const n = readMagnitude(eff.action);
+    const n = readMagnitude(eff.action, state, source);
     source.powerModifierContinuous = (source.powerModifierContinuous ?? 0) + n;
     return state;
   },

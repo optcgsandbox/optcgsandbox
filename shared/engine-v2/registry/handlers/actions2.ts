@@ -14,7 +14,7 @@ import { resolveBindingRef } from '../../effects/clauseScratch.js';
 import { detachAllAttachedDon } from '../../state/derived/don.js';
 import { resetInstanceTransientState } from '../../state/derived/reset.js';
 import { RngService } from '../../state/RngService.js';
-import type { EffectActionV2, EffectConditionV2 } from '../../spec/types.js';
+import type { EffectActionV2, EffectConditionV2, EffectTargetV2 } from '../../spec/types.js';
 import {
   type CardInstance,
   type GameState,
@@ -24,6 +24,7 @@ import {
 import {
   type ActionHandler,
   actionHandlers,
+  targetResolvers,
 } from '../types.js';
 import { type CardFilter, matchesCardFilter } from './filter.js';
 import { resolveCount } from './formula.js';
@@ -126,8 +127,21 @@ const sequence: ActionHandler = (state, ctx, action, targets) => {
     if (!actionHandlers.has(sub.kind)) continue;
     const subCond = (sub as { condition?: EffectConditionV2 }).condition;
     if (subCond !== undefined && !evaluateCondition(next, ctx, subCond)) continue;
+
+    // Cluster B fix: if the sub-action declares its own `target`, resolve
+    // it via the dispatcher's target-resolver registry (mirrors the
+    // per-clause path at EffectDispatcher.ts:138-148). Otherwise inherit
+    // the parent clause's resolved targets unchanged.
+    let subTargets: ReadonlyArray<InstanceId> = targets;
+    const subTarget = (sub as { target?: EffectTargetV2 }).target;
+    if (subTarget !== undefined) {
+      const resolver = targetResolvers.get(subTarget.kind);
+      subTargets = resolver(next, ctx, subTarget);
+      if (subTargets.length === 0) continue;
+    }
+
     const handler = actionHandlers.get(sub.kind);
-    next = handler(next, ctx, sub, targets);
+    next = handler(next, ctx, sub, subTargets);
   }
   return next;
 };
@@ -135,10 +149,29 @@ const sequence: ActionHandler = (state, ctx, action, targets) => {
 // ─── chained_actions: alias for sequence (some cards use this name)
 const chainedActions: ActionHandler = sequence;
 
-// ─── recursion: targets are own_trash_card instances → move to hand
-const recursion: ActionHandler = (state, ctx, _action, targets) => {
+// ─── recursion: trash → hand. Pre-resolved `targets` win when present;
+//     otherwise scan own trash via `action.filter` + magnitude cap
+//     (Cluster E fix — mirrors the play_for_free hand-recovery pattern).
+const recursion: ActionHandler = (state, ctx, action, targets) => {
   const pl = state.players[ctx.controller];
-  for (const id of targets) {
+  let workingTargets: ReadonlyArray<InstanceId> = targets;
+  if (workingTargets.length === 0) {
+    const rawFilter = action['filter'];
+    const filter = typeof rawFilter === 'object' && rawFilter !== null
+      ? (rawFilter as CardFilter)
+      : undefined;
+    const cap = num(action, 'magnitude', resolveCount(state, ctx, action, 1));
+    const collected: InstanceId[] = [];
+    for (const id of pl.trash) {
+      if (collected.length >= cap) break;
+      const inst = state.instances[id];
+      if (inst === undefined) continue;
+      if (filter !== undefined && !matchesCardFilter(state, inst, filter)) continue;
+      collected.push(id);
+    }
+    workingTargets = collected;
+  }
+  for (const id of workingTargets) {
     const idx = pl.trash.indexOf(id);
     if (idx === -1) continue;
     pl.trash.splice(idx, 1);

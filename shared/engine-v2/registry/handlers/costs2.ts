@@ -474,13 +474,24 @@ const bottomOfDeckOwnChar: CostHandler = {
   },
 };
 
-// ─── selfPowerCost: pay by source contributing power (used in counter calc)
-//     V0: zero-effect at cost-pay level; semantic handled at attack resolve
+// ─── selfPowerCost: "give your Leader -N power this turn" cost (e.g.
+//     EB01-004 Koza). Writes a one-shot debuff onto controller's leader,
+//     symmetric with the power_buff action handler at actions.ts:96-100,
+//     with this_turn lifecycle (cleared by PhaseScheduler.enterEnd's
+//     expiresInTurns tick). Cluster F fix.
 const selfPowerCost: CostHandler = {
   canPay() {
     return true;
   },
-  pay(state) {
+  pay(state, ctx, cost) {
+    const amount = typeof cost['selfPowerCost'] === 'number'
+      ? (cost['selfPowerCost'] as number)
+      : 0;
+    if (amount === 0) return state;
+    const leader = state.players[ctx.controller].leader;
+    leader.powerModifierOneShot = (leader.powerModifierOneShot ?? 0) - amount;
+    const cur = leader.powerModifierExpiresInTurns;
+    leader.powerModifierExpiresInTurns = cur === undefined ? 0 : Math.max(cur, 0);
     return state;
   },
 };

@@ -113,11 +113,25 @@ describe('EB01-021 — Hannyabal (leader)', () => {
     ).toBe(true);
   });
 
-  it.fails(
-    'end-of-turn dispatch should ramp +1 active DON when paying with a valid char (downstream gap: returnOwnCharFilter cost now resolves, but the ramp action with rested:false does not surface +1 on donCostArea under this fixture — separate engine gap on ramp, not on the cost handler)',
+  it(
+    'end-of-turn dispatch ramps +1 active DON when paying with a valid char (closes cluster-G xfail; corrected fixture seeds donDeck per canonical DON-ramp template used by EB01-036 / EB01-061)',
     () => {
       const id2char = impelDownChar('TEST_ID_C2B', 2);
       const { state, leaderInstA } = buildState({ leaderA: hannyabal, charsA: [id2char] });
+      // Pre-seed donDeck so ramp has something to pull from.
+      // (Canonical template — same shape as EB01-036.test.ts / EB01-061.test.ts.)
+      const donInstId = 'A-RAMP-DON-21';
+      state.instances[donInstId] = {
+        instanceId: donInstId,
+        cardId: '__DON',
+        controller: 'A',
+        rested: false,
+        summoningSick: false,
+        attachedDon: [],
+        attachedDonRested: [],
+        perTurn: { hasAttacked: false, effectsUsed: [] },
+      };
+      state.players.A.donDeck.push(donInstId);
       const beforeDon = state.players.A.donCostArea.length;
       const next = EffectDispatcher.dispatch(
         state,

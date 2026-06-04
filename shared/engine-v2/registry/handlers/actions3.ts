@@ -258,13 +258,13 @@ const trashFaceUpLife: ActionHandler = (state, ctx) => {
 };
 
 const trashOwnLifeUntil: ActionHandler = (state, ctx, action) => {
-  // Spec field is `n` (count of life cards to trash from top). Previous
-  // implementation read `until` defaulting to 0, which trimmed life to zero
-  // and instantly lost the game — opposite of intent for cards like
-  // EB01-059 / EB01-060 ("Trash 1 of your Life cards").
-  const n = num(action, 'n', resolveCount(state, ctx, action, 1));
+  // `n` is the TARGET life count to leave (per printed text "trash cards
+  // from the top of your Life cards until you have N Life cards" —
+  // EB01-059 / EB01-060). Trash from top until life.length === n. If life
+  // is already at or below the target, this is a no-op.
+  const targetN = num(action, 'n', resolveCount(state, ctx, action, 1));
   const pl = state.players[ctx.controller];
-  for (let i = 0; i < n; i++) {
+  while (pl.life.length > targetN) {
     const id = pl.life.shift();
     if (id === undefined) break;
     pl.trash.push(id);
@@ -365,9 +365,18 @@ const bottomOfDeckSelf: ActionHandler = (state, ctx) => {
   return state;
 };
 
-const bottomOfDeckFromHand: ActionHandler = (state, ctx, _action, targets) => {
+const bottomOfDeckFromHand: ActionHandler = (state, ctx, action, targets) => {
   const pl = state.players[ctx.controller];
-  for (const id of targets) {
+  let workingTargets: ReadonlyArray<InstanceId> = targets;
+  if (workingTargets.length === 0) {
+    // Cluster E fix — when no clause-target is declared, take first
+    // `magnitude` hand cards in insertion order (corpus shows zero filter
+    // declarations on this action; player choice abstracted to deterministic
+    // top-of-hand pick).
+    const cap = num(action, 'magnitude', resolveCount(state, ctx, action, 1));
+    workingTargets = pl.hand.slice(0, Math.min(cap, pl.hand.length));
+  }
+  for (const id of workingTargets) {
     const idx = pl.hand.indexOf(id);
     if (idx === -1) continue;
     pl.hand.splice(idx, 1);
