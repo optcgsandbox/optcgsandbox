@@ -29,7 +29,20 @@
   "include": ["src", "shared"],
   "exclude": [
     "shared/engine",
+    "shared/engine/**",
+    "shared/protocol",
+    "shared/protocol/**",
+    "shared/sim",
+    "shared/sim/**",
+    "shared/simulation",
+    "shared/simulation/**",
     "shared/engine-v2/__tests__",
-    "shared/protocol"
+    "shared/engine-v2/__tests__/**",
+    "shared/engine-v2/tests",
+    "shared/engine-v2/tests/**",
+    "shared/**/__tests__",
+    "shared/**/__tests__/**",
+    "shared/**/tests",
+    "shared/**/tests/**"
   ]
 }

@@ -64,6 +64,7 @@ export interface RunBatchOptions {
 
 export interface RunBatchSummary {
   readonly totalGames: number;
+  readonly totalTicks: number;
   readonly corpusSize: number;
   readonly coveredCount: number;
   readonly coveragePercent: number;
@@ -96,6 +97,12 @@ function decisionTreeSnapshot(
 
 function stateFingerprint(state: GameState): string {
   // Short, structural fingerprint covering things that change tick-to-tick.
+  // R1 hardening: include diceRoll.{A,B,rolls} so ROLL_DICE actions are no
+  // longer classified as no-ops by the loop detector at lines 302-305 — see
+  // shared/simulation/reports/system-behavior-summary.md §3 and
+  // shared/simulation/release/engine-behavior-spec.md §5 for the prior
+  // dice-tie + noopExclude artifact this corrects.
+  const dr = (state as { diceRoll?: { A?: number | null; B?: number | null; rolls?: number } | null }).diceRoll;
   const parts = [
     state.phase,
     state.turn,
@@ -112,6 +119,7 @@ function stateFingerprint(state: GameState): string {
     state.players.B.donCostArea.length,
     state.pending === null ? '0' : state.pending.kind,
     state.result === null ? '0' : `R:${state.result.loser}`,
+    `dr:${dr?.A ?? '_'}:${dr?.B ?? '_'}:${dr?.rolls ?? 0}`,
   ];
   return shortHash(parts.join('|'));
 }
@@ -268,10 +276,32 @@ export function runGame(
     let pickedIdx: number;
     let weighted: ReadonlyArray<WeightedMove> | null = null;
     if (options.adversarial === true && options.cardMeta !== undefined) {
-      const picked = pickAdversarial(state, moves as ReadonlyArray<Action>, options.cardMeta, tickRng);
-      move = picked.picked;
-      pickedIdx = picked.pickedIndex;
-      weighted = picked.weighted;
+      // Policy-layer filter: the simulator (like EasyAi.ts:44, MediumAi.ts:53,
+      // HardAi.ts:33) never voluntarily concedes. CONCEDE in legality.ts is
+      // a UI/safety affordance, not a policy choice. We filter at the policy
+      // boundary so adversarial.ts stays a pure weighting engine and
+      // moveSelector / legality stay untouched. Empty-fallback preserves
+      // dispatch in the theoretical CONCEDE-only legal set (not observed in
+      // the 1000-game baseline but possible by construction).
+      const policyIdxs: number[] = [];
+      const policyMoves: Action[] = [];
+      for (let i = 0; i < moves.length; i++) {
+        if (moves[i]!.type !== 'CONCEDE') {
+          policyIdxs.push(i);
+          policyMoves.push(moves[i]!);
+        }
+      }
+      if (policyMoves.length === 0) {
+        const picked = pickAdversarial(state, moves as ReadonlyArray<Action>, options.cardMeta, tickRng);
+        move = picked.picked;
+        pickedIdx = picked.pickedIndex;
+        weighted = picked.weighted;
+      } else {
+        const picked = pickAdversarial(state, policyMoves, options.cardMeta, tickRng);
+        move = picked.picked;
+        pickedIdx = policyIdxs[picked.pickedIndex]!;
+        weighted = picked.weighted;
+      }
     } else {
       pickedIdx = tickRng.range(moves.length);
       move = moves[pickedIdx]!;
@@ -366,6 +396,7 @@ export function runBatch(opts: RunBatchOptions): RunBatchSummary {
   const failureSeeds: number[] = [];
   const reportPaths: string[] = [];
   let failures = 0;
+  let totalTicks = 0;
 
   for (let i = 0; i < opts.games; i++) {
     // Coverage scheduling: pull a slate of uncovered cards if any remain.
@@ -395,6 +426,8 @@ export function runBatch(opts: RunBatchOptions): RunBatchSummary {
       throw err;
     }
 
+    totalTicks += result.ticks;
+
     if (result.failure) {
       failures += 1;
       failureByKind[result.failure.kind] = (failureByKind[result.failure.kind] ?? 0) + 1;
@@ -422,6 +455,7 @@ export function runBatch(opts: RunBatchOptions): RunBatchSummary {
 
   return {
     totalGames: failureSeeds.length > 0 && opts.stopOnFailure ? failureSeeds.length : opts.games,
+    totalTicks,
     corpusSize: tracker.totalCards(),
     coveredCount: tracker.coveredCount(),
     coveragePercent: tracker.coveragePercent(),

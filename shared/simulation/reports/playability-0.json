@@ -1,0 +1,75 @@
+{
+  "totalGames": 1000,
+  "seedBase": 0,
+  "adversarial": true,
+  "terminalCategories": {
+    "completed": 1000,
+    "failed": 0,
+    "timeout": 0
+  },
+  "winnerSide": {
+    "A": 532,
+    "B": 468,
+    "none": 0
+  },
+  "turn": {
+    "count": 1000,
+    "min": 5,
+    "max": 46,
+    "mean": 19.179,
+    "p25": 15,
+    "p50": 18,
+    "p75": 22
+  },
+  "ticks": {
+    "count": 1000,
+    "min": 44,
+    "max": 646,
+    "mean": 234.7,
+    "p25": 175,
+    "p50": 221,
+    "p75": 284
+  },
+  "ticksPerTurn": {
+    "count": 1000,
+    "min": 6.777777777777778,
+    "max": 19.666666666666668,
+    "mean": 12.011,
+    "p25": 10.88888888888889,
+    "p50": 12.041666666666666,
+    "p75": 13.105263157894736
+  },
+  "uniqueActionTypesPerGame": {
+    "count": 1000,
+    "min": 11,
+    "max": 16,
+    "mean": 12.952,
+    "p25": 12,
+    "p50": 13,
+    "p75": 14
+  },
+  "winReason": {
+    "deck_out": 6,
+    "life_zero": 994
+  },
+  "actionTypeDistribution": {
+    "ACTIVATE_MAIN": 15190,
+    "ATTACH_DON": 41072,
+    "CHOOSE_FIRST": 501,
+    "CHOOSE_SECOND": 499,
+    "DECLARE_ATTACK": 41487,
+    "DECLARE_BLOCKER": 2395,
+    "END_TURN": 18179,
+    "KEEP_HAND": 1240,
+    "MULLIGAN": 760,
+    "PLAY_CARD": 19359,
+    "PLAY_COUNTER": 14726,
+    "PLAY_STAGE": 616,
+    "RESOLVE_CHOOSE_ONE": 376,
+    "RESOLVE_DISCARD": 4,
+    "RESOLVE_TRIGGER": 7,
+    "ROLL_DICE": 2396,
+    "SKIP_BLOCKER": 36749,
+    "SKIP_COUNTER": 39144
+  }
+}

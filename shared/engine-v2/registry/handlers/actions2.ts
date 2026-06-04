@@ -327,7 +327,11 @@ const playForFree: ActionHandler = (state, ctx, action, targets) => {
     const rawFilter = action['filter'];
     const flattened = typeof rawFilter === 'object' && rawFilter !== null
       ? flattenBindingFilter(rawFilter as Record<string, unknown>, ctx.scratch)
-      : { filter: undefined as CardFilter | undefined };
+      : {
+          filter: undefined as CardFilter | undefined,
+          excludedColors: undefined as readonly string[] | undefined,
+          excludedName: undefined as string | undefined,
+        };
     const cap = typeof action['count'] === 'number' ? (action['count'] as number) : 1;
     const zones: Array<'hand' | 'trash'> =
       from === 'hand' ? ['hand']
