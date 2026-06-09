@@ -263,11 +263,36 @@ export const EffectDispatcher = {
 
       // (8) Pending-state pause (Plan §1.3 + §4.12). If clause i's action
       // suspended the engine (peek/choose_one/discard/attack_target_pick),
-      // subsequent clauses must NOT fire on the un-resumed state. Move the
-      // ClauseScratch onto the inner pending payload so RESOLVE_* can
-      // restore it. Then break — let the host resume via the pending
+      // subsequent clauses must NOT fire on the un-resumed state. Move
+      // the ClauseScratch onto the inner pending payload so RESOLVE_*
+      // can restore it. Then break — let the host resume via the pending
       // decision.
-      if (working.pending !== null) {
+      //
+      // AMBIENT pending kinds (set by an outer reducer BEFORE clauses
+      // dispatch, NOT by any clause action) must be excluded from the
+      // break check, otherwise they silently drop clause[1+] on
+      // multi-clause cards:
+      //   - `pending.kind === 'attack'` is the counter-window ambient
+      //     state set by enterCounterWindow / playCounterReducer.
+      //     Surfaced via OP14-078 cost-PAID + leader-MATCH observing
+      //     2000 instead of printed 4000.
+      //   - `pending.kind === 'trigger'` is the trigger-window ambient
+      //     state set by attackFlow.ts:485 during flipTopLifeToHand,
+      //     and persists across RESOLVE_TRIGGER's EffectDispatcher.dispatch
+      //     call (cleared only at choiceResolve.ts:72 AFTER dispatch
+      //     returns). Surfaced via OP05-109 Pagaya — multi-clause
+      //     trigger (draw + mill_self) silently dropped clause[1]
+      //     mill_self because the dispatcher mistook the outer ambient
+      //     pending=trigger for a clause-induced suspend.
+      //
+      // Interactive pending kinds (peek, choose_one, discard,
+      // attack_target_pick) ARE legitimate clause-induced suspends and
+      // STILL stop iteration via this check.
+      if (
+        working.pending !== null &&
+        working.pending.kind !== 'attack' &&
+        working.pending.kind !== 'trigger'
+      ) {
         working = attachScratchToPending(working, scratch);
         break;
       }

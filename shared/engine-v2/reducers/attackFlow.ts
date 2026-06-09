@@ -62,6 +62,14 @@ function clearPendingAttack(state: GameState): GameState {
     if (pl.stage !== null) pl.stage.powerModifierThisBattle = undefined;
   }
   state.pending = null;
+  // Restore the attacking player to main phase. Without this, phase stays
+  // at 'damage_resolution' (or whatever attack-flow phase set it to) and
+  // END_TURN no-ops (turnFlow.ts:28 requires phase === 'main'), stalling
+  // the entire game. The trigger-window resolve path (choiceResolve.ts:179)
+  // already does enterMain explicitly; this covers the no-trigger paths.
+  if (state.result === null) {
+    state.phase = 'main';
+  }
   return state;
 }
 

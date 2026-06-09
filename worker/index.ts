@@ -46,6 +46,18 @@ export default {
       return new Response(resp.body, { status: resp.status, headers: merged });
     }
 
+    if (url.pathname === '/api/poll' && req.method === 'GET') {
+      // F-7b: forward to the Matchmaker DO. The Matchmaker holds both
+      // the queue + paired_results in a single DO instance keyed by
+      // 'global', so polling and pairing share a consistent view.
+      const mmId = env.MATCHMAKER.idFromName('global');
+      const mm = env.MATCHMAKER.get(mmId);
+      const resp = await mm.fetch(req);
+      const merged = new Headers(resp.headers);
+      for (const [k, v] of Object.entries(corsHeaders)) merged.set(k, v);
+      return new Response(resp.body, { status: resp.status, headers: merged });
+    }
+
     if (url.pathname === '/ws') {
       const roomId = url.searchParams.get('room');
       if (!roomId) return new Response('missing room', { status: 400 });

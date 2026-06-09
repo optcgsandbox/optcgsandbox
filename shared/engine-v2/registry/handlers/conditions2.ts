@@ -204,18 +204,31 @@ const ifHaveGivenDonMin: ConditionHandler = (s, ctx, c) => {
   return (s.pendingDonReturned[OTHER[ctx.controller]] ?? 0) >= n;
 };
 
-// ─── if_own_chars_min_filter — basic filter (trait + minCost) per spec.
-//     Full TargetFilter shape lives on EffectTargetV2 — this condition takes
-//     a flat object with the same keys.
+// ─── if_own_chars_min_filter — flat filter mirroring EffectTargetV2.
+//     Supports the shape used across cards.json:
+//       trait      — single trait substring (legacy / singular)
+//       traitsAny  — array; passes if char.traits includes ANY listed value
+//       kind       — exact card.kind match (e.g. 'character')
+//       minCost / maxCost — inclusive bounds on charCost
+//     Char must satisfy EVERY specified key. Count own field hits;
+//     condition passes iff hits >= n.
 const ifOwnCharsMinFilter: ConditionHandler = (s, ctx, c) => {
   const n = num(c, 'n');
   const filter = c['filter'];
   if (typeof filter !== 'object' || filter === null) return false;
-  const f = filter as { trait?: string; minCost?: number; maxCost?: number };
+  const f = filter as {
+    trait?: string;
+    traitsAny?: ReadonlyArray<string>;
+    kind?: string;
+    minCost?: number;
+    maxCost?: number;
+  };
   const hits = s.players[ctx.controller].field.filter((i) => {
     const card = cardOf(s, i);
     if (card === undefined) return false;
+    if (f.kind !== undefined && card.kind !== f.kind) return false;
     if (f.trait !== undefined && !card.traits.includes(f.trait)) return false;
+    if (f.traitsAny !== undefined && !f.traitsAny.some((t) => card.traits.includes(t))) return false;
     if (f.minCost !== undefined && charCost(card) < f.minCost) return false;
     if (f.maxCost !== undefined && charCost(card) > f.maxCost) return false;
     return true;

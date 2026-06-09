@@ -158,6 +158,21 @@ function resolveDiscardReducer(
     reason: pd.revealedFrom,
   });
 
+  // F-7k BUG-008.A — CR §6-5-7 requires discarding DOWN TO 10 at end of turn.
+  // Engine sets `pendingDiscard.count = excess` when opening the window
+  // (`shared/engine-v2/phases/PhaseScheduler.ts:336-346`). The reducer must
+  // decrement on each click and KEEP the window open until count === 0;
+  // otherwise a player with hand=12 can satisfy the limit by discarding
+  // only 1 card. Pre-fix: window closed after a single discard regardless
+  // of count.
+  if (pd.count > 1) {
+    state.pending = {
+      kind: 'discard',
+      pendingDiscard: { ...pd, count: pd.count - 1 },
+    };
+    return state;
+  }
+
   state.phase = pd.resumePhase;
   state.pending = null;
 

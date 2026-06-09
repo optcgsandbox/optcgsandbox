@@ -280,19 +280,30 @@ const turnAllOwnLifeFaceDown: ActionHandler = (state, ctx) => {
 
 // P-TRIGGER-FROM-LIFE consumer action.
 // `play_self_from_life`: the source instance (a life card revealed during
-// damage resolution and confirmed via RESOLVE_TRIGGER) leaves the life
+// damage resolution and confirmed via RESOLVE_TRIGGER) leaves its current
 // zone and enters its controller's field. Mirrors play_for_free's
 // post-placement hooks (continuous refold + on_play dispatch).
-// The damage→life→PendingTrigger emission already exists in
-// attackFlow.ts:467-489; this handler is the action consumer for
-// `[Trigger] Play this card` patterns (e.g., OP01-009 Carrot).
+//
+// Zone lookup order: hand FIRST, then life. The natural attack flow at
+// attackFlow.ts:155-160 (flipTopLifeToHand) moves the flipped life card
+// into hand BEFORE setting pending=trigger; so when the trigger fires
+// the card lives in hand, not life. The life-zone fallback covers the
+// per-card unit-test path that injects the instance directly into life.
 const playSelfFromLife: ActionHandler = (state, ctx) => {
   const pl = state.players[ctx.controller];
   const id = ctx.sourceInstanceId;
-  const idx = pl.life.indexOf(id);
-  if (idx === -1) return state;
-  pl.life.splice(idx, 1);
-  delete pl.lifeFaceUp[id];
+  const handIdx = pl.hand.indexOf(id);
+  let from: 'life' | 'hand';
+  if (handIdx !== -1) {
+    pl.hand.splice(handIdx, 1);
+    from = 'hand';
+  } else {
+    const lifeIdx = pl.life.indexOf(id);
+    if (lifeIdx === -1) return state;
+    pl.life.splice(lifeIdx, 1);
+    delete pl.lifeFaceUp[id];
+    from = 'life';
+  }
   const inst = state.instances[id];
   if (inst === undefined) return state;
   resetInstanceTransientState(inst);
@@ -305,7 +316,7 @@ const playSelfFromLife: ActionHandler = (state, ctx) => {
     cardId: inst.cardId,
     controller: ctx.controller,
     cost: 0,
-    from: 'life',
+    from,
     rested: false,
     reason: 'trigger_play_self',
   });

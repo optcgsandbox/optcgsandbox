@@ -264,6 +264,36 @@ function blockerActions(state: GameState, player: PlayerId): Action[] {
   return out;
 }
 
+// Counter-event playability signal. Returns true if `card` is an event
+// that should be offered as PLAY_COUNTER. Logic: A OR (B AND C).
+//   A — legacy: `counterEventBoost > 0` (always-on defensive boost).
+//   B AND C — printed-strict zero-boost counter event: corpus must
+//       explicitly mark the card as a counter event (`effectTags`
+//       contains `'counter_event'`) AND the spec must contain at least
+//       one on_play `power_buff` action targeting a defender-side
+//       instance. The conjunction is required to prevent unrelated
+//       main-phase events (whose power_buff clauses target your_leader /
+//       your_character but have no counter_event tag — e.g. EB02-007
+//       Cloven Rose Blizzard, OP03-016 Flame Emperor, OP05-115 Two-Hundred
+//       Million Volts Amaru) from becoming counter-playable.
+// `effectTags` is corpus-side metadata; not declared on `CardBase`. Read
+// via a narrow runtime cast so the engine doesn't need a schema change.
+function isCounterEventPlayable(card: Card): boolean {
+  const boost = (card as { counterEventBoost?: number | null }).counterEventBoost ?? 0;
+  if (boost > 0) return true; // Path A
+  const spec = card.effectSpecV2;
+  const hasDefensivePowerBuff = (spec?.clauses ?? []).some((c) => {
+    if (c.trigger !== 'on_play') return false;
+    if (c.action.kind !== 'power_buff') return false;
+    const tk = c.target?.kind;
+    return tk === 'your_leader' || tk === 'your_character'
+        || tk === 'your_leader_or_character' || tk === 'self';
+  });
+  const tags = (card as { effectTags?: ReadonlyArray<string> }).effectTags;
+  const hasCounterEventTag = Array.isArray(tags) && tags.includes('counter_event');
+  return hasDefensivePowerBuff && hasCounterEventTag; // Path B AND C
+}
+
 function counterActions(state: GameState, player: PlayerId): Action[] {
   const p = state.players[player];
   const out: Action[] = [];
@@ -273,8 +303,7 @@ function counterActions(state: GameState, player: PlayerId): Action[] {
     const card = state.cardLibrary[inst.cardId] as Card | undefined;
     if (card === undefined) continue;
     if (card.kind === 'event') {
-      const boost = card.counterEventBoost ?? 0;
-      if (boost > 0 && card.cost !== null && card.cost <= p.donCostArea.length) {
+      if (isCounterEventPlayable(card) && card.cost !== null && card.cost <= p.donCostArea.length) {
         out.push({ type: 'PLAY_COUNTER', instanceId: id });
       }
     } else if (card.counterValue !== null && (card.counterValue ?? 0) > 0) {
