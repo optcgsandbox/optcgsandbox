@@ -1,0 +1,110 @@
+# F-7i — Online E2E CI
+#
+# Runs the F-7h Playwright two-tab online spec against a locally-booted
+# `wrangler dev` (DEV_AUTH mode) on every PR. Locks in the watchable
+# vertical: queue → pair → WebSocket → phase=main → legalActions →
+# accepted action → concede → synced result.
+#
+# DEV_AUTH is the intentional CI auth mode:
+#   - No Supabase credentials are stored in CI secrets — F-5d.1 keeps
+#     production-auth coverage as an operator-driven manual smoke.
+#   - DEV_AUTH bypass is `worker/GameRoom.ts:rebuildEngine` + production
+#     guard at `ENV=production && DEV_AUTH=1` (verified in
+#     `shared/server/__tests__/joinAuth.test.ts` "production safety
+#     guard"); the workflow sets `ENV=dev` so the guard cannot trigger.
+#   - The protocol-level Node smoke
+#     `worker/__smoke__/lobby-ws-smoke.mts` is intentionally NOT run
+#     here; it stays the fast/separate regression check. F-7i is the
+#     browser-level check.
+
+name: Online E2E
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  online-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 24
+        # Matches local dev (node v24.4.0 per F-7i preflight).
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium + deps
+        run: npx playwright install --with-deps chromium
+
+      - name: Boot wrangler dev (DEV_AUTH mode, background)
+        # `--local` keeps everything in miniflare; no Cloudflare API
+        # credentials are required. The shell `&` plus `disown` (via
+        # `nohup` redirection) detaches the process so the workflow can
+        # proceed. The PID is captured for cleanup in the post-step.
+        # Output is tee'd to `wrangler.log` for the failure artifact.
+        working-directory: worker
+        run: |
+          nohup npx wrangler dev \
+            --port 8801 \
+            --local \
+            --var DEV_AUTH:1 \
+            --var ENV:dev \
+            > ../wrangler.log 2>&1 &
+          echo "WRANGLER_PID=$!" >> $GITHUB_ENV
+
+      - name: Wait for wrangler /health
+        # Up to 60s. If wrangler dev never comes up in CI, this is a
+        # `worker_boot_failure` per the §36 failure taxonomy.
+        run: |
+          i=0
+          until curl -s -o /dev/null -w "%{http_code}" \
+            http://localhost:8801/health | grep -qE "^2"; do
+            sleep 2
+            i=$((i+1))
+            if [ $i -ge 30 ]; then
+              echo "::error::wrangler /health did not respond within 60s"
+              echo "--- wrangler.log tail ---"
+              tail -100 wrangler.log || true
+              exit 1
+            fi
+          done
+          echo "wrangler /health 200 after ~$((i*2))s"
+
+      - name: Run Playwright online E2E
+        env:
+          ONLINE_E2E: '1'
+          WORKER_ORIGIN: http://localhost:8801
+        # `--project=chromium` matches `playwright.config.ts:24-28`.
+        # Vite auto-starts via the config's `webServer` block when
+        # `E2E_BASE_URL` is unset (which it is here).
+        run: npx playwright test e2e/online/online-two-tab.spec.ts --project=chromium
+
+      - name: Stop wrangler dev
+        if: always()
+        run: |
+          if [ -n "${WRANGLER_PID:-}" ]; then
+            kill "$WRANGLER_PID" 2>/dev/null || true
+          fi
+          pkill -f "wrangler dev" 2>/dev/null || true
+
+      - name: Upload Playwright artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-online-e2e
+          path: |
+            e2e-report/
+            test-results/
+            wrangler.log
+          retention-days: 14
+          if-no-files-found: ignore
