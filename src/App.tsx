@@ -7,7 +7,17 @@ import { useCallback } from 'react';
 import { useGameStore } from './store/game';
 import { useTheme } from './hooks/useTheme';
 import { PlayfieldStage } from './components/PlayfieldStage';
+import DevGameSandbox from './dev/DevGameSandbox';
+import OnlineLobby from './online/OnlineLobby';
 import type { GameMode } from './store/game';
+
+const isDevSandbox =
+  typeof window !== 'undefined' &&
+  new URLSearchParams(window.location.search).get('dev') === '1';
+
+const isOnlineLobby =
+  typeof window !== 'undefined' &&
+  new URLSearchParams(window.location.search).get('online') === '1';
 
 const MODE_LABEL: Record<GameMode, string> = {
   'vs-easy': 'Easy',
@@ -21,6 +31,8 @@ const MODES: GameMode[] = ['vs-easy', 'vs-medium', 'vs-hard'];
 // 2026-05-29 (rendered inline in LeaderRow on YOUR side).
 
 export default function App() {
+  if (isOnlineLobby) return <OnlineLobby />;
+  if (isDevSandbox) return <DevGameSandbox />;
   const state = useGameStore((s) => s.state);
   const mode = useGameStore((s) => s.mode);
   const setMode = useGameStore((s) => s.setMode);
