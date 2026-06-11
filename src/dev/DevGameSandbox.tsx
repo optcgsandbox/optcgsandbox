@@ -89,11 +89,13 @@ function labelForAction(state: GameState, action: Action): string {
     case 'ACTIVATE_MAIN': return `ACTIVATE_MAIN ${name((action as { instanceId: string }).instanceId)}`;
     case 'ATTACH_DON': return `ATTACH_DON → ${name((action as { targetInstanceId: string }).targetInstanceId)}`;
     case 'DECLARE_ATTACK': {
-      const a = action as { attackerInstanceId: string; defenderInstanceId: string };
-      return `DECLARE_ATTACK ${name(a.attackerInstanceId)} → ${name(a.defenderInstanceId)}`;
+      // protocol field is targetInstanceId (actions.ts:59) — old
+      // `defenderInstanceId` was pre-cutover drift.
+      const a = action as { attackerInstanceId: string; targetInstanceId: string };
+      return `DECLARE_ATTACK ${name(a.attackerInstanceId)} → ${name(a.targetInstanceId)}`;
     }
     case 'DECLARE_BLOCKER': return `DECLARE_BLOCKER ${name((action as { blockerInstanceId: string }).blockerInstanceId)}`;
-    case 'PLAY_COUNTER': return `PLAY_COUNTER ${name((action as { counterInstanceId: string }).counterInstanceId)}`;
+    case 'PLAY_COUNTER': return `PLAY_COUNTER ${name((action as { instanceId: string }).instanceId)}`;
     case 'ROLL_DICE': return `ROLL_DICE ${(action as { player: string }).player}`;
     default: return t;
   }
@@ -183,11 +185,11 @@ function PendingPanel({ state, dispatch }: { state: GameState; dispatch: (a: Act
       <div className="rounded border-2 border-purple-400 bg-purple-950/40 p-2">
         <div className="mb-2 font-bold text-purple-200">PENDING: peek (controller {pp.controller})</div>
         <div className="flex flex-col gap-1">
-          {pp.candidates.map((id: InstanceId) => (
+          {pp.peekedIds.map((id: InstanceId) => (
             <button
               key={id}
               type="button"
-              onClick={() => dispatch({ type: 'RESOLVE_PEEK', pickedId: id })}
+              onClick={() => dispatch({ type: 'RESOLVE_PEEK', pickedIds: [id] })}
               className="rounded bg-purple-700 px-2 py-1 text-left text-[11px] hover:bg-purple-600"
             >
               Pick: {shortInstSummary(state, id)}
@@ -195,7 +197,7 @@ function PendingPanel({ state, dispatch }: { state: GameState; dispatch: (a: Act
           ))}
           <button
             type="button"
-            onClick={() => dispatch({ type: 'RESOLVE_PEEK', pickedId: null })}
+            onClick={() => dispatch({ type: 'RESOLVE_PEEK', pickedIds: [] })}
             className="rounded bg-zinc-700 px-2 py-1 text-left text-[11px] hover:bg-zinc-600"
           >
             Skip (pick none)
@@ -207,11 +209,18 @@ function PendingPanel({ state, dispatch }: { state: GameState; dispatch: (a: Act
 
   if (pending.kind === 'discard') {
     const pd = pending.pendingDiscard;
+    // Candidates are the target hand per revealedFrom — mirrors
+    // resolveDiscardReducer (choiceResolve.ts): self_hand → controller's
+    // own hand; opp_hand → the controller's opponent's hand.
+    const discardSide = pd.revealedFrom === 'self_hand'
+      ? pd.controller
+      : (pd.controller === 'A' ? 'B' : 'A');
+    const discardCandidates = state.players[discardSide].hand;
     return (
       <div className="rounded border-2 border-rose-400 bg-rose-950/40 p-2">
         <div className="mb-2 font-bold text-rose-200">PENDING: discard (controller {pd.controller})</div>
         <div className="flex flex-col gap-1">
-          {pd.candidates.map((id: InstanceId) => (
+          {discardCandidates.map((id: InstanceId) => (
             <button
               key={id}
               type="button"
@@ -478,7 +487,7 @@ export default function DevGameSandbox() {
       setLog((l) => [{
         id,
         ts: new Date().toISOString().slice(11, 23),
-        kind: 'transition',
+        kind: 'transition' as const,
         prevPhase: prev.phase,
         nextPhase: state.phase,
         prevPending: prev.pending ? prev.pending.kind : 'null',
@@ -542,7 +551,7 @@ export default function DevGameSandbox() {
                 activePlayer: state.activePlayer,
                 pending: state.pending,
                 diceRoll: state.diceRoll,
-                firstPlayerChoice: state.firstPlayerChoice,
+                firstPlayer: state.firstPlayer,
                 result: state.result,
               }, null, 2)}
             </pre>

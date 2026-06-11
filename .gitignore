@@ -23,3 +23,15 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Generated test/dev artifacts (post-71071c4 gate cleanup; *.log already
+# covered above)
+e2e-report/
+test-results/
+worker/.wrangler/
+shared/simulation/.coverage.json
+tools/play-artifacts/
+e2e/coverage/
+e2e/golden/
+*.tmp
+*.sqlite
