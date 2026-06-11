@@ -54,7 +54,7 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true }: H
       // pointer-events-none lets the container pass clicks through to the
       // playmat (which clears inspectedCardId at App level). Individual cards
       // re-enable pointer events.
-      className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex items-end justify-center"
+      className="pointer-events-none absolute inset-x-0 bottom-0 z-40 flex items-end justify-center"
       style={{
         // Reserve card height + apex lift + buffer for the lifted state.
         height: `calc(${HAND_CARD_H + 80}px + env(safe-area-inset-bottom, 0px))`,

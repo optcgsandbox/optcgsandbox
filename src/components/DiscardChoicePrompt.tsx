@@ -46,7 +46,8 @@ export const DiscardChoicePrompt = memo(function DiscardChoicePrompt() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="discard-prompt-heading"
-        className="fixed inset-0 z-50 flex flex-col items-center justify-center
+        data-pending-kind="discard"
+        className="fixed inset-0 z-[70] flex flex-col items-center justify-center
                    bg-paper-cream/95 backdrop-blur-sm px-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -69,15 +70,22 @@ export const DiscardChoicePrompt = memo(function DiscardChoicePrompt() {
             if (!inst) return null;
             const card = library[inst.cardId];
             return (
-              <button
+              <div
                 key={id}
-                type="button"
+                role="button"
+                tabIndex={0}
                 onClick={() => onPick(id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onPick(id);
+                  }
+                }}
                 aria-label={`Discard ${card?.name ?? 'card'}`}
-                className="focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none rounded-[3px]"
+                className="cursor-pointer focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none rounded-[3px]"
               >
                 <CardArt inst={inst} card={card} size="hand" />
-              </button>
+              </div>
             );
           })}
         </div>

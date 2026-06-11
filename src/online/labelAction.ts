@@ -1,4 +1,4 @@
-// Pure action → human label resolver for OnlinePlayfield.
+// Pure action → human label + group resolver for OnlinePlayfield.
 //
 // Discriminates on `action.type` and resolves instanceIds via the
 // projected `state.instances` + `state.cardLibrary`. If an instanceId
@@ -8,6 +8,19 @@
 // All 21 Action union members covered (verified against
 // `shared/engine-v2/protocol/actions.ts:18-104`). Tests in
 // `src/online/labelAction.test.ts` enforce one label per type.
+//
+// F-7k BUG-009.D/E — labels for PLAY_CARD now distinguish character vs
+// event vs stage by reading the card's `kind` from the projected
+// cardLibrary. Pre-fix all PLAY_CARD actions read "Play X" with no
+// hint of what would happen (character to field vs event to trash vs
+// stage to single-slot zone). Same fix surfaces ACTIVATE_MAIN labeling
+// already in place ("Activate X").
+//
+// F-7k BUG-009 — `actionGroup` classifier groups legal actions for the
+// human UI panel so each phase's actionable buttons are immediately
+// findable (Turn / Play Characters / Play Events / Play Stage /
+// Attach DON / Attack / Card Effects / Blocker Response / Counter
+// Response / Trigger Response / Discard / Choose / Setup / Concede).
 
 import type { Action } from '@shared/engine-v2/protocol/actions';
 import type { PublicGameState } from '@shared/server/publicProjection';
@@ -15,6 +28,18 @@ import type { PublicGameState } from '@shared/server/publicProjection';
 interface CardLibEntry {
   readonly id?: string;
   readonly name?: string;
+  readonly kind?: string;
+}
+
+function lookupCard(
+  state: PublicGameState,
+  instanceId: string,
+): CardLibEntry | undefined {
+  const inst = (state.instances as Record<string, { cardId?: string } | undefined>)[instanceId];
+  if (inst === undefined) return undefined;
+  const cardId = inst.cardId;
+  if (typeof cardId !== 'string') return undefined;
+  return (state.cardLibrary as Record<string, CardLibEntry | undefined>)[cardId];
 }
 
 function resolveName(state: PublicGameState, instanceId: string): string {
@@ -49,44 +74,54 @@ export function labelAction(action: Action, state: PublicGameState): string {
       return 'Mulligan';
     case 'KEEP_HAND':
       return 'Keep hand';
-    case 'PLAY_CARD':
-      return `Play ${resolveName(state, action.instanceId)}${
+    case 'PLAY_CARD': {
+      const card = lookupCard(state, action.instanceId);
+      const kind = (card?.kind ?? '').toString();
+      const name = resolveName(state, action.instanceId);
+      const verb =
+        kind === 'event'
+          ? 'Play Event'
+          : kind === 'character'
+            ? 'Play Character'
+            : 'Play';
+      const replace =
         action.replaceTargetId !== null
           ? ` (replace ${resolveName(state, action.replaceTargetId)})`
-          : ''
-      }`;
+          : '';
+      return `${verb}: ${name}${replace}`;
+    }
     case 'PLAY_STAGE':
-      return `Play stage ${resolveName(state, action.instanceId)}`;
+      return `Play Stage: ${resolveName(state, action.instanceId)}`;
     case 'ATTACH_DON':
       return `Attach DON → ${resolveName(state, action.targetInstanceId)}`;
     case 'ACTIVATE_MAIN':
-      return `Activate ${resolveName(state, action.instanceId)}`;
+      return `Activate: ${resolveName(state, action.instanceId)}`;
     case 'DECLARE_ATTACK':
       return `${resolveName(state, action.attackerInstanceId)} → ${resolveName(
         state,
         action.targetInstanceId,
       )}`;
     case 'DECLARE_BLOCKER':
-      return `Block with ${resolveName(state, action.blockerInstanceId)}`;
+      return `Block with: ${resolveName(state, action.blockerInstanceId)}`;
     case 'PLAY_COUNTER':
-      return `Counter with ${resolveName(state, action.instanceId)}`;
+      return `Counter with: ${resolveName(state, action.instanceId)}`;
     case 'SKIP_COUNTER':
       return 'Skip counter';
     case 'SKIP_BLOCKER':
       return 'Skip blocker';
     case 'RESOLVE_TRIGGER': {
-      const choice = action.activate ? 'activate' : 'skip';
+      const choice = action.activate ? 'Activate trigger' : 'Decline trigger';
       const target =
         action.targetInstanceId !== null
           ? ` → ${resolveName(state, action.targetInstanceId)}`
           : '';
-      return `Trigger: ${choice}${target}`;
+      return `${choice}${target}`;
     }
     case 'RESOLVE_PEEK':
       return `Peek pick (${action.pickedIds.length})`;
     case 'RESOLVE_DISCARD':
       return action.pickedId !== null
-        ? `Discard ${resolveName(state, action.pickedId)}`
+        ? `Discard: ${resolveName(state, action.pickedId)}`
         : 'Discard (no pick)';
     case 'RESOLVE_CHOOSE_ONE':
       return `Choose option ${action.optionIndex + 1}`;
@@ -102,6 +137,104 @@ export function labelAction(action: Action, state: PublicGameState): string {
     }
   }
 }
+
+/**
+ * Classify a legal action for grouped UI rendering. Stable categories
+ * so the player can find the action by phase context.
+ *
+ * BUG-009: the prior flat 30-button list buried offensive moves,
+ * response moves, and effect activations together. The picker / soak
+ * harness coped fine; humans couldn't. Groups let the UI render each
+ * category under a labeled section.
+ */
+export type ActionGroup =
+  | 'Turn'
+  | 'Play Characters'
+  | 'Play Events'
+  | 'Play Stage'
+  | 'Attach DON'
+  | 'Attack'
+  | 'Card Effects'
+  | 'Blocker Response'
+  | 'Counter Response'
+  | 'Trigger Response'
+  | 'Discard'
+  | 'Choose'
+  | 'Setup'
+  | 'Concede';
+
+export function actionGroup(
+  action: Action,
+  state: PublicGameState,
+): ActionGroup {
+  switch (action.type) {
+    case 'END_TURN':
+      return 'Turn';
+    case 'PLAY_CARD': {
+      const card = lookupCard(state, action.instanceId);
+      const kind = (card?.kind ?? '').toString();
+      if (kind === 'event') return 'Play Events';
+      return 'Play Characters';
+    }
+    case 'PLAY_STAGE':
+      return 'Play Stage';
+    case 'ATTACH_DON':
+      return 'Attach DON';
+    case 'DECLARE_ATTACK':
+      return 'Attack';
+    case 'ACTIVATE_MAIN':
+      return 'Card Effects';
+    case 'DECLARE_BLOCKER':
+    case 'SKIP_BLOCKER':
+      return 'Blocker Response';
+    case 'PLAY_COUNTER':
+    case 'SKIP_COUNTER':
+      return 'Counter Response';
+    case 'RESOLVE_TRIGGER':
+      return 'Trigger Response';
+    case 'RESOLVE_DISCARD':
+      return 'Discard';
+    case 'RESOLVE_CHOOSE_ONE':
+    case 'RESOLVE_PEEK':
+    case 'RESOLVE_TARGET_PICK':
+      return 'Choose';
+    case 'MULLIGAN':
+    case 'KEEP_HAND':
+    case 'ROLL_DICE':
+    case 'CHOOSE_FIRST':
+    case 'CHOOSE_SECOND':
+      return 'Setup';
+    case 'CONCEDE':
+      return 'Concede';
+    default: {
+      const exhaustive: never = action;
+      void exhaustive;
+      return 'Choose';
+    }
+  }
+}
+
+/**
+ * Recommended render-order for groups. Reactive responses come first
+ * so a defender sees them at the top of the panel during a pending
+ * window. Card-Effects → main-phase offense → turn → concede after.
+ */
+export const ACTION_GROUP_ORDER: ReadonlyArray<ActionGroup> = [
+  'Blocker Response',
+  'Counter Response',
+  'Trigger Response',
+  'Discard',
+  'Choose',
+  'Setup',
+  'Card Effects',
+  'Play Events',
+  'Play Characters',
+  'Play Stage',
+  'Attack',
+  'Attach DON',
+  'Turn',
+  'Concede',
+];
 
 /**
  * Whether the labeler could resolve every instanceId referenced by

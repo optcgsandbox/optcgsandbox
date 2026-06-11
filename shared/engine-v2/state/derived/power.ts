@@ -23,7 +23,11 @@ import { isCharacter, isLeader, type Card } from '../../cards/Card.js';
  *
  * Formula:
  *   base = (oneShot ?? continuous ?? card.power) for chars/leaders, else 0
- *   + attached DON (active + rested) × 1000   [C41: unconditional per CR §4-5-1]
+ *   + attached DON (active + rested) × 1000   [CR §6-5-5-2: only while the
+ *     instance's controller is the active player — "+1000 power during YOUR
+ *     turn per attached DON" (docs/optcg-sim/rules-reference.md:223).
+ *     F8A-F2: was unconditional, letting defenders keep the bonus on the
+ *     opponent's turn.]
  *   + powerModifierOneShot                    [one-shot writes from power_buff actions]
  *   + powerModifierContinuous                 [continuous re-application]
  *   + powerModifierThisBattle                 [B2: battle-scoped, cleared at pendingAttack=null]
@@ -36,7 +40,10 @@ export function effectivePower(state: GameState, inst: CardInstance): number {
   const base: number =
     inst.basePowerOverrideOneShot ?? inst.basePowerOverrideContinuous ?? printed;
 
-  const donCount: number = inst.attachedDon.length + inst.attachedDonRested.length;
+  const donCount: number =
+    state.activePlayer === inst.controller
+      ? inst.attachedDon.length + inst.attachedDonRested.length
+      : 0;
 
   return (
     base +

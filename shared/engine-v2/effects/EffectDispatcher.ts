@@ -139,7 +139,20 @@ export const EffectDispatcher = {
         const resolver = targetResolvers.get(clause.target.kind);
         targets = resolver(working, clauseCtx, clause.target);
         // Empty target with required cardinality means clause cannot fire.
-        if (targets.length === 0) continue;
+        if (targets.length === 0) {
+          // F-7t stricter — owner direction: "If card no-ops because no
+          // target: That is still a UX issue." Emit NO_VALID_TARGET so
+          // the presentation layer can surface a beat. Engine semantics
+          // unchanged (clause still skipped).
+          (working.history as Array<unknown>).push({
+            type: 'NO_VALID_TARGET',
+            sourceInstanceId: ctx.sourceInstanceId,
+            actionKind: clause.action.kind,
+            trigger,
+            clauseIndex: i,
+          });
+          continue;
+        }
         // Auto-bind: if clause.target.bind is declared, write the first
         // resolved instance into ctx.scratch[bind] for later steps to read.
         const tBind = (clause.target as { bind?: unknown }).bind;

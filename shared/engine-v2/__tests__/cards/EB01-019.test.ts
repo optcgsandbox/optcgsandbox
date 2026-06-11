@@ -7,17 +7,18 @@
  *    reveal up to 1 {Donquixote Pirates} type Character card and add it to
  *    your hand. Then, place the rest at the bottom of your deck in any order."
  *
- * 5-axis: two on_play clauses —
- *   1) power_buff +4000 this_battle, target your_leader_or_character
- *   2) searcher_peek lookCount:3, addCount:1, filter {trait:'Donquixote
- *      Pirates', kind:'character'}
+ * Modeling (post F8A-F4 counter-event normalization, 2026-06-11):
+ *   - The printed "+4000 during this battle" is carried by
+ *     `counterEventBoost: 4000` — applied EXACTLY ONCE by playCounterReducer
+ *     (attackFlow.ts) onto pendingAttack.counterBoost. The old duplicate
+ *     on_play power_buff clause was removed by the counter sweep: with both
+ *     present the engine applied +8000. See counter-boost-invariant.test.ts.
+ *   - The spec therefore has ONE on_play clause:
+ *     searcher_peek lookCount:3, addCount:1, filter {trait:'Donquixote
+ *     Pirates', kind:'character'}, leftoverPlacement:'bottom'.
  *
- * Engine gap (logged in BUGS_FOUND.md under EB01-009): searcher_peek leftover
- * cards are unshifted to the TOP of the deck rather than placed on the
- * bottom (actions3.ts:728-731). The leftover-bottom test is therefore
- * recorded as it.fails. Counter legality (counter_event + counterEventBoost
- * > 0 → playable during opponent's attack) is satisfied by effectTags +
- * counterEventBoost = 4000 in cards.json.
+ * Engine gap history (BUGS_FOUND.md under EB01-009): searcher_peek leftover
+ * placement — closed; default leftoverPlacement='bottom' is asserted below.
  */
 
 // @ts-expect-error Node built-ins resolve at runtime via vitest
@@ -32,6 +33,7 @@ import type { Card, CharacterCard, EventCard, LeaderCard } from '../../cards/Car
 import { EffectDispatcher } from '../../effects/EffectDispatcher.js';
 import { registerAllHandlers } from '../../registry/handlers/index.js';
 import { registerAllReducers } from '../../reducers/index.js';
+import { applyAction } from '../../reducers/applyAction.js';
 
 import { buildState, makeInst } from './_fixtures.js';
 
@@ -99,13 +101,11 @@ describe('EB01-019 — Off-White ([Counter] event)', () => {
   if (eb.kind !== 'event') throw new Error('EB01-019 should be an event');
   const offWhite = eb as EventCard;
 
-  it('spec is two on_play clauses (power_buff + searcher_peek)', () => {
-    expect(offWhite.effectSpecV2!.clauses).toHaveLength(2);
-    const [c1, c2] = offWhite.effectSpecV2!.clauses!;
+  it('spec is ONE on_play clause (searcher_peek) — the +4000 lives in counterEventBoost (F8A-F4)', () => {
+    expect(offWhite.effectSpecV2!.clauses).toHaveLength(1);
+    const [c1] = offWhite.effectSpecV2!.clauses!;
     expect(c1!.trigger).toBe('on_play');
-    expect(c1!.action.kind).toBe('power_buff');
-    expect(c2!.trigger).toBe('on_play');
-    expect(c2!.action.kind).toBe('searcher_peek');
+    expect(c1!.action.kind).toBe('searcher_peek');
   });
 
   it('counter-event legality tags wired: counter_event in effectTags + counterEventBoost = 4000', () => {
@@ -140,23 +140,33 @@ describe('EB01-019 — Off-White ([Counter] event)', () => {
     return ids;
   }
 
-  describe('clause 1 — +4000 power_buff this_battle to your_leader_or_character', () => {
-    it('targets leader and adds +4000 to leader thisBattle bucket', () => {
-      const { state, leaderInstA } = buildState({ leaderA: VANILLA_LEADER });
-      const srcId = attachEventSource(state);
-      const next = EffectDispatcher.dispatch(
-        state,
-        { sourceInstanceId: srcId, controller: 'A' },
-        'on_play',
-      );
-      const buff = next.instances[leaderInstA.instanceId]!.powerModifierThisBattle ?? 0;
-      expect(buff).toBe(4000);
-    });
+  describe('+4000 this_battle — applied exactly once, via counterEventBoost (F8A-F4)', () => {
+    it('played in the counter window: pendingAttack.counterBoost = 4000, no clause double-apply', () => {
+      const oppLeader: LeaderCard = { ...VANILLA_LEADER, id: 'TEST_OPP_LEADER_EB019', colors: ['red'] };
+      const { state, leaderInstA, leaderInstB } = buildState({
+        leaderA: oppLeader, // attacker
+        leaderB: VANILLA_LEADER, // defender plays Off-White
+        donInCostB: 4,
+      });
+      state.activePlayer = 'A';
+      state.cardLibrary[offWhite.id] = offWhite;
+      const ce = makeInst(offWhite.id, 'B');
+      state.instances[ce.instanceId] = ce;
+      state.players.B.hand.push(ce.instanceId);
 
-    it('+4000 magnitude on power_buff clause', () => {
-      const c1 = offWhite.effectSpecV2!.clauses![0]!;
-      expect((c1.action as { magnitude: number }).magnitude).toBe(4000);
-      expect((c1.action as { duration: string }).duration).toBe('this_battle');
+      let st = applyAction(state, 'A', {
+        type: 'DECLARE_ATTACK',
+        attackerInstanceId: leaderInstA.instanceId,
+        targetInstanceId: leaderInstB.instanceId,
+      }, { checkInvariants: false }).state;
+      st = applyAction(st, 'B', { type: 'SKIP_BLOCKER' }, { checkInvariants: false }).state;
+      st = applyAction(st, 'B', { type: 'PLAY_COUNTER', instanceId: ce.instanceId }, { checkInvariants: false }).state;
+
+      const boost = st.pending?.kind === 'attack'
+        ? (st.pending as { pendingAttack: { counterBoost: number } }).pendingAttack.counterBoost
+        : -1;
+      expect(boost).toBe(4000); // exactly once — pre-sweep this was 4000 boost + 4000 clause
+      expect(st.players.B.leader.powerModifierThisBattle ?? 0).toBe(0);
     });
   });
 
@@ -200,7 +210,7 @@ describe('EB01-019 — Off-White ([Counter] event)', () => {
       const tailY = vanillaCharacter('TEST_TAIL_Y');
       const { state } = buildState({ leaderA: VANILLA_LEADER });
       const srcId = attachEventSource(state);
-      const [, filler1Id, , tailXId, tailYId] = seedDeckA(state, [
+      const [, filler1Id, , , tailYId] = seedDeckA(state, [
         dp,
         filler1,
         filler2,

@@ -76,6 +76,7 @@ export const TrashSlot = memo(function TrashSlot({ playerId, isYou }: TrashSlotP
           <CardArt inst={topInst} card={topCard} size="field" />
           {count > 1 && (
             <span
+              data-flip-back
               className="absolute bottom-1 right-1 z-10 rounded-[3px] bg-paper-cream/95
                          font-display tabular text-ink-black ring-[0.5px] ring-ink-black/40
                          shadow-[0_1px_2px_rgba(0,0,0,0.45)]"

@@ -20,6 +20,8 @@ import { memo, useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import type { Card, CardColor, LeaderCard } from '@shared/engine-v2/cards/Card';
 import type { CardInstance } from '@shared/engine-v2/state/types';
+import { effectivePowerForDisplay } from '@shared/engine-v2/state/derived/power';
+import { useGameStore } from '../store/game';
 
 export type CardArtSize = 'hand' | 'field' | 'leader' | 'modal' | 'mini' | 'lifeStack';
 
@@ -201,12 +203,17 @@ interface CardArtProps {
   donDropTarget?: boolean;
 }
 
-function describeForA11y(card: Card | undefined, inst: CardInstance | undefined): string {
+function describeForA11y(
+  card: Card | undefined,
+  inst: CardInstance | undefined,
+  displayPower: number | undefined,
+): string {
   if (!card) return 'Card';
   const parts: string[] = [card.name];
   if (card.kind) parts.push(card.kind);
   if (card.cost !== null && card.cost !== undefined) parts.push(`cost ${card.cost}`);
-  if (card.power !== null && card.power !== undefined) parts.push(`power ${card.power}`);
+  const powerVal = displayPower ?? card.power;
+  if (powerVal !== null && powerVal !== undefined) parts.push(`power ${powerVal}`);
   if (typeof card.counterValue === 'number' && card.counterValue > 0) {
     parts.push(`counter ${card.counterValue}`);
   }
@@ -272,10 +279,12 @@ function CrestPlaceholder({ size }: { size: number }) {
 interface PlaceholderArtProps {
   card: Card;
   size: CardArtSize;
+  /** Runtime effective power for display. Falls back to `card.power` when undefined. */
+  displayPower?: number;
 }
 
 /** Bandai-anatomy placeholder card frame — visual-design-spec.md §4. */
-function PlaceholderArt({ card, size }: PlaceholderArtProps) {
+function PlaceholderArt({ card, size, displayPower }: PlaceholderArtProps) {
   const m = metricsFor(size);
   const tint = tintForCard(card);
   const isLeader = card.kind === 'leader';
@@ -435,7 +444,7 @@ function PlaceholderArt({ card, size }: PlaceholderArtProps) {
             className="font-display tabular text-paper-cream"
             style={{ fontSize: m.powerStamp.font, lineHeight: 1, fontWeight: 600 }}
           >
-            {formatPower(card.power, size)}
+            {formatPower(displayPower ?? card.power, size)}
           </span>
         </div>
       )}
@@ -568,6 +577,42 @@ function LifePill({ count }: { count: number }) {
   );
 }
 
+/** F-7v — Power modifier badge. Floats on the LEFT edge of the card,
+ *  vertically centered, so it visually belongs to the card without
+ *  colliding with the DON badge (top-right), the power stamp (top-right
+ *  inside the card), the counter chip (bottom-left inside the card), or
+ *  the printed-life square (top-left for leaders). Brass-canary for
+ *  positive buffs, seal-red for debuffs.
+ *
+ *  Uses `data-flip-back` so the opp half's 180° rotation un-flips the
+ *  badge text — same convention as the trash-count fix in F-7r.
+ */
+function PowerModBadge({ amount }: { amount: number }) {
+  const positive = amount > 0;
+  const display = positive ? `+${amount}` : `${amount}`;
+  return (
+    <motion.div
+      data-testid="power-mod-badge"
+      data-flip-back
+      data-power-mod={amount}
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ type: 'spring', stiffness: 500, damping: 24 }}
+      className={[
+        'absolute -left-1.5 top-1/2 -translate-y-1/2 z-20',
+        'rounded-md px-1 py-0.5 font-display tabular text-[0.6875rem] leading-none',
+        'shadow-[0_2px_4px_rgba(15,20,15,0.45)]',
+        'ring-1 ring-ink-black/60',
+        positive ? 'bg-brass-canary text-ink-black' : 'bg-seal-red text-paper-cream',
+      ].join(' ')}
+      aria-label={`Power modifier ${display}`}
+      title={`Power ${positive ? 'boost' : 'debuff'} ${display}`}
+    >
+      {display}
+    </motion.div>
+  );
+}
+
 /** Attached DON badge top-right (brass "+N" chip). */
 function DonBadge({ count }: { count: number }) {
   return (
@@ -641,7 +686,36 @@ export const CardArt = memo(function CardArt({
       ?? (card?.kind === 'don' ? '/backs/don-front.png' : null)
       ?? cardIdToR2Url(card?.id);
 
-  const a11y = describeForA11y(card, inst);
+  // Runtime effective power for display. Falls back to printed `card.power`
+  // when no instance exists (hand/library/modal previews). When an instance
+  // is bound, always read from the live store so aura buffs, attached DON,
+  // continuous modifiers, and power overrides surface in the UI.
+  const liveState = useGameStore((s) => s.state);
+  const displayPower = useMemo<number | undefined>(() => {
+    if (!card) return undefined;
+    if (card.power === null || card.power === undefined) return undefined;
+    if (!inst) return card.power;
+    const freshInst = liveState.instances[inst.instanceId] ?? inst;
+    return effectivePowerForDisplay(liveState, freshInst);
+  }, [card, inst, liveState]);
+
+  // F-7v — net power modifier from this_battle + one_shot + continuous.
+  // Owner direction (addendum 2026-06-11): the power stamp shows the
+  // EFFECTIVE power but the player has no idea WHY it changed. Surface
+  // the delta on the card itself so a +2000 or -3000 is unmistakable.
+  // Skip for hand / mini / lifeStack sizes (those don't show on-board
+  // combat). Modal already shows full effect text inline.
+  const powerModNet = useMemo<number>(() => {
+    if (!inst) return 0;
+    const freshInst = liveState.instances[inst.instanceId] ?? inst;
+    const m1 = freshInst.powerModifierThisBattle ?? 0;
+    const m2 = freshInst.powerModifierOneShot ?? 0;
+    const m3 = freshInst.powerModifierContinuous ?? 0;
+    return m1 + m2 + m3;
+  }, [inst, liveState]);
+  const showPowerMod = (size === 'field' || size === 'leader') && powerModNet !== 0;
+
+  const a11y = describeForA11y(card, inst, displayPower);
   const interactive = !!onTap && size !== 'mini' && size !== 'lifeStack';
 
   // State rings (selected / valid-drop / pending / highlighted) compose as
@@ -714,6 +788,8 @@ export const CardArt = memo(function CardArt({
       ].filter(Boolean).join(', ')}
       aria-pressed={selectedAttacker}
       title={card?.name}
+      data-card-id={card?.id}
+      data-instance-id={inst?.instanceId}
       // Stiffer spring for the rest-rotate animation (owner direction
        // 2026-05-30: refresh phase was perceived as slow). Settles in ~500ms
        // vs ~1100ms with the previous cardTravel preset (stiffness 260).
@@ -784,11 +860,12 @@ export const CardArt = memo(function CardArt({
           className="absolute inset-0 overflow-hidden"
           style={{ borderRadius: size === 'modal' ? 8 : size === 'leader' ? 5 : 4, filter: cardDropShadow }}
         >
-          <PlaceholderArt card={card} size={size} />
+          <PlaceholderArt card={card} size={size} displayPower={displayPower} />
         </div>
       )}
       {isLeader && typeof lifeCount === 'number' && <LifePill count={lifeCount} />}
       {inst && inst.attachedDon.length > 0 && <DonBadge count={inst.attachedDon.length} />}
+      {showPowerMod && <PowerModBadge amount={powerModNet} />}
     </motion.button>
     </div>
   );

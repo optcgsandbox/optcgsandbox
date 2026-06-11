@@ -34,14 +34,21 @@ import { ZoneSlot } from './ZoneSlot';
 import { HandFan } from './HandFan';
 import { CardDetailModal } from './CardDetailModal';
 import { TrashViewer } from './TrashViewer';
-import { AttackResolutionOverlay } from './AttackResolutionOverlay';
+// F-7q — AttackResolutionOverlay deleted; PresentationQueue + reactive
+// prompts cover its role.
 import { A11yGameLog } from './A11yGameLog';
 import { TriggerPrompt } from './TriggerPrompt';
+import { BlockerPrompt } from './BlockerPrompt';
+import { CounterPrompt } from './CounterPrompt';
+// F-7r — RecentActionPill DELETED entirely. PresentationQueue cinematic
+// beats are now the only feedback surface; persistent text log removed.
+import { PresentationQueue } from '../gameLog/PresentationQueue';
 import { MulliganPrompt } from './MulliganPrompt';
 import { DiceRollPrompt } from './DiceRollPrompt';
 import { FirstPlayerChoicePrompt } from './FirstPlayerChoicePrompt';
 import { PeekChoicePrompt } from './PeekChoicePrompt';
 import { DiscardChoicePrompt } from './DiscardChoicePrompt';
+import { ChoosePrompt } from './ChoosePrompt';
 import { LifeRevealOverlay } from './LifeRevealOverlay';
 import { EventCardOverlay } from './EventCardOverlay';
 import { LifeStack } from './zones/LifeStack';
@@ -521,16 +528,20 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
 
         <CardDetailModal />
         <TrashViewer />
-        <AttackResolutionOverlay />
+        {/* F-7q — AttackResolutionOverlay removed. */}
         <A11yGameLog />
         <LifeRevealOverlay />
         <EventCardOverlay />
         <TriggerPrompt />
+        <BlockerPrompt />
+        <CounterPrompt />
+        <PresentationQueue />
         <DiceRollPrompt />
         <FirstPlayerChoicePrompt />
         <MulliganPrompt />
         <PeekChoicePrompt />
         <DiscardChoicePrompt />
+        <ChoosePrompt />
       </div>
     </LayoutGroup>
   );

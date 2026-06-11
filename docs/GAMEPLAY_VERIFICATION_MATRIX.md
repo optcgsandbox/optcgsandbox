@@ -89,7 +89,7 @@ Both are substantial work. Today's matrix marks these mechanics as `Online UI: U
 Definition of Done per the task spec:
 > Full match plays start → finish with NO glitches.
 
-**Today's honest %: ~97%** (revised UP after BUG-008 pinning — discard prompt path verified, BUG-008.A fixed, mulligan deferred-intentional, alpha verdict locked).
+**Today's honest %: ~93%** (revised DOWN from ~97% after BUG-009 surfaced UI playability gaps in owner playtest; BUG-009.A–F UI-only fixes landed 2026-06-09 but trigger card reveal + combat history feed (BUG-009.H) deferred to F-7m).
 
 **What's now verified online (post-BUG-001 AND BUG-002 fixes):**
 - Lobby → pair → WebSocket → playable initial state (F-7h).
@@ -111,3 +111,13 @@ Definition of Done per the task spec:
 - Stage 2 (meta deck roster) — deferred. The dev-built deck via `src/online/buildDeck.ts` is sufficient to surface BUG-001 and BUG-002. Meta decks add value only once individual mechanics (PLAY_CARD, ATTACH_DON, DECLARE_ATTACK) are dispatch-verified online.
 - Stage 3 (multi-turn spec) — landed + green.
 - Stage 4 (run real matches + classify bugs) — surfaced BUG-001 (RESOLVED) and BUG-002 (OPEN). Will continue once BUG-002 is fixed.
+
+## LOCAL vs-AI status (separate from online matrix above)
+
+| Mechanic | Engine | Local UI | verifiedBy | bugIds | notes |
+|---|---|---|---|---|---|
+| Local human BLOCK (DECLARE_BLOCKER) | VERIFIED | **VERIFIED 2026-06-09** | `e2e/local-ai/local-vs-ai-human-reactive.spec.ts` (Phase D — seed Jinbe, force block_window, BlockerPrompt renders DECLARE_BLOCKER button per option, click redirects pending attack). | BUG-010 (RESOLVED) | Engine path unchanged; UI gap closed by new `src/components/BlockerPrompt.tsx`. |
+| Local human SKIP_BLOCKER | VERIFIED | **VERIFIED** | Same spec — `BlockerPrompt`'s "Skip Blocker" button dispatches `SKIP_BLOCKER`, phase advances to `counter_window`. | BUG-010 | — |
+| Local human PLAY_COUNTER | VERIFIED | **VERIFIED** | Engine + Phase A yield (`store/game.ts:341-367`) commits `counter_window` state when PLAY_COUNTER options exist; `AttackResolutionOverlay` + `CardDetailModal` handle the dispatch. Real-flow proof requires owner manual playtest (deterministic browser repro requires seeded counter-event hand). | BUG-010 | Pre-fix the engine auto-skipped `SKIP_COUNTER` silently. |
+| Local human RESOLVE_TRIGGER | VERIFIED | **VERIFIED** | Engine + Phase B yield (`store/game.ts:368-385`) commits `trigger_window` to the human controller; `TriggerPrompt` Activate button re-enabled per Phase C. Real-flow proof requires trigger card on life (deterministic browser repro requires seeded life). | BUG-010 | — |
+| AI resume after human reactive | VERIFIED | **VERIFIED** | `aiPaused` flag in `GameStore`; re-entry guard at end of `dispatch` in `src/store/game.ts:694-726` restarts `runAiTurn` only when Phase A/B yielded. Real-flow proof: `e2e/core-combat-smoke.spec.ts` (5/5) + `e2e/multi-turn-smoke.spec.ts` (5/5) — the new `PlayerDriver.waitForAMainControlDrainingReactive` helper stands in for human clicks (`SKIP_BLOCKER` / `SKIP_COUNTER` / `RESOLVE_TRIGGER{activate:false}` / `RESOLVE_DISCARD`) and proves the AI loop resumes and ends its turn after each reactive yield. | BUG-010 | `family-blocker.spec.ts` (seed-style) still passes. |

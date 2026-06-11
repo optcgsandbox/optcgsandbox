@@ -955,6 +955,30 @@ const searcherPeek: ActionHandler = (state, ctx, action) => {
     playInsteadOfHand,
   });
 
+  // F-7x — owner direction 2026-06-11: searcher_peek auto-resolves
+  // invisibly in V0. Surface SEARCHER_PICKED so the presentation layer
+  // can announce "Bonney looked at 4, added Brook to hand" or "No valid
+  // card found." Additive history event only; engine semantics
+  // unchanged. Carries the FIRST picked id (most cards have addCount=1);
+  // multi-pick effects still get a single event covering the matched
+  // count via `pickedCount`.
+  const firstPickedId = picked[0];
+  const firstPickedInst = firstPickedId !== undefined ? state.instances[firstPickedId] : undefined;
+  const firstPickedCardId = firstPickedInst?.cardId;
+  (state.history as Array<unknown>).push({
+    type: 'SEARCHER_PICKED',
+    sourceInstanceId: ctx.sourceInstanceId,
+    controller: ctx.controller,
+    pickedInstanceId: firstPickedId,
+    pickedCardId: firstPickedCardId,
+    pickedCount: picked.length,
+    lookedAtCount: peeked.length,
+    matched: picked.length > 0,
+    bottomedCount: leftover.length,
+    placement,
+    actionKind: 'searcher_peek',
+  });
+
   // Refold so newly-placed chars' continuous clauses apply BEFORE on_play
   // (Plan §4.7 placeCharacterOnField).
   let next = playedIds.length > 0 ? ContinuousManager.refold(state) : state;

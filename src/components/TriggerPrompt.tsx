@@ -42,11 +42,14 @@ export const TriggerPrompt = memo(function TriggerPrompt() {
   const isMine = pendingTrigger != null && pendingTrigger.controller === viewAs;
   const open = isMine;
 
-  // Engine note: RESOLVE_TRIGGER with activate=true is a v0 stub — the life
-  // card is trashed but no effect resolves yet. Until the trigger DSL ships in
-  // v0.2 we disable Activate so we don't lie to the player. Decline is the
-  // safe path: it puts the life card into hand per the rules and moves on.
-  const activateDisabled = true;
+  // F-7n Phase C — the v0-stub comment that previously hard-disabled
+  // Activate is STALE. The engine resolves RESOLVE_TRIGGER{activate:true}
+  // fully (per BUG-004 + the 5 scenarios in
+  // `shared/server/__tests__/triggerWindow.online.test.ts`, including
+  // Carrot's `play_self_from_life`). Disable Activate only when there's
+  // genuinely no life card to activate (defensive).
+  const activateDisabled =
+    pendingTrigger == null || pendingTrigger.lifeCardInstanceId === undefined;
 
   const lifeInst = pendingTrigger ? instances[pendingTrigger.lifeCardInstanceId] : undefined;
   const lifeCard = lifeInst ? library[lifeInst.cardId] : undefined;
@@ -121,6 +124,7 @@ export const TriggerPrompt = memo(function TriggerPrompt() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="trigger-prompt-heading"
+          data-pending-kind="trigger"
           onKeyDown={handleKeyDown}
           className="fixed inset-0 z-50 flex flex-col items-center justify-center
                      bg-paper-cream/95 backdrop-blur-sm px-4"

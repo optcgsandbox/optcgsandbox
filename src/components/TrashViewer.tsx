@@ -51,15 +51,14 @@ export const TrashViewer = memo(function TrashViewer() {
 
   const onCardTap = useCallback(
     (instanceId: string) => {
-      // Open CardDetailModal for the chosen trash card. Close the viewer
-      // FIRST so the detail modal lands on top cleanly (PlayfieldStage
-      // renders both at the same z layer; only one should be active at
-      // a time to keep focus management sane).
-      setViewingTrashOf(null);
+      // F-7r: open CardDetailModal layered on top of the trash viewer so
+      // closing the detail returns the player to the trash context (owner
+      // complaint: "no way back to trash except close and reopen").
+      // Both render at z-50; the modal mounts second so it lands on top.
       setInspectedCardId(instanceId);
       setCardDetailOpen(true);
     },
-    [setViewingTrashOf, setInspectedCardId, setCardDetailOpen],
+    [setInspectedCardId, setCardDetailOpen],
   );
 
   // ESC closes; focus initial = close button.
@@ -184,11 +183,17 @@ export const TrashViewer = memo(function TrashViewer() {
                     // trash array is `trash.length - 1 - idx`.
                     const stackPos = trash.length - idx; // 1-based, top = highest
                     return (
-                      <button
+                      <div
                         key={instanceId}
-                        type="button"
                         role="listitem"
+                        tabIndex={0}
                         onClick={() => onCardTap(instanceId)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            onCardTap(instanceId);
+                          }
+                        }}
                         aria-label={`${card.name}, position ${stackPos} of ${trash.length}`}
                         className="relative bg-transparent border-0 p-0 cursor-pointer
                                    focus-visible:outline-none focus-visible:ring-2
@@ -212,7 +217,7 @@ export const TrashViewer = memo(function TrashViewer() {
                             TOP
                           </span>
                         )}
-                      </button>
+                      </div>
                     );
                   })}
                 </div>

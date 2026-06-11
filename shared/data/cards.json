@@ -946,18 +946,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "searcher_peek",
             "lookCount": 3,
             "addCount": 1,
@@ -6117,18 +6105,6 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
           "condition": {
             "type": "if_own_life_max",
             "n": 1
@@ -6318,27 +6294,25 @@
             "restSelf": true
           },
           "action": {
-            "kind": "power_buff",
-            "magnitude": -2000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "opp_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "restSelf": true
-          },
-          "action": {
-            "kind": "give_keyword",
-            "keyword": "rush",
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "your_character"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": -2000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "opp_character"
+                }
+              },
+              {
+                "kind": "give_keyword",
+                "keyword": "rush",
+                "duration": "this_turn",
+                "target": {
+                  "kind": "your_character"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -7103,34 +7077,32 @@
             "restSelf": true
           },
           "action": {
-            "kind": "give_don_to_target",
-            "magnitude": 1,
-            "rested": true
-          },
-          "target": {
-            "kind": "your_leader_or_character",
-            "filter": {
-              "traitsAny": [
-                "Fish-Man",
-                "Merfolk"
-              ]
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "restSelf": true
-          },
-          "action": {
-            "kind": "rest_target"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 2
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "give_don_to_target",
+                "magnitude": 1,
+                "rested": true,
+                "target": {
+                  "kind": "your_leader_or_character",
+                  "filter": {
+                    "traitsAny": [
+                      "Fish-Man",
+                      "Merfolk"
+                    ]
+                  }
+                }
+              },
+              {
+                "kind": "rest_target",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 2
+                  }
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -7446,29 +7418,27 @@
             "discardHand": 1
           },
           "action": {
-            "kind": "removal_bounce"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "powerMax": 4000
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "discardHand": 1
-          },
-          "action": {
-            "kind": "bottom_of_deck_to_opp_deck"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 3
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_bounce",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "powerMax": 4000
+                  }
+                }
+              },
+              {
+                "kind": "bottom_of_deck_to_opp_deck",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 3
+                  }
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -7719,28 +7689,25 @@
             "returnSelfChar": {}
           },
           "action": {
-            "kind": "give_don_to_target",
-            "magnitude": 1,
-            "rested": true
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "human-reviewed",
-          "opt": true
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "returnSelfChar": {}
-          },
-          "action": {
-            "kind": "give_don_to_target",
-            "magnitude": 1,
-            "rested": true
-          },
-          "target": {
-            "kind": "your_character"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "give_don_to_target",
+                "magnitude": 1,
+                "rested": true,
+                "target": {
+                  "kind": "your_leader"
+                }
+              },
+              {
+                "kind": "give_don_to_target",
+                "magnitude": 1,
+                "rested": true,
+                "target": {
+                  "kind": "your_character"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed",
           "opt": true
@@ -9198,36 +9165,34 @@
           "cost": {
             "trashSelf": true
           },
-          "condition": {
-            "type": "if_leader_is",
-            "name": "Shirahoshi"
-          },
           "action": {
-            "kind": "add_to_own_life_top",
-            "faceUp": false,
-            "from": "top_of_deck"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "trashSelf": true
-          },
-          "condition": {
-            "type": "if_leader_is",
-            "name": "Shirahoshi"
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "all_your_characters",
-            "filter": {
-              "trait": "Neptunian"
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "add_to_own_life_top",
+                "faceUp": false,
+                "from": "top_of_deck",
+                "condition": {
+                  "type": "if_leader_is",
+                  "name": "Shirahoshi"
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "all_your_characters",
+                  "filter": {
+                    "trait": "Neptunian"
+                  }
+                },
+                "condition": {
+                  "type": "if_leader_is",
+                  "name": "Shirahoshi"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -10883,21 +10848,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 3000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character",
-            "filter": {
-              "trait": "Fish-Man"
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "set_active"
           },
           "target": {
@@ -11471,37 +11421,35 @@
           "cost": {
             "donCostReturnToDeck": 2
           },
-          "condition": {
-            "type": "if_leader_has_trait",
-            "trait": "Animal Kingdom Pirates"
-          },
           "action": {
-            "kind": "give_keyword",
-            "keyword": "rush",
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCostReturnToDeck": 2
-          },
-          "condition": {
-            "type": "if_leader_has_trait",
-            "trait": "Animal Kingdom Pirates"
-          },
-          "action": {
-            "kind": "rest_target"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 7
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "give_keyword",
+                "keyword": "rush",
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                },
+                "condition": {
+                  "type": "if_leader_has_trait",
+                  "trait": "Animal Kingdom Pirates"
+                }
+              },
+              {
+                "kind": "rest_target",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 7
+                  }
+                },
+                "condition": {
+                  "type": "if_leader_has_trait",
+                  "trait": "Animal Kingdom Pirates"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -13213,36 +13161,34 @@
           "cost": {
             "flipLife": 1
           },
-          "condition": {
-            "type": "if_own_chars_lt_opp_chars"
-          },
           "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 6
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "flipLife": 1
-          },
-          "condition": {
-            "type": "if_own_chars_lt_opp_chars"
-          },
-          "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 5
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 6
+                  }
+                },
+                "condition": {
+                  "type": "if_own_chars_lt_opp_chars"
+                }
+              },
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 5
+                  }
+                },
+                "condition": {
+                  "type": "if_own_chars_lt_opp_chars"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -13349,27 +13295,25 @@
             "discardHand": 1
           },
           "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "opp_next_end_phase"
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "discardHand": 1
-          },
-          "action": {
-            "kind": "give_keyword",
-            "keyword": "blocker",
-            "duration": "opp_next_end_phase"
-          },
-          "target": {
-            "kind": "self"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": 2000,
+                "duration": "opp_next_end_phase",
+                "target": {
+                  "kind": "your_leader"
+                }
+              },
+              {
+                "kind": "give_keyword",
+                "keyword": "blocker",
+                "duration": "opp_next_end_phase",
+                "target": {
+                  "kind": "self"
+                }
+              }
+            ]
           },
           "verified": "auto"
         }
@@ -13406,8 +13350,7 @@
       "Straw Hat Crew"
     ],
     "keywords": [
-      "on_play",
-      "activate_main"
+      "on_play"
     ],
     "effectTags": [
       "power_buff"
@@ -14569,18 +14512,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "removal_ko"
           },
           "target": {
@@ -14703,24 +14634,12 @@
       "counter_event"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 2 or less Life cards, that card gains an additional +2000 power.",
-    "counterEventBoost": 4000,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {
@@ -16030,18 +15949,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "set_active"
           },
           "target": {
@@ -16085,18 +15992,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "action": {
@@ -17355,18 +17250,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "removal_bounce"
           },
           "target": {
@@ -17455,18 +17338,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "action": {
@@ -18743,7 +18614,7 @@
       "draw"
     ],
     "effectText": "[Counter] DON!! −2 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, draw 1 card.",
-    "counterEventBoost": 2000,
+    "counterEventBoost": null,
     "templateParams": {
       "draw": 1,
       "power_buff": 2000
@@ -18752,27 +18623,25 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed",
-          "cost": {
-            "donCostReturnToDeck": 2
-          }
-        },
-        {
-          "trigger": "on_play",
           "cost": {
             "donCostReturnToDeck": 2
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": 2000,
+                "duration": "this_battle",
+                "target": {
+                  "kind": "your_leader_or_character"
+                }
+              },
+              {
+                "kind": "draw",
+                "magnitude": 1
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -18810,18 +18679,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {
@@ -20955,18 +20812,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 6000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "play_for_free",
             "from": "hand",
             "filter": {
@@ -21716,28 +21561,26 @@
             "discardHand": 2
           },
           "action": {
-            "kind": "removal_bounce"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 4
-            }
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "discardHand": 2
-          },
-          "action": {
-            "kind": "give_keyword",
-            "keyword": "double_attack",
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_bounce",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 4
+                  }
+                }
+              },
+              {
+                "kind": "give_keyword",
+                "keyword": "double_attack",
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                }
+              }
+            ]
           },
           "verified": "auto"
         },
@@ -21747,28 +21590,26 @@
             "discardHand": 2
           },
           "action": {
-            "kind": "removal_bounce"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 4
-            }
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "when_attacking",
-          "cost": {
-            "discardHand": 2
-          },
-          "action": {
-            "kind": "give_keyword",
-            "keyword": "double_attack",
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_bounce",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 4
+                  }
+                }
+              },
+              {
+                "kind": "give_keyword",
+                "keyword": "double_attack",
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                }
+              }
+            ]
           },
           "verified": "auto"
         }
@@ -21852,37 +21693,35 @@
       "clauses": [
         {
           "trigger": "when_attacking",
-          "condition": {
-            "type": "if_attached_don_min",
-            "n": 1
-          },
           "cost": {
             "discardHand": 1
           },
           "action": {
-            "kind": "bottom_of_deck_to_opp_deck"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 2
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "bottom_of_deck_to_opp_deck",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 2
+                  }
+                },
+                "condition": {
+                  "type": "if_attached_don_min",
+                  "n": 1
+                }
+              },
+              {
+                "kind": "bottom_of_deck_self",
+                "condition": {
+                  "type": "if_attached_don_min",
+                  "n": 1
+                }
+              }
+            ]
           },
           "verified": "flagged"
-        },
-        {
-          "trigger": "when_attacking",
-          "condition": {
-            "type": "if_attached_don_min",
-            "n": 1
-          },
-          "cost": {
-            "discardHand": 1
-          },
-          "action": {
-            "kind": "bottom_of_deck_self"
-          },
-          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -22052,7 +21891,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] You may trash 1 card from your hand: Up to 1 of your Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": 3000,
+    "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
     },
@@ -22107,18 +21946,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 6000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "flagged"
-        },
         {
           "trigger": "on_play",
           "action": {
@@ -22282,28 +22109,26 @@
             "donCostReturnToDeck": 4
           },
           "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 3
-            }
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "when_attacking",
-          "cost": {
-            "donCostReturnToDeck": 4
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 3
+                  }
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                }
+              }
+            ]
           },
           "verified": "auto"
         }
@@ -24353,31 +24178,27 @@
             "donCostReturnToDeck": 2
           },
           "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_turn"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "your_leader"
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "all_your_characters"
+                }
+              }
+            ]
           },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "auto",
-          "duration": "opp_next_turn"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCostReturnToDeck": 2
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "all_your_characters"
-          },
-          "verified": "auto",
-          "duration": "opp_next_turn"
+          "verified": "auto"
         }
       ],
       "continuous": [],
@@ -24982,28 +24803,21 @@
             }
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "when_attacking",
-          "cost": {
-            "koSelfCharacter": {
-              "colors": [
-                "red"
-              ],
-              "powerMin": 4000
-            }
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "self"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_battle",
+                "target": {
+                  "kind": "self"
+                }
+              }
+            ]
           },
           "verified": "auto"
         }
@@ -25338,29 +25152,27 @@
             "discardHand": 1
           },
           "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "powerMax": 5000
-            }
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "discardHand": 1
-          },
-          "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "powerMax": 4000
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "powerMax": 5000
+                  }
+                }
+              },
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "powerMax": 4000
+                  }
+                }
+              }
+            ]
           },
           "verified": "auto"
         }
@@ -25505,33 +25317,24 @@
             }
           },
           "action": {
-            "kind": "set_active"
-          },
-          "target": {
-            "kind": "self"
-          },
-          "verified": "human-reviewed",
-          "opt": true
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "donCost": 3,
-            "restOwnCharFilter": {
-              "count": 2,
-              "filter": {
-                "trait": "East Blue"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "set_active",
+                "target": {
+                  "kind": "self"
+                }
+              },
+              {
+                "kind": "rest_target",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 5
+                  }
+                }
               }
-            }
-          },
-          "action": {
-            "kind": "rest_target"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 5
-            }
+            ]
           },
           "verified": "human-reviewed",
           "opt": true
@@ -27070,18 +26873,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "mill_self",
             "magnitude": 1
           },
@@ -27116,7 +26907,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] You may trash 1 card from your hand: Up to 1 of your Leader gains +4000 power during this battle. Then, you may trash 2 cards from the top of your deck.",
-    "counterEventBoost": 4000,
+    "counterEventBoost": 0,
     "templateParams": {
       "power_buff": 4000
     },
@@ -27124,27 +26915,25 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "human-reviewed",
-          "cost": {
-            "discardHand": 1
-          }
-        },
-        {
-          "trigger": "on_play",
           "cost": {
             "discardHand": 1
           },
           "action": {
-            "kind": "mill_self",
-            "magnitude": 2
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": 4000,
+                "duration": "this_battle",
+                "target": {
+                  "kind": "your_leader"
+                }
+              },
+              {
+                "kind": "mill_self",
+                "magnitude": 2
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -27630,29 +27419,27 @@
             "donCost": 2
           },
           "action": {
-            "kind": "ramp",
-            "magnitude": 1,
-            "rested": false
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "condition": {
-            "type": "if_don_min",
-            "n": 8
-          },
-          "cost": {
-            "donCost": 2
-          },
-          "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 4
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "ramp",
+                "magnitude": 1,
+                "rested": false
+              },
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 4
+                  }
+                },
+                "condition": {
+                  "type": "if_don_min",
+                  "n": 8
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -27930,7 +27717,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] You may trash 1 card from your hand: Up to 1 of your Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": 3000,
+    "counterEventBoost": 0,
     "templateParams": {
       "power_buff": 3000
     },
@@ -29045,7 +28832,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] You may trash 1 card from your hand: Up to 1 of your Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": 3000,
+    "counterEventBoost": 0,
     "templateParams": {
       "power_buff": 3000
     },
@@ -30001,20 +29788,7 @@
       "power_buff": 5000
     },
     "effectSpecV2": {
-      "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 5000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "auto"
-        }
-      ],
+      "clauses": [],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
@@ -30991,7 +30765,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] You may trash 1 card from your hand: Up to 1 of your Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": 3000,
+    "counterEventBoost": null,
     "templateParams": {
       "power_buff": 3000
     },
@@ -31947,18 +31721,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "action": {
@@ -32959,18 +32721,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "bottom_of_deck_to_opp_deck"
           },
           "target": {
@@ -33617,27 +33367,25 @@
             "donCostReturnToDeck": 1
           },
           "action": {
-            "kind": "give_keyword",
-            "keyword": "blocker",
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "self"
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "on_opp_attack",
-          "cost": {
-            "donCostReturnToDeck": 1
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "self"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "give_keyword",
+                "keyword": "blocker",
+                "duration": "this_battle",
+                "target": {
+                  "kind": "self"
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_battle",
+                "target": {
+                  "kind": "self"
+                }
+              }
+            ]
           },
           "verified": "auto"
         }
@@ -33758,7 +33506,7 @@
       "removal_bounce"
     ],
     "effectText": "[Counter] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Up to 1 of your Leader or Character cards gains +1000 power during this battle. Then, rest up to 1 of your opponent's Characters with a cost of 4 or less.",
-    "counterEventBoost": 1000,
+    "counterEventBoost": null,
     "templateParams": {
       "power_buff": 1000
     },
@@ -33766,32 +33514,30 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed",
-          "cost": {
-            "donCostReturnToDeck": 1
-          }
-        },
-        {
-          "trigger": "on_play",
           "cost": {
             "donCostReturnToDeck": 1
           },
           "action": {
-            "kind": "rest_target"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 4
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_battle",
+                "target": {
+                  "kind": "your_leader_or_character"
+                }
+              },
+              {
+                "kind": "rest_target",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 4
+                  }
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -33828,18 +33574,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 6000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {
@@ -34878,24 +34612,12 @@
       "counter_event"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 15 or more cards in your trash, that card gains an additional +2000 power during this battle.",
-    "counterEventBoost": 4000,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {
@@ -34916,8 +34638,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged",
-      "auditNote": "second clause power_buff target your_leader_or_character (any); text \"that card gains an additional +2000\" must reference the same card from clause 1"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -35788,18 +35509,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 6000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {
@@ -36779,18 +36488,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 3000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "play_for_free",
             "from": "hand",
             "filter": {
@@ -37697,7 +37394,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] You may trash 1 card from your hand: Up to 1 of your Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": 3000,
+    "counterEventBoost": 0,
     "templateParams": {
       "power_buff": 3000
     },
@@ -37753,18 +37450,6 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
           "cost": {
             "discardHand": 1
           },
@@ -37807,18 +37492,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "action": {
@@ -39721,28 +39394,25 @@
             "bottomOfDeckFromTrash": 20
           },
           "action": {
-            "kind": "give_keyword",
-            "keyword": "double_attack",
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "self"
-          },
-          "verified": "human-reviewed",
-          "opt": true
-        },
-        {
-          "trigger": "when_attacking",
-          "cost": {
-            "bottomOfDeckFromTrash": 20
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 10000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "self"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "give_keyword",
+                "keyword": "double_attack",
+                "duration": "this_battle",
+                "target": {
+                  "kind": "self"
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 10000,
+                "duration": "this_battle",
+                "target": {
+                  "kind": "self"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed",
           "opt": true
@@ -40367,29 +40037,27 @@
             "bottomOfDeckFromTrash": 3
           },
           "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 2
-            }
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "bottomOfDeckFromTrash": 3
-          },
-          "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 1
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 2
+                  }
+                }
+              },
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 1
+                  }
+                }
+              }
+            ]
           },
           "verified": "auto"
         }
@@ -40480,18 +40148,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {
@@ -40982,23 +40638,17 @@
             }
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "bottomOfDeckOwnChar": {
-              "filter": {
-                "kind": "stage"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "discard_from_hand",
+                "magnitude": 1
               }
-            }
-          },
-          "action": {
-            "kind": "discard_from_hand",
-            "magnitude": 1
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -41373,24 +41023,12 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if your opponent has 2 or less Life cards, that card gains an additional +2000 power during this battle.",
-    "counterEventBoost": 4000,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {
@@ -41411,8 +41049,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged",
-      "auditNote": "second clause target your_leader_or_character (any); text \"that card gains an additional +2000\" must reference the same card from clause 1"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -41697,24 +41334,22 @@
             "discardHand": 1
           },
           "action": {
-            "kind": "power_buff",
-            "magnitude": -2000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "opp_character"
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "when_attacking",
-          "cost": {
-            "discardHand": 1
-          },
-          "action": {
-            "kind": "ramp",
-            "magnitude": 1,
-            "rested": true
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": -2000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "opp_character"
+                }
+              },
+              {
+                "kind": "ramp",
+                "magnitude": 1,
+                "rested": true
+              }
+            ]
           },
           "verified": "auto"
         }
@@ -43578,25 +43213,12 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 8 or more rested cards, that card gains an additional +2000 power during this battle.",
-    "counterEventBoost": 4000,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
     "effectSpecV2": {
-      "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "flagged"
-        }
-      ],
+      "clauses": [],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
@@ -45364,27 +44986,25 @@
             "donCostReturnToDeck": 1
           },
           "action": {
-            "kind": "negate_target_effects",
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "opp_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCostReturnToDeck": 1
-          },
-          "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "powerMax": 5000
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "negate_target_effects",
+                "duration": "this_turn",
+                "target": {
+                  "kind": "opp_character"
+                }
+              },
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "powerMax": 5000
+                  }
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -45661,38 +45281,35 @@
       "clauses": [
         {
           "trigger": "when_attacking",
-          "condition": {
-            "type": "if_attached_don_min",
-            "n": 1
-          },
           "cost": {
             "donCost": 2,
             "discardHand": 1
           },
           "action": {
-            "kind": "mill_self",
-            "magnitude": 2
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "when_attacking",
-          "condition": {
-            "type": "if_attached_don_min",
-            "n": 1
-          },
-          "cost": {
-            "donCost": 2,
-            "discardHand": 1
-          },
-          "action": {
-            "kind": "play_for_free",
-            "from": "trash",
-            "filter": {
-              "trait": "Thriller Bark Pirates",
-              "costMax": 4,
-              "kind": "character"
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "mill_self",
+                "magnitude": 2,
+                "condition": {
+                  "type": "if_attached_don_min",
+                  "n": 1
+                }
+              },
+              {
+                "kind": "play_for_free",
+                "from": "trash",
+                "filter": {
+                  "trait": "Thriller Bark Pirates",
+                  "costMax": 4,
+                  "kind": "character"
+                },
+                "condition": {
+                  "type": "if_attached_don_min",
+                  "n": 1
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -47347,7 +46964,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] You may trash 1 card from your hand: Up to 1 of your Leader or Character cards gains +3000 power during this battle.",
-    "counterEventBoost": 3000,
+    "counterEventBoost": 0,
     "templateParams": {
       "power_buff": 3000
     },
@@ -47857,23 +47474,21 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "draw",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed",
-          "cost": {
-            "selfPowerCost": 5000
-          }
-        },
-        {
-          "trigger": "on_play",
           "cost": {
             "selfPowerCost": 5000
           },
           "action": {
-            "kind": "discard_from_hand",
-            "magnitude": 1
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "discard_from_hand",
+                "magnitude": 1
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -49251,24 +48866,12 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 3 or more Characters, that card gains an additional +1000 power during this battle.",
-    "counterEventBoost": 3000,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {
@@ -49289,8 +48892,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged",
-      "auditNote": "second clause target your_leader_or_character (any); text \"that card gains an additional +1000\" must reference the same card that received the initial +2000"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -50265,18 +49867,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "removal_bounce"
           },
           "target": {
@@ -50312,7 +49902,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] You may return 1 of your Characters with a cost of 2 or more to the owner's hand: Up to 1 of your Leader or Character cards gains +4000 power during this battle.",
-    "counterEventBoost": 4000,
+    "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
     },
@@ -50323,7 +49913,8 @@
         {
           "trigger": "on_play",
           "cost": {
-            "returnSelfChar": {
+            "returnOwnCharFilter": {
+              "count": 1,
               "filter": {
                 "costMin": 2
               }
@@ -50337,7 +49928,7 @@
           "target": {
             "kind": "your_leader_or_character"
           },
-          "verified": "auto"
+          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -51268,27 +50859,25 @@
             "donCostReturnToDeck": 1
           },
           "action": {
-            "kind": "power_buff",
-            "magnitude": -2000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "opp_leader"
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCostReturnToDeck": 1
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": -2000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "opp_character"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": -2000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "opp_leader"
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": -2000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "opp_character"
+                }
+              }
+            ]
           },
           "verified": "auto"
         }
@@ -51319,7 +50908,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, rest up to 1 of your opponent's Characters.",
-    "counterEventBoost": 2000,
+    "counterEventBoost": 0,
     "templateParams": {
       "power_buff": 2000
     },
@@ -51327,29 +50916,27 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed",
-          "cost": {
-            "donCostReturnToDeck": 1
-          }
-        },
-        {
-          "trigger": "on_play",
           "cost": {
             "donCostReturnToDeck": 1
           },
           "action": {
-            "kind": "rest_target"
-          },
-          "target": {
-            "kind": "opp_character"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": 2000,
+                "duration": "this_battle",
+                "target": {
+                  "kind": "your_leader_or_character"
+                }
+              },
+              {
+                "kind": "rest_target",
+                "target": {
+                  "kind": "opp_character"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -51691,27 +51278,25 @@
             "bottomOfDeckFromTrash": 4
           },
           "action": {
-            "kind": "give_keyword",
-            "keyword": "banish",
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "bottomOfDeckFromTrash": 4
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "give_keyword",
+                "keyword": "banish",
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -52183,19 +51768,17 @@
             "bottomOfDeckFromTrash": 3
           },
           "action": {
-            "kind": "opp_discard_from_hand",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "bottomOfDeckFromTrash": 3
-          },
-          "action": {
-            "kind": "opp_bottom_of_deck_from_trash",
-            "magnitude": 1
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "opp_discard_from_hand",
+                "magnitude": 1
+              },
+              {
+                "kind": "opp_bottom_of_deck_from_trash",
+                "magnitude": 1
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -52230,18 +51813,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {
@@ -52285,24 +51856,12 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, if you have 10 or more cards in your trash, that card gains an additional +2000 power during this battle.",
-    "counterEventBoost": 6000,
+    "counterEventBoost": 4000,
     "templateParams": {
       "power_buff": 4000
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {
@@ -52323,8 +51882,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged",
-      "auditNote": "second clause target your_leader_or_character (any); text \"that card gains an additional +2000\" must reference the same card that received the initial +4000"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -52903,33 +52461,31 @@
           "cost": {
             "trashSelf": true
           },
-          "condition": {
-            "type": "if_own_life_max",
-            "n": 2
-          },
           "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 4
-            }
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "trashSelf": true
-          },
-          "condition": {
-            "type": "if_own_life_max",
-            "n": 2
-          },
-          "action": {
-            "kind": "draw",
-            "magnitude": 1
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 4
+                  }
+                },
+                "condition": {
+                  "type": "if_own_life_max",
+                  "n": 2
+                }
+              },
+              {
+                "kind": "draw",
+                "magnitude": 1,
+                "condition": {
+                  "type": "if_own_life_max",
+                  "n": 2
+                }
+              }
+            ]
           },
           "verified": "auto"
         }
@@ -53063,30 +52619,27 @@
             "lifeToHand": 1
           },
           "action": {
-            "kind": "rest_target"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 4
-            }
-          },
-          "verified": "human-reviewed",
-          "opt": true
-        },
-        {
-          "trigger": "when_attacking",
-          "cost": {
-            "lifeToHand": 1
-          },
-          "condition": {
-            "type": "if_own_life_max",
-            "n": 1
-          },
-          "action": {
-            "kind": "add_to_own_life_top",
-            "faceUp": false,
-            "from": "top_of_deck"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "rest_target",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 4
+                  }
+                }
+              },
+              {
+                "kind": "add_to_own_life_top",
+                "faceUp": false,
+                "from": "top_of_deck",
+                "condition": {
+                  "type": "if_own_life_max",
+                  "n": 1
+                }
+              }
+            ]
           },
           "verified": "human-reviewed",
           "opt": true
@@ -53364,29 +52917,27 @@
             "discardHand": 1
           },
           "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 5
-            }
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "discardHand": 1
-          },
-          "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 3
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 5
+                  }
+                }
+              },
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 3
+                  }
+                }
+              }
+            ]
           },
           "verified": "auto"
         }
@@ -54329,18 +53880,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "action": {
@@ -56160,18 +55699,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 3000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "reveal_top_and_conditional_play",
             "filter": {
               "typeIncludes": "Whitebeard Pirates",
@@ -56890,27 +56417,24 @@
             "discardHand": 1
           },
           "action": {
-            "kind": "add_to_own_life_top",
-            "faceUp": false,
-            "from": "top_of_deck"
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCostReturnToDeck": 1,
-            "discardHand": 1
-          },
-          "action": {
-            "kind": "add_to_opp_life_top",
-            "faceUp": true
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 6
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "add_to_own_life_top",
+                "faceUp": false,
+                "from": "top_of_deck"
+              },
+              {
+                "kind": "add_to_opp_life_top",
+                "faceUp": true,
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 6
+                  }
+                }
+              }
+            ]
           },
           "verified": "auto"
         }
@@ -57189,23 +56713,21 @@
             "donCostReturnToDeck": 1
           },
           "action": {
-            "kind": "rest_target"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 2
-            }
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCostReturnToDeck": 1
-          },
-          "action": {
-            "kind": "turn_all_own_life_face_down"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "rest_target",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 2
+                  }
+                }
+              },
+              {
+                "kind": "turn_all_own_life_face_down"
+              }
+            ]
           },
           "verified": "auto"
         }
@@ -57301,56 +56823,54 @@
           "cost": {
             "donCostReturnToDeck": 2
           },
-          "condition": {
-            "type": "or",
-            "conditions": [
+          "action": {
+            "kind": "sequence",
+            "actions": [
               {
-                "type": "if_leader_has_trait",
-                "trait": "Animal Kingdom Pirates"
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 6
+                  }
+                },
+                "condition": {
+                  "type": "or",
+                  "conditions": [
+                    {
+                      "type": "if_leader_has_trait",
+                      "trait": "Animal Kingdom Pirates"
+                    },
+                    {
+                      "type": "if_leader_has_trait",
+                      "trait": "Big Mom Pirates"
+                    }
+                  ]
+                }
               },
               {
-                "type": "if_leader_has_trait",
-                "trait": "Big Mom Pirates"
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 6
+                  }
+                },
+                "condition": {
+                  "type": "or",
+                  "conditions": [
+                    {
+                      "type": "if_leader_has_trait",
+                      "trait": "Animal Kingdom Pirates"
+                    },
+                    {
+                      "type": "if_leader_has_trait",
+                      "trait": "Big Mom Pirates"
+                    }
+                  ]
+                }
               }
             ]
-          },
-          "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 6
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCostReturnToDeck": 2
-          },
-          "condition": {
-            "type": "or",
-            "conditions": [
-              {
-                "type": "if_leader_has_trait",
-                "trait": "Animal Kingdom Pirates"
-              },
-              {
-                "type": "if_leader_has_trait",
-                "trait": "Big Mom Pirates"
-              }
-            ]
-          },
-          "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 6
-            }
           },
           "verified": "human-reviewed"
         }
@@ -57418,32 +56938,29 @@
           "cost": {
             "discardHand": 1
           },
-          "condition": {
-            "type": "if_played_this_turn"
-          },
           "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 7
-            }
-          },
-          "verified": "human-reviewed",
-          "opt": true
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "discardHand": 1
-          },
-          "condition": {
-            "type": "if_played_this_turn"
-          },
-          "action": {
-            "kind": "opp_discard_from_hand",
-            "magnitude": 1
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 7
+                  }
+                },
+                "condition": {
+                  "type": "if_played_this_turn"
+                }
+              },
+              {
+                "kind": "opp_discard_from_hand",
+                "magnitude": 1,
+                "condition": {
+                  "type": "if_played_this_turn"
+                }
+              }
+            ]
           },
           "verified": "flagged",
           "opt": true
@@ -57904,8 +57421,8 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "removal_cost_reduce",
-            "magnitude": -1,
+            "kind": "give_cost_buff",
+            "magnitude": 1,
             "duration": "opp_next_turn"
           },
           "target": {
@@ -58248,18 +57765,6 @@
             "magnitude": 1
           },
           "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 5000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "flagged"
         }
       ],
       "continuous": [],
@@ -58752,33 +58257,26 @@
             }
           },
           "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 5
-            }
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "discardHandFilter": {
-              "count": 1,
-              "filter": {
-                "hasTrigger": true
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 5
+                  }
+                }
+              },
+              {
+                "kind": "draw",
+                "magnitude": 1,
+                "condition": {
+                  "type": "if_hand_max",
+                  "n": 3
+                }
               }
-            }
-          },
-          "condition": {
-            "type": "if_hand_max",
-            "n": 3
-          },
-          "action": {
-            "kind": "draw",
-            "magnitude": 1
+            ]
           },
           "verified": "auto"
         }
@@ -59182,7 +58680,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] If your Leader has the {Shandian Warrior} type, up to 1 of your Leader or Character cards gains +3000 power during this battle. Then, play up to 1 [Upper Yard] from your hand.",
-    "counterEventBoost": 3000,
+    "counterEventBoost": 0,
     "templateParams": {
       "power_buff": 3000
     },
@@ -59254,18 +58752,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "cost": {
@@ -59439,40 +58925,31 @@
             "donCostReturnToDeck": 10
           },
           "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "all_characters",
-            "filter": {
-              "nameExcludes": "Kaido & Linlin"
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "all_characters",
+                  "filter": {
+                    "nameExcludes": "Kaido & Linlin"
+                  }
+                }
+              },
+              {
+                "kind": "add_to_own_life_top",
+                "faceUp": false,
+                "from": "top_of_deck"
+              },
+              {
+                "kind": "trash_face_up_life",
+                "target": {
+                  "kind": "opp_life_top"
+                }
+              }
+            ]
           },
           "verified": "flagged"
-        },
-        {
-          "trigger": "when_attacking",
-          "cost": {
-            "donCostReturnToDeck": 10
-          },
-          "action": {
-            "kind": "add_to_own_life_top",
-            "faceUp": false,
-            "from": "top_of_deck"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "when_attacking",
-          "cost": {
-            "donCostReturnToDeck": 10
-          },
-          "action": {
-            "kind": "trash_face_up_life"
-          },
-          "target": {
-            "kind": "opp_life_top"
-          },
-          "verified": "human-reviewed"
         }
       ],
       "continuous": [],
@@ -60529,26 +60006,23 @@
             "donCost": 3
           },
           "action": {
-            "kind": "ramp",
-            "magnitude": 1,
-            "rested": true
-          },
-          "verified": "human-reviewed",
-          "opt": true
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "donCost": 3
-          },
-          "action": {
-            "kind": "play_for_free",
-            "from": "hand",
-            "filter": {
-              "kind": "character",
-              "trait": "ODYSSEY",
-              "costMax": 5
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "ramp",
+                "magnitude": 1,
+                "rested": true
+              },
+              {
+                "kind": "play_for_free",
+                "from": "hand",
+                "filter": {
+                  "kind": "character",
+                  "trait": "ODYSSEY",
+                  "costMax": 5
+                }
+              }
+            ]
           },
           "verified": "human-reviewed",
           "opt": true
@@ -61517,18 +60991,6 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
           "condition": {
             "type": "and",
             "conditions": [
@@ -62365,18 +61827,6 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 3000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
           "cost": {
             "discardHand": 2
           },
@@ -62679,28 +62129,26 @@
             "donCostReturnToDeck": 1
           },
           "action": {
-            "kind": "give_keyword",
-            "keyword": "rush",
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCostReturnToDeck": 1
-          },
-          "action": {
-            "kind": "rest_target"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 6
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "give_keyword",
+                "keyword": "rush",
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                }
+              },
+              {
+                "kind": "rest_target",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 6
+                  }
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -62815,25 +62263,23 @@
             "donCostReturnToDeck": 1
           },
           "action": {
-            "kind": "set_active"
-          },
-          "target": {
-            "kind": "self"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "at_end_of_turn_self",
-          "cost": {
-            "donCostReturnToDeck": 1
-          },
-          "action": {
-            "kind": "give_keyword",
-            "keyword": "blocker",
-            "duration": "opp_next_turn"
-          },
-          "target": {
-            "kind": "self"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "set_active",
+                "target": {
+                  "kind": "self"
+                }
+              },
+              {
+                "kind": "give_keyword",
+                "keyword": "blocker",
+                "duration": "opp_next_turn",
+                "target": {
+                  "kind": "self"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -63292,33 +62738,30 @@
             "donCostReturnToDeck": 2,
             "discardHand": 1
           },
-          "condition": {
-            "type": "if_leader_has_trait",
-            "trait": "Straw Hat Crew"
-          },
           "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCostReturnToDeck": 2,
-            "discardHand": 1
-          },
-          "condition": {
-            "type": "if_leader_has_trait",
-            "trait": "Straw Hat Crew"
-          },
-          "action": {
-            "kind": "draw",
-            "magnitude": 2
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": 4000,
+                "duration": "this_battle",
+                "target": {
+                  "kind": "your_leader_or_character"
+                },
+                "condition": {
+                  "type": "if_leader_has_trait",
+                  "trait": "Straw Hat Crew"
+                }
+              },
+              {
+                "kind": "draw",
+                "magnitude": 2,
+                "condition": {
+                  "type": "if_leader_has_trait",
+                  "trait": "Straw Hat Crew"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -63363,24 +62806,22 @@
             "donCostReturnToDeck": 2
           },
           "action": {
-            "kind": "rest_target"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 5
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCostReturnToDeck": 2
-          },
-          "action": {
-            "kind": "draw",
-            "magnitude": 1
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "rest_target",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 5
+                  }
+                }
+              },
+              {
+                "kind": "draw",
+                "magnitude": 1
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -63877,28 +63318,25 @@
             "discardHand": 1,
             "trashSelf": true
           },
-          "condition": {
-            "type": "if_leader_has_trait",
-            "trait": "Blackbeard Pirates"
-          },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "discardHand": 1,
-            "trashSelf": true
-          },
-          "action": {
-            "kind": "cost_reduction",
-            "magnitude": 2
-          },
-          "target": {
-            "kind": "opp_character"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1,
+                "condition": {
+                  "type": "if_leader_has_trait",
+                  "trait": "Blackbeard Pirates"
+                }
+              },
+              {
+                "kind": "cost_reduction",
+                "magnitude": 2,
+                "target": {
+                  "kind": "opp_character"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -65133,20 +64571,7 @@
       "power_buff": 2000
     },
     "effectSpecV2": {
-      "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "auto"
-        }
-      ],
+      "clauses": [],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
@@ -65274,23 +64699,21 @@
             "donCostReturnToDeck": 1
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCostReturnToDeck": 1
-          },
-          "action": {
-            "kind": "give_keyword",
-            "keyword": "rush",
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "give_keyword",
+                "keyword": "rush",
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -66159,18 +65582,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 3000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "action": {
@@ -68634,26 +68045,24 @@
             "donCostReturnToDeck": 1
           },
           "action": {
-            "kind": "recursion",
-            "magnitude": 1,
-            "filter": {
-              "kind": "event",
-              "colors": [
-                "purple"
-              ],
-              "costMax": 5
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCostReturnToDeck": 1
-          },
-          "action": {
-            "kind": "set_active_don",
-            "magnitude": 1
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "recursion",
+                "magnitude": 1,
+                "filter": {
+                  "kind": "event",
+                  "colors": [
+                    "purple"
+                  ],
+                  "costMax": 5
+                }
+              },
+              {
+                "kind": "set_active_don",
+                "magnitude": 1
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -69261,18 +68670,6 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
           "condition": {
             "type": "and",
             "conditions": [
@@ -69334,28 +68731,22 @@
             }
           },
           "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 2
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "restLeaderOrStageFilter": {
-              "filter": {
-                "trait": "Dressrosa"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 2
+                  }
+                }
+              },
+              {
+                "kind": "mill_self",
+                "magnitude": 2
               }
-            }
-          },
-          "action": {
-            "kind": "mill_self",
-            "magnitude": 2
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -69399,26 +68790,24 @@
             "trashSelf": true
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "trashSelf": true
-          },
-          "action": {
-            "kind": "play_for_free",
-            "from": "trash",
-            "filter": {
-              "trait": "Blackbeard Pirates",
-              "costMax": 5,
-              "nameExcludes": "Kuzan",
-              "kind": "character"
-            },
-            "count": 1
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "play_for_free",
+                "from": "trash",
+                "filter": {
+                  "trait": "Blackbeard Pirates",
+                  "costMax": 5,
+                  "nameExcludes": "Kuzan",
+                  "kind": "character"
+                },
+                "count": 1
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -69664,10 +69053,6 @@
       "clauses": [
         {
           "trigger": "activate_main",
-          "condition": {
-            "type": "if_opp_hand_min",
-            "n": 5
-          },
           "cost": {
             "restSelf": true,
             "restLeaderOrStageFilter": {
@@ -69677,24 +69062,21 @@
             }
           },
           "action": {
-            "kind": "mill_opp",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "restSelf": true,
-            "restLeaderOrStageFilter": {
-              "filter": {
-                "trait": "Dressrosa"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "mill_opp",
+                "magnitude": 1,
+                "condition": {
+                  "type": "if_opp_hand_min",
+                  "n": 5
+                }
+              },
+              {
+                "kind": "mill_self",
+                "magnitude": 2
               }
-            }
-          },
-          "action": {
-            "kind": "mill_self",
-            "magnitude": 2
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -69743,24 +69125,17 @@
             }
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "restSelf": true,
-            "restLeaderOrStageFilter": {
-              "filter": {
-                "trait": "Dressrosa"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "mill_self",
+                "magnitude": 2
               }
-            }
-          },
-          "action": {
-            "kind": "mill_self",
-            "magnitude": 2
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -69886,29 +69261,22 @@
             }
           },
           "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 1
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "restSelf": true,
-            "restLeaderOrStageFilter": {
-              "filter": {
-                "trait": "Dressrosa"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 1
+                  }
+                }
+              },
+              {
+                "kind": "mill_self",
+                "magnitude": 2
               }
-            }
-          },
-          "action": {
-            "kind": "mill_self",
-            "magnitude": 2
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -70096,28 +69464,22 @@
             }
           },
           "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 4
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "restLeaderOrStageFilter": {
-              "filter": {
-                "trait": "Dressrosa"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 4
+                  }
+                }
+              },
+              {
+                "kind": "mill_self",
+                "magnitude": 2
               }
-            }
-          },
-          "action": {
-            "kind": "mill_self",
-            "magnitude": 2
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -70343,35 +69705,33 @@
             "flipLife": 1
           },
           "action": {
-            "kind": "set_active"
-          },
-          "target": {
-            "kind": "your_character",
-            "filter": {
-              "typeIncludes": "Supernovas",
-              "costMin": 3,
-              "costMax": 8
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "at_end_of_turn_self",
-          "cost": {
-            "flipLife": 1
-          },
-          "action": {
-            "kind": "give_keyword",
-            "keyword": "blocker",
-            "duration": "opp_next_turn"
-          },
-          "target": {
-            "kind": "your_character",
-            "filter": {
-              "typeIncludes": "Supernovas",
-              "costMin": 3,
-              "costMax": 8
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "set_active",
+                "target": {
+                  "kind": "your_character",
+                  "filter": {
+                    "typeIncludes": "Supernovas",
+                    "costMin": 3,
+                    "costMax": 8
+                  }
+                }
+              },
+              {
+                "kind": "give_keyword",
+                "keyword": "blocker",
+                "duration": "opp_next_turn",
+                "target": {
+                  "kind": "your_character",
+                  "filter": {
+                    "typeIncludes": "Supernovas",
+                    "costMin": 3,
+                    "costMax": 8
+                  }
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -71111,20 +70471,7 @@
       "power_buff": 4000
     },
     "effectSpecV2": {
-      "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "human-reviewed"
-        }
-      ],
+      "clauses": [],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
@@ -72241,18 +71588,6 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
           "condition": {
             "type": "if_opp_chars_min_power",
             "n": 1,
@@ -72302,18 +71637,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {
@@ -73278,24 +72601,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 3000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character",
-            "filter": {
-              "traitsAny": [
-                "Fish-Man",
-                "Merfolk"
-              ]
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "rest_target"
           },
           "target": {
@@ -74237,24 +73542,12 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 4 or less cards in your hand, that card gains an additional +2000 power during this battle.",
-    "counterEventBoost": 4000,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {
@@ -74275,8 +73568,7 @@
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
-      "verified": "flagged",
-      "auditNote": "second clause target your_leader_or_character (any); text \"that card gains an additional +2000\" must reference the same card from clause 1"
+      "verified": "human-reviewed"
     }
   },
   {
@@ -74409,55 +73701,49 @@
             "donCost": 1
           },
           "action": {
-            "kind": "peek_opp_deck",
-            "count": 1
-          },
-          "verified": "auto",
-          "opt": true
-        },
-        {
-          "trigger": "when_attacking",
-          "cost": {
-            "donCost": 1
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "peek_opp_deck",
+                "count": 1
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_battle",
+                "target": {
+                  "kind": "your_leader"
+                }
+              }
+            ]
           },
           "verified": "auto",
           "opt": true
         },
         {
           "trigger": "on_opp_attack",
-          "opt": true,
           "cost": {
             "donCost": 1
           },
           "action": {
-            "kind": "peek_opp_deck",
-            "count": 1
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "peek_opp_deck",
+                "count": 1
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_battle",
+                "target": {
+                  "kind": "your_leader"
+                }
+              }
+            ]
           },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_opp_attack",
-          "opt": true,
-          "cost": {
-            "donCost": 1
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "human-reviewed"
+          "verified": "human-reviewed",
+          "opt": true
         }
       ],
       "continuous": [],
@@ -74936,23 +74222,19 @@
             "restSelf": true
           },
           "action": {
-            "kind": "opp_bottom_of_deck_from_trash",
-            "magnitude": 2
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "opp_bottom_of_deck_from_trash",
+                "magnitude": 2
+              },
+              {
+                "kind": "life_to_hand",
+                "magnitude": 1
+              }
+            ]
           },
           "verified": "flagged",
-          "opt": true
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "donCostReturnToDeck": 1,
-            "restSelf": true
-          },
-          "action": {
-            "kind": "life_to_hand",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed",
           "opt": true
         }
       ],
@@ -75454,34 +74736,32 @@
       "clauses": [
         {
           "trigger": "activate_main",
-          "condition": {
-            "type": "if_leader_has_type",
-            "typeString": "Navy"
-          },
           "cost": {
             "trashSelf": true
           },
           "action": {
-            "kind": "give_keyword",
-            "keyword": "attack_active_characters",
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "your_character",
-            "filter": {
-              "typeIncludes": "Navy"
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "trashSelf": true
-          },
-          "action": {
-            "kind": "mill_self",
-            "magnitude": 2
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "give_keyword",
+                "keyword": "attack_active_characters",
+                "duration": "this_turn",
+                "target": {
+                  "kind": "your_character",
+                  "filter": {
+                    "typeIncludes": "Navy"
+                  }
+                },
+                "condition": {
+                  "type": "if_leader_has_type",
+                  "typeString": "Navy"
+                }
+              },
+              {
+                "kind": "mill_self",
+                "magnitude": 2
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -75912,25 +75192,23 @@
             "discardHand": 1
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "discardHand": 1
-          },
-          "action": {
-            "kind": "play_for_free",
-            "from": "trash",
-            "filter": {
-              "typeIncludes": "SWORD",
-              "costMax": 8,
-              "nameExcludes": "Helmeppo",
-              "kind": "character"
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "play_for_free",
+                "from": "trash",
+                "filter": {
+                  "typeIncludes": "SWORD",
+                  "costMax": 8,
+                  "nameExcludes": "Helmeppo",
+                  "kind": "character"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -76024,33 +75302,31 @@
             "bottomOfDeckFromTrash": 3
           },
           "action": {
-            "kind": "give_don_to_target",
-            "magnitude": 1,
-            "rested": true
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "condition": {
-            "type": "if_own_chars_min_cost",
-            "n": 1,
-            "minCost": 9
-          },
-          "cost": {
-            "bottomOfDeckFromTrash": 3
-          },
-          "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 7
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "give_don_to_target",
+                "magnitude": 1,
+                "rested": true,
+                "target": {
+                  "kind": "your_leader"
+                }
+              },
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 7
+                  }
+                },
+                "condition": {
+                  "type": "if_own_chars_min_cost",
+                  "n": 1,
+                  "minCost": 9
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -76127,18 +75403,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {
@@ -76704,31 +75968,29 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "condition": {
-            "type": "if_leader_is",
-            "name": "Shirahoshi"
-          },
           "cost": {
             "flipLife": 1
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 2
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "condition": {
-            "type": "if_leader_is",
-            "name": "Shirahoshi"
-          },
-          "cost": {
-            "flipLife": 1
-          },
-          "action": {
-            "kind": "discard_from_hand",
-            "magnitude": 1
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 2,
+                "condition": {
+                  "type": "if_leader_is",
+                  "name": "Shirahoshi"
+                }
+              },
+              {
+                "kind": "discard_from_hand",
+                "magnitude": 1,
+                "condition": {
+                  "type": "if_leader_is",
+                  "name": "Shirahoshi"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -77739,32 +77001,25 @@
             }
           },
           "action": {
-            "kind": "give_keyword",
-            "keyword": "rush",
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "revealHand": {
-              "count": 2,
-              "filter": {
-                "kind": "event"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "give_keyword",
+                "keyword": "rush",
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "opp_next_end_phase",
+                "target": {
+                  "kind": "self"
+                }
               }
-            }
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "opp_next_end_phase"
-          },
-          "target": {
-            "kind": "self"
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -78026,35 +77281,28 @@
             }
           },
           "action": {
-            "kind": "play_for_free",
-            "from": "hand",
-            "filter": {
-              "kind": "character",
-              "colors": [
-                "red"
-              ],
-              "powerMax": 3000
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "revealHand": {
-              "count": 2,
-              "filter": {
-                "kind": "event"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "play_for_free",
+                "from": "hand",
+                "filter": {
+                  "kind": "character",
+                  "colors": [
+                    "red"
+                  ],
+                  "powerMax": 3000
+                }
+              },
+              {
+                "kind": "give_don_to_target",
+                "magnitude": 1,
+                "rested": true,
+                "target": {
+                  "kind": "your_leader"
+                }
               }
-            }
-          },
-          "action": {
-            "kind": "give_don_to_target",
-            "magnitude": 1,
-            "rested": true
-          },
-          "target": {
-            "kind": "your_leader"
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -78200,37 +77448,29 @@
       "clauses": [
         {
           "trigger": "on_play",
+          "cost": {
+            "donCost": 1
+          },
           "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": -1000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "all_opp_characters"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": -1000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "opp_leader"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": -1000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "all_opp_characters"
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": -1000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "opp_leader"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -80101,18 +79341,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "action": {
@@ -82124,7 +81352,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have a {Revolutionary Army} type Character with a cost of 8 or more, that card gains an additional +2000 power during this battle.",
-    "counterEventBoost": 4000,
+    "counterEventBoost": 2000,
     "templateParams": {
       "power_buff": 2000
     },
@@ -82132,22 +81360,13 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
           "condition": {
-            "type": "if_own_chars_min_cost",
+            "type": "if_own_chars_min_filter",
             "n": 1,
-            "minCost": 8
+            "filter": {
+              "trait": "Revolutionary Army",
+              "minCost": 8
+            }
           },
           "action": {
             "kind": "power_buff",
@@ -82848,20 +82067,7 @@
       "power_buff": 2000
     },
     "effectSpecV2": {
-      "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "human-reviewed"
-        }
-      ],
+      "clauses": [],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
@@ -83078,24 +82284,22 @@
             "discardHand": 1
           },
           "action": {
-            "kind": "add_to_own_life_top",
-            "faceUp": false,
-            "from": "top_of_deck"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "discardHand": 1
-          },
-          "action": {
-            "kind": "removal_cost_reduce",
-            "magnitude": -2,
-            "duration": "opp_next_end_phase"
-          },
-          "target": {
-            "kind": "self"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "add_to_own_life_top",
+                "faceUp": false,
+                "from": "top_of_deck"
+              },
+              {
+                "kind": "give_cost_buff",
+                "magnitude": 2,
+                "duration": "opp_next_end_phase",
+                "target": {
+                  "kind": "self"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         },
@@ -85604,27 +84808,21 @@
             }
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "when_attacking",
-          "cost": {
-            "koSelfCharacter": {
-              "filter": {
-                "typeIncludes": "Whitebeard Pirates"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "give_keyword",
+                "keyword": "banish",
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                }
               }
-            }
-          },
-          "action": {
-            "kind": "give_keyword",
-            "keyword": "banish",
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -86222,27 +85420,25 @@
             "donCost": 3
           },
           "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "opp_next_end_phase"
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCost": 3
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": -2000,
-            "duration": "opp_next_end_phase"
-          },
-          "target": {
-            "kind": "all_opp_characters"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": 2000,
+                "duration": "opp_next_end_phase",
+                "target": {
+                  "kind": "your_leader"
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": -2000,
+                "duration": "opp_next_end_phase",
+                "target": {
+                  "kind": "all_opp_characters"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -87202,42 +86398,39 @@
       "clauses": [
         {
           "trigger": "activate_main",
-          "condition": {
-            "type": "if_leader_is",
-            "name": "Imu"
-          },
           "cost": {
             "donCost": 1,
             "discardHand": 1
           },
           "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "all_your_characters"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "condition": {
-            "type": "if_leader_is",
-            "name": "Imu"
-          },
-          "cost": {
-            "donCost": 1,
-            "discardHand": 1
-          },
-          "action": {
-            "kind": "play_for_free",
-            "from": "trash",
-            "filter": {
-              "typeIncludes": "Five Elders",
-              "kind": "character",
-              "powerMax": 5000
-            },
-            "count": 5,
-            "uniqueByName": true
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "all_your_characters"
+                },
+                "condition": {
+                  "type": "if_leader_is",
+                  "name": "Imu"
+                }
+              },
+              {
+                "kind": "play_for_free",
+                "from": "trash",
+                "filter": {
+                  "typeIncludes": "Five Elders",
+                  "kind": "character",
+                  "powerMax": 5000
+                },
+                "count": 5,
+                "uniqueByName": true,
+                "condition": {
+                  "type": "if_leader_is",
+                  "name": "Imu"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -88216,29 +87409,27 @@
             "trashSelf": true
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1,
+                "condition": {
+                  "type": "if_own_life_le_opp"
+                }
+              },
+              {
+                "kind": "rest_target",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 3
+                  }
+                }
+              }
+            ]
           },
-          "verified": "flagged",
-          "condition": {
-            "type": "if_own_life_le_opp"
-          }
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "trashSelf": true
-          },
-          "action": {
-            "kind": "rest_target"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 3
-            }
-          },
-          "verified": "human-reviewed"
+          "verified": "flagged"
         }
       ],
       "continuous": [],
@@ -88797,20 +87988,7 @@
       "power_buff": 3000
     },
     "effectSpecV2": {
-      "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 3000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "human-reviewed"
-        }
-      ],
+      "clauses": [],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
@@ -89933,20 +89111,7 @@
     "effectSpecV2": {
       "schemaVersion": 2,
       "verified": "flagged",
-      "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "human-reviewed"
-        }
-      ],
+      "clauses": [],
       "continuous": [],
       "replacements": [],
       "auditNote": "spec target your_leader has no power-condition; text \"If there is a Character with 8000 power or more\" requires a min-power-on-field condition; also target your_leader misses \"or Character\""
@@ -90038,37 +89203,35 @@
             "restSelf": true
           },
           "action": {
-            "kind": "set_active_don",
-            "magnitude": 3
-          },
-          "verified": "human-reviewed",
-          "condition": {
-            "type": "or",
-            "conditions": [
+            "kind": "sequence",
+            "actions": [
               {
-                "type": "if_own_chars_min_cost",
-                "n": 1,
-                "minCost": 5
+                "kind": "set_active_don",
+                "magnitude": 3,
+                "condition": {
+                  "type": "or",
+                  "conditions": [
+                    {
+                      "type": "if_own_chars_min_cost",
+                      "n": 1,
+                      "minCost": 5
+                    },
+                    {
+                      "type": "if_opp_chars_min_cost",
+                      "n": 1,
+                      "minCost": 5
+                    }
+                  ]
+                }
               },
               {
-                "type": "if_opp_chars_min_cost",
-                "n": 1,
-                "minCost": 5
+                "kind": "restrict_play_self_this_turn",
+                "kind_filter": "character"
               }
             ]
           },
+          "verified": "human-reviewed",
           "opt": true
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "restSelf": true
-          },
-          "action": {
-            "kind": "restrict_play_self_this_turn",
-            "kind_filter": "character"
-          },
-          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -90901,7 +90064,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] You may rest 1 of your cards: Up to 1 of your Leader or Character cards gains +4000 power during this battle.",
-    "counterEventBoost": 4000,
+    "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
     },
@@ -90920,7 +90083,7 @@
             "duration": "this_battle"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
           "verified": "human-reviewed"
         }
@@ -91681,24 +90844,22 @@
             "donCost": 2
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 2
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCost": 2
-          },
-          "action": {
-            "kind": "removal_bounce"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 7
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 2
+              },
+              {
+                "kind": "removal_bounce",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 7
+                  }
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -92145,29 +91306,27 @@
             "donCost": 3
           },
           "action": {
-            "kind": "play_for_free",
-            "from": "hand",
-            "filter": {
-              "typeIncludes": "Fish-Man",
-              "costMax": 3,
-              "kind": "character"
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCost": 3
-          },
-          "action": {
-            "kind": "removal_bounce"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "powerMax": 6000
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "play_for_free",
+                "from": "hand",
+                "filter": {
+                  "typeIncludes": "Fish-Man",
+                  "costMax": 3,
+                  "kind": "character"
+                }
+              },
+              {
+                "kind": "removal_bounce",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "powerMax": 6000
+                  }
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         },
@@ -93182,18 +92341,6 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
           "condition": {
             "type": "if_opp_chars_min_power",
             "n": 1,
@@ -93233,7 +92380,7 @@
       "power_buff"
     ],
     "effectText": "[Counter] DON!! −1: If your Leader has the {Donquixote Pirates} type, up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, that card gains an additional +2000 power during this turn.",
-    "counterEventBoost": 4000,
+    "counterEventBoost": 0,
     "templateParams": {
       "power_buff": 2000
     },
@@ -93246,36 +92393,34 @@
           "cost": {
             "donCost": 1
           },
-          "condition": {
-            "type": "if_leader_has_type",
-            "typeString": "Donquixote Pirates"
-          },
           "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCost": 1
-          },
-          "condition": {
-            "type": "if_leader_has_type",
-            "typeString": "Donquixote Pirates"
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": 2000,
+                "duration": "this_battle",
+                "target": {
+                  "kind": "your_leader_or_character"
+                },
+                "condition": {
+                  "type": "if_leader_has_type",
+                  "typeString": "Donquixote Pirates"
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 2000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "your_leader_or_character"
+                },
+                "condition": {
+                  "type": "if_leader_has_type",
+                  "typeString": "Donquixote Pirates"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -93323,30 +92468,24 @@
             }
           },
           "action": {
-            "kind": "removal_cost_reduce",
-            "magnitude": 10,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "opp_character"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_cost_reduce",
+                "magnitude": 10,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "opp_character"
+                }
+              },
+              {
+                "kind": "mill_self",
+                "magnitude": 2
+              }
+            ]
           },
           "verified": "human-reviewed",
           "opt": true
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "koSelfCharacter": {
-              "filter": {
-                "typeIncludes": "Baroque Works"
-              }
-            }
-          },
-          "action": {
-            "kind": "mill_self",
-            "magnitude": 2
-          },
-          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -93407,31 +92546,25 @@
             }
           },
           "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "koSelfCharacter": {
-              "filter": {
-                "typeIncludes": "Thriller Bark Pirates"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "your_leader"
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "all_your_characters"
+                }
               }
-            }
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "all_your_characters"
+            ]
           },
           "verified": "human-reviewed"
         },
@@ -94765,36 +93898,25 @@
             }
           },
           "action": {
-            "kind": "give_don_to_target",
-            "magnitude": 1,
-            "rested": true
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "human-reviewed",
-          "opt": true
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "revealHand": {
-              "count": 3,
-              "filter": {
-                "traitsAny": [
-                  "Amazon Lily",
-                  "Kuja Pirates"
-                ]
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "give_don_to_target",
+                "magnitude": 1,
+                "rested": true,
+                "target": {
+                  "kind": "your_leader"
+                }
+              },
+              {
+                "kind": "give_don_to_target",
+                "magnitude": 1,
+                "rested": true,
+                "target": {
+                  "kind": "all_your_characters"
+                }
               }
-            }
-          },
-          "action": {
-            "kind": "give_don_to_target",
-            "magnitude": 1,
-            "rested": true
-          },
-          "target": {
-            "kind": "all_your_characters"
+            ]
           },
           "verified": "human-reviewed",
           "opt": true
@@ -95324,18 +94446,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "play_for_free",
             "from": "hand",
             "filter": {
@@ -95382,23 +94492,7 @@
     "effectSpecV2": {
       "schemaVersion": 2,
       "verified": "human-reviewed",
-      "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 3000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character",
-            "filter": {
-              "typeIncludes": "Thriller Bark Pirates"
-            }
-          },
-          "verified": "human-reviewed"
-        }
-      ],
+      "clauses": [],
       "continuous": [],
       "replacements": []
     }
@@ -99758,32 +98852,30 @@
           "cost": {
             "donCost": 1
           },
-          "condition": {
-            "type": "if_leader_is",
-            "name": "Enel"
-          },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCost": 1
-          },
-          "condition": {
-            "type": "if_leader_is",
-            "name": "Enel"
-          },
-          "action": {
-            "kind": "removal_cost_reduce",
-            "magnitude": -2,
-            "duration": "opp_next_end_phase"
-          },
-          "target": {
-            "kind": "your_character"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1,
+                "condition": {
+                  "type": "if_leader_is",
+                  "name": "Enel"
+                }
+              },
+              {
+                "kind": "removal_cost_reduce",
+                "magnitude": -2,
+                "duration": "opp_next_end_phase",
+                "target": {
+                  "kind": "your_character"
+                },
+                "condition": {
+                  "type": "if_leader_is",
+                  "name": "Enel"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         },
@@ -99844,37 +98936,35 @@
           "cost": {
             "donCost": 1
           },
-          "condition": {
-            "type": "if_leader_is",
-            "name": "Enel"
-          },
           "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "your_character"
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCost": 1
-          },
-          "condition": {
-            "type": "if_leader_is",
-            "name": "Enel"
-          },
-          "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "powerMax": 3000
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "your_character"
+                },
+                "condition": {
+                  "type": "if_leader_is",
+                  "name": "Enel"
+                }
+              },
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "powerMax": 3000
+                  }
+                },
+                "condition": {
+                  "type": "if_leader_is",
+                  "name": "Enel"
+                }
+              }
+            ]
           },
           "verified": "auto"
         },
@@ -99937,32 +99027,30 @@
           "cost": {
             "donCost": 1
           },
-          "condition": {
-            "type": "if_leader_is",
-            "name": "Enel"
-          },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCost": 1
-          },
-          "condition": {
-            "type": "if_leader_is",
-            "name": "Enel"
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": -1000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "opp_character"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1,
+                "condition": {
+                  "type": "if_leader_is",
+                  "name": "Enel"
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": -1000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "opp_character"
+                },
+                "condition": {
+                  "type": "if_leader_is",
+                  "name": "Enel"
+                }
+              }
+            ]
           },
           "verified": "auto"
         },
@@ -100022,26 +99110,24 @@
             "donCost": 1
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCost": 1
-          },
-          "action": {
-            "kind": "rest_lock_until_phase",
-            "until": "opp_next_end_phase"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "powerMax": 6000,
-              "rested": true
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "rest_lock_until_phase",
+                "until": "opp_next_end_phase",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "powerMax": 6000,
+                    "rested": true
+                  }
+                }
+              }
+            ]
           },
           "verified": "auto"
         }
@@ -101712,34 +100798,32 @@
           "cost": {
             "flipLife": 1
           },
-          "condition": {
-            "type": "if_leader_has_type",
-            "typeString": "Straw Hat Crew"
-          },
           "action": {
-            "kind": "add_to_own_life_top",
-            "faceUp": false,
-            "from": "top_of_deck"
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "flipLife": 1
-          },
-          "condition": {
-            "type": "if_leader_has_type",
-            "typeString": "Straw Hat Crew"
-          },
-          "action": {
-            "kind": "play_for_free",
-            "from": "hand",
-            "filter": {
-              "kind": "character",
-              "typeIncludes": "Sky Island",
-              "costMax": 5
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "add_to_own_life_top",
+                "faceUp": false,
+                "from": "top_of_deck",
+                "condition": {
+                  "type": "if_leader_has_type",
+                  "typeString": "Straw Hat Crew"
+                }
+              },
+              {
+                "kind": "play_for_free",
+                "from": "hand",
+                "filter": {
+                  "kind": "character",
+                  "typeIncludes": "Sky Island",
+                  "costMax": 5
+                },
+                "condition": {
+                  "type": "if_leader_has_type",
+                  "typeString": "Straw Hat Crew"
+                }
+              }
+            ]
           },
           "verified": "auto"
         }
@@ -101974,28 +101058,26 @@
             "flipLife": 1
           },
           "action": {
-            "kind": "power_buff",
-            "magnitude": -2000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "all_opp_characters"
-          },
-          "verified": "auto"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "flipLife": 1
-          },
-          "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "all_opp_characters",
-            "filter": {
-              "powerMax": 0
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": -2000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "all_opp_characters"
+                }
+              },
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "all_opp_characters",
+                  "filter": {
+                    "powerMax": 0
+                  }
+                }
+              }
+            ]
           },
           "verified": "auto"
         },
@@ -106095,7 +105177,9 @@
     "traits": [
       "Sabaody Archipelago"
     ],
-    "keywords": [],
+    "keywords": [
+      "activate_main"
+    ],
     "effectTags": [
       "vanilla"
     ],
@@ -107295,52 +106379,50 @@
           "cost": {
             "donCostReturnToDeck": 2
           },
-          "condition": {
-            "type": "and",
-            "conditions": [
+          "action": {
+            "kind": "sequence",
+            "actions": [
               {
-                "type": "if_leader_has_type",
-                "typeString": "Big Mom Pirates"
+                "kind": "draw",
+                "magnitude": 2,
+                "condition": {
+                  "type": "and",
+                  "conditions": [
+                    {
+                      "type": "if_leader_has_type",
+                      "typeString": "Big Mom Pirates"
+                    },
+                    {
+                      "type": "if_opp_hand_min",
+                      "n": 6
+                    }
+                  ]
+                }
               },
               {
-                "type": "if_opp_hand_min",
-                "n": 6
+                "kind": "play_for_free",
+                "from": "hand",
+                "filter": {
+                  "typeIncludes": "Big Mom Pirates",
+                  "powerMin": 6000,
+                  "powerMax": 8000,
+                  "kind": "character"
+                },
+                "condition": {
+                  "type": "and",
+                  "conditions": [
+                    {
+                      "type": "if_leader_has_type",
+                      "typeString": "Big Mom Pirates"
+                    },
+                    {
+                      "type": "if_opp_hand_min",
+                      "n": 6
+                    }
+                  ]
+                }
               }
             ]
-          },
-          "action": {
-            "kind": "draw",
-            "magnitude": 2
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCostReturnToDeck": 2
-          },
-          "condition": {
-            "type": "and",
-            "conditions": [
-              {
-                "type": "if_leader_has_type",
-                "typeString": "Big Mom Pirates"
-              },
-              {
-                "type": "if_opp_hand_min",
-                "n": 6
-              }
-            ]
-          },
-          "action": {
-            "kind": "play_for_free",
-            "from": "hand",
-            "filter": {
-              "typeIncludes": "Big Mom Pirates",
-              "powerMin": 6000,
-              "powerMax": 8000,
-              "kind": "character"
-            }
           },
           "verified": "human-reviewed"
         }
@@ -108310,20 +107392,7 @@
       "power_buff": 3000
     },
     "effectSpecV2": {
-      "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 3000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "human-reviewed"
-        }
-      ],
+      "clauses": [],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
@@ -109070,20 +108139,7 @@
       "power_buff": 2000
     },
     "effectSpecV2": {
-      "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "human-reviewed"
-        }
-      ],
+      "clauses": [],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
@@ -109117,20 +108173,7 @@
       "power_buff": 4000
     },
     "effectSpecV2": {
-      "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader"
-          },
-          "verified": "human-reviewed"
-        }
-      ],
+      "clauses": [],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
@@ -109858,18 +108901,6 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
           "condition": {
             "type": "if_hand_max",
             "n": 3
@@ -110013,28 +109044,26 @@
             "donCost": 5
           },
           "action": {
-            "kind": "removal_ko"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 6
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "donCost": 5
-          },
-          "action": {
-            "kind": "give_keyword",
-            "keyword": "rush",
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_ko",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 6
+                  }
+                }
+              },
+              {
+                "kind": "give_keyword",
+                "keyword": "rush",
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -110549,7 +109578,7 @@
       "counter_event"
     ],
     "effectText": "[Counter] DON!! −1 (You may return the specified number of DON!! cards from your field to your DON!! deck.): Up to 1 of your Leader or Character cards gains +4000 power during this battle.",
-    "counterEventBoost": 4000,
+    "counterEventBoost": null,
     "templateParams": {
       "power_buff": 4000
     },
@@ -110565,9 +109594,9 @@
           "target": {
             "kind": "your_leader_or_character"
           },
-          "verified": "flagged",
+          "verified": "human-reviewed",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           }
         }
       ],
@@ -111077,29 +110106,27 @@
             "donCost": 4
           },
           "action": {
-            "kind": "rest_target"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 6
-            },
-            "count": 2
-          },
-          "verified": "flagged"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "donCost": 4
-          },
-          "action": {
-            "kind": "give_keyword",
-            "keyword": "double_attack",
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "rest_target",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 6
+                  },
+                  "count": 2
+                }
+              },
+              {
+                "kind": "give_keyword",
+                "keyword": "double_attack",
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                }
+              }
+            ]
           },
           "verified": "flagged"
         }
@@ -111310,21 +110337,6 @@
       "schemaVersion": 2,
       "verified": "flagged",
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character",
-            "filter": {
-              "trait": "FILM"
-            }
-          },
-          "verified": "flagged"
-        },
         {
           "trigger": "on_play",
           "action": {
@@ -111889,18 +110901,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "removal_ko"
           },
           "target": {
@@ -111997,20 +110997,7 @@
       "power_buff": 2000
     },
     "effectSpecV2": {
-      "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        }
-      ],
+      "clauses": [],
       "continuous": [],
       "replacements": [],
       "schemaVersion": 2,
@@ -112242,39 +111229,37 @@
       "clauses": [
         {
           "trigger": "when_attacking",
-          "condition": {
-            "type": "if_attached_don_min",
-            "n": 1
-          },
           "cost": {
             "flipLife": 1
           },
           "action": {
-            "kind": "give_keyword",
-            "keyword": "banish",
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "self"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "when_attacking",
-          "condition": {
-            "type": "if_attached_don_min",
-            "n": 1
-          },
-          "cost": {
-            "flipLife": 1
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "self"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "give_keyword",
+                "keyword": "banish",
+                "duration": "this_battle",
+                "target": {
+                  "kind": "self"
+                },
+                "condition": {
+                  "type": "if_attached_don_min",
+                  "n": 1
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_battle",
+                "target": {
+                  "kind": "self"
+                },
+                "condition": {
+                  "type": "if_attached_don_min",
+                  "n": 1
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -112780,18 +111765,6 @@
           "trigger": "on_play",
           "action": {
             "kind": "peek_and_reorder_opp_life"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
           },
           "verified": "human-reviewed"
         }
@@ -114062,18 +113035,6 @@
       "clauses": [
         {
           "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "flagged"
-        },
-        {
-          "trigger": "on_play",
           "condition": {
             "type": "if_own_life_max",
             "n": 2
@@ -114134,28 +113095,26 @@
             "donCost": 3
           },
           "action": {
-            "kind": "removal_bounce"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "powerMax": 3000
-            }
-          },
-          "verified": "flagged"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "donCost": 3
-          },
-          "action": {
-            "kind": "play_for_free",
-            "from": "hand",
-            "filter": {
-              "costMax": 4,
-              "kind": "character"
-            }
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "removal_bounce",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "powerMax": 3000
+                  }
+                }
+              },
+              {
+                "kind": "play_for_free",
+                "from": "hand",
+                "filter": {
+                  "costMax": 4,
+                  "kind": "character"
+                }
+              }
+            ]
           },
           "verified": "flagged"
         }
@@ -114858,18 +113817,6 @@
       "schemaVersion": 2,
       "verified": "human-reviewed",
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "action": {
@@ -116023,18 +114970,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "reveal_top_and_conditional_play",
             "filter": {
               "costMax": 2,
@@ -117010,18 +115945,6 @@
         {
           "trigger": "on_play",
           "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "action": {
             "kind": "peek_and_reorder_own_life",
             "count": 99
           },
@@ -117062,18 +115985,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {
@@ -117546,41 +116457,39 @@
             "restSelf": true
           },
           "action": {
-            "kind": "give_cost_buff",
-            "magnitude": 2,
-            "duration": "opp_next_turn"
-          },
-          "target": {
-            "kind": "your_character",
-            "filter": {
-              "typeIncludes": "Straw Hat Crew",
-              "colors": [
-                "black"
-              ]
-            }
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "restSelf": true
-          },
-          "condition": {
-            "type": "if_own_chars_min_cost",
-            "n": 1,
-            "minCost": 8
-          },
-          "action": {
-            "kind": "chained_actions",
+            "kind": "sequence",
             "actions": [
               {
-                "kind": "draw",
-                "magnitude": 1
+                "kind": "give_cost_buff",
+                "magnitude": 2,
+                "duration": "opp_next_turn",
+                "target": {
+                  "kind": "your_character",
+                  "filter": {
+                    "typeIncludes": "Straw Hat Crew",
+                    "colors": [
+                      "black"
+                    ]
+                  }
+                }
               },
               {
-                "kind": "discard_from_hand",
-                "magnitude": 1
+                "kind": "chained_actions",
+                "actions": [
+                  {
+                    "kind": "draw",
+                    "magnitude": 1
+                  },
+                  {
+                    "kind": "discard_from_hand",
+                    "magnitude": 1
+                  }
+                ],
+                "condition": {
+                  "type": "if_own_chars_min_cost",
+                  "n": 1,
+                  "minCost": 8
+                }
               }
             ]
           },
@@ -120399,24 +119308,17 @@
             }
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "revealHand": {
-              "count": 1,
-              "filter": {
-                "typeIncludes": "Whitebeard Pirates"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "bottom_of_deck_from_hand",
+                "magnitude": 1
               }
-            }
-          },
-          "action": {
-            "kind": "bottom_of_deck_from_hand",
-            "magnitude": 1
+            ]
           },
           "verified": "flagged"
         }
@@ -121187,29 +120089,22 @@
             }
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
-          "cost": {
-            "revealHand": {
-              "count": 2,
-              "filter": {
-                "typeIncludes": "Whitebeard Pirates"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "bottom_of_deck_to_opp_deck",
+                "target": {
+                  "kind": "opp_character",
+                  "filter": {
+                    "costMax": 5
+                  }
+                }
               }
-            }
-          },
-          "action": {
-            "kind": "bottom_of_deck_to_opp_deck"
-          },
-          "target": {
-            "kind": "opp_character",
-            "filter": {
-              "costMax": 5
-            }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -122876,29 +121771,27 @@
             "donCost": 2
           },
           "action": {
-            "kind": "give_keyword",
-            "keyword": "rush",
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "give_keyword",
+                "keyword": "rush",
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                }
+              }
+            ]
           },
           "verified": "flagged"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "donCost": 2
-          },
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
-          },
-          "verified": "human-reviewed"
         }
       ],
       "continuous": [
@@ -123558,28 +122451,21 @@
             }
           },
           "action": {
-            "kind": "draw",
-            "magnitude": 1
-          },
-          "verified": "flagged"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "discardHandFilter": {
-              "count": 1,
-              "filter": {
-                "hasTrigger": true
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "draw",
+                "magnitude": 1
+              },
+              {
+                "kind": "give_don_to_target",
+                "magnitude": 1,
+                "rested": true,
+                "target": {
+                  "kind": "your_leader_or_character"
+                }
               }
-            }
-          },
-          "action": {
-            "kind": "give_don_to_target",
-            "magnitude": 1,
-            "rested": true
-          },
-          "target": {
-            "kind": "your_leader_or_character"
+            ]
           },
           "verified": "flagged"
         }
@@ -123622,18 +122508,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 2000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {
@@ -123734,18 +122608,6 @@
     },
     "effectSpecV2": {
       "clauses": [
-        {
-          "trigger": "on_play",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 4000,
-            "duration": "this_battle"
-          },
-          "target": {
-            "kind": "your_leader_or_character"
-          },
-          "verified": "human-reviewed"
-        },
         {
           "trigger": "on_play",
           "condition": {

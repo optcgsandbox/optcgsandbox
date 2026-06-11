@@ -135,7 +135,7 @@ export const CardDetailModal = memo(function CardDetailModal() {
           (a) => a.type === 'ACTIVATE_MAIN' && a.instanceId === inst.instanceId,
         );
         if (activate) {
-          out.push({ label: 'ACTIVATE', action: activate, variant: 'primary-teal' });
+          out.push({ label: 'ACTIVATE EFFECT', action: activate, variant: 'primary-teal' });
         }
       }
       out.push({ label: 'CLOSE', action: null, variant: 'secondary' });
@@ -369,7 +369,7 @@ export const CardDetailModal = memo(function CardDetailModal() {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="absolute inset-0 z-50 flex items-start justify-center"
+          className="absolute inset-0 z-[55] flex items-start justify-center"
           style={{
             paddingTop: 'calc(env(safe-area-inset-top, 0px) + 24px)',
             paddingBottom: 'env(safe-area-inset-bottom, 0px)',
@@ -383,7 +383,13 @@ export const CardDetailModal = memo(function CardDetailModal() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.18 }}
-          onClick={onBackdropClick}
+          onClick={(e) => {
+            // F-7r: when TrashViewer is open behind us, tap-outside on the
+            // detail modal must NOT close the trash too. Stop propagation so
+            // TrashViewer's backdrop handler doesn't also fire.
+            e.stopPropagation();
+            onBackdropClick();
+          }}
           aria-hidden={!open}
         >
           <motion.div

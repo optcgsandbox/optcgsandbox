@@ -24,7 +24,17 @@ export default {
       'https://www.optcgsandbox.com',
       'https://optcgsandbox.pages.dev',
     ];
-    const isAllowed = ALLOWED.includes(origin) || origin.endsWith('.pages.dev');
+    // Localhost dev origins are allowed ONLY when the worker is NOT in
+    // production mode (env.ENV !== 'production'). Local Vite (5174) +
+    // Playwright auto-vite (5173) need this for the lobby to fetch
+    // /api/join + open /ws without CORS rejection.
+    const isLocalDev =
+      env.ENV !== 'production' &&
+      /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
+    const isAllowed =
+      ALLOWED.includes(origin) ||
+      origin.endsWith('.pages.dev') ||
+      isLocalDev;
 
     const corsHeaders: HeadersInit = {
       'Access-Control-Allow-Origin': isAllowed ? origin : ALLOWED[0],

@@ -208,6 +208,22 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
     return () => window.clearTimeout(t);
   }, [open, isAiGame, tieDisplaying, spinningSides, diceRoll, rollFor]);
 
+  // vs-AI: after a tie reset (`diceRoll.rolls` increments and both slots
+  // null), auto-re-roll YOUR side as well so the human doesn't have to
+  // re-click the roll button on every tie. The INITIAL roll still requires
+  // a manual click (gated on `rollsCount === 0`); only post-tie rerolls are
+  // automatic. Mirrors the AI auto-roll above for symmetry.
+  useEffect(() => {
+    if (!open) return undefined;
+    if (!isAiGame) return undefined;
+    if (tieDisplaying) return undefined;
+    if (rollsCount === 0) return undefined; // initial roll = manual
+    if (spinningSides.has(youPlayer)) return undefined;
+    if ((diceRoll?.[youPlayer] ?? null) !== null) return undefined;
+    const t = window.setTimeout(() => rollFor(youPlayer), AI_DELAY_MS);
+    return () => window.clearTimeout(t);
+  }, [open, isAiGame, tieDisplaying, rollsCount, spinningSides, diceRoll, youPlayer, rollFor]);
+
   // Auto-focus the YOU roll button when the modal opens (and re-focus after
   // a tie clears the slots).
   useEffect(() => {

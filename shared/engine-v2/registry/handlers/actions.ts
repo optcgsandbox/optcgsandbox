@@ -99,6 +99,20 @@ const givePower: ActionHandler = (state, ctx, action, targets) => {
       const cur = inst.powerModifierExpiresInTurns;
       inst.powerModifierExpiresInTurns = cur === undefined ? turns : Math.max(cur, turns);
     }
+    // F-7s — owner direction (manual playtest 2026-06-10): "combat 0
+    // with no explanation" is unacceptable. Surface every power modifier
+    // with its source so the combat presentation beat can attribute the
+    // change to a specific card. Both positive and negative modifications
+    // emit; the UI filters which to render.
+    if (amount !== 0) {
+      (state.history as Array<unknown>).push({
+        type: 'POWER_MODIFIED',
+        targetInstanceId: id,
+        sourceInstanceId: ctx.sourceInstanceId,
+        amount,
+        duration,
+      });
+    }
   }
   return state;
 };
@@ -139,6 +153,14 @@ const giveKeyword: ActionHandler = (state, _ctx, action, targets) => {
 // ────────────────────────────────────────────────────────────────────
 const removalKo: ActionHandler = (state, ctx, _action, targets) => {
   let next = state;
+  if (targets.length === 0) {
+    (next.history as Array<unknown>).push({
+      type: 'NO_VALID_TARGET',
+      sourceInstanceId: ctx.sourceInstanceId,
+      actionKind: 'removal_ko',
+    });
+    return next;
+  }
   for (const id of targets) {
     const z = findInstZone(next, id);
     if (z === null || z.zone !== 'field') continue;
@@ -208,8 +230,20 @@ const removalKo: ActionHandler = (state, ctx, _action, targets) => {
 // ────────────────────────────────────────────────────────────────────
 // removal_bounce  — return target to controller's hand
 // ────────────────────────────────────────────────────────────────────
-const removalBounce: ActionHandler = (state, _ctx, _action, targets) => {
+const removalBounce: ActionHandler = (state, ctx, _action, targets) => {
   let next = state;
+  // F-7t — owner direction: "If card no-ops because no target: That is
+  // still a UX issue. Add a visible 'No valid target' or 'No effect'
+  // beat so player understands." Emit NO_VALID_TARGET when the engine
+  // resolved zero candidates so the formatter can surface a beat.
+  if (targets.length === 0) {
+    (next.history as Array<unknown>).push({
+      type: 'NO_VALID_TARGET',
+      sourceInstanceId: ctx.sourceInstanceId,
+      actionKind: 'removal_bounce',
+    });
+    return next;
+  }
   for (const id of targets) {
     const z = findInstZone(next, id);
     if (z === null || (z.zone !== 'field' && z.zone !== 'stage')) continue;
@@ -248,6 +282,11 @@ const removalBounce: ActionHandler = (state, _ctx, _action, targets) => {
       type: 'CARD_BOUNCED',
       instanceId: id,
       controller: z.side,
+      // F-7p — causal chain for the GameFeed: which character/event
+      // caused this bounce. Owner direction: "When a card moves: I MUST
+      // KNOW WHY." The handler already had ctx in scope (was underscored
+      // as unused); recording it here is additive — no semantics change.
+      sourceInstanceId: ctx.sourceInstanceId,
     });
   }
   return next;

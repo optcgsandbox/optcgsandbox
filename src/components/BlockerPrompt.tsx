@@ -1,0 +1,241 @@
+// BlockerPrompt — F-7q — 2-step blocker picker.
+//
+// Owner direction (F-7q): "Blocker/counter interaction: YES — 2-step
+// confirm. tap card → enlarge/read/select. Then: [Use This Blocker].
+// Never immediate commit."
+//
+// First tap: lift + outline the chosen blocker, dim others. Bottom CTA
+// changes to "Use This Blocker (name)". Second tap on the same card OR
+// tap the CTA dispatches DECLARE_BLOCKER. Tapping a different blocker
+// switches selection. "Skip Blocker" remains available at any time.
+//
+// No timer. Owner reads cards at their own pace per F-7q rule D.
+
+import { memo, useCallback, useEffect, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useGameStore } from '../store/game';
+import { CardArt, CARD_DIMS } from './CardArt';
+import type { Action } from '@shared/engine-v2/protocol/actions';
+
+export const BlockerPrompt = memo(function BlockerPrompt() {
+  const phase = useGameStore((s) => s.state.phase);
+  const viewAs = useGameStore((s) => s.viewAs);
+  const pending = useGameStore((s) =>
+    s.state.pending?.kind === 'attack' ? s.state.pending.pendingAttack : null,
+  );
+  const instances = useGameStore((s) => s.state.instances);
+  const library = useGameStore((s) => s.state.cardLibrary);
+  const legalActions = useGameStore((s) => s.legalActions);
+  const dispatch = useGameStore((s) => s.dispatch);
+  const reduced = useReducedMotion() ?? false;
+
+  const blockerOptions = legalActions.filter(
+    (a): a is Extract<Action, { type: 'DECLARE_BLOCKER' }> => a.type === 'DECLARE_BLOCKER',
+  );
+  const hasSkip = legalActions.some((a) => a.type === 'SKIP_BLOCKER');
+
+  const defenderId = pending ? instances[pending.targetInstanceId]?.controller : null;
+  const isDefender = defenderId !== null && defenderId === viewAs;
+
+  const open =
+    phase === 'block_window' &&
+    isDefender &&
+    (blockerOptions.length > 0 || hasSkip);
+
+  const [selectedIid, setSelectedIid] = useState<string | null>(null);
+
+  // Reset selection when the prompt closes. (useEffect — never set state
+  // during render.)
+  useEffect(() => {
+    if (!open && selectedIid !== null) setSelectedIid(null);
+  }, [open, selectedIid]);
+
+  const handleSkip = useCallback(() => {
+    setSelectedIid(null);
+    dispatch({ type: 'SKIP_BLOCKER' });
+  }, [dispatch]);
+
+  const handleTileTap = useCallback(
+    (a: Extract<Action, { type: 'DECLARE_BLOCKER' }>) => {
+      if (selectedIid === a.blockerInstanceId) {
+        // Second tap on same tile → commit.
+        setSelectedIid(null);
+        dispatch(a);
+      } else {
+        setSelectedIid(a.blockerInstanceId);
+      }
+    },
+    [dispatch, selectedIid],
+  );
+
+  const handleConfirm = useCallback(() => {
+    if (selectedIid === null) return;
+    const a = blockerOptions.find((x) => x.blockerInstanceId === selectedIid);
+    if (!a) return;
+    setSelectedIid(null);
+    dispatch(a);
+  }, [dispatch, selectedIid, blockerOptions]);
+
+  const selectedName = selectedIid
+    ? library[instances[selectedIid]?.cardId ?? '']?.name ?? 'this blocker'
+    : null;
+
+  const attackerInst = pending ? instances[pending.attackerInstanceId] : undefined;
+  const attackerCard = attackerInst ? library[attackerInst.cardId] : undefined;
+  const targetInst = pending ? instances[pending.targetInstanceId] : undefined;
+  const targetCard = targetInst ? library[targetInst.cardId] : undefined;
+
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="blocker-prompt-heading"
+          data-pending-kind="block_window"
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center
+                     gap-3 px-4 py-6 overflow-y-auto
+                     bg-paper-cream/95 backdrop-blur-sm"
+          initial={reduced ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={reduced ? undefined : { opacity: 0 }}
+          transition={{ duration: reduced ? 0.01 : 0.18 }}
+        >
+          <h2
+            id="blocker-prompt-heading"
+            className="font-display text-[1.5rem] leading-tight text-ink-black"
+          >
+            Block Step
+          </h2>
+
+          <div className="flex items-center gap-3" aria-label="Attack summary">
+            {attackerCard && (
+              <div className="flex flex-col items-center gap-1">
+                <div style={{ width: CARD_DIMS.hand.w, height: CARD_DIMS.hand.h }} className="relative">
+                  <CardArt inst={attackerInst} card={attackerCard} size="hand" />
+                </div>
+                <span className="text-[0.6875rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">
+                  Attacker
+                </span>
+              </div>
+            )}
+            <span className="font-display text-[1.5rem] leading-none text-sun-brass" aria-hidden="true">→</span>
+            {targetCard && (
+              <div className="flex flex-col items-center gap-1">
+                <div style={{ width: CARD_DIMS.hand.w, height: CARD_DIMS.hand.h }} className="relative">
+                  <CardArt inst={targetInst} card={targetCard} size="hand" />
+                </div>
+                <span className="text-[0.6875rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">
+                  Target
+                </span>
+              </div>
+            )}
+          </div>
+
+          {blockerOptions.length > 0 && (
+            <>
+              <p className="text-[0.75rem] font-body font-extrabold uppercase tracking-wider text-ink-iron mt-2">
+                Tap a blocker to read · tap again to confirm
+              </p>
+              <div className="flex flex-wrap items-end justify-center gap-3 max-w-full" aria-label="Available blockers">
+                {blockerOptions.map((a) => {
+                  const inst = instances[a.blockerInstanceId];
+                  const card = inst ? library[inst.cardId] : undefined;
+                  if (!inst || !card) return null;
+                  const isSelected = selectedIid === a.blockerInstanceId;
+                  const dimmed = selectedIid !== null && !isSelected;
+                  // F-7y — owner direction matches CounterPrompt: keep
+                  // selected scale modest so it doesn't overlap grid/CTA.
+                  const baseScale = 0.55;
+                  const selScale = 0.62;
+                  const scale = isSelected ? selScale : baseScale;
+                  return (
+                    <motion.div
+                      key={a.blockerInstanceId}
+                      animate={{ y: isSelected ? -8 : 0, opacity: dimmed ? 0.3 : 1 }}
+                      transition={{ type: 'spring', stiffness: 800, damping: 32 }}
+                      className="flex flex-col items-center gap-1"
+                    >
+                      <motion.div
+                        data-blocker-instance-id={a.blockerInstanceId}
+                        data-selected={isSelected || undefined}
+                        animate={{ width: CARD_DIMS.modal.w * scale, height: CARD_DIMS.modal.h * scale }}
+                        transition={{ type: 'spring', stiffness: 800, damping: 32 }}
+                        className="relative"
+                        style={{ filter: isSelected ? 'drop-shadow(0 6px 14px rgba(168,38,31,0.35))' : undefined }}
+                      >
+                        <div
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            transformOrigin: 'top left',
+                            transform: `scale(${scale})`,
+                            width: CARD_DIMS.modal.w,
+                            height: CARD_DIMS.modal.h,
+                          }}
+                        >
+                          <CardArt
+                            inst={inst}
+                            card={card}
+                            size="modal"
+                            onTap={() => handleTileTap(a)}
+                            highlighted={isSelected}
+                          />
+                        </div>
+                      </motion.div>
+                      <span
+                        className={[
+                          'text-[0.6875rem] font-body font-extrabold uppercase tracking-wider tabular',
+                          isSelected ? 'text-seal-red' : 'text-ink-iron',
+                        ].join(' ')}
+                      >
+                        {card.name}
+                      </span>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+
+          {/* Bottom CTA: confirm (if a tile is selected) OR skip. Both
+              choices stay reachable so the owner can skip without
+              deselecting. */}
+          <div className="flex flex-col items-center gap-2 mt-3">
+            {selectedIid !== null && (
+              <button
+                type="button"
+                onClick={handleConfirm}
+                data-action="CONFIRM_BLOCKER"
+                className="min-h-[48px] min-w-[200px] rounded-2xl bg-seal-red
+                           px-5 py-2 font-body font-extrabold uppercase tracking-wider
+                           text-paper-cream shadow-[0_4px_12px_rgba(168,38,31,0.30)]
+                           focus-visible:ring-2 focus-visible:ring-sun-brass
+                           focus-visible:outline-none"
+              >
+                Use {selectedName}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={handleSkip}
+              disabled={!hasSkip}
+              aria-disabled={!hasSkip}
+              data-action="SKIP_BLOCKER"
+              className="min-h-[44px] min-w-[160px] rounded-2xl bg-hull-teal
+                         px-5 py-2 font-body font-extrabold uppercase tracking-wider
+                         text-paper-cream shadow-[0_4px_12px_rgba(15,69,73,0.30)]
+                         focus-visible:ring-2 focus-visible:ring-sun-brass
+                         focus-visible:outline-none disabled:opacity-50
+                         disabled:cursor-not-allowed"
+            >
+              Skip Blocker
+            </button>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+});
+
+export default BlockerPrompt;

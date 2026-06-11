@@ -95,7 +95,6 @@ export interface ActionResolveTargetPick {
   readonly type: 'RESOLVE_TARGET_PICK';
   readonly pickedId: InstanceId;
 }
-
 // ─── Phase advance
 export interface ActionEndTurn {
   readonly type: 'END_TURN';

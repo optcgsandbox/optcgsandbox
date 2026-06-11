@@ -174,6 +174,15 @@ export const PhaseScheduler = {
       const topId = pl.deck.shift();
       if (topId !== undefined) {
         pl.hand.push(topId);
+        // F-7p — communication layer (BUG-016). Emit CARD_DRAWN so the
+        // GameFeed / GameToast can announce the draw. Hidden-info redaction
+        // (opp draws → "drew a card") is the formatter's responsibility,
+        // not the engine's.
+        (state.history as Array<unknown>).push({
+          type: 'CARD_DRAWN',
+          instanceId: topId,
+          controller: ap,
+        });
       } else {
         // Deck-out: assign loss on draw-attempt-from-empty (CR §10-3-1).
         state.result = { loser: ap, reason: 'deck_out' };

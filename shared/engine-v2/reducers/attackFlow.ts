@@ -129,7 +129,13 @@ function koCharacter(state: GameState, target: CardInstance, side: PlayerId): Ga
   return next;
 }
 
-function flipTopLifeToHand(state: GameState, side: PlayerId): {
+function flipTopLifeToHand(
+  state: GameState,
+  side: PlayerId,
+  // F8A-F3 [Banish] (CR §10-1-3 / V1 D7): banished life damage goes to
+  // trash instead of hand and never opens a trigger window.
+  destination: 'hand' | 'trash' = 'hand',
+): {
   state: GameState;
   flippedInstanceId: string | null;
 } {
@@ -157,13 +163,22 @@ function flipTopLifeToHand(state: GameState, side: PlayerId): {
     repl.state.result = { loser: side, reason: 'life_zero' };
     return { state: repl.state, flippedInstanceId: null };
   }
-  pl.hand.push(top);
   let next = repl.state;
-  (next.history as Array<unknown>).push({
-    type: 'LIFE_CARD_TO_HAND',
-    instanceId: top,
-    controller: side,
-  });
+  if (destination === 'trash') {
+    pl.trash.push(top);
+    (next.history as Array<unknown>).push({
+      type: 'LIFE_CARD_BANISHED',
+      instanceId: top,
+      controller: side,
+    });
+  } else {
+    pl.hand.push(top);
+    (next.history as Array<unknown>).push({
+      type: 'LIFE_CARD_TO_HAND',
+      instanceId: top,
+      controller: side,
+    });
+  }
   // Broadcast on_life_changed (both sides) + on_take_damage (defender) +
   // on_damage_taken (defender).
   if (triggerEmitters.has('on_life_changed')) {
@@ -434,6 +449,60 @@ function playCounterReducer(
 // SKIP_COUNTER → damage_resolution → trigger_window or back to main
 // ────────────────────────────────────────────────────────────────────
 
+/**
+ * F8A-F3 — the leader life-damage procedure, shared by resolveDamage and
+ * the RESOLVE_TRIGGER continuation (choiceResolve.ts).
+ *
+ * Runs `flips` damage steps against `defender`'s life:
+ *   - banish=true (CR §10-1-3): every flip goes life → trash, no trigger
+ *     window ever opens. Fully synchronous.
+ *   - banish=false: each flip goes life → hand; if the flipped card has a
+ *     `trigger` clause, suspend into trigger_window carrying
+ *     `remainingLifeFlips` so the resolver continues the procedure.
+ *   - Lethal (life empty on a flip attempt) sets state.result and stops.
+ *
+ * Caller contract: inspect the returned state — result !== null means game
+ * over; pending.kind === 'trigger' means suspended; otherwise the procedure
+ * completed and the caller finishes the battle (clearPendingAttack /
+ * phase restore).
+ */
+export function continueLeaderDamage(
+  state: GameState,
+  defender: PlayerId,
+  flips: number,
+  banish: boolean,
+): GameState {
+  let working = state;
+  for (let i = 0; i < flips; i++) {
+    const flip = flipTopLifeToHand(working, defender, banish ? 'trash' : 'hand');
+    working = flip.state;
+    if (working.result !== null) return working;
+    if (banish) continue; // no reveal, no Trigger (CR §10-1-3)
+    if (flip.flippedInstanceId !== null) {
+      const lifeInst = working.instances[flip.flippedInstanceId];
+      const lifeCard = lifeInst !== undefined
+        ? (working.cardLibrary[lifeInst.cardId] as Card | undefined)
+        : undefined;
+      const hasTrigger =
+        lifeCard?.effectSpecV2?.clauses.some((cl) => cl.trigger === 'trigger') ?? false;
+      if (hasTrigger && lifeInst !== undefined) {
+        working.pending = {
+          kind: 'trigger',
+          pendingTrigger: {
+            lifeCardInstanceId: lifeInst.instanceId,
+            controller: defender,
+            resumePhase: 'main',
+            remainingLifeFlips: flips - i - 1,
+          },
+        };
+        working.phase = 'trigger_window';
+        return working;
+      }
+    }
+  }
+  return working;
+}
+
 function resolveDamage(state: GameState, defender: PlayerId): GameState {
   const pa = state.pending !== null && state.pending.kind === 'attack'
     ? state.pending.pendingAttack
@@ -467,36 +536,27 @@ function resolveDamage(state: GameState, defender: PlayerId): GameState {
   // Determine target type.
   const targetCard = state.cardLibrary[targetInst.cardId] as Card | undefined;
   if (targetCard !== undefined && isLeader(targetCard)) {
-    // Damage leader → flip top life → hand. If 0 life → loss.
-    const flipResult = flipTopLifeToHand(state, defender);
-    if (state.result !== null) {
-      return clearPendingAttack(flipResult.state);
+    // F8A-F3 — keyword-aware leader damage (V2 cutover had regressed both;
+    // V1 reference: shared/engine/applyAction.ts:648 + D7):
+    //   [Double Attack] CR §10-1-2 — the life-add procedure runs 2× (each
+    //     flip is a separate damage step; lethal on flip 1 ends the game,
+    //     a Trigger on flip 1 suspends and RESOLVE_TRIGGER continues).
+    //   [Banish] CR §10-1-3 — damaged life card is trashed without
+    //     revealing; its Trigger does NOT fire.
+    // instHasKeyword (not card.keywords) so effect-granted keywords count.
+    const flips = instHasKeyword(state, attackerInst, 'double_attack') ? 2 : 1;
+    const banish = instHasKeyword(state, attackerInst, 'banish');
+    const next = continueLeaderDamage(state, defender, flips, banish);
+    if (next.result !== null) {
+      return clearPendingAttack(next);
     }
-    // Suspend on trigger_window if the flipped life card has a `trigger` clause.
-    if (flipResult.flippedInstanceId !== null) {
-      const lifeInst = state.instances[flipResult.flippedInstanceId];
-      const lifeCard = lifeInst !== undefined
-        ? (state.cardLibrary[lifeInst.cardId] as Card | undefined)
-        : undefined;
-      const hasTrigger =
-        lifeCard?.effectSpecV2?.clauses.some((cl) => cl.trigger === 'trigger') ?? false;
-      if (hasTrigger && lifeInst !== undefined) {
-        state.pending = {
-          kind: 'trigger',
-          pendingTrigger: {
-            lifeCardInstanceId: lifeInst.instanceId,
-            controller: defender,
-            resumePhase: 'main',
-          },
-        };
-        state.phase = 'trigger_window';
-        // Note: don't clear pendingAttack yet — preserved across the trigger
-        // window via state.pending swap. After RESOLVE_TRIGGER fires, the
-        // resolver should restore phase and clear.
-        return state;
-      }
+    if (next.pending !== null && next.pending.kind === 'trigger') {
+      // Suspended on a trigger window. pendingAttack was swapped out;
+      // RESOLVE_TRIGGER (choiceResolve.ts) continues remaining flips,
+      // restores phase, and wipes this-battle modifiers on completion.
+      return next;
     }
-    return clearPendingAttack(state);
+    return clearPendingAttack(next);
   }
 
   if (targetCard !== undefined && isCharacter(targetCard)) {

@@ -1,7 +1,7 @@
 # Private Alpha Readiness — F-7k Final
 
 **Date:** 2026-06-09
-**Status:** **CONFIRMED — soak v9 18/18 clean after BUG-008.A fix.**
+**Status:** **DOWNGRADED to PRIVATE_ALPHA_BLOCKED** while BUG-009 (human-UI playability) is in flight; pending re-soak + manual playtest to lock back to `PRIVATE_ALPHA_READY`.
 
 This document is the readiness verdict for opening the OPTCG online vertical to a private alpha audience.
 
@@ -9,7 +9,15 @@ This document is the readiness verdict for opening the OPTCG online vertical to 
 
 ## Verdict
 
-# **`PRIVATE_ALPHA_READY`**
+# **`PRIVATE_ALPHA_BLOCKED`** (was: `PRIVATE_ALPHA_READY`)
+
+Downgraded 2026-06-09 after owner playtest exposed UI gaps the soak harness's robotic picker could not see: pending windows (block / counter / trigger / discard) opened correctly server-side but defenders couldn't visually find the response buttons; ACTIVATE_MAIN / PLAY_CARD / DECLARE_ATTACK were buried in a flat list; field cards shifted on KO. See BUG-009.A-F in `docs/GAMEPLAY_BUGLOG.md`.
+
+Engine is unchanged. Server is unchanged. All bugs are UI-rendering gaps in `src/online/OnlinePlayfield.tsx` and `src/online/labelAction.ts`. Restore `PRIVATE_ALPHA_READY` only after:
+- 9-spec gameplay battery passes. ✅ **PASSED 9/9 — 2026-06-09.**
+- 18-game soak passes (proves picker still works after UI restructure). ✅ **17/18 cleanly completed — 2026-06-09.** Single failure was a `click-cap` (red-vs-green slow grind, same flake observed in BUG-007 soak v5 — not a UI regression). Pre-BUG-009 soak v9 was 18/18; the new UI added a small per-action click overhead from React re-renders during grouped layout, pushing one already-slow-seed game past 6000 clicks. Picker logic unchanged.
+- New `e2e/online/gameplay/human-playability-regression.spec.ts` passes. ✅ **PASSED — 2026-06-09.**
+- Owner manual two-tab playtest confirms BUG-009.A-F are no longer reproducible. **OWNER-DRIVEN — outstanding.**
 
 All architecture, mechanic, and projection paths required for a full match are verified through deterministic vitest + browser specs + a 18-game corpus-deck soak. Eight engine / harness / spec bugs were surfaced and resolved over F-7k. The remaining gaps are intentionally deferred design choices (auto-keep mulligan at setup) and known-low-risk per-card refinements that do not block alpha.
 
@@ -90,6 +98,16 @@ None blocker-level. See `docs/GAMEPLAY_BUGLOG.md`:
 - BUG-007.B — RESOLVED 2026-06-09.
 - BUG-007.C — RESOLVED 2026-06-09.
 - BUG-008.A — RESOLVED 2026-06-09 (CR §6-5-7 hand-size discard count was ignored).
+- BUG-010 — RESOLVED 2026-06-09 (local vs-AI human reactive windows; Phase A/B/C/D landed in `src/store/game.ts` + `src/components/BlockerPrompt.tsx` + `src/components/TriggerPrompt.tsx`). **Scope:** LOCAL vs-AI ONLY; online vertical was symmetric and unaffected.
+
+---
+
+## Online vs LOCAL status (split)
+
+| Vertical | Status | Notes |
+|---|---|---|
+| **ONLINE alpha** (`/?online=1`) | `PRIVATE_ALPHA_BLOCKED` pending owner playtest + v8 soak confirmation. | Engine + projection + WebSocket pipeline proven via 28 server vitests + 17/18 soak v9; BUG-009.A–F UI fixes landed but owner-driven re-verification outstanding (see line 20 above). |
+| **LOCAL vs-AI** (`/`) | **VERIFIED 2026-06-09** for the reactive-window family (block, counter, trigger). | BUG-010 closed across Phase A/B/C/D; `e2e/local-ai/local-vs-ai-human-reactive.spec.ts` (3 tests), `e2e/family-blocker.spec.ts` (seed-style), `e2e/core-combat-smoke.spec.ts` (5 tests), and `e2e/multi-turn-smoke.spec.ts` (5 tests) all green after BUG-010 follow-up updated the stale combat-smoke harness to drain human reactive windows with safe defaults (`SKIP_BLOCKER` / `SKIP_COUNTER` / `RESOLVE_TRIGGER{activate:false}` / `RESOLVE_DISCARD`) via new `PlayerDriver.waitForAMainControlDrainingReactive`. Owner manual playtest remains the canonical gate for real-flow AI-resume confirmation. |
 
 ---
 

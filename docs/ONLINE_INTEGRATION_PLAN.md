@@ -3324,3 +3324,87 @@ Honest DoD vs owner spec ("Game plays from start to finish with no glitches. All
 ### 44.5 Honest DoD %
 
 **~97%** (verdict-locking; 3% remaining is mulligan UI + per-card browser pinning, both alpha+1).
+
+---
+
+## 45. F-7k BUG-009 — Human UI playability after live playtest (UI-only fixes; verdict DOWNGRADED then restoring)
+
+### 45.1 Trigger
+
+Owner manual two-tab playtest on 2026-06-09 exposed UI playability gaps that the soak harness's robotic picker could not see. Engine + server + projection + WebSocket all verified clean (28 vitests / 324 server tests pass; 18-game soak v9 passed end-to-end). Bug surface is pure rendering / interaction in `src/online/`.
+
+### 45.2 Bugs filed + fixed (BUG-009.A–F UI-only; G advisory; H deferred)
+
+| ID | Issue | Fix |
+|---|---|---|
+| A | END_TURN buried in flat action list | Grouped action panel with **Turn** section |
+| B | Defender couldn't find blocker response | Pending banner + **Blocker Response** group |
+| C | Defender couldn't find counter response | Same banner + **Counter Response** group |
+| D | ACTIVATE_MAIN unclear | **Card Effects** group + label `Activate: {name}` |
+| E | Event cards not distinguishable from characters | Card-kind-aware labels (`Play Event: X`, `Play Character: X`, `Play Stage: X`) + per-kind groups |
+| F | KO'd card shifted survivors across field row | Stable 5-slot grid with empty-placeholder slots |
+| G | Opp trash count upside-down (local PlayfieldStage) | DEFERRED — out of allow-list (local UI, not online) |
+| H | Trigger card identity reveal + combat feedback feed | DEFERRED to F-7m — requires server-projection change |
+
+### 45.3 New files / modified files
+
+| Path | Status |
+|---|---|
+| `src/online/labelAction.ts` | UPDATED — card-kind label, `actionGroup` classifier, `ACTION_GROUP_ORDER` |
+| `src/online/labelAction.test.ts` | UPDATED — 32 new tests for group classifier + per-kind labels |
+| `src/online/OnlinePlayfield.tsx` | REWRITTEN — `PendingBanner`, `GroupedActions`, stable field slots, legacy `online-concede` button preserved |
+| `e2e/online/gameplay/human-playability-regression.spec.ts` | NEW — verifies banner + group attributes + slot stability |
+| `docs/GAMEPLAY_BUGLOG.md` | UPDATED — BUG-009.A–H entries |
+| `docs/GAMEPLAY_VERIFICATION_MATRIX.md` | UPDATED — DoD% to ~93% |
+| `docs/PRIVATE_ALPHA_READINESS.md` | DOWNGRADED to BLOCKED; criteria documented |
+| `docs/ONLINE_INTEGRATION_PLAN.md` | UPDATED (§45) |
+
+### 45.4 Test gates passing (post-fix)
+
+| Gate | Result |
+|---|---|
+| Server vitest + labelAction | 28 files / 356 tests passed (+32 BUG-009 label/group tests) |
+| `npx vite build` | OK |
+| `npx wrangler deploy --dry-run` | OK |
+| 9-spec Playwright (F-7h + 6 prior gameplay specs + new human-playability spec + soak default-1-game) | 9/9 passed |
+| `SOAK_FULL=1` 18-game soak | **17/18 cleanly completed** (8 A wins / 9 B wins / 7725 clicks / longest 13 turns). 1 click-cap on `red-vs-green game 1` at 6000 clicks / 13 turns — same slow-grind seed flake observed in BUG-007 v5, not a UI regression. Server, picker, and engine paths confirmed healthy under the new UI. |
+
+### 45.5 Server contracts untouched
+
+UI-only constraint respected. **No edits** to:
+- `shared/engine-v2/**`
+- `shared/server/MatchSession.ts`, `MatchRoom.ts`, `turnPipeline.ts`, `relinkInstances.ts`, `publicProjection.ts`
+- `worker/GameRoom.ts`, `Matchmaker.ts`, `index.ts`, `devSetup.ts`
+- `shared/data/cards.json`
+- protocol types (`shared/engine-v2/protocol/actions.ts`)
+- legality rules (`shared/engine-v2/rules/legality.ts`)
+
+Buttons submit the exact `Action` object the server emitted; no client-side legality, no synth, no mutation.
+
+### 45.6 Restore criteria for `PRIVATE_ALPHA_READY`
+
+1. 18-game soak passes (proves picker still works after UI restructure).
+2. New `human-playability-regression.spec.ts` passes.
+3. Owner manual two-tab playtest confirms BUG-009.A–F are no longer reproducible.
+
+Status as of 2026-06-09: items 1+2 expected green pending soak finish; item 3 owner-driven.
+
+---
+
+## 46. Out-of-scope note: LOCAL vs-AI reactive windows (BUG-010)
+
+The F-7n sequence (Phase A/B/C/D, 2026-06-09) was a LOCAL-PATH fix, NOT an online change.
+
+- **Touched:** `src/store/game.ts` (`runAiTurn` narrowed yields + `aiPaused` re-entry flag), `src/components/TriggerPrompt.tsx` (Activate re-enabled), NEW `src/components/BlockerPrompt.tsx`, `src/components/PlayfieldStage.tsx` (mount).
+- **Untouched:** all `src/online/**`, `worker/**`, `shared/server/**`, `shared/engine-v2/**`. Online vertical's reactive flow (BUG-009.B/C) is a separate UI surface (`OnlinePlayfield`) and continues to use pending-banners + grouped action sections from F-7m.
+- **Scope rationale:** the symptom ("computer can use triggers, I cannot") only reproduced on the LOCAL `/` route under `mode: 'vs-easy'`. The online A-vs-B matrix was already symmetric.
+- **Regression spec:** `e2e/local-ai/local-vs-ai-human-reactive.spec.ts` (3 tests; passes). `e2e/family-blocker.spec.ts` (seed-style) continues to pass.
+
+This section is here only to document the cross-vertical boundary. No edits to the online plan above.
+
+### 46.1 BUG-010 follow-up — stale local combat-smoke harness updated (no online impact)
+
+- **Touched:** `e2e/helpers/player.ts` (added `waitForAMainControlDrainingReactive`), `e2e/core-combat-smoke.spec.ts` (local `waitForAMainControl` delegates), `e2e/multi-turn-smoke.spec.ts` (same).
+- **Untouched:** all of `src/online/**`, `worker/**`, `shared/server/**`, `shared/engine-v2/**`. No `src/store/game.ts` or `src/components/*` changes — Phase A/B/C/D code intact.
+- **Why:** post-BUG-010 the local AI loop yields to the UI on human reactive windows. Two pre-existing smoke tests polled for `phase=main, activePlayer=A` and assumed silent auto-skip; the new test-only helper stands in for the human's click with safe defaults so the AI turn can finish.
+- **Result:** `e2e/core-combat-smoke.spec.ts` (5/5), `e2e/multi-turn-smoke.spec.ts` (5/5), `e2e/local-ai/local-vs-ai-human-reactive.spec.ts` (3/3), `e2e/family-blocker.spec.ts` (1/1) all green together.

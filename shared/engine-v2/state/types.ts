@@ -204,6 +204,10 @@ export interface PendingTrigger {
   readonly controller: PlayerId;
   readonly resumePhase: Phase;
   readonly scratch?: ClauseScratch;
+  /** F8A-F3 [Double Attack] (CR §10-1-2): life-damage flips still owed after
+   *  this trigger window. RESOLVE_TRIGGER continues the damage procedure via
+   *  continueLeaderDamage() when > 0. Absent/0 for ordinary triggers. */
+  readonly remainingLifeFlips?: number;
 }
 
 export interface PendingPeek {

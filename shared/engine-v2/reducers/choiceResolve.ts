@@ -35,6 +35,7 @@ import type {
 import { actionHandlers, targetResolvers } from '../registry/types.js';
 import type { EffectClauseV2 } from '../spec/types.js';
 import { OTHER_PLAYER, type GameState, type InstanceId, type PlayerId } from '../state/types.js';
+import { continueLeaderDamage } from './attackFlow.js';
 import { registerActionReducer } from './registry.js';
 
 // ─── RESOLVE_TRIGGER
@@ -60,6 +61,31 @@ function resolveTriggerReducer(
     next = safeProcessSimEvent(next, { sourceInstanceId: pt.lifeCardInstanceId, controller: pt.controller }, 'trigger');
   }
 
+  (next.history as Array<unknown>).push({
+    type: 'TRIGGER_RESOLVED',
+    instanceId: pt.lifeCardInstanceId,
+    activated: action.activate,
+  });
+
+  // F8A-F3 [Double Attack] (CR §10-1-2): if this trigger window interrupted
+  // a multi-flip damage procedure, continue the remaining flips. Remaining
+  // flips are always non-banish — banished damage never opens a trigger
+  // window in the first place (CR §10-1-3).
+  const remaining = pt.remainingLifeFlips ?? 0;
+  if (remaining > 0 && next.result === null) {
+    next = continueLeaderDamage(next, pt.controller, remaining, false);
+    // Suspended again on another trigger window — leave the new pending in
+    // place for the next RESOLVE_TRIGGER (battle modifiers stay until the
+    // procedure fully completes, mirroring the first suspension).
+    if (
+      next.pending !== null &&
+      next.pending.kind === 'trigger' &&
+      next.pending.pendingTrigger !== pt
+    ) {
+      return next;
+    }
+  }
+
   // Wipe this-battle power modifiers (attack chain ends here).
   for (const side of ['A', 'B'] as PlayerId[]) {
     const pl = next.players[side];
@@ -68,13 +94,10 @@ function resolveTriggerReducer(
     if (pl.stage !== null) pl.stage.powerModifierThisBattle = undefined;
   }
 
-  next.phase = pt.resumePhase;
+  if (next.result === null) {
+    next.phase = pt.resumePhase;
+  }
   next.pending = null;
-  (next.history as Array<unknown>).push({
-    type: 'TRIGGER_RESOLVED',
-    instanceId: pt.lifeCardInstanceId,
-    activated: action.activate,
-  });
   return next;
 }
 

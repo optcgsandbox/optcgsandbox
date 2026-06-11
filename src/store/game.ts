@@ -66,7 +66,31 @@ function buildDeck(color: DeckColor): Card[] {
   const pool = ALL_CARDS.filter(
     (c) => c.kind !== 'leader' && c.colors.includes(color),
   );
-  return pool.slice(0, 50);
+  // Driver-only coverage injection. Production behavior is unchanged when
+  // the localStorage key is absent (the only condition that exists in normal
+  // user sessions). The automated play-driver may set
+  //   localStorage.setItem('PLAY_DRIVER_PREFER', JSON.stringify(cardIds))
+  // before page.goto to bias deck construction toward untested cards. The
+  // injection still produces 50 legal cards in the leader's color (filtered
+  // by `pool.filter` above) — only the priority order changes.
+  let prefer: string[] = [];
+  try {
+    const raw =
+      typeof window !== 'undefined'
+        ? window.localStorage.getItem('PLAY_DRIVER_PREFER')
+        : null;
+    if (raw !== null) {
+      const parsed = JSON.parse(raw) as unknown;
+      if (Array.isArray(parsed)) prefer = parsed.filter((s): s is string => typeof s === 'string');
+    }
+  } catch {
+    // localStorage parse failure → fall back to production behavior.
+  }
+  if (prefer.length === 0) return pool.slice(0, 50);
+  const preferSet = new Set(prefer);
+  const preferred = pool.filter((c) => preferSet.has(c.id));
+  const rest = pool.filter((c) => !preferSet.has(c.id));
+  return [...preferred, ...rest].slice(0, 50);
 }
 
 /** D24 (CR §5-2-1-4) + D10 (CR §5-2-1-6): `setupGame` leaves the engine in
@@ -77,10 +101,39 @@ function buildDeck(color: DeckColor): Card[] {
  *  player's refresh → draw → don. */
 function bootGame(seed: number): GameState {
   bootEngineIfNeeded();
+  // Driver-only leader injection. Mirrors PLAY_DRIVER_PREFER. Production
+  // behavior is unchanged when the localStorage key is absent (the only
+  // condition that exists in normal user sessions). The automated
+  // play-driver may set
+  //   localStorage.setItem('PLAY_DRIVER_LEADER_ID', cardId)
+  // before page.goto to rotate the seat-A leader across colors and unlock
+  // coverage of cards in other colors.
+  let driverLeader: LeaderCard | null = null;
+  try {
+    const raw =
+      typeof window !== 'undefined'
+        ? window.localStorage.getItem('PLAY_DRIVER_LEADER_ID')
+        : null;
+    if (raw !== null && raw.length > 0) {
+      const candidate = ALL_CARDS.find(
+        (c) => c.id === raw && c.kind === 'leader',
+      );
+      if (candidate !== undefined) driverLeader = candidate as LeaderCard;
+    }
+  } catch {
+    // Fall back to production behavior on any read failure.
+  }
+  const leaderA: LeaderCard = driverLeader ?? pickLeader('red');
+  // For the deck-color filter, use the leader's FIRST color. For multi-color
+  // leaders, buildDeck currently takes a single color so we pick the primary;
+  // the resulting deck still satisfies the OPTCG color-share rule because
+  // any card matching the primary color is legal under the leader's identity.
+  const colorA = (leaderA.colors[0] as DeckColor) ?? 'red';
+
   let s = initialState({
     seed,
     decks: {
-      A: { leader: pickLeader('red'), cards: buildDeck('red') },
+      A: { leader: leaderA, cards: buildDeck(colorA) },
       // 2026-06-01: switch opp from OP01-060 Doflamingo to OP09-042 Buggy.
       // Doflamingo's auto-extracted effectTags include 'searcher'+'ramp',
       // which previously ghost-fired at game start. Even though the V1
@@ -210,7 +263,21 @@ async function runPhasePipelineWithDelays(
   }
 
   // === MAIN ===
-  const mainState: GameState = { ...get().state, phase: 'main' };
+  // F-7p — emit TURN_STARTED here so the GameFeed reads "Turn N — Your
+  // turn / Opponent's turn." The store runs the refresh→draw→don→main
+  // pipeline without calling PhaseScheduler.enterMain (the engine's
+  // enterMain just refolds continuous; the store has its own pacing),
+  // so the event has to be pushed here at the boundary.
+  const mainBaseState = get().state;
+  const mainHistory = [
+    ...mainBaseState.history,
+    {
+      type: 'TURN_STARTED',
+      turn: mainBaseState.turn,
+      activePlayer: mainBaseState.activePlayer,
+    },
+  ];
+  const mainState: GameState = { ...mainBaseState, phase: 'main', history: mainHistory };
   set({ state: mainState, legalActions: getLegalActions(mainState, mainState.activePlayer) });
 }
 
@@ -236,6 +303,13 @@ interface GameStore {
   viewAs: PlayerId;
   legalActions: Action[];
   aiThinking: boolean;
+  /** F-7n Phase A/B — true when `runAiTurn` returned early to yield a
+   *  reactive window (block/counter/trigger) to the human. Re-entry
+   *  guard at the end of dispatch resumes the AI loop ONLY when this
+   *  flag is set, so seed-style harness tests that never went through
+   *  runAiTurn are not pulled into an AI turn after dispatching an
+   *  action while activePlayer === 'B'. Cleared when runAiTurn resumes. */
+  aiPaused: boolean;
   /** UI-D3 (design-reference §5 + visual-design-spec §3.5):
    *  Instance ID of the hand or field card the player has "lifted" for
    *  inspection. Null when nothing is lifted. A second tap on a lifted hand
@@ -284,7 +358,82 @@ async function runAiTurn(
     const s = get().state;
     if (s.result || s.activePlayer !== AI_OPPONENT) break;
     const action = await ai.chooseAction(s, AI_OPPONENT, 100);
-    const { state: next } = applyAction(s, AI_OPPONENT, action);
+    let { state: next } = applyAction(s, AI_OPPONENT, action);
+    // F-7n Phase A — narrowed force-skip of block/counter for the human
+    // defender during AI attacks. ONLY auto-skip when the human has no
+    // meaningful response (only SKIP_* / CONCEDE available). Otherwise
+    // commit the pending state, yield to the UI (AttackResolutionOverlay
+    // + CardDetailModal handle this), and EXIT the AI loop. After the
+    // human resolves, dispatch's tail re-enters runAiTurn (see end-of-
+    // dispatch re-entry guard).
+    while (next.phase === 'block_window' || next.phase === 'counter_window') {
+      const defender = AI_HUMAN;
+      const opts = getLegalActions(next, defender).filter(
+        (a) =>
+          a.type !== 'CONCEDE' &&
+          a.type !== 'SKIP_BLOCKER' &&
+          a.type !== 'SKIP_COUNTER',
+      );
+      if (opts.length > 0) {
+        // Human has a real choice. Commit + yield.
+        set({
+          state: next,
+          legalActions: getLegalActions(next, defender),
+          aiThinking: false,
+          aiPaused: true,
+        });
+        return;
+      }
+      const skip: Action = next.phase === 'block_window' ? { type: 'SKIP_BLOCKER' } : { type: 'SKIP_COUNTER' };
+      next = applyAction(next, defender, skip).state;
+    }
+    // F-7n Phase B — yield trigger_window to the human if they control it.
+    // Pre-fix this auto-declined every human trigger silently. Now we
+    // commit + return so TriggerPrompt can render.
+    if (
+      next.phase === 'trigger_window' &&
+      next.pending !== null &&
+      next.pending.kind === 'trigger' &&
+      next.pending.pendingTrigger.controller === AI_HUMAN
+    ) {
+      set({
+        state: next,
+        legalActions: getLegalActions(next, AI_HUMAN),
+        aiThinking: false,
+        aiPaused: true,
+      });
+      return;
+    }
+    // Auto-resolve any prompt windows for ANY controller during AI turn —
+    // discard / peek / choose_one (no UI for these yet). Hand-size-limit at
+    // AI's end-turn produces pendingDiscard with controller=AI; card effects
+    // may target the human. Either way, no UI to interact, so we resolve.
+    let aiSafety = 0;
+    while (aiSafety++ < 50 && next.pending !== null) {
+      const p = next.pending;
+      if (next.phase === 'discard_choice' && p.kind === 'discard') {
+        const pid = p.pendingDiscard.controller;
+        const hand = next.players[pid].hand;
+        const pickedId = hand.length > 0 ? hand[0]! : null;
+        next = applyAction(next, pid, { type: 'RESOLVE_DISCARD', pickedId }).state;
+        continue;
+      }
+      if (next.phase === 'peek_choice' && p.kind === 'peek') {
+        next = applyAction(next, p.pendingPeek.controller, { type: 'RESOLVE_PEEK', pickedIds: [] }).state;
+        continue;
+      }
+      if (next.phase === 'choose_one' && p.kind === 'choose_one') {
+        next = applyAction(next, p.pendingChoose.controller, { type: 'RESOLVE_CHOOSE_ONE', optionIndex: 0 }).state;
+        continue;
+      }
+      if (next.phase === 'trigger_window' && p.kind === 'trigger') {
+        next = applyAction(next, p.pendingTrigger.controller, {
+          type: 'RESOLVE_TRIGGER', activate: false, targetInstanceId: null,
+        }).state;
+        continue;
+      }
+      break;
+    }
     set({ state: next, legalActions: getLegalActions(next, next.activePlayer) });
     if (action.type === 'END_TURN' || action.type === 'CONCEDE') break;
     // Two-stage pacing: hold AFTER the action commits so the player sees the
@@ -299,7 +448,36 @@ async function runAiTurn(
   if (!get().state.result && get().state.activePlayer === AI_OPPONENT) {
     // AI hit safety cap — force end turn, then pace the human's R/D/D so each
     // step is visible (matches the post-END_TURN branch below).
-    const ended = PhaseScheduler.enterEnd(get().state);
+    let ended = PhaseScheduler.enterEnd(get().state);
+    // Force-resolve any pending arising from enterEnd (hand-size discard,
+    // continuous effect triggers, etc.) — without this the game stalls
+    // when the AI hits its safety cap with > 10 cards in hand.
+    let s2 = 0;
+    while (s2++ < 50 && ended.pending !== null) {
+      const p = ended.pending;
+      if (ended.phase === 'discard_choice' && p.kind === 'discard') {
+        const pid = p.pendingDiscard.controller;
+        const hand = ended.players[pid].hand;
+        const pickedId = hand.length > 0 ? hand[0]! : null;
+        ended = applyAction(ended, pid, { type: 'RESOLVE_DISCARD', pickedId }).state;
+        continue;
+      }
+      if (ended.phase === 'peek_choice' && p.kind === 'peek') {
+        ended = applyAction(ended, p.pendingPeek.controller, { type: 'RESOLVE_PEEK', pickedIds: [] }).state;
+        continue;
+      }
+      if (ended.phase === 'choose_one' && p.kind === 'choose_one') {
+        ended = applyAction(ended, p.pendingChoose.controller, { type: 'RESOLVE_CHOOSE_ONE', optionIndex: 0 }).state;
+        continue;
+      }
+      if (ended.phase === 'trigger_window' && p.kind === 'trigger') {
+        ended = applyAction(ended, p.pendingTrigger.controller, {
+          type: 'RESOLVE_TRIGGER', activate: false, targetInstanceId: null,
+        }).state;
+        continue;
+      }
+      break;
+    }
     set({ state: ended, legalActions: getLegalActions(ended, ended.activePlayer) });
     await wait(TURN_HANDOFF_DELAY_MS);
     await runPhasePipelineWithDelays(get, set);
@@ -321,6 +499,7 @@ export const useGameStore = create<GameStore>((set, get) => {
     viewAs: 'A',
     legalActions: getLegalActions(initial, 'A'),
     aiThinking: false,
+    aiPaused: false,
     inspectedCardId: null,
     cardDetailOpen: false,
     selectedAttackerId: null,
@@ -343,23 +522,120 @@ export const useGameStore = create<GameStore>((set, get) => {
       const isInactivePlayerPhase =
         state.phase === 'block_window' ||
         state.phase === 'counter_window';
-      const player = isInactivePlayerPhase
-        ? (state.activePlayer === 'A' ? 'B' : 'A')
-        : state.activePlayer;
+      // trigger_window: the deciding player is pendingTrigger.controller
+      // (the defender whose life flipped). activePlayer is still the
+      // attacker. Mirrors the AI auto-pump routing at game.ts:575-583
+      // which already dispatches via p.pendingTrigger.controller.
+      const isTriggerWindow =
+        state.phase === 'trigger_window' &&
+        state.pending !== null &&
+        state.pending.kind === 'trigger';
+      const player = isTriggerWindow
+        ? (state.pending as { pendingTrigger: { controller: PlayerId } }).pendingTrigger.controller
+        : isInactivePlayerPhase
+          ? (state.activePlayer === 'A' ? 'B' : 'A')
+          : state.activePlayer;
       const result = applyAction(state, player, action);
       let next = result.state;
 
       // Auto-skip windows for the human if no meaningful response.
       // (v0: humans can opt in to block/counter via dedicated buttons in v0.1 UI; for now,
       // we auto-resolve when the inactive player has no blocker / counter cards.)
+      //
+      // In vs-AI modes, the reactive player IS the AI (`AI_OPPONENT='B'`) when
+      // the active player is the human. There is no AI useEffect that
+      // dispatches in block/counter windows; without forcing the skip here,
+      // the game stalls with `state.pending.kind='attack'` and the human's
+      // subsequent END_TURN no-ops (engine guards `state.pending !== null` at
+      // turnFlow.ts:29). Force the skip whenever the reactive player is the
+      // AI in vs-AI modes. (Symmetric of the existing mulligan auto-fire.)
+      const aiModes: ReadonlyArray<GameMode> = ['vs-easy', 'vs-medium', 'vs-hard'];
+      const currentMode = get().mode;
+      const isAiGame = aiModes.includes(currentMode);
       while (next.phase === 'block_window' || next.phase === 'counter_window') {
         const reactivePlayer = next.activePlayer === 'A' ? 'B' : 'A';
+        const reactiveIsAi = isAiGame && reactivePlayer === AI_OPPONENT;
         const opts = getLegalActions(next, reactivePlayer).filter(
           (a) => a.type !== 'CONCEDE' && a.type !== 'SKIP_BLOCKER' && a.type !== 'SKIP_COUNTER'
         );
-        if (opts.length > 0) break;
+        if (!reactiveIsAi && opts.length > 0) break;
         const skip: Action = next.phase === 'block_window' ? { type: 'SKIP_BLOCKER' } : { type: 'SKIP_COUNTER' };
         next = applyAction(next, reactivePlayer, skip).state;
+      }
+      // After block/counter resolves there may be a trigger_window pending
+      // (life-flip with `trigger` clause). The AI doesn't auto-resolve
+      // triggers either; force RESOLVE_TRIGGER with activate=false (decline)
+      // so the human's flow isn't blocked.
+      while (
+        next.phase === 'trigger_window' &&
+        next.pending !== null &&
+        next.pending.kind === 'trigger' &&
+        isAiGame &&
+        next.pending.pendingTrigger.controller === AI_OPPONENT
+      ) {
+        next = applyAction(next, AI_OPPONENT, {
+          type: 'RESOLVE_TRIGGER',
+          activate: false,
+          targetInstanceId: null,
+        }).state;
+      }
+      // Auto-resolve discard / peek / choose_one for ANY controller (UI for
+      // these doesn't exist yet; without auto-resolve the game stalls).
+      // Hand-size-limit at end-of-turn (PhaseScheduler.enterEnd:335-348)
+      // creates pendingDiscard with controller = ending player — could be
+      // either the human at their end-turn OR the AI at theirs. Same for
+      // discard/peek/choose_one arising from card effects on either side.
+      // Auto-resolve loop. ONLY auto-resolves when:
+      //   - the pending controller is the AI (AI cannot interact with UI), OR
+      //   - the pending is a SYSTEM-driven discard (hand-size end-of-turn at
+      //     PhaseScheduler.ts:341, sourceInstanceId === 'system').
+      // For card-effect-driven pendings whose controller is the HUMAN, we
+      // BREAK out of the loop so React renders the corresponding prompt
+      // (ChoosePrompt, PeekChoicePrompt, DiscardChoicePrompt, TriggerPrompt).
+      // Prior behavior auto-resolved every controller, which silently cleared
+      // human-side prompts before they could mount — caused 35+ harness
+      // failures in `[data-pending-kind=...]` selector waits.
+      let safety = 0;
+      while (safety++ < 50 && next.pending !== null) {
+        const p = next.pending;
+        if (next.phase === 'discard_choice' && p.kind === 'discard') {
+          const pid = p.pendingDiscard.controller;
+          const isSystemHandSize = p.pendingDiscard.sourceInstanceId === 'system';
+          if (pid === AI_OPPONENT || isSystemHandSize) {
+            const hand = next.players[pid].hand;
+            // Pick the first card (or null) to satisfy the count. For
+            // hand-size-limit excess, repeatedly pick first card until count
+            // is met.
+            const pickedId = hand.length > 0 ? hand[0]! : null;
+            next = applyAction(next, pid, { type: 'RESOLVE_DISCARD', pickedId }).state;
+            continue;
+          }
+          break;
+        }
+        if (next.phase === 'peek_choice' && p.kind === 'peek') {
+          if (p.pendingPeek.controller === AI_OPPONENT) {
+            next = applyAction(next, p.pendingPeek.controller, { type: 'RESOLVE_PEEK', pickedIds: [] }).state;
+            continue;
+          }
+          break;
+        }
+        if (next.phase === 'choose_one' && p.kind === 'choose_one') {
+          if (p.pendingChoose.controller === AI_OPPONENT) {
+            next = applyAction(next, p.pendingChoose.controller, { type: 'RESOLVE_CHOOSE_ONE', optionIndex: 0 }).state;
+            continue;
+          }
+          break;
+        }
+        if (next.phase === 'trigger_window' && p.kind === 'trigger') {
+          if (p.pendingTrigger.controller === AI_OPPONENT) {
+            next = applyAction(next, p.pendingTrigger.controller, {
+              type: 'RESOLVE_TRIGGER', activate: false, targetInstanceId: null,
+            }).state;
+            continue;
+          }
+          break;
+        }
+        break;
       }
 
       // (Dice-roll + first-player AI auto-fire live in DiceRollPrompt and
@@ -431,13 +707,67 @@ export const useGameStore = create<GameStore>((set, get) => {
       // UI-D2/D3: any phase or active-player change clears transient UI state.
       const phaseOrPlayerChanged =
         next.phase !== state.phase || next.activePlayer !== state.activePlayer;
+      // F-7q — during reactive windows (block/counter/trigger) the
+      // DECIDING player is the inactive player. The store-level
+      // legalActions field has to reflect THEIR options so the prompt
+      // components (BlockerPrompt / CounterPrompt / TriggerPrompt) can
+      // gate on `legalActions.length > 0`. Pre-fix we always computed
+      // for next.activePlayer (the attacker / turn-owner), which
+      // returned `[CONCEDE]` and made the prompts silently refuse to
+      // mount. Phase A/B yields in runAiTurn set legalActions correctly
+      // for the human; this finalisation block now matches that policy.
+      const reactivePhase =
+        next.phase === 'block_window' || next.phase === 'counter_window';
+      const isTriggerReactive =
+        next.phase === 'trigger_window' &&
+        next.pending !== null &&
+        next.pending.kind === 'trigger';
+      const legalActionsFor: PlayerId = reactivePhase
+        ? (next.activePlayer === 'A' ? 'B' : 'A')
+        : isTriggerReactive
+          ? (next.pending as { pendingTrigger: { controller: PlayerId } }).pendingTrigger.controller
+          : next.activePlayer;
       set({
         state: next,
-        legalActions: getLegalActions(next, next.activePlayer),
+        legalActions: getLegalActions(next, legalActionsFor),
         ...(phaseOrPlayerChanged
           ? { inspectedCardId: null, cardDetailOpen: false, selectedAttackerId: null }
           : {}),
       });
+
+      // F-7n Phase A/B re-entry — when the human resolves a reactive
+      // window (block_window / counter_window / trigger_window) during
+      // an AI turn, the AI loop was left mid-action (it exited early per
+      // game.ts runAiTurn's narrowed yields). After the human's response
+      // the AI still owns the turn but has no event to resume it. Kick
+      // runAiTurn again when AI is active, no human pending remains,
+      // and we're not already running.
+      const aiModesReentry: ReadonlyArray<GameMode> = ['vs-easy', 'vs-medium', 'vs-hard'];
+      const isAiGameReentry = aiModesReentry.includes(get().mode);
+      const post = next;
+      const aiCanResume =
+        isAiGameReentry &&
+        !post.result &&
+        post.activePlayer === AI_OPPONENT &&
+        // No human-controlled pending blocking the AI.
+        !(
+          post.pending !== null &&
+          ((post.pending.kind === 'trigger' && post.pending.pendingTrigger.controller === AI_HUMAN) ||
+            (post.pending.kind === 'discard' && post.pending.pendingDiscard.controller === AI_HUMAN) ||
+            (post.pending.kind === 'peek' && post.pending.pendingPeek.controller === AI_HUMAN) ||
+            (post.pending.kind === 'choose_one' && post.pending.pendingChoose.controller === AI_HUMAN))
+        ) &&
+        // Don't re-enter mid-block/counter window where the human is
+        // reactive — those resolve via the same path on the human's next
+        // click.
+        post.phase !== 'block_window' &&
+        post.phase !== 'counter_window' &&
+        !get().aiThinking &&
+        get().aiPaused;
+      if (aiCanResume) {
+        set({ aiPaused: false });
+        void runAiTurn(get, set);
+      }
     },
 
     setInspectedCardId(id) {
@@ -464,7 +794,56 @@ export const useGameStore = create<GameStore>((set, get) => {
       // End the active player's turn — engine flips activePlayer + sets
       // phase='refresh' for the new active player. Commit that state THEN
       // pace through R/D/D so each step is visible.
-      const ended = PhaseScheduler.enterEnd(get().state);
+      let ended = PhaseScheduler.enterEnd(get().state);
+      // Force-resolve any pending arising from enterEnd. Without this the
+      // hand-size-limit case (CR §6-5-7: hand > 10 at end-of-turn produces
+      // pendingDiscard with controller = ending player) leaves the engine
+      // suspended at phase=discard_choice and the turn never finishes.
+      // Mirrors the runAiTurn safety-cap branch above (src/store/game.ts:413).
+      // Auto-resolve loop — mirrors dispatch()'s controller-aware logic.
+      // ONLY auto-resolves when controller is AI, OR (for discard) when the
+      // source is the system-driven hand-size end-of-turn discard
+      // (PhaseScheduler.ts:341). Human card-effect pendings break out so
+      // React can render the corresponding prompt.
+      let s2 = 0;
+      while (s2++ < 50 && ended.pending !== null) {
+        const p = ended.pending;
+        if (ended.phase === 'discard_choice' && p.kind === 'discard') {
+          const pid = p.pendingDiscard.controller;
+          const isSystemHandSize = p.pendingDiscard.sourceInstanceId === 'system';
+          if (pid === AI_OPPONENT || isSystemHandSize) {
+            const hand = ended.players[pid].hand;
+            const pickedId = hand.length > 0 ? hand[0]! : null;
+            ended = applyAction(ended, pid, { type: 'RESOLVE_DISCARD', pickedId }).state;
+            continue;
+          }
+          break;
+        }
+        if (ended.phase === 'peek_choice' && p.kind === 'peek') {
+          if (p.pendingPeek.controller === AI_OPPONENT) {
+            ended = applyAction(ended, p.pendingPeek.controller, { type: 'RESOLVE_PEEK', pickedIds: [] }).state;
+            continue;
+          }
+          break;
+        }
+        if (ended.phase === 'choose_one' && p.kind === 'choose_one') {
+          if (p.pendingChoose.controller === AI_OPPONENT) {
+            ended = applyAction(ended, p.pendingChoose.controller, { type: 'RESOLVE_CHOOSE_ONE', optionIndex: 0 }).state;
+            continue;
+          }
+          break;
+        }
+        if (ended.phase === 'trigger_window' && p.kind === 'trigger') {
+          if (p.pendingTrigger.controller === AI_OPPONENT) {
+            ended = applyAction(ended, p.pendingTrigger.controller, {
+              type: 'RESOLVE_TRIGGER', activate: false, targetInstanceId: null,
+            }).state;
+            continue;
+          }
+          break;
+        }
+        break;
+      }
       set({
         state: ended,
         legalActions: getLegalActions(ended, ended.activePlayer),
@@ -501,3 +880,52 @@ export const useGameStore = create<GameStore>((set, get) => {
     },
   };
 });
+
+// Driver-only state snapshot — exposes the store on window so the
+// Playwright auto-player (tools/play-driver.mjs) can inspect the true
+// engine state mid-stall. Gated on PLAY_DRIVER_SNAPSHOT localStorage key
+// so production users never get the global. No gameplay behavior change.
+// Mirrors the PLAY_DRIVER_PREFER / PLAY_DRIVER_LEADER_ID pattern.
+try {
+  if (typeof window !== 'undefined') {
+    const enabled = window.localStorage.getItem('PLAY_DRIVER_SNAPSHOT');
+    if (enabled !== null && enabled.length > 0) {
+      // Read-only snapshot accessor. Returns a plain object the driver can
+      // JSON-serialize. Never returns the store API itself, to avoid
+      // accidental mutation from the driver side.
+      (window as unknown as { __PLAY_DRIVER_SNAPSHOT__?: () => unknown }).__PLAY_DRIVER_SNAPSHOT__ =
+        () => {
+          const s = useGameStore.getState();
+          return {
+            phase: s.state.phase,
+            activePlayer: s.state.activePlayer,
+            turn: s.state.turn,
+            pendingKind: s.state.pending?.kind ?? null,
+            pendingController:
+              s.state.pending !== null && 'controller' in (s.state.pending as object)
+                ? (s.state.pending as unknown as { controller: string }).controller
+                : s.state.pending?.kind === 'discard'
+                  ? s.state.pending.pendingDiscard.controller
+                  : s.state.pending?.kind === 'peek'
+                    ? s.state.pending.pendingPeek.controller
+                    : s.state.pending?.kind === 'choose_one'
+                      ? s.state.pending.pendingChoose.controller
+                      : s.state.pending?.kind === 'trigger'
+                        ? s.state.pending.pendingTrigger.controller
+                        : null,
+            result: s.state.result,
+            mode: s.mode,
+            viewAs: s.viewAs,
+            aiThinking: s.aiThinking,
+            legalActionTypes: s.legalActions.map((a) => a.type),
+            handCounts: { A: s.state.players.A.hand.length, B: s.state.players.B.hand.length },
+            fieldCounts: { A: s.state.players.A.field.length, B: s.state.players.B.field.length },
+            lifeCounts: { A: s.state.players.A.life.length, B: s.state.players.B.life.length },
+            deckCounts: { A: s.state.players.A.deck.length, B: s.state.players.B.deck.length },
+            trashCounts: { A: s.state.players.A.trash.length, B: s.state.players.B.trash.length },
+            historyTail: (s.state.history as Array<unknown>).slice(-20),
+          };
+        };
+    }
+  }
+} catch {}
