@@ -71,13 +71,13 @@ function GameApp() {
           portrait letterbox, full height, max-width 430px, NO transform
           scaling — the playmat sizes itself with dvh rows exactly as the
           deployed build does. New F-8D features mount ON TOP of it. */}
+      {/* Edge-to-edge (owner 2026-06-12): the installed app draws UNDER the
+          iOS status clock + the gesture bars on both platforms — the safe-
+          area strips are play surface, not reserved padding. Android hides
+          the status bar outright via manifest display:fullscreen. */}
       <div
         className="relative h-dvh w-full max-w-[430px] bg-paper-cream
                    shadow-[var(--shadow-frame)] ring-1 ring-marine-fog/30"
-        style={{
-          paddingTop: 'env(safe-area-inset-top, 0px)',
-          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-        }}
       >
         {/* F-8D addendum — compact header (logo mini + turn/phase + active
             player) with secondary controls (difficulty / reset / theme)

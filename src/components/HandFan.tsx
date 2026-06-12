@@ -74,13 +74,15 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
           ? {
               // Half-tucked peek over the board's top edge (owner 2026-06-12:
               // this original placement was right; full-height hung too low).
+              // Edge-to-edge: anchored at the REAL screen top — the iOS clock
+              // overlays the navy backs (light-on-dark, legible).
               height: HAND_CARD_H + 8,
-              marginTop: `calc(env(safe-area-inset-top, 0px) - ${HAND_CARD_H / 2}px)`,
+              marginTop: -(HAND_CARD_H / 2),
             }
           : {
               // Reserve card height + apex lift + buffer for the lifted state.
-              height: `calc(${HAND_CARD_H + 80}px + env(safe-area-inset-bottom, 0px))`,
-              paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+              // Edge-to-edge: the fan sits into the gesture-bar strip.
+              height: HAND_CARD_H + 80,
             }
       }
       aria-label={`${hidden ? 'Opponent' : 'Your'} hand, ${n} cards`}

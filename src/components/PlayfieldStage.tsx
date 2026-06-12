@@ -484,9 +484,11 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
             style={{
               // Top — app chrome from App.tsx (6dvh).
               // Bottom — hand fan strip (24dvh).
-              // (ORIGINAL geometry restored per owner 2026-06-12.)
-              paddingTop: 'calc(env(safe-area-inset-top, 0px) + 6dvh)',
-              paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 24dvh)',
+              // (ORIGINAL geometry; env() adders dropped 2026-06-12 —
+              // installed apps draw edge-to-edge, safe areas are play
+              // surface now, not reserved strips.)
+              paddingTop: '6dvh',
+              paddingBottom: '24dvh',
               paddingLeft: 4,
               paddingRight: 4,
               gridTemplateRows: '1fr auto 1fr',
