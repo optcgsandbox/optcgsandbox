@@ -270,10 +270,10 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
         </LayoutGroup>
       </div>
 
-      {/* Opp hand COUNT badge — ALL screens (owner 2026-06-12, reinstated:
-          "we need a counter that says number of cards in hand for opp on
-          ALL SCREENS" — supersedes the earlier no-counter rule). */}
-      {hidden && n > 0 && (
+      {/* Opp hand COUNT badge — browsers/desktop only. On PWA the "+N"
+          overflow pill is the count signal AND the badge sat behind the
+          hamburger (owner 2026-06-12). */}
+      {hidden && n > 0 && !standalone && (
         <span
           data-opp-hand-badge
           className="pointer-events-none absolute rounded-full bg-ink-black/75 px-1.5 py-0.5
