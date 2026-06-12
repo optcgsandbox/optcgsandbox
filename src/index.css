@@ -93,26 +93,34 @@
   color-scheme: dark;
 }
 
+/* The root canvas (html background) paints the WHOLE physical screen,
+   including any strip outside the standalone viewport (below 100dvh on
+   installed apps). Painting it with the board surface makes the bottom
+   strip read as board — seamless with the cream shell — WITHOUT adding
+   layout height (the +env() height experiment made the page scroll;
+   owner caught both 2026-06-12). */
+html {
+  background: var(--color-surface-1);
+}
+
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
-  /* Installed-app edge-to-edge (iOS + Android): standalone viewports end
-     ABOVE the home-indicator / gesture strip — 100dvh alone leaves a dead
-     band the page canvas paints through (owner caught the white strip
-     2026-06-12). Extend the layout by the bottom inset so the board
-     physically reaches the screen edge. Browsers report inset 0 → no-op. */
-  height: calc(100dvh + env(safe-area-inset-bottom, 0px));
+  height: 100dvh;
+  overflow: hidden; /* the game never scrolls — hard guarantee */
   overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
   font-family: var(--font-body);
   color: var(--color-text-1);
+}
+
+body {
   background: var(--backdrop-gradient);
 }
 
 #root {
-  min-height: calc(100dvh + env(safe-area-inset-bottom, 0px));
+  min-height: 100dvh;
 }
 
 /* Tabular numbers everywhere life/DON/power render — keeps digits column-aligned. */

@@ -482,13 +482,15 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
           <div
             className="grid h-full w-full"
             style={{
-              // Top — app chrome from App.tsx (6dvh).
-              // Bottom — hand fan strip (24dvh).
-              // (ORIGINAL geometry; env() adders dropped 2026-06-12 —
-              // installed apps draw edge-to-edge, safe areas are play
-              // surface now, not reserved strips.)
+              // SYMMETRIC framing (owner 2026-06-12): equal paddings put the
+              // half-vs-half contact line at the exact vertical center of
+              // the viewport and bring the player's zones down toward the
+              // hand fan (which overlays, like cards at a real table edge).
+              // Zone geometry/rows are untouched — each half's fixed-height
+              // block hugs the divider; only the leftover framing space
+              // redistributes outward.
               paddingTop: '6dvh',
-              paddingBottom: '24dvh',
+              paddingBottom: '6dvh',
               paddingLeft: 4,
               paddingRight: 4,
               gridTemplateRows: '1fr auto 1fr',

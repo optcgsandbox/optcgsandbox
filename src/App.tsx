@@ -64,12 +64,8 @@ function GameApp() {
 
   return (
     <div
-      className="grid w-full place-items-center overflow-hidden"
-      style={{
-        background: 'var(--backdrop-gradient)',
-        // Edge-to-edge: include the bottom safe-area strip (see index.css).
-        minHeight: 'calc(100dvh + env(safe-area-inset-bottom, 0px))',
-      }}
+      className="grid min-h-dvh w-full place-items-center overflow-hidden"
+      style={{ background: 'var(--backdrop-gradient)' }}
     >
       {/* ORIGINAL board shell (geometry restored per owner 2026-06-12):
           portrait letterbox, full height, max-width 430px, NO transform
@@ -80,9 +76,8 @@ function GameApp() {
           area strips are play surface, not reserved padding. Android hides
           the status bar outright via manifest display:fullscreen. */}
       <div
-        className="relative w-full max-w-[430px] bg-paper-cream
+        className="relative h-dvh w-full max-w-[430px] bg-paper-cream
                    shadow-[var(--shadow-frame)] ring-1 ring-marine-fog/30"
-        style={{ height: 'calc(100dvh + env(safe-area-inset-bottom, 0px))' }}
       >
         {/* F-8D addendum — compact header (logo mini + turn/phase + active
             player) with secondary controls (difficulty / reset / theme)
