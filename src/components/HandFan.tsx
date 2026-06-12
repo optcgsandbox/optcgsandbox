@@ -15,7 +15,7 @@
 //
 // PLAY_CARD is dispatched ONLY from CardDetailModal's primary action.
 
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { LayoutGroup, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { springs } from '../lib/animationTokens';
@@ -55,22 +55,26 @@ interface HandFanProps {
   hidden?: boolean;
 }
 
-/** PLAYER card height = the whole lane below the mat block minus the
- *  card-to-mat margin on BOTH sides (owner 2026-06-12: card bottoms reach
- *  the screen bottom with the same margin; auto-adjusts per screen). */
-function usePlayerCardH(): number {
+/** PLAYER card height = the strip container's REAL rendered height minus
+ *  MARGIN_PX on both sides (mat-to-hand and hand-to-safe-bottom gaps).
+ *  Measured from the container box itself so PWA env() insets are
+ *  automatically correct; in browsers the box equals the old window math
+ *  (env()=0) — desktop numbers unchanged. */
+function usePlayerCardH(ref: React.RefObject<HTMLDivElement | null>, active: boolean): number {
   const [h, setH] = useState(CARD_DIMS.hand.h);
   useEffect(() => {
+    if (!active) return undefined;
+    const el = ref.current;
+    if (!el) return undefined;
     const update = (): void => {
-      const matBottom =
-        MAT_TOP_PX + (MAT_BLOCK_DVH / 100) * window.innerHeight + MAT_BLOCK_EXTRA_PX + ZONE_EDGE_PX;
-      const lane = window.innerHeight - matBottom - 2 * MARGIN_PX;
+      const lane = el.getBoundingClientRect().height - 2 * MARGIN_PX;
       setH(Math.max(CARD_DIMS.hand.h, Math.round(lane)));
     };
     update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [ref, active]);
   return h;
 }
 
@@ -101,13 +105,15 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
   const n = handIds.length;
   // Opp rail: fixed small backs — its slot under the header is reserved by
   // the frame constants, so mat overlap is impossible by construction.
-  // Player strip: lane-fill sizing (mat → screen bottom, margin both sides).
-  const playerH = usePlayerCardH();
+  // Player strip: lane-fill sizing measured from the container's real box.
+  const stripRef = useRef<HTMLDivElement | null>(null);
+  const playerH = usePlayerCardH(stripRef, !hidden);
   const cardH = hidden ? OPP_H : playerH;
   const cardW = hidden ? OPP_W : Math.round(playerH * CARD_ASPECT);
 
   return (
     <div
+      ref={hidden ? undefined : stripRef}
       // The strip CONTAINER spans the shell width; pointer-events-none lets
       // taps on empty strip area fall through to the playmat. Cards
       // re-enable pointer events.
@@ -122,19 +128,24 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
       style={
         hidden
           ? {
-              // Pinned just under the header (owner 2026-06-12): the mat
-              // block starts BELOW the rail (MAT_TOP_PX) so overlap with
-              // the cost area is impossible by construction.
-              top: OPP_RAIL_TOP_PX,
+              // Browser: rail just under the header (OPP_RAIL_TOP_PX,
+              // unchanged). PWA-only (owner 2026-06-12): the header rides
+              // env(top), so the rail's TOP aligns with the TOP of the
+              // OPTCGS label (env+6 = the header's py-1.5 line). The mat
+              // follows the same formula, so cost-area overlap stays
+              // impossible by construction.
+              top: `max(${OPP_RAIL_TOP_PX}px, calc(env(safe-area-inset-top, 0px) + 6px))`,
               height: OPP_RAIL_H_PX,
             }
           : {
               // The strip container owns the ENTIRE lane from the mat
-              // block's lowest zone line to the physical screen bottom —
-              // cards center inside it with MARGIN_PX above and below, so
-              // clipping is impossible (owner: "cut off"/"clipping").
-              top: `calc(${MAT_TOP_PX + MAT_BLOCK_EXTRA_PX + ZONE_EDGE_PX}px + ${MAT_BLOCK_DVH}dvh)`,
-              bottom: 0,
+              // block's lowest zone line to the home-bar inset — cards
+              // center inside with MARGIN_PX above and below, so clipping
+              // is impossible. Top mirrors the mat's PWA-aware position;
+              // browsers see env()=0 → identical numbers to the accepted
+              // layout.
+              top: `calc(max(${MAT_TOP_PX}px, calc(env(safe-area-inset-top, 0px) + ${6 + OPP_RAIL_H_PX + 4}px)) + ${MAT_BLOCK_EXTRA_PX + ZONE_EDGE_PX}px + ${MAT_BLOCK_DVH}dvh)`,
+              bottom: 'env(safe-area-inset-bottom, 0px)',
             }
       }
       aria-label={`${hidden ? 'Opponent' : 'Your'} hand, ${n} cards`}
