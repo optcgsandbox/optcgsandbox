@@ -23,9 +23,7 @@ import { CardArt, CARD_DIMS } from './CardArt';
 import {
   MAT_BLOCK_DVH,
   MAT_BLOCK_EXTRA_PX,
-  MAT_TOP_PX,
   OPP_RAIL_H_PX,
-  OPP_RAIL_TOP_PX,
 } from './cardSizing';
 import { NavyCardBack } from './zones/NavyCardBack';
 import type { PlayerId } from '@shared/engine-v2/state/types';
@@ -55,19 +53,19 @@ interface HandFanProps {
   hidden?: boolean;
 }
 
-/** Installed-app (PWA standalone/fullscreen) detection — the opp rail caps
- *  at 5 visible backs there (owner 2026-06-12); browsers show all. */
-function useIsStandalone(): boolean {
-  const [standalone, setStandalone] = useState(false);
+/** COMPACT detection (owner 2026-06-12): narrow screens — phone browsers
+ *  AND installed apps — get the PWA treatment (5-back cap + "+N" pill, no
+ *  count badge, label-aligned rail). Matches the index.css 520px query. */
+function useIsCompact(): boolean {
+  const [compact, setCompact] = useState(false);
   useEffect(() => {
-    const mq = window.matchMedia('(display-mode: standalone), (display-mode: fullscreen)');
-    const iosStandalone = (navigator as { standalone?: boolean }).standalone === true;
-    const update = (): void => setStandalone(mq.matches || iosStandalone);
+    const mq = window.matchMedia('(max-width: 520px)');
+    const update = (): void => setCompact(mq.matches);
     update();
     mq.addEventListener('change', update);
     return () => mq.removeEventListener('change', update);
   }, []);
-  return standalone;
+  return compact;
 }
 
 /** PLAYER card height = the strip container's REAL rendered height minus
@@ -120,11 +118,11 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
   const n = handIds.length;
   // Opp rail: fixed small backs — its slot under the header is reserved by
   // the frame constants, so mat overlap is impossible by construction.
-  // PWA ONLY (owner 2026-06-12): cap at 5 visible backs + a "+N" pill.
-  // Browsers show every back. Player strip: lane-fill sizing measured
-  // from the container's real box.
-  const standalone = useIsStandalone();
-  const visibleIds = hidden && standalone ? handIds.slice(0, 5) : handIds;
+  // COMPACT (narrow screens, browser or PWA): cap at 5 visible backs +
+  // a "+N" pill. Wide windows show every back. Player strip: lane-fill
+  // sizing measured from the container's real box.
+  const compact = useIsCompact();
+  const visibleIds = hidden && compact ? handIds.slice(0, 5) : handIds;
   const overflow = n - visibleIds.length;
   const stripRef = useRef<HTMLDivElement | null>(null);
   const playerH = usePlayerCardH(stripRef, !hidden);
@@ -148,23 +146,19 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
       style={
         hidden
           ? {
-              // Browser: rail just under the header (OPP_RAIL_TOP_PX,
-              // unchanged). PWA-only (owner 2026-06-12): the header rides
-              // env(top), so the rail's TOP aligns with the TOP of the
-              // OPTCGS label (env+6 = the header's py-1.5 line). The mat
-              // follows the same formula, so cost-area overlap stays
-              // impossible by construction.
-              top: `max(${OPP_RAIL_TOP_PX}px, calc(env(safe-area-inset-top, 0px) + 6px))`,
+              // Rail top = --frame-rail-top (index.css): wide windows keep
+              // the accepted 38px; narrow screens (browser or PWA) ride
+              // the OPTCGS label line (env+6). The mat follows the same
+              // variable, so cost-area overlap stays impossible.
+              top: 'var(--frame-rail-top)',
               height: OPP_RAIL_H_PX,
             }
           : {
               // The strip container owns the ENTIRE lane from the mat
               // block's lowest zone line to the home-bar inset — cards
               // center inside with MARGIN_PX above and below, so clipping
-              // is impossible. Top mirrors the mat's PWA-aware position;
-              // browsers see env()=0 → identical numbers to the accepted
-              // layout.
-              top: `calc(max(${MAT_TOP_PX}px, calc(env(safe-area-inset-top, 0px) + ${6 + OPP_RAIL_H_PX + 4}px)) + ${MAT_BLOCK_EXTRA_PX + ZONE_EDGE_PX}px + ${MAT_BLOCK_DVH}dvh)`,
+              // is impossible. Top mirrors the mat's frame variable.
+              top: `calc(var(--frame-mat-top) + ${MAT_BLOCK_EXTRA_PX + ZONE_EDGE_PX}px + ${MAT_BLOCK_DVH}dvh)`,
               bottom: 'env(safe-area-inset-bottom, 0px)',
             }
       }
@@ -270,10 +264,10 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
         </LayoutGroup>
       </div>
 
-      {/* Opp hand COUNT badge — browsers/desktop only. On PWA the "+N"
-          overflow pill is the count signal AND the badge sat behind the
-          hamburger (owner 2026-06-12). */}
-      {hidden && n > 0 && !standalone && (
+      {/* Opp hand COUNT badge — WIDE windows only. On narrow screens
+          (browser or PWA) the "+N" overflow pill is the count signal AND
+          the badge sat behind the hamburger (owner 2026-06-12). */}
+      {hidden && n > 0 && !compact && (
         <span
           data-opp-hand-badge
           className="pointer-events-none absolute rounded-full bg-ink-black/75 px-1.5 py-0.5

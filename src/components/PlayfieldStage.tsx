@@ -62,7 +62,6 @@ import { DonDeckSlot } from './zones/DonDeckSlot';
 import { CostAreaBand } from './zones/CostAreaBand';
 import { PhaseColumn } from './zones/PhaseColumn';
 import { EndTurnButton } from './EndTurnButton';
-import { MAT_TOP_PX, OPP_RAIL_H_PX } from './cardSizing';
 import type { CardInstance, PlayerId, PlayerZones } from '@shared/engine-v2/state/types';
 import type { Card } from '@shared/engine-v2/cards/Card';
 
@@ -492,11 +491,11 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
               // your hand → leftover. 'auto auto 1fr' pins the rigid mat
               // block (zone geometry untouched) directly under the rail at
               // MAT_TOP_PX; all spare space collects at the bottom.
-              // PWA-only shift (owner 2026-06-12): on notched installed
-              // apps the header rides env(top), so the mat follows the
-              // rail's PWA position (env+6 rail + 57 rail height + 4 gap).
-              // Browsers: env()=0 → max() = MAT_TOP_PX, byte-identical.
-              paddingTop: `max(${MAT_TOP_PX}px, calc(env(safe-area-inset-top, 0px) + ${6 + OPP_RAIL_H_PX + 4}px))`,
+              // COMPACT FRAME (owner 2026-06-12): narrow screens (phone
+              // browser + PWA) tuck the mat under the label-aligned rail;
+              // wide windows keep the accepted 99px. Values live in
+              // index.css :root / @media(max-width:520px).
+              paddingTop: 'var(--frame-mat-top)',
               paddingBottom: 'env(safe-area-inset-bottom, 0px)',
               paddingLeft: 4,
               paddingRight: 4,

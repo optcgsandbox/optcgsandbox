@@ -259,21 +259,28 @@ test.describe('F-8D addendum — opponent hand fan', () => {
       for (const n of names) {
         if (text.includes(n)) return `name leaked: ${n}`;
       }
-      // Owner 2026-06-12 (latest): a count badge on ALL screens — assert
-      // it shows the exact hand count; no digits anywhere else in the rail.
-      const badge = fanEl.querySelector('[data-opp-hand-badge]');
-      if (!badge) return 'count badge missing';
-      if ((badge.textContent ?? '').trim() !== String(s.players.B.hand.length)) {
-        return `count badge wrong: ${badge.textContent}`;
+      // COMPACT rules (owner 2026-06-12, ≤520px incl. this 430px viewport):
+      // NO badge; >5 cards collapse into the "+N" pill — the pill is the
+      // only digit allowed in the rail.
+      if (fanEl.querySelector('[data-opp-hand-badge]')) return 'badge on compact';
+      const n = s.players.B.hand.length;
+      const pill = fanEl.querySelector('[data-opp-overflow-pill]');
+      if (n > 5) {
+        if (!pill) return 'overflow pill missing';
+        if ((pill.textContent ?? '').trim() !== `+${n - 5}`) {
+          return `pill wrong: ${pill.textContent}`;
+        }
+      } else if (pill) {
+        return 'pill shown without overflow';
       }
-      const textSansBadge = text.replace(badge.textContent ?? '', '');
-      if (/\d/.test(textSansBadge)) return 'unexpected digits outside badge';
+      const textSansPill = text.replace(pill?.textContent ?? '', '');
+      if (/\d/.test(textSansPill)) return 'unexpected digits in rail';
       return 'clean';
     });
     expect(leak).toBe('clean');
-    // Same card count rendered as backs as the real hand size.
+    // Backs rendered = min(hand, 5) on compact screens.
     const backs = await fan.locator('[data-flip-back]').count();
-    expect(backs).toBe(count0);
+    expect(backs).toBe(Math.min(count0, 5));
     await page.screenshot({ path: `${EVIDENCE}/opp-hand-fan.png` });
   });
 });

@@ -129,6 +129,21 @@ body {
   min-height: calc(100dvh + env(safe-area-inset-bottom, 0px));
 }
 
+/* COMPACT FRAME (owner 2026-06-12): on NARROW screens — phone browsers AND
+   installed apps alike — the opp rail rides the OPTCGS label line and the
+   mat tucks under it; wide (desktop) windows keep the accepted offsets.
+   env() adds the notch inset on installed apps, 0 in browsers. */
+:root {
+  --frame-rail-top: 38px;
+  --frame-mat-top: 99px;
+}
+@media (max-width: 520px) {
+  :root {
+    --frame-rail-top: calc(env(safe-area-inset-top, 0px) + 6px);
+    --frame-mat-top: calc(env(safe-area-inset-top, 0px) + 67px);
+  }
+}
+
 /* Prompt safe-area framing (owner 2026-06-12): full-screen prompt overlays
    keep their content clear of the iOS status clock (top) and the home
    indicator (bottom) on installed apps. Browsers report 0 insets → only
