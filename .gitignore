@@ -35,3 +35,4 @@ e2e/coverage/
 e2e/golden/
 *.tmp
 *.sqlite
+evidence-handstrip/
