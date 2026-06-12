@@ -113,7 +113,7 @@ export const MulliganPrompt = memo(function MulliganPrompt() {
           aria-labelledby="mulligan-prompt-heading"
           aria-describedby="mulligan-prompt-body"
           onKeyDown={handleKeyDown}
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center
+          className="prompt-safe fixed inset-0 z-50 flex flex-col items-center justify-center
                      bg-paper-cream/95 backdrop-blur-sm px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

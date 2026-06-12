@@ -51,7 +51,7 @@ export const PeekChoicePrompt = memo(function PeekChoicePrompt() {
           aria-modal="true"
           aria-labelledby="peek-prompt-heading"
           data-pending-kind="peek"
-          className="fixed inset-0 z-[70] flex flex-col items-center justify-center
+          className="prompt-safe fixed inset-0 z-[70] flex flex-col items-center justify-center
                      bg-paper-cream/95 backdrop-blur-sm px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

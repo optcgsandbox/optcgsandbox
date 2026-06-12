@@ -92,7 +92,7 @@ export const TargetPickerPrompt = memo(function TargetPickerPrompt() {
           aria-labelledby="target-picker-heading"
           data-pending-kind="attack_target_pick"
           data-cost-pick={isCostPick || undefined}
-          className="fixed inset-0 z-[70] flex flex-col items-center
+          className="prompt-safe fixed inset-0 z-[70] flex flex-col items-center
                      bg-paper-cream/95 backdrop-blur-sm overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -125,9 +125,11 @@ export const TargetPickerPrompt = memo(function TargetPickerPrompt() {
             </p>
           </div>
 
-          {/* Internal-scroll tile grid — the PAGE never scrolls */}
-          <div className="flex-1 min-h-0 w-full overflow-y-auto px-4 py-2">
-            <div className="flex flex-wrap gap-3 justify-center max-w-[460px] mx-auto">
+          {/* Internal-scroll tile grid — the PAGE never scrolls. flex-col +
+              my-auto centers the grid vertically when it fits (owner
+              2026-06-12: no dead middle on phones) and scrolls when tall. */}
+          <div className="flex flex-col flex-1 min-h-0 w-full overflow-y-auto px-4 py-2">
+            <div className="my-auto w-full flex flex-wrap gap-3 justify-center max-w-[460px] mx-auto">
               {pending.candidateIds.map((id) => {
                 const inst = instances[id];
                 if (!inst) return null;

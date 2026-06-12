@@ -129,6 +129,15 @@ body {
   min-height: calc(100dvh + env(safe-area-inset-bottom, 0px));
 }
 
+/* Prompt safe-area framing (owner 2026-06-12): full-screen prompt overlays
+   keep their content clear of the iOS status clock (top) and the home
+   indicator (bottom) on installed apps. Browsers report 0 insets → only
+   the small base padding applies. */
+.prompt-safe {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 16px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+}
+
 /* Portrait-only policy (owner 2026-06-12): NO landscape support, ever.
    Rotated PHONE browsers (landscape + short) get a rotate prompt instead
    of a broken board. Desktop/laptop windows are tall enough to never

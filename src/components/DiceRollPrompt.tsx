@@ -261,7 +261,7 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
           aria-labelledby="dice-roll-prompt-heading"
           aria-describedby="dice-roll-prompt-body"
           aria-live="polite"
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center
+          className="prompt-safe fixed inset-0 z-50 flex flex-col items-center justify-center
                      bg-paper-cream/95 backdrop-blur-sm px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

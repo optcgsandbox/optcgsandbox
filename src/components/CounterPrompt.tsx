@@ -170,7 +170,7 @@ export const CounterPrompt = memo(function CounterPrompt() {
           aria-modal="true"
           aria-labelledby="counter-prompt-heading"
           data-pending-kind="counter_window"
-          className="fixed inset-0 z-50 flex flex-col items-center
+          className="prompt-safe fixed inset-0 z-50 flex flex-col items-center
                      bg-paper-cream/95 backdrop-blur-sm overflow-hidden"
           initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -262,11 +262,11 @@ export const CounterPrompt = memo(function CounterPrompt() {
           {/* F-8C — internal-scroll tile list (PROMPT size, fixed — selection
               never resizes the tile, so layout never shifts). */}
           {counterOptions.length > 0 && (
-            <div className="flex-1 min-h-0 w-full overflow-y-auto px-4 py-1">
+            <div className="flex flex-col flex-1 min-h-0 w-full overflow-y-auto px-4 py-1">
               <p className="text-[0.6875rem] text-center font-body font-extrabold uppercase tracking-wider text-ink-iron mb-2">
                 Tap a counter to select · View to read
               </p>
-              <div className="flex flex-wrap items-start justify-center gap-3 max-w-[460px] mx-auto" aria-label="Available counters">
+              <div className="my-auto w-full flex flex-wrap items-start justify-center gap-3 max-w-[460px] mx-auto" aria-label="Available counters">
                 {counterOptions.map((a) => {
                   const inst = instances[a.instanceId];
                   const card = inst ? library[inst.cardId] : undefined;

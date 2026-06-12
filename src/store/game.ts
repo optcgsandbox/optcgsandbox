@@ -203,16 +203,20 @@ function bootGame(seed: number): GameState {
  *  the next tick fires. Without the banner the move animation + zone state
  *  ARE the readability surface — they need room to land.
  */
-const AI_ACTION_DELAY_MS = 2500;
 const BETWEEN_PHASE_DELAY_MS = 900;
 const TURN_HANDOFF_DELAY_MS = 800;
-const OPP_VISIBLE_HOLD_MS = 800;
 // Owner direction 2026-05-30: pill→action→pill→action, tight. Pill alone for
 // PILL_BEAT_MS so it's perceivable, then action runs for
 // BETWEEN_PHASE_DELAY_MS (~animation length), then brief pause before next
 // pill. Previously 600/1500/500 = 2600ms per phase = too slow.
 const PILL_BEAT_MS = 250;
 const POST_ACTION_PAUSE_MS = 150;
+// Owner direction 2026-06-12: ONE uniform beat for the whole opponent turn.
+// Every AI move (and END) lands on the same rhythm as a phase-pipeline step
+// with content — pill + action + pause ≈ 1.3s. Replaces the old 2.5s
+// "think" delay (AI_ACTION_DELAY_MS) + 0.8s hold (OPP_VISIBLE_HOLD_MS):
+// decisions are precomputed inside the beat, so nothing stretches it.
+const AI_MOVE_BEAT_MS = PILL_BEAT_MS + BETWEEN_PHASE_DELAY_MS + POST_ACTION_PAUSE_MS;
 
 function wait(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
@@ -404,10 +408,29 @@ async function runAiTurn(
   // Loop until AI hits END_TURN or game ends.
   // Cap iterations to avoid runaway in case of a bug.
   let safety = 0;
+  // Owner 2026-06-12: the AI's NEXT decision is precomputed during the
+  // post-action visible hold (tail of this loop). When that decision is
+  // END_TURN there is nothing to "think about" — the long think delay is
+  // skipped and the turn ends right after the hold instead of trailing
+  // a 2.5s hesitation.
+  let preDecided: Action | null = null;
+  // Probe 2026-06-12: AI drivers sometimes pick actions the reducer REJECTS
+  // (state unchanged — nothing visible happens). Those ticks must NOT burn
+  // a beat (they read as multi-second dead air): re-decide immediately, and
+  // after 3 consecutive invisible ticks force END_TURN so the turn never
+  // trails off in silence.
+  let noopStreak = 0;
+  // Lead-in beat (probe 2026-06-12: the first move landed in the SAME tick
+  // as TURN_STARTED — "instant"). One beat separates main-start from move 1,
+  // and the same lead-in paces re-entries after human reactive windows.
+  await wait(AI_MOVE_BEAT_MS);
   while (safety++ < 200) {
     const s = get().state;
     if (s.result || s.activePlayer !== AI_OPPONENT) break;
-    const action = await ai.chooseAction(s, AI_OPPONENT, 100);
+    // (Every loop path reassigns preDecided before this read.)
+    const action = preDecided ?? await ai.chooseAction(s, AI_OPPONENT, 100);
+    preDecided = null;
+    const historyBefore = s.history.length;
     let { state: next } = applyAction(s, AI_OPPONENT, action);
     // F-7n Phase A — narrowed force-skip of block/counter for the human
     // defender during AI attacks. ONLY auto-skip when the human has no
@@ -497,13 +520,26 @@ async function runAiTurn(
     }
     set({ state: next, legalActions: getLegalActions(next, next.activePlayer) });
     if (action.type === 'END_TURN' || action.type === 'CONCEDE') break;
-    // Two-stage pacing: hold AFTER the action commits so the player sees the
-    // field state change (OPP_VISIBLE_HOLD_MS), THEN wait the longer think
-    // delay before the next AI tick (AI_ACTION_DELAY_MS - OPP_VISIBLE_HOLD_MS).
-    // Net delay matches AI_ACTION_DELAY_MS; splitting it just guarantees the
-    // commit is visible before any "thinking" silence.
-    await wait(OPP_VISIBLE_HOLD_MS);
-    await wait(Math.max(0, AI_ACTION_DELAY_MS - OPP_VISIBLE_HOLD_MS));
+    // INVISIBLE tick (rejected/no-op action — no new history): no beat.
+    // Re-decide immediately; 3 strikes forces END_TURN.
+    if (next.history.length === historyBefore) {
+      noopStreak += 1;
+      if (noopStreak >= 3) preDecided = { type: 'END_TURN' };
+      continue;
+    }
+    noopStreak = 0;
+    // UNIFORM TURN BEAT (owner 2026-06-12): every VISIBLE step of the
+    // opponent's turn — refresh, draw, DON, each move, end — lands on the
+    // SAME rhythm as the phase pipeline (PILL_BEAT + BETWEEN_PHASE +
+    // POST_ACTION ≈ 1.3s). The NEXT decision is precomputed inside the
+    // beat, so no think-time ever stretches it; END_TURN commits on the
+    // very next beat after the last visible move.
+    await wait(AI_MOVE_BEAT_MS);
+    {
+      const cur = get().state;
+      if (cur.result || cur.activePlayer !== AI_OPPONENT) break;
+      preDecided = await ai.chooseAction(cur, AI_OPPONENT, 100);
+    }
   }
   // After AI ends turn, advance phases back to human's main.
   if (!get().state.result && get().state.activePlayer === AI_OPPONENT) {

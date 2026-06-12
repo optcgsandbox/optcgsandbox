@@ -51,7 +51,7 @@ export const EffectOfferPrompt = memo(function EffectOfferPrompt() {
           aria-modal="true"
           aria-labelledby="effect-offer-heading"
           data-pending-kind="effect_offer"
-          className="fixed inset-0 z-[70] flex flex-col items-center justify-center
+          className="prompt-safe fixed inset-0 z-[70] flex flex-col items-center justify-center
                      gap-3 px-4 bg-paper-cream/95 backdrop-blur-sm overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

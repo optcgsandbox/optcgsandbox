@@ -101,7 +101,7 @@ export const SearcherPeekPrompt = memo(function SearcherPeekPrompt() {
           aria-modal="true"
           aria-labelledby="searcher-peek-heading"
           data-pending-kind="searcher_peek"
-          className="fixed inset-0 z-[70] flex flex-col items-center
+          className="prompt-safe fixed inset-0 z-[70] flex flex-col items-center
                      bg-paper-cream/95 backdrop-blur-sm overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -133,8 +133,8 @@ export const SearcherPeekPrompt = memo(function SearcherPeekPrompt() {
           </div>
 
           {/* Internal-scroll tile grid — the PAGE never scrolls */}
-          <div className="flex-1 min-h-0 w-full overflow-y-auto px-4 py-2">
-            <div className="flex flex-wrap gap-3 justify-center max-w-[460px] mx-auto">
+          <div className="flex flex-col flex-1 min-h-0 w-full overflow-y-auto px-4 py-2">
+            <div className="my-auto w-full flex flex-wrap gap-3 justify-center max-w-[460px] mx-auto">
               {pending.lookedAtInstanceIds.map((id) => {
                 const inst = instances[id];
                 if (!inst) return null;

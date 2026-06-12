@@ -87,7 +87,7 @@ export const ChoosePrompt = memo(function ChoosePrompt() {
           aria-modal="true"
           aria-labelledby="choose-prompt-heading"
           data-pending-kind="choose_one"
-          className="fixed inset-0 z-[70] flex flex-col items-center justify-center
+          className="prompt-safe fixed inset-0 z-[70] flex flex-col items-center justify-center
                      bg-paper-cream/95 backdrop-blur-sm px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

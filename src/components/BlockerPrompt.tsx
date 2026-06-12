@@ -97,7 +97,7 @@ export const BlockerPrompt = memo(function BlockerPrompt() {
           aria-modal="true"
           aria-labelledby="blocker-prompt-heading"
           data-pending-kind="block_window"
-          className="fixed inset-0 z-50 flex flex-col items-center
+          className="prompt-safe fixed inset-0 z-50 flex flex-col items-center
                      bg-paper-cream/95 backdrop-blur-sm overflow-hidden"
           initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -171,11 +171,11 @@ export const BlockerPrompt = memo(function BlockerPrompt() {
           {/* F-8C — internal-scroll PROMPT-size tile list. Fixed tile size;
               selection highlights via ring, never resizes. */}
           {blockerOptions.length > 0 && (
-            <div className="flex-1 min-h-0 w-full overflow-y-auto px-4 py-1">
+            <div className="flex flex-col flex-1 min-h-0 w-full overflow-y-auto px-4 py-1">
               <p className="text-[0.6875rem] text-center font-body font-extrabold uppercase tracking-wider text-ink-iron mb-2">
                 Tap a blocker to select · View to read
               </p>
-              <div className="flex flex-wrap items-start justify-center gap-3 max-w-[460px] mx-auto" aria-label="Available blockers">
+              <div className="my-auto w-full flex flex-wrap items-start justify-center gap-3 max-w-[460px] mx-auto" aria-label="Available blockers">
                 {blockerOptions.map((a) => {
                   const inst = instances[a.blockerInstanceId];
                   const card = inst ? library[inst.cardId] : undefined;

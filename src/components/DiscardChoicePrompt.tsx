@@ -53,7 +53,7 @@ export const DiscardChoicePrompt = memo(function DiscardChoicePrompt() {
         aria-modal="true"
         aria-labelledby="discard-prompt-heading"
         data-pending-kind="discard"
-        className="fixed inset-0 z-[70] flex flex-col items-center justify-center
+        className="prompt-safe fixed inset-0 z-[70] flex flex-col items-center justify-center
                    bg-paper-cream/95 backdrop-blur-sm px-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

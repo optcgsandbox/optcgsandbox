@@ -83,7 +83,7 @@ export const FirstPlayerChoicePrompt = memo(function FirstPlayerChoicePrompt() {
           aria-labelledby="first-player-choice-heading"
           aria-describedby="first-player-choice-body"
           aria-live="polite"
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center
+          className="prompt-safe fixed inset-0 z-50 flex flex-col items-center justify-center
                      bg-paper-cream/95 backdrop-blur-sm px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
