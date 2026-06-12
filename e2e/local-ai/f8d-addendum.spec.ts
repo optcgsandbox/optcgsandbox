@@ -259,10 +259,15 @@ test.describe('F-8D addendum — opponent hand fan', () => {
       for (const n of names) {
         if (text.includes(n)) return `name leaked: ${n}`;
       }
-      // Owner FINAL rule (2026-06-12, overrides the F-8E spec text): NO
-      // count pill/badge/digits on the opp rail — ever.
-      if (/\d/.test(text)) return 'count text present';
-      if (fanEl.querySelector('[data-opp-hand-badge]')) return 'badge present';
+      // Owner 2026-06-12 (latest): a count badge on ALL screens — assert
+      // it shows the exact hand count; no digits anywhere else in the rail.
+      const badge = fanEl.querySelector('[data-opp-hand-badge]');
+      if (!badge) return 'count badge missing';
+      if ((badge.textContent ?? '').trim() !== String(s.players.B.hand.length)) {
+        return `count badge wrong: ${badge.textContent}`;
+      }
+      const textSansBadge = text.replace(badge.textContent ?? '', '');
+      if (/\d/.test(textSansBadge)) return 'unexpected digits outside badge';
       return 'clean';
     });
     expect(leak).toBe('clean');

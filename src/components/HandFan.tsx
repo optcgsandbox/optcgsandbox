@@ -55,6 +55,21 @@ interface HandFanProps {
   hidden?: boolean;
 }
 
+/** Installed-app (PWA standalone/fullscreen) detection — the opp rail caps
+ *  at 5 visible backs there (owner 2026-06-12); browsers show all. */
+function useIsStandalone(): boolean {
+  const [standalone, setStandalone] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(display-mode: standalone), (display-mode: fullscreen)');
+    const iosStandalone = (navigator as { standalone?: boolean }).standalone === true;
+    const update = (): void => setStandalone(mq.matches || iosStandalone);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+  return standalone;
+}
+
 /** PLAYER card height = the strip container's REAL rendered height minus
  *  MARGIN_PX on both sides (mat-to-hand and hand-to-safe-bottom gaps).
  *  Measured from the container box itself so PWA env() insets are
@@ -105,7 +120,12 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
   const n = handIds.length;
   // Opp rail: fixed small backs — its slot under the header is reserved by
   // the frame constants, so mat overlap is impossible by construction.
-  // Player strip: lane-fill sizing measured from the container's real box.
+  // PWA ONLY (owner 2026-06-12): cap at 5 visible backs + a "+N" pill.
+  // Browsers show every back. Player strip: lane-fill sizing measured
+  // from the container's real box.
+  const standalone = useIsStandalone();
+  const visibleIds = hidden && standalone ? handIds.slice(0, 5) : handIds;
+  const overflow = n - visibleIds.length;
   const stripRef = useRef<HTMLDivElement | null>(null);
   const playerH = usePlayerCardH(stripRef, !hidden);
   const cardH = hidden ? OPP_H : playerH;
@@ -163,7 +183,7 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
       >
         <LayoutGroup>
           <div className="mx-auto flex items-center" style={{ gap: GAP_PX, padding: '0 8px' }}>
-            {handIds.map((instanceId) => {
+            {visibleIds.map((instanceId) => {
               const inst = instances[instanceId];
               if (!inst) return null;
               const card = library[inst.cardId];
@@ -233,13 +253,37 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
                 </motion.div>
               );
             })}
+
+            {/* PWA overflow pill: backs beyond the 5-cap collapse into
+                "+N" (owner 2026-06-12). Browsers never cap → never shows. */}
+            {hidden && overflow > 0 && (
+              <span
+                data-opp-overflow-pill
+                className="flex-none self-center rounded-full bg-ink-black/75 px-2 py-1
+                           font-display text-[0.6875rem] leading-none text-paper-cream tabular"
+                aria-hidden="true"
+              >
+                +{overflow}
+              </span>
+            )}
           </div>
         </LayoutGroup>
       </div>
 
-      {/* NO opp hand count pill — owner's explicit final rule 2026-06-12
-          ("DO NOT WANT OP HAND CARD COUNTER"), overriding the F-8E spec
-          text. The rail itself is the only count signal. */}
+      {/* Opp hand COUNT badge — ALL screens (owner 2026-06-12, reinstated:
+          "we need a counter that says number of cards in hand for opp on
+          ALL SCREENS" — supersedes the earlier no-counter rule). */}
+      {hidden && n > 0 && (
+        <span
+          data-opp-hand-badge
+          className="pointer-events-none absolute rounded-full bg-ink-black/75 px-1.5 py-0.5
+                     font-display text-[0.625rem] leading-none text-paper-cream tabular"
+          style={{ right: 10, top: 2 }}
+          aria-hidden="true"
+        >
+          {n}
+        </span>
+      )}
     </div>
   );
 });
