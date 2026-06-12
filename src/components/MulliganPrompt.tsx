@@ -209,6 +209,7 @@ export const MulliganPrompt = memo(function MulliganPrompt() {
               inst={inspectInst}
               card={inspectCard}
               onClose={() => setInspectId(null)}
+              group={{ ids: handIds, currentId: inspectId, onNavigate: setInspectId }}
             />
           )}
         </motion.div>

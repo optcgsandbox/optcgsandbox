@@ -231,6 +231,7 @@ export const SearcherPeekPrompt = memo(function SearcherPeekPrompt() {
               inst={inspectInst}
               card={inspectCard}
               onClose={() => setInspectId(null)}
+              group={{ ids: pending.lookedAtInstanceIds, currentId: inspectId, onNavigate: setInspectId }}
             />
           )}
         </motion.div>

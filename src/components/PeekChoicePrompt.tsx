@@ -126,6 +126,7 @@ export const PeekChoicePrompt = memo(function PeekChoicePrompt() {
               inst={inspectInst}
               card={inspectCard}
               onClose={() => setInspectId(null)}
+              group={{ ids: pendingPeek.peekedIds, currentId: inspectId, onNavigate: setInspectId }}
             />
           )}
         </motion.div>

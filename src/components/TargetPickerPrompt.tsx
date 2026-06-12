@@ -209,6 +209,7 @@ export const TargetPickerPrompt = memo(function TargetPickerPrompt() {
               inst={inspectInst}
               card={inspectCard}
               onClose={() => setInspectId(null)}
+              group={{ ids: pending.candidateIds, currentId: inspectId, onNavigate: setInspectId }}
             />
           )}
         </motion.div>

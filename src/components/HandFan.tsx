@@ -56,6 +56,7 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
   const inspectedCardId = useGameStore((s) => s.inspectedCardId);
   const setInspectedCardId = useGameStore((s) => s.setInspectedCardId);
   const setCardDetailOpen = useGameStore((s) => s.setCardDetailOpen);
+  const setInspectGroup = useGameStore((s) => s.setInspectGroup);
   const reduced = useReducedMotion() ?? false;
   const spring = springs(reduced);
 
@@ -64,10 +65,12 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
       if (!interactive || hidden) return;
       // Owner direction 2026-05-29: single tap opens detail modal directly.
       // The two-step lift-then-tap-again was too small to read on a phone.
+      // Carousel (owner 2026-06-12): the whole hand is the browse group.
+      setInspectGroup(handIds);
       setInspectedCardId(instanceId);
       setCardDetailOpen(true);
     },
-    [interactive, hidden, setCardDetailOpen, setInspectedCardId],
+    [interactive, hidden, setCardDetailOpen, setInspectedCardId, setInspectGroup, handIds],
   );
 
   const n = handIds.length;
@@ -210,21 +213,8 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
           })}
         </div>
       </LayoutGroup>
-
-      {/* Opp hand count badge (owner spec 2026-06-12 — supersedes the
-          earlier "no integrated count"). Counter-rotated so it reads
-          upright inside the flipped fan; sits beside the cards, in-lane. */}
-      {hidden && n > 0 && (
-        <span
-          data-opp-hand-badge
-          className="absolute rounded-full bg-ink-black/80 px-1.5 py-0.5
-                     font-display text-[0.625rem] leading-none text-paper-cream tabular rotate-180"
-          style={{ right: 8, bottom: 4 }}
-          aria-hidden="true"
-        >
-          {n}
-        </span>
-      )}
+      {/* NO count badge on the opp fan — owner rule (reaffirmed 2026-06-12
+          over the addendum spec): the fan itself is the only count signal. */}
     </div>
   );
 });

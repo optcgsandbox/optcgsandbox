@@ -21,6 +21,9 @@ interface StageSlotProps {
 export const StageSlot = memo(function StageSlot({ playerId, isYou }: StageSlotProps) {
   const stage = useGameStore((s) => s.state.players[playerId].stage);
   const library = useGameStore((s) => s.state.cardLibrary);
+  const setInspectedCardId = useGameStore((s) => s.setInspectedCardId);
+  const setCardDetailOpen = useGameStore((s) => s.setCardDetailOpen);
+  const setInspectGroup = useGameStore((s) => s.setInspectGroup);
   const dims = CARD_DIMS.field;
   const label = stage
     ? `${isYou ? 'Your' : 'Opponent'} stage — ${library[stage.cardId]?.name ?? 'card'}`
@@ -45,7 +48,19 @@ export const StageSlot = memo(function StageSlot({ playerId, isYou }: StageSlotP
           className="relative"
           style={{ width: dims.w, height: dims.h }}
         >
-          <CardArt inst={stage} card={card} size="field" />
+          {/* Stage cards are tappable like every other board card (owner
+              2026-06-12 — they were dead): opens CardDetailModal, which
+              already surfaces PLAY/ACTIVATE EFFECT via legalActions. */}
+          <CardArt
+            inst={stage}
+            card={card}
+            size="field"
+            onTap={() => {
+              setInspectGroup(null); // single-card context — no carousel
+              setInspectedCardId(stage.instanceId);
+              setCardDetailOpen(true);
+            }}
+          />
         </div>
       )}
     </ZoneSlot>

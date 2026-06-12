@@ -115,6 +115,7 @@ export const DiscardChoicePrompt = memo(function DiscardChoicePrompt() {
             inst={inspectInst}
             card={inspectCard}
             onClose={() => setInspectId(null)}
+            group={{ ids: oppHand, currentId: inspectId, onNavigate: setInspectId }}
           />
         )}
       </motion.div>

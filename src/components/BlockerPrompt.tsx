@@ -271,6 +271,11 @@ export const BlockerPrompt = memo(function BlockerPrompt() {
               inst={instances[inspectIid]}
               card={instances[inspectIid] ? library[instances[inspectIid]!.cardId] : undefined}
               onClose={() => setInspectIid(null)}
+              group={{
+                ids: blockerOptions.map((a) => a.blockerInstanceId),
+                currentId: inspectIid,
+                onNavigate: setInspectIid,
+              }}
             />
           )}
         </motion.div>

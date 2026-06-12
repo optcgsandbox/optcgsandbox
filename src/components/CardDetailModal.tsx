@@ -21,6 +21,12 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { useDonArm } from '../store/donArm';
 import { CardArt } from './CardArt';
+import { CarouselNav } from './InspectCarousel';
+import {
+  type InspectGroup,
+  useCarouselKeys,
+  useCarouselSwipe,
+} from '../lib/inspectCarousel';
 import type { Action } from '@shared/engine-v2/protocol/actions';
 
 interface ActionButton {
@@ -57,6 +63,27 @@ export const CardDetailModal = memo(function CardDetailModal() {
 
   const inst = inspectedCardId ? instances[inspectedCardId] : undefined;
   const card = inst ? library[inst.cardId] : undefined;
+
+  // Carousel context (owner 2026-06-12): when the modal was opened from a
+  // GROUP (hand / trash), arrows + keys + swipe browse it; the action
+  // buttons recompute per card. Single-card contexts (board) pass no group.
+  const inspectGroup = useGameStore((s) => s.inspectGroup);
+  const group: InspectGroup | null =
+    open && inspectGroup && inspectGroup.length > 1 && inspectedCardId
+      ? {
+          ids: inspectGroup,
+          currentId: inspectedCardId,
+          onNavigate: (id) => setInspectedCardId(id),
+        }
+      : null;
+  useCarouselKeys(group);
+  const swipe = useCarouselSwipe(group);
+  const lastIndexRef = useRef(group ? group.ids.indexOf(group.currentId) : 0);
+  const curIndex = group ? group.ids.indexOf(group.currentId) : 0;
+  const slideDir = curIndex >= lastIndexRef.current ? 1 : -1;
+  useEffect(() => {
+    lastIndexRef.current = curIndex;
+  }, [curIndex]);
 
   const close = useCallback(() => {
     setCardDetailOpen(false);
@@ -429,9 +456,24 @@ export const CardDetailModal = memo(function CardDetailModal() {
                 marginTop: 48,
                 marginBottom: 240, // reserve scaled footprint (308*1.5/2 ≈ 230) + gap
               }}
+              {...swipe}
             >
-              <CardArt card={card} size="modal" />
+              {/* Carousel slide — keyed on the inspected card; the frame
+                  (scale/margins above) never resizes during navigation. */}
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.div
+                  key={inspectedCardId ?? 'card'}
+                  initial={reduced || !group ? false : { x: 40 * slideDir, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={reduced || !group ? undefined : { x: -40 * slideDir, opacity: 0 }}
+                  transition={{ duration: reduced ? 0.01 : 0.14 }}
+                >
+                  <CardArt card={card} size="modal" />
+                </motion.div>
+              </AnimatePresence>
             </div>
+
+            {group && <CarouselNav group={group} counterAt="top" />}
 
             {/* Accessibility-only name (sr-only) so the dialog aria-labelledby resolves. */}
             <h2 id="card-detail-name" className="sr-only">

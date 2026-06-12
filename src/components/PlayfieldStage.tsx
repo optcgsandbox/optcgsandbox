@@ -96,13 +96,17 @@ function useDonAttachCandidates(): Set<string> {
 function useFieldTapRouter() {
   const setInspectedCardId = useGameStore((s) => s.setInspectedCardId);
   const setCardDetailOpen = useGameStore((s) => s.setCardDetailOpen);
+  const setInspectGroup = useGameStore((s) => s.setInspectGroup);
 
   return useCallback(
     (instanceId: string) => {
+      // Board cards are SINGLE-card inspect contexts — no carousel group
+      // (clears any stale group from a prior hand/trash inspect).
+      setInspectGroup(null);
       setInspectedCardId(instanceId);
       setCardDetailOpen(true);
     },
-    [setInspectedCardId, setCardDetailOpen],
+    [setInspectedCardId, setCardDetailOpen, setInspectGroup],
   );
 }
 

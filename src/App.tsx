@@ -98,7 +98,11 @@ function GameApp() {
                      justify-between gap-2 px-3 py-1.5"
           style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}
         >
-          <div className="flex items-baseline gap-2 min-w-0">
+          {/* Mobile header fix (owner 2026-06-12): STACKED — logo on top,
+              a SHORT turn·phase line underneath. Long player/AI strings are
+              desktop-only (sm:) so nothing truncates or hides behind the
+              hamburger on phones. */}
+          <div className="flex min-w-0 flex-col">
             <h1
               className="font-display text-[0.8125rem] leading-none whitespace-nowrap"
               style={{ color: 'var(--color-text-1)' }}
@@ -106,13 +110,17 @@ function GameApp() {
               OPTCG<span className="text-sun-brass">S</span>
             </h1>
             <p
-              className="truncate text-[0.6rem] font-body font-bold uppercase tracking-wider"
+              className="whitespace-nowrap text-[0.6rem] font-body font-bold uppercase tracking-wider"
               style={{ color: 'var(--color-text-2)' }}
               role="status"
               aria-live="polite"
             >
-              T{state.turn} · {state.phase} · {state.activePlayer === 'A' ? 'Your turn' : 'Opponent'}
-              {aiThinking ? ' · AI…' : ''}
+              T{state.turn} · {state.phase}
+              <span className="hidden sm:inline">
+                {' · '}
+                {state.activePlayer === 'A' ? 'Your turn' : 'Opponent'}
+                {aiThinking ? ' · AI…' : ''}
+              </span>
             </p>
           </div>
 

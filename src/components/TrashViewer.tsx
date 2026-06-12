@@ -31,6 +31,7 @@ export const TrashViewer = memo(function TrashViewer() {
   const viewAs = useGameStore((s) => s.viewAs);
   const setInspectedCardId = useGameStore((s) => s.setInspectedCardId);
   const setCardDetailOpen = useGameStore((s) => s.setCardDetailOpen);
+  const setInspectGroup = useGameStore((s) => s.setInspectGroup);
   const reduced = useReducedMotion() ?? false;
 
   const panelRef = useRef<HTMLDivElement>(null);
@@ -55,10 +56,12 @@ export const TrashViewer = memo(function TrashViewer() {
       // closing the detail returns the player to the trash context (owner
       // complaint: "no way back to trash except close and reopen").
       // Both render at z-50; the modal mounts second so it lands on top.
+      // Carousel (owner 2026-06-12): browse the whole trash in shown order.
+      setInspectGroup(ordered);
       setInspectedCardId(instanceId);
       setCardDetailOpen(true);
     },
-    [setInspectedCardId, setCardDetailOpen],
+    [setInspectedCardId, setCardDetailOpen, setInspectGroup, ordered],
   );
 
   // ESC closes; focus initial = close button.

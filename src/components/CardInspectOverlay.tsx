@@ -8,23 +8,33 @@
 // INSPECT_SCALE in CardArt.tsx — both this overlay and CardDetailModal
 // derive from it.
 
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import type { Card } from '@shared/engine-v2/cards/Card';
 import type { CardInstance } from '@shared/engine-v2/state/types';
 import { CardArt, CARD_DIMS } from './CardArt';
 import { inspectScaleFor } from './cardSizing';
+import { CarouselNav } from './InspectCarousel';
+import {
+  type InspectGroup,
+  useCarouselKeys,
+  useCarouselSwipe,
+} from '../lib/inspectCarousel';
 
 interface CardInspectOverlayProps {
   inst: CardInstance | undefined;
   card: Card | undefined;
   onClose: () => void;
+  /** Optional carousel context (owner 2026-06-12): when present and >1 id,
+   *  arrows/counter/keys/swipe browse the group without closing. */
+  group?: InspectGroup;
 }
 
 export const CardInspectOverlay = memo(function CardInspectOverlay({
   inst,
   card,
   onClose,
+  group,
 }: CardInspectOverlayProps) {
   const reduced = useReducedMotion() ?? false;
   // Responsive-clamped to the live viewport (original geometry restored
@@ -38,6 +48,16 @@ export const CardInspectOverlay = memo(function CardInspectOverlay({
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [onClose]);
+
+  useCarouselKeys(group);
+  const swipe = useCarouselSwipe(group);
+  // Slide direction: compare the incoming index to the last one shown.
+  const lastIndexRef = useRef(group ? group.ids.indexOf(group.currentId) : 0);
+  const curIndex = group ? group.ids.indexOf(group.currentId) : 0;
+  const dir = curIndex >= lastIndexRef.current ? 1 : -1;
+  useEffect(() => {
+    lastIndexRef.current = curIndex;
+  }, [curIndex]);
 
   const open = card !== undefined;
   const w = CARD_DIMS.modal.w * scale;
@@ -64,12 +84,12 @@ export const CardInspectOverlay = memo(function CardInspectOverlay({
           animate={{ opacity: 1 }}
           exit={reduced ? undefined : { opacity: 0 }}
           transition={{ duration: reduced ? 0.01 : 0.15 }}
+          {...swipe}
         >
-          <motion.div
+          {/* Fixed-size frame — the slide animation happens INSIDE it so
+              the modal footprint never resizes during navigation. */}
+          <div
             data-testid="card-inspect-card"
-            initial={reduced ? false : { scale: 0.92, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: reduced ? 0.01 : 0.16 }}
             style={{
               width: w,
               height: h,
@@ -77,19 +97,33 @@ export const CardInspectOverlay = memo(function CardInspectOverlay({
               filter: 'drop-shadow(0 10px 28px rgba(0,0,0,0.5))',
             }}
           >
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                transformOrigin: 'top left',
-                transform: `scale(${scale})`,
-                width: CARD_DIMS.modal.w,
-                height: CARD_DIMS.modal.h,
-              }}
-            >
-              <CardArt inst={inst} card={card} size="modal" />
-            </div>
-          </motion.div>
+            <AnimatePresence mode="popLayout" custom={dir} initial={false}>
+              <motion.div
+                key={inst?.instanceId ?? card?.id ?? 'card'}
+                initial={reduced ? false : { x: 60 * dir, opacity: 0, scale: 0.96 }}
+                animate={{ x: 0, opacity: 1, scale: 1 }}
+                exit={reduced ? undefined : { x: -60 * dir, opacity: 0, scale: 0.96 }}
+                transition={{ duration: reduced ? 0.01 : 0.16 }}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  transformOrigin: 'top left',
+                }}
+              >
+                <div
+                  style={{
+                    transformOrigin: 'top left',
+                    transform: `scale(${scale})`,
+                    width: CARD_DIMS.modal.w,
+                    height: CARD_DIMS.modal.h,
+                  }}
+                >
+                  <CardArt inst={inst} card={card} size="modal" />
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+          {group && <CarouselNav group={group} />}
         </motion.div>
       )}
     </AnimatePresence>

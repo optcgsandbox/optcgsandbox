@@ -371,6 +371,11 @@ export const CounterPrompt = memo(function CounterPrompt() {
               inst={instances[inspectIid]}
               card={instances[inspectIid] ? library[instances[inspectIid]!.cardId] : undefined}
               onClose={() => setInspectIid(null)}
+              group={{
+                ids: counterOptions.map((a) => a.instanceId),
+                currentId: inspectIid,
+                onNavigate: setInspectIid,
+              }}
             />
           )}
         </motion.div>
