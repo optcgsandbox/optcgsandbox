@@ -64,11 +64,20 @@ function GameApp() {
 
   return (
     <div
-      // `fixed inset-0` pins the whole app to the viewport: the document
-      // has ZERO scrollable overflow, which also kills iOS standalone
-      // rubber-band scrolling (owner 2026-06-12: mobile must never scroll).
-      className="fixed inset-0 grid w-full place-items-center overflow-hidden"
-      style={{ background: 'var(--backdrop-gradient)' }}
+      // TRUE FULLSCREEN (owner 2026-06-12): a fixed box pinned to the
+      // viewport whose BOTTOM extends past it by the home-indicator inset —
+      // installed-app standalone viewports end above that strip, so plain
+      // inset-0 left it unpainted. Fixed elements create no document
+      // overflow, so scrolling (incl. iOS rubber-band) stays impossible.
+      // Browsers report inset 0 → identical to inset-0 there.
+      className="fixed grid w-full place-items-center overflow-hidden"
+      style={{
+        background: 'var(--backdrop-gradient)',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 'calc(-1 * env(safe-area-inset-bottom, 0px))',
+      }}
     >
       {/* ORIGINAL board shell (geometry restored per owner 2026-06-12):
           portrait letterbox, full height, max-width 430px, NO transform
@@ -79,7 +88,7 @@ function GameApp() {
           area strips are play surface, not reserved padding. Android hides
           the status bar outright via manifest display:fullscreen. */}
       <div
-        className="relative h-dvh w-full max-w-[430px] bg-paper-cream
+        className="relative h-full w-full max-w-[430px] bg-paper-cream
                    shadow-[var(--shadow-frame)] ring-1 ring-marine-fog/30"
       >
         {/* F-8D addendum — compact header (logo mini + turn/phase + active

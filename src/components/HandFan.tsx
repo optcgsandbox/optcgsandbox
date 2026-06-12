@@ -10,7 +10,7 @@
 //
 // PLAY_CARD is now dispatched ONLY from CardDetailModal's primary action.
 
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import { LayoutGroup, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { fanPosition, HAND_CARD_W, HAND_CARD_H } from '../lib/fanLayout';
@@ -28,6 +28,24 @@ interface HandFanProps {
    *  mirrored to the top of the board, zero identity in the DOM, never
    *  interactive. */
   hidden?: boolean;
+}
+
+/** Opp-hand SAFE LANE scale: the lane above the opp mat is
+ *  19dvh − 19px (zone edge clearance) − 36px (header). When shorter than a
+ *  card, scale the whole fan down so it NEVER overlaps a board zone. */
+function useOppLaneScale(active: boolean): number {
+  const [scale, setScale] = useState(1);
+  useEffect(() => {
+    if (!active) return undefined;
+    const update = (): void => {
+      const lane = 0.19 * window.innerHeight - 19 - 36;
+      setScale(Math.max(0.45, Math.min(1, lane / HAND_CARD_H)));
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [active]);
+  return scale;
 }
 
 export const HandFan = memo(function HandFan({ playerId, interactive = true, hidden = false }: HandFanProps) {
@@ -53,6 +71,7 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
   );
 
   const n = handIds.length;
+  const oppScale = useOppLaneScale(hidden);
 
   return (
     <div
@@ -60,32 +79,37 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
       // playmat (which clears inspectedCardId at App level). Individual cards
       // re-enable pointer events.
       //
-      // HAND-TO-MAT ANCHORING (owner 2026-06-12): both fans hug their MAT
-      // edge instead of the screen edge. With the locked symmetric framing
-      // (6dvh pads, divider at 50dvh, each half-mat 31dvh hugging it) the
-      // leftover space outside each mat is 19dvh; the offsets below land
-      // each fan's cards 18px ONTO the mat edge at EVERY viewport — desktop
-      // dead space gone, mobile snug. Pure framing math — zero zone geometry.
+      // HAND ANCHORING (owner 2026-06-12, safe-lane revision):
+      // - OPP fan lives in the SAFE LANE above the opp mat: card bottoms
+      //   land 4px ABOVE the topmost opp zone edge (measured at 19dvh−15px
+      //   across viewports) — it must NEVER cover a board zone. When the
+      //   lane is shorter than a card (landscape), the whole fan scales
+      //   down (useOppLaneScale) instead of intruding.
+      // - YOUR fan hugs the mat's bottom edge (card tops 2px clear of the
+      //   cost area) and is clamped above the home-indicator inset.
       className={
         hidden
-          ? 'pointer-events-none absolute inset-x-0 top-0 z-10 flex items-end justify-center rotate-180'
+          ? 'pointer-events-none absolute inset-x-0 top-0 z-10 flex items-end justify-center'
           : 'pointer-events-none absolute inset-x-0 z-40 flex items-end justify-center'
       }
       style={
         hidden
           ? {
-              // Card block spans [marginTop .. marginTop+cardH] after the
-              // 180° flip; opp mat TOP edge sits at 19dvh → card bottoms
-              // overlap it by 18px: marginTop = 19dvh − (cardH − 18).
+              // Card block spans [marginTop .. marginTop+cardH·s]; topmost
+              // opp zone edge = 19dvh − 15px → bottom of cards at
+              // 19dvh − 19px: marginTop = 19dvh − 19 − cardH.
               height: HAND_CARD_H + 8,
-              marginTop: `max(0px, calc(19dvh - ${HAND_CARD_H - 18}px))`,
+              marginTop: `max(34px, calc(19dvh - ${HAND_CARD_H + 19}px))`,
+              // Center-origin: rotate flips in place; lane-scale shrinks
+              // symmetrically (upward into the lane, never onto the mat).
+              transform: `rotate(180deg) scale(${oppScale})`,
             }
           : {
               // Cards sit at the container bottom; your mat BOTTOM edge is
-              // 19dvh above the shell bottom → card tops overlap it by 18px:
-              // bottom = 19dvh − cardH − 18.
+              // 19dvh+inset above the shell's physical bottom → card tops
+              // 18px past it; clamped above the home-indicator inset.
               height: HAND_CARD_H + 80,
-              bottom: `max(0px, calc(19dvh - ${HAND_CARD_H + 18}px))`,
+              bottom: `max(env(safe-area-inset-bottom, 0px), calc(19dvh - ${HAND_CARD_H + 18}px + env(safe-area-inset-bottom, 0px)))`,
             }
       }
       aria-label={`${hidden ? 'Opponent' : 'Your'} hand, ${n} cards`}
@@ -186,6 +210,21 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
           })}
         </div>
       </LayoutGroup>
+
+      {/* Opp hand count badge (owner spec 2026-06-12 — supersedes the
+          earlier "no integrated count"). Counter-rotated so it reads
+          upright inside the flipped fan; sits beside the cards, in-lane. */}
+      {hidden && n > 0 && (
+        <span
+          data-opp-hand-badge
+          className="absolute rounded-full bg-ink-black/80 px-1.5 py-0.5
+                     font-display text-[0.625rem] leading-none text-paper-cream tabular rotate-180"
+          style={{ right: 8, bottom: 4 }}
+          aria-hidden="true"
+        >
+          {n}
+        </span>
+      )}
     </div>
   );
 });

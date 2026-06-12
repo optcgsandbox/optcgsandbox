@@ -259,7 +259,13 @@ test.describe('F-8D addendum — opponent hand fan', () => {
       for (const n of names) {
         if (text.includes(n)) return `name leaked: ${n}`;
       }
-      if (/\d/.test(text)) return 'count chip text present';
+      // Owner spec 2026-06-12: a count badge IS required (supersedes the
+      // earlier no-chip direction) — assert it shows the exact hand count.
+      const badge = fanEl.querySelector('[data-opp-hand-badge]');
+      if (!badge) return 'count badge missing';
+      if ((badge.textContent ?? '').trim() !== String(s.players.B.hand.length)) {
+        return `count badge wrong: ${badge.textContent}`;
+      }
       return 'clean';
     });
     expect(leak).toBe('clean');

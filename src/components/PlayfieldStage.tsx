@@ -485,12 +485,14 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
               // SYMMETRIC framing (owner 2026-06-12): equal paddings put the
               // half-vs-half contact line at the exact vertical center of
               // the viewport and bring the player's zones down toward the
-              // hand fan (which overlays, like cards at a real table edge).
-              // Zone geometry/rows are untouched — each half's fixed-height
-              // block hugs the divider; only the leftover framing space
-              // redistributes outward.
+              // hand fan. Zone geometry/rows are untouched — each half's
+              // fixed-height block hugs the divider; only leftover framing
+              // space redistributes outward. The shell now extends past the
+              // viewport by the home-indicator inset (true fullscreen), so
+              // the bottom padding adds that inset back: the divider stays
+              // at the VIEWPORT center and no zone sits under the home bar.
               paddingTop: '6dvh',
-              paddingBottom: '6dvh',
+              paddingBottom: 'calc(6dvh + env(safe-area-inset-bottom, 0px))',
               paddingLeft: 4,
               paddingRight: 4,
               gridTemplateRows: '1fr auto 1fr',
