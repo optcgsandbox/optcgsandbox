@@ -259,8 +259,9 @@ test.describe('F-8D addendum — opponent hand fan', () => {
       for (const n of names) {
         if (text.includes(n)) return `name leaked: ${n}`;
       }
-      // Owner rule (reaffirmed 2026-06-12): NO count badge/chip on the fan.
-      if (/\d/.test(text)) return 'count chip text present';
+      // Owner FINAL rule (2026-06-12, overrides the F-8E spec text): NO
+      // count pill/badge/digits on the opp rail — ever.
+      if (/\d/.test(text)) return 'count text present';
       if (fanEl.querySelector('[data-opp-hand-badge]')) return 'badge present';
       return 'clean';
     });

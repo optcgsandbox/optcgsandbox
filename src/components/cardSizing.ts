@@ -12,6 +12,18 @@
 
 import { CARD_DIMS } from './CardArt';
 
+// ── F-8E top-anchored board frame (owner 2026-06-12) ───────────────────
+// Vertical order is FIXED: header → opp card rail → mat block → your hand
+// → leftover space. The mat block is one rigid piece (zone geometry
+// untouched); these constants are the only coupling between the rail, the
+// playmat framing, and the hand strip so they can never drift apart.
+export const OPP_RAIL_TOP_PX = 38; // just under the compact header
+export const OPP_RAIL_H_PX = 57; // 53px navy backs + breathing room
+export const MAT_TOP_PX = OPP_RAIL_TOP_PX + OPP_RAIL_H_PX + 4; // 99
+/** The mat block's height: two 31dvh halves + the 6px contact zone. */
+export const MAT_BLOCK_DVH = 62;
+export const MAT_BLOCK_EXTRA_PX = 6;
+
 export const INSPECT_SCALE = 1.5;
 
 /** Effective on-screen inspect dimensions (the CardDetailModal standard). */

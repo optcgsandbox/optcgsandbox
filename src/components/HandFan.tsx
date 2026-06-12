@@ -1,51 +1,77 @@
-// HandFan — visual-design-spec.md §3.
-// Mobile-tuned fan that distributes 1–10 cards along a shallow arc inside the
-// 398px inner playmat width. Cards pivot from their bottom-center.
+// HandFan — F-8E HAND STRIPS (owner 2026-06-12): the fan system is REMOVED.
+// Board-first layout — both hands are flat horizontal strips anchored to
+// their MAT edge, never overlapping any zone, never causing page scroll.
 //
-// Interaction (replaces the old immediate-PLAY behavior):
-//   • Tap a resting card        → setInspectedCardId(thatId) (card lifts)
-//   • Tap the lifted card again → setCardDetailOpen(true) (opens CardDetailModal)
-//   • Tap a different card      → switch lift to the new card
-//   • Tap outside any card      → clearing handled by App-level listener
+//   • YOUR hand  — readable cards (HAND × PLAYER_SCALE), side-by-side with a
+//     small gap (owner: NO overlap), centered; internal horizontal snap-
+//     scroll when wider than the shell. Tap → CardDetailModal (+ carousel
+//     group). Anchored just below the mat's bottom edge.
+//   • OPP hand   — small navy card backs (~60% of yours), straight centered
+//     row just above the opp mat's top zone line, identity-free, with a
+//     count pill (owner spec F-8E §1 "Keep pill/badge count").
 //
-// PLAY_CARD is now dispatched ONLY from CardDetailModal's primary action.
+// File keeps its name + data hooks (data-hand-fan / data-hidden /
+// data-hand-count) so the e2e suite and mounts carry over.
+//
+// PLAY_CARD is dispatched ONLY from CardDetailModal's primary action.
 
 import { memo, useCallback, useEffect, useState } from 'react';
 import { LayoutGroup, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
-import { fanPosition, HAND_CARD_W, HAND_CARD_H } from '../lib/fanLayout';
 import { springs } from '../lib/animationTokens';
 import { CardArt, CARD_DIMS } from './CardArt';
+import {
+  MAT_BLOCK_DVH,
+  MAT_BLOCK_EXTRA_PX,
+  MAT_TOP_PX,
+  OPP_RAIL_H_PX,
+  OPP_RAIL_TOP_PX,
+} from './cardSizing';
 import { NavyCardBack } from './zones/NavyCardBack';
 import type { PlayerId } from '@shared/engine-v2/state/types';
+
+/** Opp rail cards: small fixed backs (~60% of the old hand size). */
+const OPP_SCALE = 0.6;
+/** Side-by-side gap (owner: small gap, NO overlap). */
+const GAP_PX = 6;
+/** Card-to-mat margin — and, per owner 2026-06-12, the SAME margin from
+ *  the card bottoms to the screen bottom. The player cards auto-size to
+ *  fill everything between (bigger screens → bigger cards). */
+const MARGIN_PX = 12;
+/** The mats' lowest zone edges reach 24–29px past the block boundary
+ *  (measured at 768/844/932/1080 heights) — 30 covers the envelope. */
+const ZONE_EDGE_PX = 30;
+
+const OPP_W = Math.round(CARD_DIMS.hand.w * OPP_SCALE); // 38
+const OPP_H = Math.round(CARD_DIMS.hand.h * OPP_SCALE); // 53
+const CARD_ASPECT = CARD_DIMS.hand.w / CARD_DIMS.hand.h;
 
 interface HandFanProps {
   /** Which seat's hand to render. Defaults to viewAs. */
   playerId?: PlayerId;
-  /** When true (human's seat), tapping a card lifts it / opens the modal. */
+  /** When true (human's seat), tapping a card opens the detail modal. */
   interactive?: boolean;
-  /** F-8D — opponent mode: SAME fan geometry but face-down card backs,
-   *  mirrored to the top of the board, zero identity in the DOM, never
-   *  interactive. */
+  /** Opponent mode: small face-down rail, zero identity in the DOM. */
   hidden?: boolean;
 }
 
-/** Opp-hand SAFE LANE scale: the lane above the opp mat is
- *  19dvh − 19px (zone edge clearance) − 36px (header). When shorter than a
- *  card, scale the whole fan down so it NEVER overlaps a board zone. */
-function useOppLaneScale(active: boolean): number {
-  const [scale, setScale] = useState(1);
+/** PLAYER card height = the whole lane below the mat block minus the
+ *  card-to-mat margin on BOTH sides (owner 2026-06-12: card bottoms reach
+ *  the screen bottom with the same margin; auto-adjusts per screen). */
+function usePlayerCardH(): number {
+  const [h, setH] = useState(CARD_DIMS.hand.h);
   useEffect(() => {
-    if (!active) return undefined;
     const update = (): void => {
-      const lane = 0.19 * window.innerHeight - 19 - 36;
-      setScale(Math.max(0.45, Math.min(1, lane / HAND_CARD_H)));
+      const matBottom =
+        MAT_TOP_PX + (MAT_BLOCK_DVH / 100) * window.innerHeight + MAT_BLOCK_EXTRA_PX + ZONE_EDGE_PX;
+      const lane = window.innerHeight - matBottom - 2 * MARGIN_PX;
+      setH(Math.max(CARD_DIMS.hand.h, Math.round(lane)));
     };
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
-  }, [active]);
-  return scale;
+  }, []);
+  return h;
 }
 
 export const HandFan = memo(function HandFan({ playerId, interactive = true, hidden = false }: HandFanProps) {
@@ -63,9 +89,8 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
   const onTap = useCallback(
     (instanceId: string) => {
       if (!interactive || hidden) return;
-      // Owner direction 2026-05-29: single tap opens detail modal directly.
-      // The two-step lift-then-tap-again was too small to read on a phone.
-      // Carousel (owner 2026-06-12): the whole hand is the browse group.
+      // Single tap opens the detail modal (owner 2026-05-29); the whole
+      // hand is the carousel browse group (owner 2026-06-12).
       setInspectGroup(handIds);
       setInspectedCardId(instanceId);
       setCardDetailOpen(true);
@@ -74,45 +99,42 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
   );
 
   const n = handIds.length;
-  const oppScale = useOppLaneScale(hidden);
+  // Opp rail: fixed small backs — its slot under the header is reserved by
+  // the frame constants, so mat overlap is impossible by construction.
+  // Player strip: lane-fill sizing (mat → screen bottom, margin both sides).
+  const playerH = usePlayerCardH();
+  const cardH = hidden ? OPP_H : playerH;
+  const cardW = hidden ? OPP_W : Math.round(playerH * CARD_ASPECT);
 
   return (
     <div
-      // pointer-events-none lets the container pass clicks through to the
-      // playmat (which clears inspectedCardId at App level). Individual cards
+      // The strip CONTAINER spans the shell width; pointer-events-none lets
+      // taps on empty strip area fall through to the playmat. Cards
       // re-enable pointer events.
       //
-      // HAND ANCHORING (owner 2026-06-12, safe-lane revision):
-      // - OPP fan lives in the SAFE LANE above the opp mat: card bottoms
-      //   land 4px ABOVE the topmost opp zone edge (measured at 19dvh−15px
-      //   across viewports) — it must NEVER cover a board zone. When the
-      //   lane is shorter than a card (landscape), the whole fan scales
-      //   down (useOppLaneScale) instead of intruding.
-      // - YOUR fan hugs the mat's bottom edge (card tops 2px clear of the
-      //   cost area) and is clamped above the home-indicator inset.
-      className={
-        hidden
-          ? 'pointer-events-none absolute inset-x-0 top-0 z-10 flex items-end justify-center'
-          : 'pointer-events-none absolute inset-x-0 z-40 flex items-end justify-center'
-      }
+      // ANCHORING (board-first, owner 2026-06-12): the mats' outer zone
+      // lines sit at 19dvh−15px (opp, top) and 81dvh+15px (yours, bottom);
+      // each strip parks MAT_CLEAR_PX outside its line — connected to the
+      // board, never overlapping a zone, never moving the board.
+      // z-[48]: ON TOP of everything on the board (owner) — End Turn,
+      // badges, zone chrome — under only dialogs/prompts (z-50+).
+      className="pointer-events-none absolute inset-x-0 z-[48] flex justify-center"
       style={
         hidden
           ? {
-              // Card block spans [marginTop .. marginTop+cardH·s]; topmost
-              // opp zone edge = 19dvh − 15px → bottom of cards at
-              // 19dvh − 19px: marginTop = 19dvh − 19 − cardH.
-              height: HAND_CARD_H + 8,
-              marginTop: `max(34px, calc(19dvh - ${HAND_CARD_H + 19}px))`,
-              // Center-origin: rotate flips in place; lane-scale shrinks
-              // symmetrically (upward into the lane, never onto the mat).
-              transform: `rotate(180deg) scale(${oppScale})`,
+              // Pinned just under the header (owner 2026-06-12): the mat
+              // block starts BELOW the rail (MAT_TOP_PX) so overlap with
+              // the cost area is impossible by construction.
+              top: OPP_RAIL_TOP_PX,
+              height: OPP_RAIL_H_PX,
             }
           : {
-              // Cards sit at the container bottom; your mat BOTTOM edge is
-              // 19dvh+inset above the shell's physical bottom → card tops
-              // 18px past it; clamped above the home-indicator inset.
-              height: HAND_CARD_H + 80,
-              bottom: `max(env(safe-area-inset-bottom, 0px), calc(19dvh - ${HAND_CARD_H + 18}px + env(safe-area-inset-bottom, 0px)))`,
+              // The strip container owns the ENTIRE lane from the mat
+              // block's lowest zone line to the physical screen bottom —
+              // cards center inside it with MARGIN_PX above and below, so
+              // clipping is impossible (owner: "cut off"/"clipping").
+              top: `calc(${MAT_TOP_PX + MAT_BLOCK_EXTRA_PX + ZONE_EDGE_PX}px + ${MAT_BLOCK_DVH}dvh)`,
+              bottom: 0,
             }
       }
       aria-label={`${hidden ? 'Opponent' : 'Your'} hand, ${n} cards`}
@@ -120,101 +142,93 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
       data-hidden={hidden || undefined}
       data-hand-count={n}
     >
-      <LayoutGroup>
-        <div className="relative" style={{ width: 1, height: HAND_CARD_H }}>
-          {handIds.map((instanceId, i) => {
-            const inst = instances[instanceId];
-            if (!inst) return null;
-            const card = library[inst.cardId];
-            const fan = fanPosition(i, n);
-            const isInspected = inspectedCardId === instanceId;
-            const someoneElseInspected =
-              inspectedCardId !== null && !isInspected;
+      {/* Horizontal strip: centered when it fits (mx-auto on the row),
+          internal snap-scroll when wider than the shell — the PAGE never
+          scrolls. No wrapping, no second row. */}
+      <div
+        className="pointer-events-auto flex max-w-full items-center overflow-x-auto overflow-y-hidden"
+        style={{ scrollSnapType: 'x proximity', scrollbarWidth: 'none' }}
+        data-hand-strip-scroller
+      >
+        <LayoutGroup>
+          <div className="mx-auto flex items-center" style={{ gap: GAP_PX, padding: '0 8px' }}>
+            {handIds.map((instanceId) => {
+              const inst = instances[instanceId];
+              if (!inst) return null;
+              const card = library[inst.cardId];
+              const isInspected = inspectedCardId === instanceId;
+              const someoneElseInspected = inspectedCardId !== null && !isInspected;
 
-            // visual-design-spec.md §3.5 lift override.
-            const animate = isInspected
-              ? { x: fan.x, y: -60, rotate: 0, scale: 1.15, opacity: 1 }
-              : {
-                  x: fan.x,
-                  y: fan.y,
-                  rotate: fan.rotate,
-                  scale: 1,
-                  opacity: someoneElseInspected ? 0.5 : 1,
-                };
+              if (hidden) {
+                return (
+                  <motion.div
+                    key={instanceId}
+                    initial={{ opacity: 0, y: -24, scale: 0.8 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -24, transition: { duration: 0.2 } }}
+                    transition={spring.handFan}
+                    className="flex-none"
+                    style={{ width: cardW, height: cardH, scrollSnapAlign: 'center' }}
+                  >
+                    {/* Navy deck back, NO inst/card props → zero identity
+                        (ids / names / aria) reaches the DOM. */}
+                    <div className="relative h-full w-full rotate-180">
+                      <NavyCardBack radius={3} />
+                    </div>
+                  </motion.div>
+                );
+              }
 
-            if (hidden) {
               return (
                 <motion.div
                   key={instanceId}
-                  initial={{ opacity: 0, y: -40, scale: 0.7 }}
-                  animate={{ x: fan.x, y: fan.y, rotate: fan.rotate, scale: 1, opacity: 1 }}
-                  exit={{ opacity: 0, y: -60, transition: { duration: 0.2 } }}
+                  layout
+                  // Draw animation: card arrives from the deck's direction
+                  // (upper-right) — same feel as the fan era, strip-tuned.
+                  initial={{ opacity: 0, x: 120, y: -260, scale: 0.7 }}
+                  animate={{
+                    opacity: someoneElseInspected ? 0.55 : 1,
+                    x: 0,
+                    y: isInspected ? -10 : 0,
+                    scale: 1,
+                  }}
+                  exit={{ opacity: 0, y: 60, transition: { duration: 0.2 } }}
                   transition={spring.handFan}
+                  className="flex-none"
                   style={{
-                    position: 'absolute',
-                    left: -HAND_CARD_W / 2,
-                    bottom: 0,
-                    transformOrigin: '50% 100%',
-                    zIndex: 20 + i,
+                    width: cardW,
+                    height: cardH,
+                    scrollSnapAlign: 'center',
+                    filter: someoneElseInspected && !reduced ? 'saturate(0.7)' : undefined,
                   }}
                 >
-                  {/* The SAME Bandai navy back as the deck pile (owner
-                      2026-06-12). Rendered SLIMMER than the player-card
-                      footprint (×0.88): the solid-navy full-bleed back reads
-                      optically wider than the white-bordered scans at equal
-                      box size — owner direction. NO inst/card props → zero
-                      identity (ids / names / aria) reaches the DOM. */}
+                  {/* CardArt renders at the F-8C 'hand' standard; the strip
+                      scales the footprint uniformly (PLAYER_SCALE × lane). */}
                   <div
-                    className="relative"
                     style={{
-                      width: Math.round(CARD_DIMS.hand.w * 0.88),
-                      height: Math.round(CARD_DIMS.hand.h * 0.88),
+                      transform: `scale(${cardW / CARD_DIMS.hand.w})`,
+                      transformOrigin: 'top left',
+                      width: CARD_DIMS.hand.w,
+                      height: CARD_DIMS.hand.h,
                     }}
                   >
-                    <NavyCardBack radius={4} />
+                    <CardArt
+                      inst={inst}
+                      card={card}
+                      size="hand"
+                      onTap={interactive ? () => onTap(instanceId) : undefined}
+                    />
                   </div>
                 </motion.div>
               );
-            }
+            })}
+          </div>
+        </LayoutGroup>
+      </div>
 
-            return (
-              <motion.div
-                key={instanceId}
-                layout
-                // Owner direction 2026-05-30: card draw comes from the DECK
-                // (upper-right of LEADER row), not from below the fan.
-                // x: +190 places the mount near the deck slot's screen x;
-                // y: -330 lifts it to the deck row; scale: 0.7 + rotate -8
-                // give a "card pulled from pile" feel before it settles
-                // into its fan slot.
-                initial={{ opacity: 0, x: 190, y: -330, scale: 0.7, rotate: -8 }}
-                animate={animate}
-                exit={{ opacity: 0, y: 80, transition: { duration: 0.2 } }}
-                transition={spring.handFan}
-                style={{
-                  position: 'absolute',
-                  left: -HAND_CARD_W / 2,
-                  bottom: 0,
-                  transformOrigin: '50% 100%',
-                  zIndex: isInspected ? 40 : 20 + i,
-                  filter:
-                    someoneElseInspected && !reduced ? 'saturate(0.7)' : undefined,
-                }}
-                className="pointer-events-auto"
-              >
-                <CardArt
-                  inst={inst}
-                  card={card}
-                  size="hand"
-                  onTap={interactive ? () => onTap(instanceId) : undefined}
-                />
-              </motion.div>
-            );
-          })}
-        </div>
-      </LayoutGroup>
-      {/* NO count badge on the opp fan — owner rule (reaffirmed 2026-06-12
-          over the addendum spec): the fan itself is the only count signal. */}
+      {/* NO opp hand count pill — owner's explicit final rule 2026-06-12
+          ("DO NOT WANT OP HAND CARD COUNTER"), overriding the F-8E spec
+          text. The rail itself is the only count signal. */}
     </div>
   );
 });

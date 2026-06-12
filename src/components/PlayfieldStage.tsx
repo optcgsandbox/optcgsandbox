@@ -62,6 +62,7 @@ import { DonDeckSlot } from './zones/DonDeckSlot';
 import { CostAreaBand } from './zones/CostAreaBand';
 import { PhaseColumn } from './zones/PhaseColumn';
 import { EndTurnButton } from './EndTurnButton';
+import { MAT_TOP_PX } from './cardSizing';
 import type { CardInstance, PlayerId, PlayerZones } from '@shared/engine-v2/state/types';
 import type { Card } from '@shared/engine-v2/cards/Card';
 
@@ -486,20 +487,16 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
           <div
             className="grid h-full w-full"
             style={{
-              // SYMMETRIC framing (owner 2026-06-12): equal paddings put the
-              // half-vs-half contact line at the exact vertical center of
-              // the viewport and bring the player's zones down toward the
-              // hand fan. Zone geometry/rows are untouched — each half's
-              // fixed-height block hugs the divider; only leftover framing
-              // space redistributes outward. The shell now extends past the
-              // viewport by the home-indicator inset (true fullscreen), so
-              // the bottom padding adds that inset back: the divider stays
-              // at the VIEWPORT center and no zone sits under the home bar.
-              paddingTop: '6dvh',
-              paddingBottom: 'calc(6dvh + env(safe-area-inset-bottom, 0px))',
+              // TOP-ANCHORED framing (owner 2026-06-12, supersedes the
+              // centered-divider rule): header → opp rail → MAT BLOCK →
+              // your hand → leftover. 'auto auto 1fr' pins the rigid mat
+              // block (zone geometry untouched) directly under the rail at
+              // MAT_TOP_PX; all spare space collects at the bottom.
+              paddingTop: MAT_TOP_PX,
+              paddingBottom: 'env(safe-area-inset-bottom, 0px)',
               paddingLeft: 4,
               paddingRight: 4,
-              gridTemplateRows: '1fr auto 1fr',
+              gridTemplateRows: 'auto auto 1fr',
               rowGap: 0,
             }}
           >
