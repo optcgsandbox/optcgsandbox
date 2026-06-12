@@ -64,7 +64,10 @@ function GameApp() {
 
   return (
     <div
-      className="grid min-h-dvh w-full place-items-center overflow-hidden"
+      // `fixed inset-0` pins the whole app to the viewport: the document
+      // has ZERO scrollable overflow, which also kills iOS standalone
+      // rubber-band scrolling (owner 2026-06-12: mobile must never scroll).
+      className="fixed inset-0 grid w-full place-items-center overflow-hidden"
       style={{ background: 'var(--backdrop-gradient)' }}
     >
       {/* ORIGINAL board shell (geometry restored per owner 2026-06-12):

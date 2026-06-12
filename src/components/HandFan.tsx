@@ -59,30 +59,33 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
       // pointer-events-none lets the container pass clicks through to the
       // playmat (which clears inspectedCardId at App level). Individual cards
       // re-enable pointer events.
-      // F-8D — hidden (opponent) mode anchors the SAME fan to the TOP of the
-      // board shell, rotated 180° so the arc mirrors naturally, with the
-      // cards peeking down over the board edge like a real opposing hand.
-      // The interactive fan keeps the ORIGINAL safe-area-aware sizing
-      // (geometry restored per owner 2026-06-12).
+      //
+      // HAND-TO-MAT ANCHORING (owner 2026-06-12): both fans hug their MAT
+      // edge instead of the screen edge. With the locked symmetric framing
+      // (6dvh pads, divider at 50dvh, each half-mat 31dvh hugging it) the
+      // leftover space outside each mat is 19dvh; the offsets below land
+      // each fan's cards 18px ONTO the mat edge at EVERY viewport — desktop
+      // dead space gone, mobile snug. Pure framing math — zero zone geometry.
       className={
         hidden
           ? 'pointer-events-none absolute inset-x-0 top-0 z-10 flex items-end justify-center rotate-180'
-          : 'pointer-events-none absolute inset-x-0 bottom-0 z-40 flex items-end justify-center'
+          : 'pointer-events-none absolute inset-x-0 z-40 flex items-end justify-center'
       }
       style={
         hidden
           ? {
-              // Half-tucked peek over the board's top edge (owner 2026-06-12:
-              // this original placement was right; full-height hung too low).
-              // Edge-to-edge: anchored at the REAL screen top — the iOS clock
-              // overlays the navy backs (light-on-dark, legible).
+              // Card block spans [marginTop .. marginTop+cardH] after the
+              // 180° flip; opp mat TOP edge sits at 19dvh → card bottoms
+              // overlap it by 18px: marginTop = 19dvh − (cardH − 18).
               height: HAND_CARD_H + 8,
-              marginTop: -(HAND_CARD_H / 2),
+              marginTop: `max(0px, calc(19dvh - ${HAND_CARD_H - 18}px))`,
             }
           : {
-              // Reserve card height + apex lift + buffer for the lifted state.
-              // Edge-to-edge: the fan sits into the gesture-bar strip.
+              // Cards sit at the container bottom; your mat BOTTOM edge is
+              // 19dvh above the shell bottom → card tops overlap it by 18px:
+              // bottom = 19dvh − cardH − 18.
               height: HAND_CARD_H + 80,
+              bottom: `max(0px, calc(19dvh - ${HAND_CARD_H + 18}px))`,
             }
       }
       aria-label={`${hidden ? 'Opponent' : 'Your'} hand, ${n} cards`}
