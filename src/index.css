@@ -97,7 +97,12 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  height: 100dvh;
+  /* Installed-app edge-to-edge (iOS + Android): standalone viewports end
+     ABOVE the home-indicator / gesture strip — 100dvh alone leaves a dead
+     band the page canvas paints through (owner caught the white strip
+     2026-06-12). Extend the layout by the bottom inset so the board
+     physically reaches the screen edge. Browsers report inset 0 → no-op. */
+  height: calc(100dvh + env(safe-area-inset-bottom, 0px));
   overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
@@ -107,7 +112,7 @@ html, body {
 }
 
 #root {
-  min-height: 100dvh;
+  min-height: calc(100dvh + env(safe-area-inset-bottom, 0px));
 }
 
 /* Tabular numbers everywhere life/DON/power render — keeps digits column-aligned. */
