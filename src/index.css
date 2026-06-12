@@ -106,7 +106,13 @@ html {
 html, body {
   margin: 0;
   padding: 0;
-  height: 100dvh;
+  /* TRUE bottom extension (the b5df8b8 mechanism, owner-confirmed working):
+     DOCUMENT heights extend past the standalone viewport by the home-
+     indicator inset — iOS renders document overflow into that strip,
+     while position:fixed boxes get clipped at the viewport (the failed
+     eb83607 attempt). overflow:hidden makes the extra height unscrollable.
+     Browsers report inset 0 → plain 100dvh. */
+  height: calc(100dvh + env(safe-area-inset-bottom, 0px));
   overflow: hidden; /* the game never scrolls — hard guarantee */
   overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
@@ -120,7 +126,7 @@ body {
 }
 
 #root {
-  min-height: 100dvh;
+  min-height: calc(100dvh + env(safe-area-inset-bottom, 0px));
 }
 
 /* Portrait-only policy (owner 2026-06-12): NO landscape support, ever.

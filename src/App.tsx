@@ -64,19 +64,15 @@ function GameApp() {
 
   return (
     <div
-      // TRUE FULLSCREEN (owner 2026-06-12): a fixed box pinned to the
-      // viewport whose BOTTOM extends past it by the home-indicator inset —
-      // installed-app standalone viewports end above that strip, so plain
-      // inset-0 left it unpainted. Fixed elements create no document
-      // overflow, so scrolling (incl. iOS rubber-band) stays impossible.
-      // Browsers report inset 0 → identical to inset-0 there.
-      className="fixed grid w-full place-items-center overflow-hidden"
+      // TRUE FULLSCREEN via DOCUMENT height (the b5df8b8 mechanism — iOS
+      // renders document overflow into the home-indicator strip but CLIPS
+      // position:fixed boxes at the viewport, which is why the fixed-root
+      // attempt failed on device). html/body overflow:hidden makes the
+      // extra height unscrollable. Browsers report inset 0 → plain 100dvh.
+      className="grid w-full place-items-center overflow-hidden"
       style={{
         background: 'var(--backdrop-gradient)',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 'calc(-1 * env(safe-area-inset-bottom, 0px))',
+        height: 'calc(100dvh + env(safe-area-inset-bottom, 0px))',
       }}
     >
       {/* ORIGINAL board shell (geometry restored per owner 2026-06-12):
