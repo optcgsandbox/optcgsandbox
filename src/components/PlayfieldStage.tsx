@@ -49,6 +49,9 @@ import { FirstPlayerChoicePrompt } from './FirstPlayerChoicePrompt';
 import { PeekChoicePrompt } from './PeekChoicePrompt';
 import { DiscardChoicePrompt } from './DiscardChoicePrompt';
 import { ChoosePrompt } from './ChoosePrompt';
+import { SearcherPeekPrompt } from './SearcherPeekPrompt';
+import { TargetPickerPrompt } from './TargetPickerPrompt';
+import { EffectOfferPrompt } from './EffectOfferPrompt';
 import { LifeRevealOverlay } from './LifeRevealOverlay';
 import { EventCardOverlay } from './EventCardOverlay';
 import { LifeStack } from './zones/LifeStack';
@@ -311,6 +314,8 @@ function FarRow({ playerId, isYou }: { playerId: PlayerId; isYou: boolean }) {
 
 // Each player's half consumes 31dvh: 12dvh CHAR + 11dvh LEADER + 8dvh FAR.
 // Defined here so LeftBay below can share the same grid template.
+// (ORIGINAL geometry restored per owner 2026-06-12 — the fixed-canvas px
+// experiment made the board read narrower/slimmer than the deployed build.)
 const HALF_TEMPLATE_ROWS = '12dvh 11dvh 8dvh';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -479,6 +484,7 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
             style={{
               // Top — app chrome from App.tsx (6dvh).
               // Bottom — hand fan strip (24dvh).
+              // (ORIGINAL geometry restored per owner 2026-06-12.)
               paddingTop: 'calc(env(safe-area-inset-top, 0px) + 6dvh)',
               paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 24dvh)',
               paddingLeft: 4,
@@ -525,6 +531,8 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
 
         {/* Hand fan — absolute-bottom overlay strip. */}
         <HandFan playerId={seat} interactive />
+        {/* F-8D — opponent hand: SAME fan system, face-down, top-anchored. */}
+        <HandFan playerId={seat === 'A' ? 'B' : 'A'} hidden interactive={false} />
 
         <CardDetailModal />
         <TrashViewer />
@@ -542,6 +550,9 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
         <PeekChoicePrompt />
         <DiscardChoicePrompt />
         <ChoosePrompt />
+        <SearcherPeekPrompt />
+        <TargetPickerPrompt />
+        <EffectOfferPrompt />
       </div>
     </LayoutGroup>
   );

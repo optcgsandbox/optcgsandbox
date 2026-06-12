@@ -11,6 +11,7 @@ import { initialState } from '@shared/engine-v2/setup/initialState';
 import { setupGame } from '@shared/engine-v2/setup/setupGame';
 import { PhaseScheduler } from '@shared/engine-v2/phases/PhaseScheduler';
 import { getLegalActions } from '@shared/engine-v2/rules/legality';
+import { decideAiReactive } from './aiReactive';
 import { registerAllHandlers } from '@shared/engine-v2/registry/handlers/index';
 import { registerAllReducers } from '@shared/engine-v2/reducers/index';
 import type { Action } from '@shared/engine-v2/protocol/actions';
@@ -144,6 +145,10 @@ function bootGame(seed: number): GameState {
     },
   });
   s = setupGame(s);
+  // F-8B — mark seat A human-driven so suspendable effect handlers
+  // (searcher_peek family) open a choice window instead of auto-resolving.
+  // Opt-in field: simulation / engine tests / server never set it.
+  s.humanControllers = [AI_HUMAN];
   // Phase is now 'dice_roll'. Do NOT run refresh/draw/don yet.
   return s;
 }
@@ -404,6 +409,17 @@ async function runAiTurn(
       });
       return;
     }
+    // F-8B/F-8D — yield searcher/target-pick windows to the human (engine
+    // only suspends them for humanControllers, so they are human-owned).
+    if (next.pending !== null && (next.pending.kind === 'searcher_peek' || next.pending.kind === 'attack_target_pick' || next.pending.kind === 'effect_offer')) {
+      set({
+        state: next,
+        legalActions: getLegalActions(next, AI_HUMAN),
+        aiThinking: false,
+        aiPaused: true,
+      });
+      return;
+    }
     // Auto-resolve any prompt windows for ANY controller during AI turn —
     // discard / peek / choose_one (no UI for these yet). Hand-size-limit at
     // AI's end-turn produces pendingDiscard with controller=AI; card effects
@@ -530,11 +546,25 @@ export const useGameStore = create<GameStore>((set, get) => {
         state.phase === 'trigger_window' &&
         state.pending !== null &&
         state.pending.kind === 'trigger';
+      // F-8B/F-8D — choice windows route to their controller (a [Trigger]
+      // effect fires for the DEFENDER during the attacker's turn).
+      const isSearcherWindow =
+        state.pending !== null && state.pending.kind === 'searcher_peek';
+      const isTargetPickWindow =
+        state.pending !== null && state.pending.kind === 'attack_target_pick';
+      const isEffectOfferWindow =
+        state.pending !== null && state.pending.kind === 'effect_offer';
       const player = isTriggerWindow
         ? (state.pending as { pendingTrigger: { controller: PlayerId } }).pendingTrigger.controller
-        : isInactivePlayerPhase
-          ? (state.activePlayer === 'A' ? 'B' : 'A')
-          : state.activePlayer;
+        : isSearcherWindow
+          ? (state.pending as { pendingSearcherPeek: { controller: PlayerId } }).pendingSearcherPeek.controller
+          : isTargetPickWindow
+            ? (state.pending as { pendingTargetPick: { controller: PlayerId } }).pendingTargetPick.controller
+            : isEffectOfferWindow
+            ? (state.pending as { pendingEffectOffer: { controller: PlayerId } }).pendingEffectOffer.controller
+            : isInactivePlayerPhase
+              ? (state.activePlayer === 'A' ? 'B' : 'A')
+              : state.activePlayer;
       const result = applyAction(state, player, action);
       let next = result.state;
 
@@ -552,13 +582,23 @@ export const useGameStore = create<GameStore>((set, get) => {
       const aiModes: ReadonlyArray<GameMode> = ['vs-easy', 'vs-medium', 'vs-hard'];
       const currentMode = get().mode;
       const isAiGame = aiModes.includes(currentMode);
-      while (next.phase === 'block_window' || next.phase === 'counter_window') {
+      let reactiveSafety = 0;
+      while ((next.phase === 'block_window' || next.phase === 'counter_window') && reactiveSafety++ < 30) {
         const reactivePlayer = next.activePlayer === 'A' ? 'B' : 'A';
         const reactiveIsAi = isAiGame && reactivePlayer === AI_OPPONENT;
-        const opts = getLegalActions(next, reactivePlayer).filter(
+        const legal = getLegalActions(next, reactivePlayer);
+        const opts = legal.filter(
           (a) => a.type !== 'CONCEDE' && a.type !== 'SKIP_BLOCKER' && a.type !== 'SKIP_COUNTER'
         );
         if (!reactiveIsAi && opts.length > 0) break;
+        if (reactiveIsAi && opts.length > 0) {
+          // F-8D — AI reactive policy (was: unconditional force-skip; the
+          // AI literally never blocked or countered). Generic + deterministic:
+          // consults legal actions + effective power only — no card logic.
+          const decision = decideAiReactive(next, reactivePlayer, legal);
+          next = applyAction(next, reactivePlayer, decision).state;
+          continue;
+        }
         const skip: Action = next.phase === 'block_window' ? { type: 'SKIP_BLOCKER' } : { type: 'SKIP_COUNTER' };
         next = applyAction(next, reactivePlayer, skip).state;
       }
@@ -755,7 +795,10 @@ export const useGameStore = create<GameStore>((set, get) => {
           ((post.pending.kind === 'trigger' && post.pending.pendingTrigger.controller === AI_HUMAN) ||
             (post.pending.kind === 'discard' && post.pending.pendingDiscard.controller === AI_HUMAN) ||
             (post.pending.kind === 'peek' && post.pending.pendingPeek.controller === AI_HUMAN) ||
-            (post.pending.kind === 'choose_one' && post.pending.pendingChoose.controller === AI_HUMAN))
+            (post.pending.kind === 'choose_one' && post.pending.pendingChoose.controller === AI_HUMAN) ||
+            (post.pending.kind === 'searcher_peek' && post.pending.pendingSearcherPeek.controller === AI_HUMAN) ||
+            (post.pending.kind === 'attack_target_pick' && post.pending.pendingTargetPick.controller === AI_HUMAN) ||
+            (post.pending.kind === 'effect_offer' && post.pending.pendingEffectOffer.controller === AI_HUMAN))
         ) &&
         // Don't re-enter mid-block/counter window where the human is
         // reactive — those resolve via the same path on the human's next

@@ -841,48 +841,81 @@ const revealOppHand: ActionHandler = (state, ctx) => {
 //     `action.leftoverPlacement: 'top' | 'bottom' | 'trash' | 'shuffle'`.
 //     If unspecified, defaults to 'bottom' (matches the printed text on
 //     ~88% of the searcher_peek corpus).
-const searcherPeek: ActionHandler = (state, ctx, action) => {
-  const lookCount = num(action, 'lookCount', resolveCount(state, ctx, action, 1));
-  const addCount = num(action, 'addCount', 1);
-  const playInsteadOfHand = action['playInsteadOfHand'] === true;
-  const rested = action['rested'] === true;
-  const f = action['filter'];
-  const filter = typeof f === 'object' && f !== null ? (f as Record<string, unknown>) : undefined;
+// F-8B — per-candidate filter predicate for searcher_peek. Extracted from
+// the old inline greedy loop so the suspend path can compute the FULL valid
+// set (not limit-truncated) for the human prompt.
+function searcherPeekCandidateMatches(
+  state: GameState,
+  id: InstanceId,
+  filter: Record<string, unknown> | undefined,
+): boolean {
+  const inst = state.instances[id];
+  const card = inst !== undefined
+    ? (state.cardLibrary[inst.cardId] as { kind?: string; name?: string; cost?: number | null; traits?: ReadonlyArray<string>; colors?: ReadonlyArray<string> } | undefined)
+    : undefined;
+  if (filter === undefined || card === undefined) return true;
+  const cost = typeof card.cost === 'number' ? card.cost : 0;
+  if (filter['kind'] !== undefined && card.kind !== filter['kind']) return false;
+  if (typeof filter['trait'] === 'string' && !(card.traits ?? []).includes(filter['trait'] as string)) return false;
+  if (typeof filter['typeIncludes'] === 'string' && !(card.traits ?? []).some((t) => t.includes(filter['typeIncludes'] as string))) return false;
+  if (typeof filter['color'] === 'string' && !(card.colors ?? []).includes(filter['color'] as string)) return false;
+  if (typeof filter['nameIs'] === 'string' && card.name !== filter['nameIs']) return false;
+  if (typeof filter['nameExcludes'] === 'string' && card.name === filter['nameExcludes']) return false;
+  if (typeof filter['costMin'] === 'number' && cost < (filter['costMin'] as number)) return false;
+  if (typeof filter['costMax'] === 'number' && cost > (filter['costMax'] as number)) return false;
+  return true;
+}
 
-  const pl = state.players[ctx.controller];
-  const peeked = pl.deck.slice(0, Math.min(lookCount, pl.deck.length));
-  if (peeked.length === 0) return state;
-
-  const picked: string[] = [];
-  const leftover: string[] = [];
-  for (const id of peeked) {
-    if (picked.length < addCount) {
-      const inst = state.instances[id];
-      const card = inst !== undefined
-        ? (state.cardLibrary[inst.cardId] as { kind?: string; name?: string; cost?: number | null; traits?: ReadonlyArray<string>; colors?: ReadonlyArray<string> } | undefined)
-        : undefined;
-      let matches = true;
-      if (filter !== undefined && card !== undefined) {
-        const cost = typeof card.cost === 'number' ? card.cost : 0;
-        if (filter['kind'] !== undefined && card.kind !== filter['kind']) matches = false;
-        if (matches && typeof filter['trait'] === 'string' && !(card.traits ?? []).includes(filter['trait'] as string)) matches = false;
-        if (matches && typeof filter['typeIncludes'] === 'string' && !(card.traits ?? []).some((t) => t.includes(filter['typeIncludes'] as string))) matches = false;
-        if (matches && typeof filter['color'] === 'string' && !(card.colors ?? []).includes(filter['color'] as string)) matches = false;
-        if (matches && typeof filter['nameIs'] === 'string' && card.name !== filter['nameIs']) matches = false;
-        if (matches && typeof filter['nameExcludes'] === 'string' && card.name === filter['nameExcludes']) matches = false;
-        if (matches && typeof filter['costMin'] === 'number' && cost < (filter['costMin'] as number)) matches = false;
-        if (matches && typeof filter['costMax'] === 'number' && cost > (filter['costMax'] as number)) matches = false;
-      }
-      if (matches) {
-        picked.push(id);
-        continue;
-      }
-    }
-    leftover.push(id);
+// F-8B — human-readable one-liner for the prompt subtitle. Generic across
+// the whole effect family (no card-specific text).
+function searcherFilterSummary(
+  filter: Record<string, unknown> | undefined,
+  pickLimit: number,
+  playInsteadOfHand: boolean,
+): string {
+  const parts: string[] = [];
+  if (filter !== undefined) {
+    if (typeof filter['kind'] === 'string') parts.push(`${filter['kind']}`);
+    if (typeof filter['trait'] === 'string') parts.push(`{${filter['trait']}} type`);
+    if (typeof filter['typeIncludes'] === 'string') parts.push(`type including "${filter['typeIncludes']}"`);
+    if (typeof filter['color'] === 'string') parts.push(`${filter['color']}`);
+    if (typeof filter['nameIs'] === 'string') parts.push(`named [${filter['nameIs']}]`);
+    if (typeof filter['nameExcludes'] === 'string') parts.push(`not named [${filter['nameExcludes']}]`);
+    if (typeof filter['costMin'] === 'number') parts.push(`cost ${filter['costMin']}+`);
+    if (typeof filter['costMax'] === 'number') parts.push(`cost ${filter['costMax']} or less`);
   }
+  const what = parts.length > 0 ? `${parts.join(', ')} card` : 'card';
+  const dest = playInsteadOfHand ? 'play it' : 'add it to your hand';
+  return `Choose up to ${pickLimit} ${what} and ${dest}.`;
+}
 
-  // Remove peeked slice from deck head.
-  pl.deck.splice(0, peeked.length);
+/**
+ * F-8B — completes a searcher_peek: routes picked cards to hand/field and
+ * leftovers per `placement`, exposes hidden info, emits history. Shared by
+ * the deterministic auto path (AI / simulation / server) and
+ * RESOLVE_SEARCHER_PEEK (human prompt). PRECONDITION: the looked-at cards
+ * have already been removed from the deck head.
+ */
+export function finishSearcherPeek(
+  state: GameState,
+  controller: PlayerId,
+  sourceInstanceId: InstanceId,
+  opts: {
+    peekedIds: ReadonlyArray<InstanceId>;
+    pickedIds: ReadonlyArray<InstanceId>;
+    /** lookedAt − picked, in the order they should be routed. */
+    leftoverIds: ReadonlyArray<InstanceId>;
+    playInsteadOfHand: boolean;
+    rested: boolean;
+    placement: 'top' | 'bottom' | 'trash' | 'shuffle';
+  },
+): GameState {
+  const { peekedIds, pickedIds, leftoverIds, playInsteadOfHand, rested, placement } = opts;
+  const pl = state.players[controller];
+  const ctx = { sourceInstanceId, controller };
+  const picked = pickedIds as string[];
+  const leftover = leftoverIds as string[];
+  const peeked = peekedIds as string[];
 
   const playedIds: InstanceId[] = [];
   for (const id of picked) {
@@ -914,8 +947,6 @@ const searcherPeek: ActionHandler = (state, ctx, action) => {
   }
 
   // Data-driven leftover routing. Default = 'bottom'.
-  const placement = (action['leftoverPlacement'] ?? 'bottom') as
-    'top' | 'bottom' | 'trash' | 'shuffle';
   switch (placement) {
     case 'top':
       for (let i = leftover.length - 1; i >= 0; i--) {
@@ -989,6 +1020,89 @@ const searcherPeek: ActionHandler = (state, ctx, action) => {
     }, 'on_play');
   }
   return next;
+}
+
+const searcherPeek: ActionHandler = (state, ctx, action) => {
+  const lookCount = num(action, 'lookCount', resolveCount(state, ctx, action, 1));
+  const addCount = num(action, 'addCount', 1);
+  const playInsteadOfHand = action['playInsteadOfHand'] === true;
+  const rested = action['rested'] === true;
+  const f = action['filter'];
+  const filter = typeof f === 'object' && f !== null ? (f as Record<string, unknown>) : undefined;
+  const placement = (action['leftoverPlacement'] ?? 'bottom') as
+    'top' | 'bottom' | 'trash' | 'shuffle';
+
+  const pl = state.players[ctx.controller];
+  const peeked = pl.deck.slice(0, Math.min(lookCount, pl.deck.length));
+  if (peeked.length === 0) return state;
+
+  // F-8B — human-controlled seats get a real choice window instead of the
+  // deterministic auto-pick. Opt-in via state.humanControllers (only the
+  // local store sets it); every other consumer keeps V0 behavior below.
+  //
+  // Ambient-pending guard: suspending would OVERWRITE state.pending. That
+  // is safe when no pending exists, and handled when the ambient pending is
+  // the trigger window (resolveTriggerReducer rewrites resumePhase and
+  // yields). It is NOT safe inside an attack window — a counter-event
+  // searcher (e.g. [Counter] + searcher_peek) would destroy pendingAttack
+  // and its counterBoost — so those keep the deterministic auto-resolve
+  // (v1 limitation, documented in F-8B report).
+  const ambientSafe =
+    state.pending === null || state.pending.kind === 'trigger';
+  if (ambientSafe && state.humanControllers?.includes(ctx.controller) === true) {
+    // Remove the looked-at slice from the deck NOW (PendingPeek precedent —
+    // RESOLVE_SEARCHER_PEEK routes the cards from the pending payload).
+    pl.deck.splice(0, peeked.length);
+    const validIds = peeked.filter((id) => searcherPeekCandidateMatches(state, id, filter));
+    const known = state.knownByViewer[ctx.controller] ?? [];
+    for (const id of peeked) {
+      if (!known.includes(id)) known.push(id);
+    }
+    state.knownByViewer[ctx.controller] = known;
+    state.pending = {
+      kind: 'searcher_peek',
+      pendingSearcherPeek: {
+        controller: ctx.controller,
+        sourceInstanceId: ctx.sourceInstanceId,
+        lookedAtInstanceIds: peeked,
+        validPickInstanceIds: validIds,
+        pickLimit: addCount,
+        // Whole corpus family prints "up to" / "you may" — confirming zero
+        // picks is always legal in v1.
+        mayChooseNone: true,
+        bottomOrderRequired: placement === 'bottom' || placement === 'top',
+        revealPickedToOpponent: !playInsteadOfHand,
+        filterSummary: searcherFilterSummary(filter, addCount, playInsteadOfHand),
+        placement,
+        playInsteadOfHand,
+        rested,
+        resumePhase: state.phase,
+      },
+    };
+    state.phase = 'searcher_peek_choice';
+    return state;
+  }
+
+  // Deterministic V0 auto-resolve (AI / simulation / server) — greedy first
+  // matches up to addCount, leftovers in original order. Unchanged behavior.
+  const picked: string[] = [];
+  const leftover: string[] = [];
+  for (const id of peeked) {
+    if (picked.length < addCount && searcherPeekCandidateMatches(state, id, filter)) {
+      picked.push(id);
+    } else {
+      leftover.push(id);
+    }
+  }
+  pl.deck.splice(0, peeked.length);
+  return finishSearcherPeek(state, ctx.controller, ctx.sourceInstanceId, {
+    peekedIds: peeked,
+    pickedIds: picked,
+    leftoverIds: leftover,
+    playInsteadOfHand,
+    rested,
+    placement,
+  });
 };
 
 // Shared filter check used by all reveal_* variants. Reads filter fields

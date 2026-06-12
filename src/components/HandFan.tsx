@@ -15,7 +15,8 @@ import { LayoutGroup, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { fanPosition, HAND_CARD_W, HAND_CARD_H } from '../lib/fanLayout';
 import { springs } from '../lib/animationTokens';
-import { CardArt } from './CardArt';
+import { CardArt, CARD_DIMS } from './CardArt';
+import { NavyCardBack } from './zones/NavyCardBack';
 import type { PlayerId } from '@shared/engine-v2/state/types';
 
 interface HandFanProps {
@@ -23,9 +24,13 @@ interface HandFanProps {
   playerId?: PlayerId;
   /** When true (human's seat), tapping a card lifts it / opens the modal. */
   interactive?: boolean;
+  /** F-8D — opponent mode: SAME fan geometry but face-down card backs,
+   *  mirrored to the top of the board, zero identity in the DOM, never
+   *  interactive. */
+  hidden?: boolean;
 }
 
-export const HandFan = memo(function HandFan({ playerId, interactive = true }: HandFanProps) {
+export const HandFan = memo(function HandFan({ playerId, interactive = true, hidden = false }: HandFanProps) {
   const seat = useGameStore((s) => playerId ?? s.viewAs);
   const handIds = useGameStore((s) => s.state.players[seat].hand);
   const instances = useGameStore((s) => s.state.instances);
@@ -38,13 +43,13 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true }: H
 
   const onTap = useCallback(
     (instanceId: string) => {
-      if (!interactive) return;
+      if (!interactive || hidden) return;
       // Owner direction 2026-05-29: single tap opens detail modal directly.
       // The two-step lift-then-tap-again was too small to read on a phone.
       setInspectedCardId(instanceId);
       setCardDetailOpen(true);
     },
-    [interactive, setCardDetailOpen, setInspectedCardId],
+    [interactive, hidden, setCardDetailOpen, setInspectedCardId],
   );
 
   const n = handIds.length;
@@ -54,14 +59,34 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true }: H
       // pointer-events-none lets the container pass clicks through to the
       // playmat (which clears inspectedCardId at App level). Individual cards
       // re-enable pointer events.
-      className="pointer-events-none absolute inset-x-0 bottom-0 z-40 flex items-end justify-center"
-      style={{
-        // Reserve card height + apex lift + buffer for the lifted state.
-        height: `calc(${HAND_CARD_H + 80}px + env(safe-area-inset-bottom, 0px))`,
-        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-      }}
-      aria-label={`${interactive ? 'Your' : 'Opponent'} hand, ${n} cards`}
+      // F-8D — hidden (opponent) mode anchors the SAME fan to the TOP of the
+      // board shell, rotated 180° so the arc mirrors naturally, with the
+      // cards peeking down over the board edge like a real opposing hand.
+      // The interactive fan keeps the ORIGINAL safe-area-aware sizing
+      // (geometry restored per owner 2026-06-12).
+      className={
+        hidden
+          ? 'pointer-events-none absolute inset-x-0 top-0 z-10 flex items-end justify-center rotate-180'
+          : 'pointer-events-none absolute inset-x-0 bottom-0 z-40 flex items-end justify-center'
+      }
+      style={
+        hidden
+          ? {
+              // Half-tucked peek over the board's top edge (owner 2026-06-12:
+              // this original placement was right; full-height hung too low).
+              height: HAND_CARD_H + 8,
+              marginTop: `calc(env(safe-area-inset-top, 0px) - ${HAND_CARD_H / 2}px)`,
+            }
+          : {
+              // Reserve card height + apex lift + buffer for the lifted state.
+              height: `calc(${HAND_CARD_H + 80}px + env(safe-area-inset-bottom, 0px))`,
+              paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+            }
+      }
+      aria-label={`${hidden ? 'Opponent' : 'Your'} hand, ${n} cards`}
       data-hand-fan
+      data-hidden={hidden || undefined}
+      data-hand-count={n}
     >
       <LayoutGroup>
         <div className="relative" style={{ width: 1, height: HAND_CARD_H }}>
@@ -84,6 +109,41 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true }: H
                   scale: 1,
                   opacity: someoneElseInspected ? 0.5 : 1,
                 };
+
+            if (hidden) {
+              return (
+                <motion.div
+                  key={instanceId}
+                  initial={{ opacity: 0, y: -40, scale: 0.7 }}
+                  animate={{ x: fan.x, y: fan.y, rotate: fan.rotate, scale: 1, opacity: 1 }}
+                  exit={{ opacity: 0, y: -60, transition: { duration: 0.2 } }}
+                  transition={spring.handFan}
+                  style={{
+                    position: 'absolute',
+                    left: -HAND_CARD_W / 2,
+                    bottom: 0,
+                    transformOrigin: '50% 100%',
+                    zIndex: 20 + i,
+                  }}
+                >
+                  {/* The SAME Bandai navy back as the deck pile (owner
+                      2026-06-12). Rendered SLIMMER than the player-card
+                      footprint (×0.88): the solid-navy full-bleed back reads
+                      optically wider than the white-bordered scans at equal
+                      box size — owner direction. NO inst/card props → zero
+                      identity (ids / names / aria) reaches the DOM. */}
+                  <div
+                    className="relative"
+                    style={{
+                      width: Math.round(CARD_DIMS.hand.w * 0.88),
+                      height: Math.round(CARD_DIMS.hand.h * 0.88),
+                    }}
+                  >
+                    <NavyCardBack radius={4} />
+                  </div>
+                </motion.div>
+              );
+            }
 
             return (
               <motion.div

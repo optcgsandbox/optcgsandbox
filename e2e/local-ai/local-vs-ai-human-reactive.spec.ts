@@ -328,7 +328,7 @@ test.describe('F-7n Phase A/B/C/D — local vs-AI human reactive', () => {
     expect(before.legalActionTypes).toContain('SKIP_BLOCKER');
 
     // F-7q 2-step confirm: tap card (selects), then click confirm CTA.
-    await blockerBtn.click();
+    await blockerTile.click(); // F-8C: tile wrapper is the click target
     const confirmBtn = blockerPrompt.locator('button[data-action="CONFIRM_BLOCKER"]');
     await expect(confirmBtn, 'Use {name} CTA visible after first tap').toBeVisible({ timeout: 2_000 });
     await confirmBtn.click();
@@ -433,7 +433,7 @@ test.describe('F-7n Phase A/B/C/D — local vs-AI human reactive', () => {
     const counterBtn = counterTile.locator('button').first();
     await expect(counterBtn).toBeVisible();
     // F-7q 2-step confirm: first tap selects.
-    await counterBtn.click();
+    await counterTile.click(); // F-8C: tile wrapper is the click target
     const confirmCounter = counterPrompt.locator('button[data-action="CONFIRM_COUNTER"]');
     await expect(confirmCounter, 'Use {name} CTA visible after first tap').toBeVisible({ timeout: 2_000 });
     await confirmCounter.click();
@@ -648,7 +648,7 @@ test.describe('F-7n Phase F — combat UX (card tiles, math, feedback)', () => {
     ).toBeVisible();
 
     // F-7q 2-step: first tap selects, then confirm CTA.
-    await tile.locator('button[aria-label*="Jinbe"]').click();
+    await tile.click(); // F-8C: tile wrapper is the click target
     const confirmBlocker = blockerPrompt.locator('button[data-action="CONFIRM_BLOCKER"]');
     await expect(confirmBlocker).toBeVisible({ timeout: 2_000 });
     await confirmBlocker.click();
@@ -696,7 +696,7 @@ test.describe('F-7n Phase F — combat UX (card tiles, math, feedback)', () => {
     await expect(tile).toBeVisible();
     const tileBtn = tile.locator('button').first();
     await expect(tileBtn).toBeVisible();
-    await tileBtn.click({ force: true });
+    await tile.click(); // F-8C: tile wrapper is the click target
     const confirmCounter = counterPrompt.locator('button[data-action="CONFIRM_COUNTER"]');
     await expect(confirmCounter).toBeVisible({ timeout: 2_000 });
     await confirmCounter.click();

@@ -15,7 +15,7 @@
 The 5 fixes in dependency order:
 
 1. **Action-clause Target Picker** (Pattern A) — unblocks "up to 1" target choice for ~638 clauses
-2. **Searcher Peek UI** (Pattern A) — unblocks 183 searcher clauses
+2. **Searcher Peek UI** (Pattern A) — unblocks 183 searcher clauses — ✅ **SHIPPED as F-8B 2026-06-11** (BUG-030: `SearcherPeekPrompt.tsx` + `pending searcher_peek` + `RESOLVE_SEARCHER_PEEK`; human seats prompt, AI/sim keep deterministic auto-resolve; 26/26 effect-card-proof. Deferred within family: bottom-reorder UI [v1 = shown order + note], counter-window searchers still auto-resolve [pendingAttack protection], EB02-008 missing [Trigger] clause is a Track-2 data fix)
 3. **POWER_MODIFIED standalone beat** (Pattern B) — answers "why is combat 0?"
 4. **KO source attribution + DRAW + LIFE_TO_HAND + DON_ATTACHED + DISCARD + MILL beats** (Pattern B bundle) — answers "what just happened?" for opp/effect mutations
 5. **Why-illegal toast** (Pattern C) — answers "why won't this play?"

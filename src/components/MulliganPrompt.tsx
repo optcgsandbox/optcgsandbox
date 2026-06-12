@@ -17,10 +17,11 @@
 // the phase transition (mulligan_first → mulligan_second → refresh) and the
 // life-card deal that closes the window per CR §5-2-1-7.
 
-import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt } from './CardArt';
+import { CardInspectOverlay } from './CardInspectOverlay';
 import { springs } from '../lib/animationTokens';
 import type { PlayerId } from '@shared/engine-v2/state/types';
 
@@ -49,6 +50,14 @@ export const MulliganPrompt = memo(function MulliganPrompt() {
 
   const open = decider !== null && decider === viewAs;
   const handIds = open ? players[viewAs].hand : [];
+
+  // F-8D inspect-everywhere — read each opening card before Keep/Mulligan.
+  const [inspectId, setInspectId] = useState<string | null>(null);
+  useEffect(() => {
+    if (!open) setInspectId(null);
+  }, [open]);
+  const inspectInst = inspectId !== null ? instances[inspectId] : undefined;
+  const inspectCard = inspectInst ? library[inspectInst.cardId] : undefined;
 
   // Auto-focus the KEEP button (safer default — owner can re-shuffle by tabbing).
   useEffect(() => {
@@ -146,7 +155,21 @@ export const MulliganPrompt = memo(function MulliganPrompt() {
               const card = library[inst.cardId];
               if (!card) return null;
               return (
-                <div key={id}>
+                <div
+                  key={id}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View ${card.name} enlarged`}
+                  data-mulligan-card={id}
+                  onClick={() => setInspectId(id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setInspectId(id);
+                    }
+                  }}
+                  className="cursor-pointer rounded-[3px] focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
+                >
                   <CardArt inst={inst} card={card} size="hand" />
                 </div>
               );
@@ -179,6 +202,15 @@ export const MulliganPrompt = memo(function MulliganPrompt() {
               Keep
             </button>
           </div>
+
+          {/* Standard read view (size C) — same shared inspect as every surface */}
+          {inspectId !== null && (
+            <CardInspectOverlay
+              inst={inspectInst}
+              card={inspectCard}
+              onClose={() => setInspectId(null)}
+            />
+          )}
         </motion.div>
       )}
     </AnimatePresence>

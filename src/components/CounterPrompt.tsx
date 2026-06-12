@@ -13,6 +13,7 @@ import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt, CARD_DIMS } from './CardArt';
+import { CardInspectOverlay } from './CardInspectOverlay';
 import { effectivePowerForDisplay } from '@shared/engine-v2/state/derived/power';
 import type { Action } from '@shared/engine-v2/protocol/actions';
 
@@ -76,10 +77,13 @@ export const CounterPrompt = memo(function CounterPrompt() {
 
   // 2-step selection state.
   const [selectedIid, setSelectedIid] = useState<string | null>(null);
+  // F-8C — standard read view (size C) opened from a tile's VIEW button.
+  const [inspectIid, setInspectIid] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open && selectedIid !== null) setSelectedIid(null);
-  }, [open, selectedIid]);
+    if (!open && inspectIid !== null) setInspectIid(null);
+  }, [open, selectedIid, inspectIid]);
 
   // Optional timer (default OFF per owner direction). Initialise to the
   // override value (if set) so the countdown text renders synchronously
@@ -166,71 +170,103 @@ export const CounterPrompt = memo(function CounterPrompt() {
           aria-modal="true"
           aria-labelledby="counter-prompt-heading"
           data-pending-kind="counter_window"
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center
-                     gap-3 px-4 py-6 overflow-y-auto
-                     bg-paper-cream/95 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex flex-col items-center
+                     bg-paper-cream/95 backdrop-blur-sm overflow-hidden"
           initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={reduced ? undefined : { opacity: 0 }}
           transition={{ duration: reduced ? 0.01 : 0.18 }}
         >
-          <h2 id="counter-prompt-heading" className="font-display text-[1.5rem] leading-tight text-ink-black">
-            Counter Step
-          </h2>
+          {/* F-8C — fixed header: context + math. Never scrolls. */}
+          <div className="flex-none flex flex-col items-center gap-1.5 px-4 pt-4 pb-2">
+            <h2 id="counter-prompt-heading" className="font-display text-[1.4rem] leading-tight text-ink-black">
+              Counter Step
+            </h2>
 
-          {/* Attacker → Target preview */}
-          <div className="flex items-center gap-3" aria-label="Attack summary">
-            {attackerCard && (
-              <div className="flex flex-col items-center gap-1">
-                <div style={{ width: CARD_DIMS.hand.w, height: CARD_DIMS.hand.h }} className="relative">
-                  <CardArt inst={attackerInst} card={attackerCard} size="hand" />
+            {/* F-8D — attack summary uses the SAME duel language as the
+                combat beats (attacker LEFT +5°, defender RIGHT −5°, power
+                plates) so combat reads identically in every direction. */}
+            <div className="flex items-center gap-3" aria-label="Attack summary" data-duel-header>
+              {attackerCard && (
+                <div className="flex flex-col items-center gap-0.5">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`View ${attackerCard.name} enlarged`}
+                    data-duel-header-card={pending?.attackerInstanceId}
+                    onClick={() => setInspectIid(pending?.attackerInstanceId ?? null)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setInspectIid(pending?.attackerInstanceId ?? null);
+                      }
+                    }}
+                    style={{ width: CARD_DIMS.hand.w, height: CARD_DIMS.hand.h, transform: 'rotate(5deg)' }}
+                    className="relative cursor-pointer rounded-[3px] focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
+                  >
+                    <CardArt inst={attackerInst} card={attackerCard} size="hand" />
+                  </div>
+                  <span className="font-display text-[0.875rem] leading-none text-seal-red tabular">{attackerPower ?? ''}</span>
+                  <span className="text-[0.5625rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">Attacker</span>
                 </div>
-                <span className="text-[0.6875rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">Attacker</span>
-              </div>
-            )}
-            <span className="font-display text-[1.6rem] leading-none text-sun-brass" aria-hidden="true">⚔</span>
-            {targetCard && (
-              <div className="flex flex-col items-center gap-1">
-                <div style={{ width: CARD_DIMS.hand.w, height: CARD_DIMS.hand.h }} className="relative">
-                  <CardArt inst={targetInst} card={targetCard} size="hand" />
+              )}
+              <span className="font-display text-[1.5rem] leading-none text-sun-brass" aria-hidden="true">⚔</span>
+              {targetCard && (
+                <div className="flex flex-col items-center gap-0.5">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`View ${targetCard.name} enlarged`}
+                    data-duel-header-card={pending?.targetInstanceId}
+                    onClick={() => setInspectIid(pending?.targetInstanceId ?? null)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setInspectIid(pending?.targetInstanceId ?? null);
+                      }
+                    }}
+                    style={{ width: CARD_DIMS.hand.w, height: CARD_DIMS.hand.h, transform: 'rotate(-5deg)' }}
+                    className="relative cursor-pointer rounded-[3px] focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
+                  >
+                    <CardArt inst={targetInst} card={targetCard} size="hand" />
+                  </div>
+                  <span className="font-display text-[0.875rem] leading-none text-hull-teal tabular">{targetEffective ?? ''}</span>
+                  <span className="text-[0.5625rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">Defender</span>
                 </div>
-                <span className="text-[0.6875rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">Target</span>
-              </div>
-            )}
+              )}
+            </div>
+
+            {/* Power-math readout */}
+            {attackerPower !== null && attackerPower !== undefined &&
+              targetEffective !== null && targetEffective !== undefined && (
+                <div className="flex flex-col items-center gap-0.5" aria-live="polite">
+                  <div className="flex items-baseline gap-2 tabular">
+                    <span className="font-display text-[1.4rem] leading-none text-seal-red">{attackerPower}</span>
+                    <span className="font-display text-[1rem] leading-none text-ink-iron">⚔</span>
+                    <span className={[
+                      'font-display text-[1.4rem] leading-none',
+                      survives ? 'text-hull-teal' : 'text-ink-iron',
+                    ].join(' ')}>{targetEffective}</span>
+                  </div>
+                  <span
+                    data-testid="counter-prompt-boost"
+                    className="text-[0.6875rem] font-body font-extrabold uppercase tracking-wider text-ink-iron"
+                  >
+                    Counter so far: +{counterBoost}
+                    {selectedBoost !== null ? ` · selected: +${selectedBoost}` : ''}
+                  </span>
+                </div>
+              )}
           </div>
 
-          {/* Big power-math readout */}
-          {attackerPower !== null && attackerPower !== undefined &&
-            targetEffective !== null && targetEffective !== undefined && (
-              <div className="flex flex-col items-center gap-0.5" aria-live="polite">
-                <div className="flex items-baseline gap-2 tabular">
-                  <span className="font-display text-[1.5rem] leading-none text-seal-red">{attackerPower}</span>
-                  <span className="font-display text-[1.1rem] leading-none text-ink-iron">⚔</span>
-                  <span className={[
-                    'font-display text-[1.5rem] leading-none',
-                    survives ? 'text-hull-teal' : 'text-ink-iron',
-                  ].join(' ')}>{targetEffective}</span>
-                </div>
-                <span
-                  data-testid="counter-prompt-boost"
-                  className="text-[0.75rem] font-body font-extrabold uppercase tracking-wider text-ink-iron"
-                >
-                  Counter so far: +{counterBoost}
-                </span>
-                {selectedBoost !== null && (
-                  <span className="text-[0.6875rem] font-body font-extrabold uppercase tracking-wider text-seal-red">
-                    Selected: +{selectedBoost}
-                  </span>
-                )}
-              </div>
-            )}
-
+          {/* F-8C — internal-scroll tile list (PROMPT size, fixed — selection
+              never resizes the tile, so layout never shifts). */}
           {counterOptions.length > 0 && (
-            <>
-              <p className="text-[0.75rem] font-body font-extrabold uppercase tracking-wider text-ink-iron mt-2">
-                Tap a counter to read · tap again to confirm
+            <div className="flex-1 min-h-0 w-full overflow-y-auto px-4 py-1">
+              <p className="text-[0.6875rem] text-center font-body font-extrabold uppercase tracking-wider text-ink-iron mb-2">
+                Tap a counter to select · View to read
               </p>
-              <div className="flex flex-wrap items-end justify-center gap-3 max-w-full" aria-label="Available counters">
+              <div className="flex flex-wrap items-start justify-center gap-3 max-w-[460px] mx-auto" aria-label="Available counters">
                 {counterOptions.map((a) => {
                   const inst = instances[a.instanceId];
                   const card = inst ? library[inst.cardId] : undefined;
@@ -238,64 +274,58 @@ export const CounterPrompt = memo(function CounterPrompt() {
                   const cv = card.counterValue ?? (card as { counterEventBoost?: number | null }).counterEventBoost ?? null;
                   const isSelected = selectedIid === a.instanceId;
                   const dimmed = selectedIid !== null && !isSelected;
-                  // F-7y — owner direction: "selected card should appear
-                  // in a clean preview area, no huge card overlapping
-                  // the grid/buttons." Reduced selected scale so the
-                  // tile stays readable but doesn't dominate the prompt.
-                  const baseScale = 0.55;
-                  const selScale = 0.62;
-                  const scale = isSelected ? selScale : baseScale;
                   return (
-                    <motion.div
-                      key={a.instanceId}
-                      animate={{ y: isSelected ? -8 : 0, opacity: dimmed ? 0.3 : 1 }}
-                      transition={{ type: 'spring', stiffness: 800, damping: 32 }}
-                      className="flex flex-col items-center gap-1"
-                    >
-                      <motion.div
+                    <div key={a.instanceId} className="flex flex-col items-center gap-1">
+                      <div
+                        role="button"
+                        tabIndex={0}
                         data-counter-instance-id={a.instanceId}
                         data-selected={isSelected || undefined}
-                        animate={{ width: CARD_DIMS.modal.w * scale, height: CARD_DIMS.modal.h * scale }}
-                        transition={{ type: 'spring', stiffness: 800, damping: 32 }}
-                        className="relative"
-                        style={{ filter: isSelected ? 'drop-shadow(0 6px 14px rgba(168,38,31,0.35))' : undefined }}
+                        aria-pressed={isSelected}
+                        aria-label={`${isSelected ? 'Confirm' : 'Select'} counter ${card.name}`}
+                        onClick={() => handleTileTap(a)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleTileTap(a);
+                          }
+                        }}
+                        className={[
+                          'relative cursor-pointer rounded-[4px] transition-opacity',
+                          'focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none',
+                          dimmed ? 'opacity-40' : 'opacity-100',
+                          isSelected ? 'ring-4 ring-seal-red shadow-[0_0_12px_rgba(168,38,31,0.45)]' : '',
+                        ].join(' ')}
                       >
-                        <div
-                          style={{
-                            position: 'absolute',
-                            inset: 0,
-                            transformOrigin: 'top left',
-                            transform: `scale(${scale})`,
-                            width: CARD_DIMS.modal.w,
-                            height: CARD_DIMS.modal.h,
-                          }}
-                        >
-                          <CardArt
-                            inst={inst}
-                            card={card}
-                            size="modal"
-                            onTap={() => handleTileTap(a)}
-                            highlighted={isSelected}
-                          />
-                        </div>
-                      </motion.div>
+                        <CardArt inst={inst} card={card} size="prompt" highlighted={isSelected} />
+                      </div>
                       <span
                         className={[
-                          'text-[0.6875rem] font-body font-extrabold uppercase tracking-wider tabular',
+                          'max-w-[110px] truncate text-[0.625rem] font-body font-extrabold uppercase tracking-wider tabular',
                           isSelected ? 'text-seal-red' : 'text-ink-iron',
                         ].join(' ')}
                       >
                         {cv !== null ? `+${cv}` : 'Counter'} · {card.name}
                       </span>
-                    </motion.div>
+                      <button
+                        type="button"
+                        onClick={() => setInspectIid(a.instanceId)}
+                        aria-label={`View ${card.name} enlarged`}
+                        data-counter-view={a.instanceId}
+                        className="rounded px-1.5 py-0.5 text-[0.625rem] font-bold uppercase tracking-wide
+                                   bg-ink-black/10 text-ink-iron hover:bg-ink-black/20"
+                      >
+                        View
+                      </button>
+                    </div>
                   );
                 })}
               </div>
-            </>
+            </div>
           )}
 
-          {/* Bottom CTA row */}
-          <div className="flex flex-col items-center gap-2 mt-3">
+          {/* F-8C — fixed footer: CTAs always visible, never scrolled away. */}
+          <div className="flex-none flex flex-col items-center gap-2 px-4 pb-4 pt-2">
             {selectedIid !== null && (
               <button
                 type="button"
@@ -334,6 +364,15 @@ export const CounterPrompt = memo(function CounterPrompt() {
               </span>
             )}
           </div>
+
+          {/* Standard read view (size C — same as CardDetailModal) */}
+          {inspectIid !== null && (
+            <CardInspectOverlay
+              inst={instances[inspectIid]}
+              card={instances[inspectIid] ? library[instances[inspectIid]!.cardId] : undefined}
+              onClose={() => setInspectIid(null)}
+            />
+          )}
         </motion.div>
       )}
     </AnimatePresence>

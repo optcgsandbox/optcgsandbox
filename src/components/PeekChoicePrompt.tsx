@@ -7,10 +7,11 @@
 // the engine ever lands in peek_choice for an AI seat, so this UI only
 // renders when YOU are the controller.
 
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt } from './CardArt';
+import { CardInspectOverlay } from './CardInspectOverlay';
 
 export const PeekChoicePrompt = memo(function PeekChoicePrompt() {
   const phase = useGameStore((s) => s.state.phase);
@@ -36,6 +37,11 @@ export const PeekChoicePrompt = memo(function PeekChoicePrompt() {
   const onSkip = useCallback(() => {
     dispatch({ type: 'RESOLVE_PEEK', pickedIds: [] });
   }, [dispatch]);
+
+  // F-8D inspect-everywhere — read any peeked card before deciding.
+  const [inspectId, setInspectId] = useState<string | null>(null);
+  const inspectInst = inspectId !== null ? instances[inspectId] : undefined;
+  const inspectCard = inspectInst ? library[inspectInst.cardId] : undefined;
 
   return (
     <AnimatePresence>
@@ -84,6 +90,19 @@ export const PeekChoicePrompt = memo(function PeekChoicePrompt() {
                   className="cursor-pointer focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none rounded-[3px]"
                 >
                   <CardArt inst={inst} card={card} size="hand" />
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setInspectId(id);
+                    }}
+                    aria-label={`View ${card?.name ?? 'card'} enlarged`}
+                    data-peek-view={id}
+                    className="mt-1 block mx-auto rounded px-1.5 py-0.5 text-[0.625rem] font-bold uppercase tracking-wide
+                               bg-ink-black/10 text-ink-iron hover:bg-ink-black/20"
+                  >
+                    View
+                  </button>
                 </div>
               );
             })}
@@ -100,6 +119,15 @@ export const PeekChoicePrompt = memo(function PeekChoicePrompt() {
           >
             Skip — none
           </button>
+
+          {/* Standard read view (size C) — same shared inspect as every surface */}
+          {inspectId !== null && (
+            <CardInspectOverlay
+              inst={inspectInst}
+              card={inspectCard}
+              onClose={() => setInspectId(null)}
+            />
+          )}
         </motion.div>
       )}
     </AnimatePresence>

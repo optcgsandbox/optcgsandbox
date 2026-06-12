@@ -21,6 +21,7 @@ import { memo, useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt, CARD_DIMS } from '../components/CardArt';
+import { inspectScaleFor } from '../components/cardSizing';
 import { beatFor, actorLabel, cardNameFor, attributeCombatSource, scanCombatChain, scanEffectResults, type Beat } from './beatFor';
 
 // Per-beat durations (F-7q Readability — owner direction: cards must be
@@ -63,6 +64,11 @@ export const PresentationQueue = memo(function PresentationQueue() {
     if (pending.kind === 'peek') return pending.pendingPeek.controller === viewer;
     if (pending.kind === 'discard') return pending.pendingDiscard.controller === viewer;
     if (pending.kind === 'trigger') return pending.pendingTrigger.controller === viewer;
+    // F-8B — the searcher/peek choice window is human-only by construction.
+    if (pending.kind === 'searcher_peek') return pending.pendingSearcherPeek.controller === viewer;
+    // F-8D — same for the generic target picker + effect offer.
+    if (pending.kind === 'attack_target_pick') return pending.pendingTargetPick.controller === viewer;
+    if (pending.kind === 'effect_offer') return pending.pendingEffectOffer.controller === viewer;
     return false;
   }, [pending, viewer]);
 
@@ -212,99 +218,163 @@ export const PresentationQueue = memo(function PresentationQueue() {
         >
           {text.title}
         </span>
-        <div className={showSecondary ? 'flex items-center gap-2' : 'flex flex-col items-center'}>
-          {(() => {
-            const inst = beatToRender.primaryInstanceId ? instances[beatToRender.primaryInstanceId] : undefined;
-            const card = inst ? cardLibrary[inst.cardId] : undefined;
-            if (!card) return null;
-            const scale = showSecondary ? 0.82 : 1;
-            // F-7w — for COMBAT_RESULT, the attacker power label sits
-            // below the card.
-            const powerLabel =
-              beatToRender.kind === 'COMBAT_RESULT' && beatToRender.attackerPower !== undefined
-                ? `${beatToRender.attackerPower}`
-                : null;
+        {(() => {
+          // ── F-8D — combat presentation rebuild ──────────────────────────
+          // HEAD-TO-HEAD duel layout: attacker LEFT, defender RIGHT, both
+          // upright + readable, tops leaning toward each other (±5° tilt),
+          // inside a fixed clamped container — never overlapping, never
+          // overflowing, never scrolling. Single-card beats keep the INSPECT
+          // presentation (a played card reads as large as a clicked one).
+          // This `fixed` overlay is CONTAINED by the transformed 430px app
+          // shell (ancestor transform), so sizing derives from the SHELL
+          // width — min(window, 430) — not the raw window. (Original
+          // geometry restored per owner 2026-06-12.)
+          const vh = window.innerHeight;
+          const GLYPH_LANE = 52; // center ⚔ column + gaps
+          const shellW = Math.min(window.innerWidth, 430);
+          const containerW = shellW - 16;
+          // The ±5° head-to-head tilt grows each card's axis-aligned
+          // footprint: effective W = w·cos5° + h·sin5°, effective
+          // H = w·sin5° + h·cos5°. Clamp on the ROTATED footprint so the
+          // two cards can never overlap nor overflow.
+          const TILT_W = CARD_DIMS.modal.w * 0.9962 + CARD_DIMS.modal.h * 0.0872; // ≈246
+          const TILT_H = CARD_DIMS.modal.w * 0.0872 + CARD_DIMS.modal.h * 0.9962; // ≈326
+          const duelScale = Math.min(
+            0.95,
+            (containerW - GLYPH_LANE - 16) / (2 * TILT_W),
+            (vh - 280) / TILT_H,
+          );
+          const singleScale = inspectScaleFor(shellW, vh);
+
+          /** Base → modifiers → final breakdown for one combatant. Derived
+           *  generically from the live instance (same buckets the engine's
+           *  effectivePower sums) — no card-specific logic. */
+          const mathFor = (
+            iid: string | undefined,
+            finalShown: number | undefined,
+            extraBoost: number,
+          ): { base: number; don: number; mods: number; boost: number; final: number } | null => {
+            if (iid === undefined || finalShown === undefined) return null;
+            const i = instances[iid];
+            const c = i ? cardLibrary[i.cardId] : undefined;
+            const base = typeof (c as { power?: number | null } | undefined)?.power === 'number'
+              ? ((c as { power: number }).power)
+              : 0;
+            const mods = (i?.powerModifierThisBattle ?? 0) + (i?.powerModifierOneShot ?? 0) + (i?.powerModifierContinuous ?? 0);
+            const don = finalShown - base - mods - extraBoost; // remainder = gated DON term
+            return { base, don, mods, boost: extraBoost, final: finalShown + extraBoost };
+          };
+          const fmtMath = (m: ReturnType<typeof mathFor>): string | null => {
+            if (m === null) return null;
+            const parts: string[] = [`${m.base}`];
+            if (m.don !== 0) parts.push(`${m.don > 0 ? '+' : ''}${m.don} DON`);
+            if (m.mods !== 0) parts.push(`${m.mods > 0 ? '+' : ''}${m.mods}`);
+            if (m.boost !== 0) parts.push(`+${m.boost} counter`);
+            return parts.length > 1 ? `${parts.join(' ')} = ${m.final}` : `${m.final}`;
+          };
+
+          const renderCard = (
+            iid: string | undefined,
+            testId: string,
+            powerTestId: string,
+            tilt: number,
+            delay: number,
+            scaleToUse: number,
+            mathLine: string | null,
+            bigPower: string | null,
+          ) => {
+            const i = iid ? instances[iid] : undefined;
+            const c = i ? cardLibrary[i.cardId] : undefined;
+            if (!c) return null;
             return (
-              <div className="flex flex-col items-center gap-1">
+              <div className="flex flex-col items-center gap-1 min-w-0">
                 <motion.div
-                  key="primary"
-                  initial={reduced ? false : { scale: 0.85, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ type: 'spring', stiffness: 380, damping: 26 }}
+                  key={testId}
+                  initial={reduced ? false : { scale: 0.85, opacity: 0, rotate: 0 }}
+                  animate={{ scale: 1, opacity: 1, rotate: tilt }}
+                  transition={{ type: 'spring', stiffness: 380, damping: 26, delay }}
                   style={{
-                    width: CARD_DIMS.modal.w * scale,
-                    height: CARD_DIMS.modal.h * scale,
+                    width: CARD_DIMS.modal.w * scaleToUse,
+                    height: CARD_DIMS.modal.h * scaleToUse,
                     position: 'relative',
                     filter: 'drop-shadow(0 6px 16px rgba(0,0,0,0.45))',
                   }}
-                  data-testid="presentation-beat-primary"
+                  data-testid={testId}
                 >
-                  <div style={{ position: 'absolute', inset: 0, transformOrigin: 'top left', transform: `scale(${scale})`, width: CARD_DIMS.modal.w, height: CARD_DIMS.modal.h }}>
-                    <CardArt inst={inst} card={card} size="modal" />
+                  <div style={{ position: 'absolute', inset: 0, transformOrigin: 'top left', transform: `scale(${scaleToUse})`, width: CARD_DIMS.modal.w, height: CARD_DIMS.modal.h }}>
+                    <CardArt inst={i} card={c} size="modal" />
                   </div>
                 </motion.div>
-                {powerLabel !== null && (
+                {bigPower !== null && (
                   <span
-                    data-testid="presentation-beat-attacker-power"
-                    className="font-display text-[1.1rem] leading-none text-paper-cream tabular drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]"
+                    data-testid={powerTestId}
+                    className="font-display text-[1.2rem] leading-none text-paper-cream tabular drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]"
                   >
-                    {powerLabel}
+                    {bigPower}
+                  </span>
+                )}
+                {mathLine !== null && mathLine !== bigPower && (
+                  <span
+                    data-testid={`${testId}-math`}
+                    className="font-body text-[0.6875rem] leading-none text-paper-cream/85 tabular text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]"
+                  >
+                    {mathLine}
                   </span>
                 )}
               </div>
             );
-          })()}
-          {showSecondary && (
-            <>
+          };
+
+          if (!showSecondary) {
+            return (
+              <div className="flex flex-col items-center">
+                {renderCard(beatToRender.primaryInstanceId, 'presentation-beat-primary', 'presentation-beat-attacker-power', 0, 0, singleScale, null, null)}
+              </div>
+            );
+          }
+
+          const isCombat = beatToRender.kind === 'COMBAT_RESULT';
+          const attMath = isCombat ? mathFor(beatToRender.primaryInstanceId, beatToRender.attackerPower, 0) : null;
+          const tgtMath = isCombat
+            ? mathFor(beatToRender.secondaryInstanceId, beatToRender.targetPower, beatToRender.counterBoost ?? 0)
+            : null;
+          return (
+            <div
+              data-testid="combat-duel-container"
+              className="grid grid-cols-[1fr_auto_1fr] items-center justify-items-center gap-2"
+              style={{ width: containerW, maxWidth: '100%' }}
+            >
+              {renderCard(
+                beatToRender.primaryInstanceId,
+                'presentation-beat-primary',
+                'presentation-beat-attacker-power',
+                5, // top leans toward the defender (head-to-head)
+                0,
+                duelScale,
+                fmtMath(attMath),
+                isCombat && beatToRender.attackerPower !== undefined ? `${beatToRender.attackerPower}` : null,
+              )}
               <span
                 className="font-display text-[1.8rem] leading-none text-sun-brass drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]"
                 aria-hidden="true"
               >
-                {beatToRender.kind === 'ATTACK_DECLARED' || beatToRender.kind === 'COMBAT_RESULT' ? '⚔' : '→'}
+                {beatToRender.kind === 'ATTACK_DECLARED' || isCombat ? '⚔' : '→'}
               </span>
-              {(() => {
-                const inst = beatToRender.secondaryInstanceId ? instances[beatToRender.secondaryInstanceId] : undefined;
-                const card = inst ? cardLibrary[inst.cardId] : undefined;
-                if (!card) return null;
-                const scale = 0.82;
-                const powerLabel =
-                  beatToRender.kind === 'COMBAT_RESULT' &&
-                  beatToRender.targetPower !== undefined
-                    ? `${beatToRender.targetPower + (beatToRender.counterBoost ?? 0)}`
-                    : null;
-                return (
-                  <div className="flex flex-col items-center gap-1">
-                    <motion.div
-                      key="secondary"
-                      initial={reduced ? false : { scale: 0.85, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ type: 'spring', stiffness: 380, damping: 26, delay: 0.05 }}
-                      style={{
-                        width: CARD_DIMS.modal.w * scale,
-                        height: CARD_DIMS.modal.h * scale,
-                        position: 'relative',
-                        filter: 'drop-shadow(0 6px 16px rgba(0,0,0,0.45))',
-                      }}
-                      data-testid="presentation-beat-secondary"
-                    >
-                      <div style={{ position: 'absolute', inset: 0, transformOrigin: 'top left', transform: `scale(${scale})`, width: CARD_DIMS.modal.w, height: CARD_DIMS.modal.h }}>
-                        <CardArt inst={inst} card={card} size="modal" />
-                      </div>
-                    </motion.div>
-                    {powerLabel !== null && (
-                      <span
-                        data-testid="presentation-beat-target-power"
-                        className="font-display text-[1.1rem] leading-none text-paper-cream tabular drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)]"
-                      >
-                        {powerLabel}
-                      </span>
-                    )}
-                  </div>
-                );
-              })()}
-            </>
-          )}
-        </div>
+              {renderCard(
+                beatToRender.secondaryInstanceId,
+                'presentation-beat-secondary',
+                'presentation-beat-target-power',
+                -5, // top leans toward the attacker
+                0.05,
+                duelScale,
+                fmtMath(tgtMath),
+                isCombat && beatToRender.targetPower !== undefined
+                  ? `${beatToRender.targetPower + (beatToRender.counterBoost ?? 0)}`
+                  : null,
+              )}
+            </div>
+          );
+        })()}
         {text.sub && (
           <span
             className="font-body text-[0.9375rem] text-paper-cream text-center max-w-[320px]

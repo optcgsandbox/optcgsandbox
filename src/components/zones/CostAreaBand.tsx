@@ -222,15 +222,28 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
       className="playmat-zone playmat-zone--strong relative flex h-full w-full items-center justify-start px-2"
       style={{ minHeight: 'var(--zone-cost-strip-h, 60px)' }}
     >
-      {/* Wordmark — printed CENTER on Bandai's cardboard mat when zone is empty. */}
+      {/* Wordmark — printed CENTER on Bandai's cardboard mat when zone is empty.
+          F-8C — the flex-centering CONTAINER must NOT carry
+          `playmat-zone__label`: the opp-half counter-rotation CSS
+          (index.css `.is-opp-content-flip .playmat-zone__label`) forces
+          `display: inline-block`, which destroyed the flex centering and
+          left the opponent's COST AREA wordmark mis-positioned vs the
+          player's. Centering lives on a plain outer div; the label class
+          (and its 180° counter-rotation) applies to the INNER span only,
+          which rotates about its own center — same position both sides. */}
       {totalDon === 0 && (
-        <span
-          className="playmat-zone__label absolute inset-0 flex items-center justify-center font-display"
-          style={{ fontSize: 12, letterSpacing: '0.16em' }}
+        <div
+          className="absolute inset-0 flex items-center justify-center"
           aria-hidden="true"
+          data-cost-area-label={playerId}
         >
-          COST AREA
-        </span>
+          <span
+            className="playmat-zone__label font-display"
+            style={{ fontSize: 12, letterSpacing: '0.16em' }}
+          >
+            COST AREA
+          </span>
+        </div>
       )}
       {totalDon > 0 && (
         // absolute inset-y-0 anchors the wrapper to the band's true top + bottom

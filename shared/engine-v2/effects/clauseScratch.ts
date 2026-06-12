@@ -257,6 +257,22 @@ export function attachScratchToPending(
           pendingTargetPick: { ...p.pendingTargetPick, scratch },
         },
       };
+    case 'searcher_peek':
+      // F-8B — keep the scratch restorable on RESOLVE_SEARCHER_PEEK like
+      // the other clause-induced suspends.
+      if (p.pendingSearcherPeek.scratch !== undefined) return state;
+      return {
+        ...state,
+        pending: {
+          kind: 'searcher_peek',
+          pendingSearcherPeek: { ...p.pendingSearcherPeek, scratch },
+        },
+      };
+    case 'effect_offer':
+      // F-8D addendum — the offer suspends BEFORE cost/target steps; the
+      // accepted clause re-enters the pipeline with a FRESH scratch, so
+      // nothing needs attaching here.
+      return state;
     case 'attack':
       // Attack-phase pendings are battle-scope, not clause-resolution-scope.
       return state;

@@ -16,6 +16,18 @@ function num(c: EffectCostV2, key: string): number {
   return typeof v === 'number' ? v : 0;
 }
 
+/** F-8D — player-picked payment cards for `key`, or null to use the V0
+ *  deterministic pick. Valid only when exactly `count` ids were picked;
+ *  per-id zone membership is verified by each handler at pay time. */
+function chosenFor(
+  ctx: { chosenCostIds?: Readonly<Record<string, ReadonlyArray<string>>> },
+  key: string,
+  count: number,
+): ReadonlyArray<string> | null {
+  const ids = ctx.chosenCostIds?.[key];
+  return ids !== undefined && ids.length === count ? ids : null;
+}
+
 // ─── restSelf: rest source as cost (alias for restSource)
 const restSelf: CostHandler = {
   canPay(state, ctx) {
@@ -86,7 +98,14 @@ const restOwnCharFilter: CostHandler = {
       (c) => c.rested === false && matchesCardFilter(state, c, filter),
     );
     if (eligible.length < count) return null;
-    for (let i = 0; i < count; i++) eligible[i]!.rested = true;
+    const picked = chosenFor(ctx, 'restOwnCharFilter', count);
+    const toRest = picked !== null
+      ? picked.map((id) => eligible.find((c) => c.instanceId === id))
+      : eligible.slice(0, count);
+    for (const inst of toRest) {
+      if (inst === undefined) return null; // pick not eligible
+      inst.rested = true;
+    }
     return state;
   },
 };
@@ -111,8 +130,12 @@ const returnOwnCharFilter: CostHandler = {
     const pl = state.players[ctx.controller];
     const eligible = pl.field.filter((c) => matchesCardFilter(state, c, filter));
     if (eligible.length < count) return null;
-    for (let i = 0; i < count; i++) {
-      const inst = eligible[i]!;
+    const picked = chosenFor(ctx, 'returnOwnCharFilter', count);
+    const toReturn = picked !== null
+      ? picked.map((id) => eligible.find((c) => c.instanceId === id))
+      : eligible.slice(0, count);
+    for (const inst of toReturn) {
+      if (inst === undefined) return null; // pick not eligible
       const idx = pl.field.findIndex((c) => c.instanceId === inst.instanceId);
       if (idx === -1) return null;
       // Detach attached DON before moving the instance off field. Attached
@@ -137,9 +160,11 @@ const discardHand: CostHandler = {
     const n = num(cost, 'discardHand');
     const pl = state.players[ctx.controller];
     if (pl.hand.length < n) return null;
-    for (let i = 0; i < n; i++) {
-      const id = pl.hand.shift();
-      if (id === undefined) return null;
+    const ids = chosenFor(ctx, 'discardHand', n) ?? pl.hand.slice(0, n);
+    for (const id of ids) {
+      const idx = pl.hand.indexOf(id);
+      if (idx === -1) return null;
+      pl.hand.splice(idx, 1);
       pl.trash.push(id);
       state.cardsTrashedThisResolution += 1;
     }
@@ -167,11 +192,24 @@ const discardHandFilter: CostHandler = {
     const count = filterCostCount(value);
     const filter = filterCostFilter(value);
     const pl = state.players[ctx.controller];
-    const toDiscard: string[] = [];
-    for (const id of pl.hand) {
-      const inst = state.instances[id];
-      if (inst !== undefined && matchesCardFilter(state, inst, filter)) toDiscard.push(id);
-      if (toDiscard.length >= count) break;
+    let toDiscard: string[] = [];
+    const picked = chosenFor(ctx, 'discardHandFilter', count);
+    if (picked !== null) {
+      // Player-picked payment — every pick must be in hand AND match the
+      // printed filter; otherwise fail the pay (atomic restore upstream).
+      for (const id of picked) {
+        const inst = state.instances[id];
+        if (!pl.hand.includes(id) || inst === undefined || !matchesCardFilter(state, inst, filter)) {
+          return null;
+        }
+      }
+      toDiscard = [...picked];
+    } else {
+      for (const id of pl.hand) {
+        const inst = state.instances[id];
+        if (inst !== undefined && matchesCardFilter(state, inst, filter)) toDiscard.push(id);
+        if (toDiscard.length >= count) break;
+      }
     }
     if (toDiscard.length < count) return null;
     for (const id of toDiscard) {
@@ -191,13 +229,25 @@ const discardHandFilter: CostHandler = {
   },
 };
 
-// ─── revealHand: no state change, just an exposure (used for "reveal a card
+// ─── revealHand: no zone change, just an exposure (used for "reveal a card
 //     with X to do Y"). Future: tracks revealed in knownByViewer[opp].
+//     F-8D: when the human player picked WHICH card to reveal, record the
+//     exposure in history so the log/presentation can surface it. The V0
+//     no-pick path stays a pure no-op (AI / sim / server unchanged).
 const revealHand: CostHandler = {
   canPay(state, ctx) {
     return state.players[ctx.controller].hand.length > 0;
   },
-  pay(state) {
+  pay(state, ctx) {
+    const picked = chosenFor(ctx, 'revealHand', 1);
+    if (picked !== null) {
+      if (!state.players[ctx.controller].hand.includes(picked[0]!)) return null;
+      (state.history as Array<unknown>).push({
+        type: 'HAND_CARD_REVEALED',
+        controller: ctx.controller,
+        instanceId: picked[0],
+      });
+    }
     return state;
   },
 };
@@ -383,9 +433,11 @@ const bottomOfDeckFromHand: CostHandler = {
     const n = num(cost, 'bottomOfDeckFromHand');
     const pl = state.players[ctx.controller];
     if (pl.hand.length < n) return null;
-    for (let i = 0; i < n; i++) {
-      const id = pl.hand.shift();
-      if (id === undefined) return null;
+    const ids = chosenFor(ctx, 'bottomOfDeckFromHand', n) ?? pl.hand.slice(0, n);
+    for (const id of ids) {
+      const idx = pl.hand.indexOf(id);
+      if (idx === -1) return null;
+      pl.hand.splice(idx, 1);
       pl.deck.push(id);
     }
     return state;
@@ -464,8 +516,12 @@ const bottomOfDeckOwnChar: CostHandler = {
     const pl = state.players[ctx.controller];
     const eligible = pl.field.filter((c) => matchesCardFilter(state, c, filter));
     if (eligible.length < count) return null;
-    const toMove: CardInstance[] = eligible.slice(0, count);
+    const picked = chosenFor(ctx, 'bottomOfDeckOwnChar', count);
+    const toMove: ReadonlyArray<CardInstance | undefined> = picked !== null
+      ? picked.map((id) => eligible.find((c) => c.instanceId === id))
+      : eligible.slice(0, count);
     for (const inst of toMove) {
+      if (inst === undefined) return null; // pick not eligible
       const idx = pl.field.findIndex((c) => c.instanceId === inst.instanceId);
       if (idx !== -1) pl.field.splice(idx, 1);
       pl.deck.push(inst.instanceId);

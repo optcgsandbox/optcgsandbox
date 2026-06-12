@@ -190,7 +190,62 @@ export type PendingState =
   | { readonly kind: 'peek'; readonly pendingPeek: PendingPeek }
   | { readonly kind: 'discard'; readonly pendingDiscard: PendingDiscard }
   | { readonly kind: 'choose_one'; readonly pendingChoose: PendingChoose }
-  | { readonly kind: 'attack_target_pick'; readonly pendingTargetPick: PendingTargetPick };
+  | { readonly kind: 'attack_target_pick'; readonly pendingTargetPick: PendingTargetPick }
+  | { readonly kind: 'searcher_peek'; readonly pendingSearcherPeek: PendingSearcherPeek }
+  | { readonly kind: 'effect_offer'; readonly pendingEffectOffer: PendingEffectOffer };
+
+/**
+ * F-8D addendum — "You may pay <cost>: <effect>" pre-prompt. Created by the
+ * dispatcher BEFORE cost payment for OPTIONAL-COSTED clauses on human seats
+ * (trigger !== activate_main — activating was already the player's choice).
+ * Decline pays NOTHING; accept re-enters the clause pipeline (target → cost
+ * → action). AI / simulation / server keep the V0 auto-pay path.
+ */
+export interface PendingEffectOffer {
+  readonly controller: PlayerId;
+  readonly sourceInstanceId: InstanceId;
+  readonly clause: import('../spec/types.js').EffectClauseV2;
+  readonly clauseIndex: number;
+  readonly trigger: string;
+  readonly resumePhase: Phase;
+  readonly costSummary: string;
+  readonly effectSummary: string;
+}
+
+/**
+ * F-8B — human-facing searcher/peek/top-deck choice window.
+ *
+ * Created by the `searcher_peek` action handler ONLY when the controller is
+ * listed in `state.humanControllers` (opt-in; simulation / server / AI
+ * states never set it, so those paths keep the deterministic auto-resolve).
+ * The looked-at cards are REMOVED from the deck head at suspend time
+ * (mirrors the PendingPeek precedent) and routed by RESOLVE_SEARCHER_PEEK.
+ */
+export interface PendingSearcherPeek {
+  readonly controller: PlayerId;
+  readonly sourceInstanceId: InstanceId;
+  /** Top-N deck cards shown to the controller, in original deck order. */
+  readonly lookedAtInstanceIds: ReadonlyArray<InstanceId>;
+  /** Subset of lookedAt that satisfies the clause filter (selectable). */
+  readonly validPickInstanceIds: ReadonlyArray<InstanceId>;
+  /** Printed "up to X" — max picks. */
+  readonly pickLimit: number;
+  /** True for "up to" wording: confirming zero picks is legal. */
+  readonly mayChooseNone: boolean;
+  /** True when leftover placement is order-sensitive (top/bottom). */
+  readonly bottomOrderRequired: boolean;
+  /** Printed "reveal ... and add it to your hand" → opponent sees the pick. */
+  readonly revealPickedToOpponent: boolean;
+  /** Human-readable filter line for the prompt subtitle. */
+  readonly filterSummary: string;
+  /** Leftover routing from the clause (default 'bottom'). */
+  readonly placement: 'top' | 'bottom' | 'trash' | 'shuffle';
+  /** Some searchers play the found character instead of adding to hand. */
+  readonly playInsteadOfHand: boolean;
+  readonly rested: boolean;
+  readonly resumePhase: Phase;
+  readonly scratch?: ClauseScratch;
+}
 
 export interface PendingAttack {
   readonly attackerInstanceId: InstanceId;
@@ -242,6 +297,42 @@ export interface PendingTargetPick {
   readonly candidateIds: ReadonlyArray<InstanceId>;
   readonly resumePhase: Phase;
   readonly scratch?: ClauseScratch;
+  /** F-8D — clause continuation (closes plan-gap A7). When present, the
+   *  suspension happened at the dispatcher's target step (cost already
+   *  paid); RESOLVE_TARGET_PICK runs the action on the picked targets,
+   *  emits CLAUSE_FIRED, and marks OPT. Created ONLY for seats in
+   *  state.humanControllers — AI / simulation / server keep V0
+   *  deterministic resolution. */
+  readonly clause?: import('../spec/types.js').EffectClauseV2;
+  readonly clauseIndex?: number;
+  readonly trigger?: string;
+  readonly pickLimit?: number;
+  /** Printed "up to" dominates the corpus — pickers always allow zero
+   *  picks in v1 (cost, if any, stays paid per CR pay-then-resolve). */
+  readonly mayChooseNone?: boolean;
+  readonly filterSummary?: string;
+  /** True when the clause's cost was paid before suspension (always the
+   *  case for dispatcher-created picks; informational for UI copy). */
+  readonly paidCost?: boolean;
+  /** Precomputed OPT key for the suspended clause (marked on resolve). */
+  readonly optKey?: string;
+  /** F-8D — when present this pick PAYS a clause cost instead of choosing
+   *  an action target. The suspension happened BEFORE payment; resolution
+   *  re-enters the dispatcher with the picks in opts.chosenCostIds so the
+   *  cost handler pays with exactly the chosen cards (ask → pick payment →
+   *  pay → resolve). Human seats only. */
+  readonly costPick?: {
+    /** Cost key these picks pay (e.g. 'bottomOfDeckFromHand'). */
+    readonly costKey: string;
+    /** Picks already committed for EARLIER choice keys on this cost. */
+    readonly chosen: Readonly<Record<string, ReadonlyArray<InstanceId>>>;
+    /** True when this clause's effect_offer was accepted — the re-dispatch
+     *  must carry offerAcceptedIndex so the offer is not re-asked. */
+    readonly offerAccepted: boolean;
+  };
+  /** Printed exact counts ("place 1 card") — confirm requires EXACTLY
+   *  pickLimit picks; partial and empty picks are rejected. */
+  readonly exactCount?: boolean;
 }
 
 // ────────────────────────────────────────────────────────────────────
@@ -278,6 +369,8 @@ export type Phase =
   | 'discard_choice'
   | 'choose_one'
   | 'attack_target_pick'
+  | 'searcher_peek_choice'
+  | 'effect_offer'
   | 'end';
 
 // ────────────────────────────────────────────────────────────────────
@@ -334,6 +427,17 @@ export interface GameState {
 
   // Pending choices (suspends the reducer pipeline)
   pending: PendingState | null;
+
+  /**
+   * F-8B — seats driven by a live human UI. OPT-IN: undefined everywhere
+   * except local-store games (src/store/game.ts sets it at boot). Effect
+   * handlers that can either auto-resolve or open a choice window (e.g.
+   * searcher_peek) suspend ONLY for controllers listed here, so simulation,
+   * engine tests, and the server keep deterministic V0 behavior unchanged.
+   * (Not derived from `controllerMode` — its initialState default marks
+   * seat A 'human' for every consumer, which would deadlock headless runs.)
+   */
+  humanControllers?: ReadonlyArray<PlayerId>;
 
   // KO source stack — populated during removal_ko / battle KO,
   // read by if_self_kod_by_opp_effect condition

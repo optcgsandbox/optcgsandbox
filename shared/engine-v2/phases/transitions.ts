@@ -33,5 +33,7 @@ export const PHASE_TRANSITIONS: Readonly<Record<Phase, PhaseTransition>> = {
   discard_choice: 'context', // → pending.resumePhase
   choose_one: 'context', // → pending.resumePhase
   attack_target_pick: 'context', // → block_window
+  searcher_peek_choice: 'context', // F-8B → pending.resumePhase
+  effect_offer: 'context', // F-8D addendum → pending.resumePhase
   end: 'refresh', // next turn
 };

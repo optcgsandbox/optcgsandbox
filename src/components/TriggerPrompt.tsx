@@ -13,10 +13,11 @@
 // We DO NOT touch the engine. The engine handles the trigger window state
 // machine; the UI's only job is to surface the choice + dispatch the action.
 
-import { memo, useCallback, useEffect, useRef } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt } from './CardArt';
+import { CardInspectOverlay } from './CardInspectOverlay';
 import { springs } from '../lib/animationTokens';
 
 export const TriggerPrompt = memo(function TriggerPrompt() {
@@ -53,6 +54,12 @@ export const TriggerPrompt = memo(function TriggerPrompt() {
 
   const lifeInst = pendingTrigger ? instances[pendingTrigger.lifeCardInstanceId] : undefined;
   const lifeCard = lifeInst ? library[lifeInst.cardId] : undefined;
+
+  // F-8D inspect-everywhere — the flipped life card reads at full size too.
+  const [inspecting, setInspecting] = useState(false);
+  useEffect(() => {
+    if (!open) setInspecting(false);
+  }, [open]);
 
   // Auto-focus the primary action when the modal opens — WCAG 2.1 §2.4.3.
   // Also save the previously focused element so we can restore it on close.
@@ -151,13 +158,41 @@ export const TriggerPrompt = memo(function TriggerPrompt() {
             style={{ transform: 'scale(1.4)', transformOrigin: 'center' }}
           >
             {lifeCard && lifeInst && (
-              <CardArt
-                inst={lifeInst}
-                card={lifeCard}
-                size="leader"
-              />
+              <div
+                role="button"
+                tabIndex={0}
+                aria-label={`View ${lifeCard.name} enlarged`}
+                data-trigger-card
+                onClick={() => setInspecting(true)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setInspecting(true);
+                  }
+                }}
+                className="cursor-pointer rounded-[4px] focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
+              >
+                <CardArt
+                  inst={lifeInst}
+                  card={lifeCard}
+                  size="leader"
+                />
+              </div>
             )}
           </motion.div>
+
+          {lifeCard && (
+            <button
+              type="button"
+              onClick={() => setInspecting(true)}
+              aria-label={`View ${lifeCard.name} enlarged`}
+              data-trigger-view
+              className="mb-2 rounded px-1.5 py-0.5 text-[0.625rem] font-bold uppercase tracking-wide
+                         bg-ink-black/10 text-ink-iron hover:bg-ink-black/20"
+            >
+              View
+            </button>
+          )}
 
           {lifeCard?.effectText && (
             <motion.p
@@ -215,6 +250,15 @@ export const TriggerPrompt = memo(function TriggerPrompt() {
               </p>
             )}
           </div>
+
+          {/* Standard read view (size C) — same shared inspect as every surface */}
+          {inspecting && lifeCard && (
+            <CardInspectOverlay
+              inst={lifeInst}
+              card={lifeCard}
+              onClose={() => setInspecting(false)}
+            />
+          )}
         </motion.div>
       )}
     </AnimatePresence>

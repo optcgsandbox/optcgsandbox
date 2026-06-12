@@ -38,6 +38,11 @@ export interface HandlerCtx {
   readonly controller: PlayerId;
   readonly source?: 'battle' | 'effect';
   readonly scratch?: ClauseScratch;
+  /** F-8D — player-chosen COST payment cards, keyed by cost key (set only
+   *  on the human cost-picker resume path). Choice-capable cost handlers
+   *  pay with these ids; when absent they keep the V0 deterministic
+   *  head-pick, so AI / simulation / server are byte-identical. */
+  readonly chosenCostIds?: Readonly<Record<string, ReadonlyArray<InstanceId>>>;
 }
 
 // ────────────────────────────────────────────────────────────────────

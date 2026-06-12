@@ -38,6 +38,11 @@ import type { PlayerId } from '@shared/engine-v2/state/types';
 
 const SPIN_MS = 1200;
 const AI_DELAY_MS = 600;
+// Tie path runs on COMPRESSED timers (owner 2026-06-12: a tie took 3.3s —
+// 1500 hold + 600 beat + 1200 spin — before new dice landed; "forever").
+// Re-rolls keep a short spin for legibility but skip the long theatre.
+const TIE_HOLD_MS = 700;
+const RE_SPIN_MS = 700;
 
 /** Single die face — value 1..6 rendered as a pip pattern. Returns an array of
  *  9 booleans (3×3 grid) indicating which positions show a pip. */
@@ -141,7 +146,7 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
       setTieDisplaying(true);
       const t = window.setTimeout(
         () => setTieDisplaying(false),
-        reduced ? 0 : 1500,
+        reduced ? 0 : TIE_HOLD_MS,
       );
       return () => window.clearTimeout(t);
     }
@@ -161,7 +166,7 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
     (bothFilled && youValue === oppValue) || tieDisplaying;
 
   const rollFor = useCallback(
-    (player: PlayerId) => {
+    (player: PlayerId, spinMs: number = SPIN_MS) => {
       // Button-disable gates (`youEnabled` / `oppEnabled`) already block
       // double-clicks while spinning. Engine's `setup.ts:56` is also
       // idempotent — ROLL_DICE on a filled slot returns state unchanged.
@@ -185,7 +190,7 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
             return next;
           });
         },
-        reduced ? 0 : SPIN_MS,
+        reduced ? 0 : spinMs,
       );
     },
     [dispatch, reduced],
@@ -204,9 +209,15 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
     if (tieDisplaying) return undefined; // hold during tie overlay
     if (spinningSides.has('B')) return undefined; // already spinning
     if ((diceRoll?.B ?? null) !== null) return undefined; // already rolled
-    const t = window.setTimeout(() => rollFor('B'), AI_DELAY_MS);
+    // Post-tie re-rolls fire IMMEDIATELY with a short spin; only the
+    // opening roll keeps the 600ms beat + full spin theatre.
+    const isReroll = rollsCount > 0;
+    const t = window.setTimeout(
+      () => rollFor('B', isReroll ? RE_SPIN_MS : SPIN_MS),
+      isReroll ? 0 : AI_DELAY_MS,
+    );
     return () => window.clearTimeout(t);
-  }, [open, isAiGame, tieDisplaying, spinningSides, diceRoll, rollFor]);
+  }, [open, isAiGame, tieDisplaying, rollsCount, spinningSides, diceRoll, rollFor]);
 
   // vs-AI: after a tie reset (`diceRoll.rolls` increments and both slots
   // null), auto-re-roll YOUR side as well so the human doesn't have to
@@ -220,7 +231,8 @@ export const DiceRollPrompt = memo(function DiceRollPrompt() {
     if (rollsCount === 0) return undefined; // initial roll = manual
     if (spinningSides.has(youPlayer)) return undefined;
     if ((diceRoll?.[youPlayer] ?? null) !== null) return undefined;
-    const t = window.setTimeout(() => rollFor(youPlayer), AI_DELAY_MS);
+    // Tie re-roll: no artificial beat, short spin (see TIE_HOLD_MS note).
+    const t = window.setTimeout(() => rollFor(youPlayer, RE_SPIN_MS), 0);
     return () => window.clearTimeout(t);
   }, [open, isAiGame, tieDisplaying, rollsCount, spinningSides, diceRoll, youPlayer, rollFor]);
 

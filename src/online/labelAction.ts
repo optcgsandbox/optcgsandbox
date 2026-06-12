@@ -126,7 +126,17 @@ export function labelAction(action: Action, state: PublicGameState): string {
     case 'RESOLVE_CHOOSE_ONE':
       return `Choose option ${action.optionIndex + 1}`;
     case 'RESOLVE_TARGET_PICK':
-      return `Pick target ${resolveName(state, action.pickedId)}`;
+      return action.pickedId !== null
+        ? `Pick target ${resolveName(state, action.pickedId)}`
+        : 'Choose no target';
+    case 'RESOLVE_EFFECT_OFFER':
+      // F-8D addendum — compile-required label only.
+      return action.accept ? 'Use effect' : 'Skip effect';
+    case 'RESOLVE_SEARCHER_PEEK':
+      // F-8B — compile-required label only (online searcher UI is deferred).
+      return action.pickedInstanceIds.length > 0
+        ? `Search: take ${action.pickedInstanceIds.length}`
+        : 'Search: take none';
     default: {
       // Exhaustiveness guard. If a new action type lands without a label
       // here, surface a clear "fallback" rather than crashing.
@@ -206,6 +216,9 @@ export function actionGroup(
       return 'Setup';
     case 'CONCEDE':
       return 'Concede';
+    case 'RESOLVE_SEARCHER_PEEK':
+    case 'RESOLVE_EFFECT_OFFER':
+      return 'Choose';
     default: {
       const exhaustive: never = action;
       void exhaustive;
@@ -279,7 +292,9 @@ function collectInstanceIds(action: Action): ReadonlyArray<string> {
     case 'RESOLVE_DISCARD':
       return action.pickedId !== null ? [action.pickedId] : [];
     case 'RESOLVE_TARGET_PICK':
-      return [action.pickedId];
+      return action.pickedIds !== undefined
+        ? action.pickedIds.slice()
+        : action.pickedId !== null ? [action.pickedId] : [];
     default:
       return [];
   }

@@ -93,7 +93,24 @@ export interface ActionResolveChooseOne {
 }
 export interface ActionResolveTargetPick {
   readonly type: 'RESOLVE_TARGET_PICK';
-  readonly pickedId: InstanceId;
+  /** F-8D: null = choose none (legal when the pending says mayChooseNone). */
+  readonly pickedId: InstanceId | null;
+  /** Optional multi-pick (count > 1 targets). Takes precedence over pickedId. */
+  readonly pickedIds?: ReadonlyArray<InstanceId>;
+}
+/** F-8D addendum — answers a "You may pay <cost>:" offer. */
+export interface ActionResolveEffectOffer {
+  readonly type: 'RESOLVE_EFFECT_OFFER';
+  readonly accept: boolean;
+}
+/** F-8B — resolves a `searcher_peek` pending window. */
+export interface ActionResolveSearcherPeek {
+  readonly type: 'RESOLVE_SEARCHER_PEEK';
+  /** Picked cards (⊆ validPickInstanceIds, length ≤ pickLimit; [] = choose none). */
+  readonly pickedInstanceIds: ReadonlyArray<InstanceId>;
+  /** Optional explicit order for the leftover cards (must be a permutation
+   *  of lookedAt − picked). Omitted → original looked-at order. */
+  readonly bottomOrderInstanceIds?: ReadonlyArray<InstanceId>;
 }
 // ─── Phase advance
 export interface ActionEndTurn {
@@ -123,6 +140,8 @@ export type Action =
   | ActionResolveDiscard
   | ActionResolveChooseOne
   | ActionResolveTargetPick
+  | ActionResolveSearcherPeek
+  | ActionResolveEffectOffer
   | ActionEndTurn
   | ActionConcede;
 

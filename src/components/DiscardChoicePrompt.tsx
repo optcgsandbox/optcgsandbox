@@ -4,10 +4,11 @@
 // controller of the pending discard. Shows the revealed opponent hand;
 // tap a card to discard it (RESOLVE_DISCARD).
 
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt } from './CardArt';
+import { CardInspectOverlay } from './CardInspectOverlay';
 
 export const DiscardChoicePrompt = memo(function DiscardChoicePrompt() {
   const phase = useGameStore((s) => s.state.phase);
@@ -33,7 +34,12 @@ export const DiscardChoicePrompt = memo(function DiscardChoicePrompt() {
     [dispatch],
   );
 
+  // F-8D inspect-everywhere — read any revealed card before discarding it.
+  const [inspectId, setInspectId] = useState<string | null>(null);
+
   if (!open || !pendingDiscard) return null;
+  const inspectInst = inspectId !== null ? instances[inspectId] : undefined;
+  const inspectCard = inspectInst ? library[inspectInst.cardId] : undefined;
   // V2 revealedFrom: 'self_hand' (active player picks own hand) or 'opp_hand'.
   const handSide = pendingDiscard.revealedFrom === 'self_hand'
     ? pendingDiscard.controller
@@ -85,10 +91,32 @@ export const DiscardChoicePrompt = memo(function DiscardChoicePrompt() {
                 className="cursor-pointer focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none rounded-[3px]"
               >
                 <CardArt inst={inst} card={card} size="hand" />
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setInspectId(id);
+                  }}
+                  aria-label={`View ${card?.name ?? 'card'} enlarged`}
+                  data-discard-view={id}
+                  className="mt-1 block mx-auto rounded px-1.5 py-0.5 text-[0.625rem] font-bold uppercase tracking-wide
+                             bg-ink-black/10 text-ink-iron hover:bg-ink-black/20"
+                >
+                  View
+                </button>
               </div>
             );
           })}
         </div>
+
+        {/* Standard read view (size C) — same shared inspect as every surface */}
+        {inspectId !== null && (
+          <CardInspectOverlay
+            inst={inspectInst}
+            card={inspectCard}
+            onClose={() => setInspectId(null)}
+          />
+        )}
       </motion.div>
     </AnimatePresence>
   );

@@ -120,7 +120,7 @@ export const TrashViewer = memo(function TrashViewer() {
             className="relative flex w-full max-w-[386px] flex-col bg-paper-cream rounded-md shadow-xl"
             style={{
               maxHeight:
-                'calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 48px)',
+                'calc(100% - 48px)' /* F-8D: % of the fixed board canvas */,
               border: '1px solid var(--color-ink-black)',
             }}
           >

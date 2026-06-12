@@ -15,6 +15,7 @@ import { memo, useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt, CARD_DIMS } from './CardArt';
+import { CardInspectOverlay } from './CardInspectOverlay';
 import type { Action } from '@shared/engine-v2/protocol/actions';
 
 export const BlockerPrompt = memo(function BlockerPrompt() {
@@ -43,12 +44,15 @@ export const BlockerPrompt = memo(function BlockerPrompt() {
     (blockerOptions.length > 0 || hasSkip);
 
   const [selectedIid, setSelectedIid] = useState<string | null>(null);
+  // F-8C — standard read view (size C) opened from a tile's VIEW button.
+  const [inspectIid, setInspectIid] = useState<string | null>(null);
 
   // Reset selection when the prompt closes. (useEffect — never set state
   // during render.)
   useEffect(() => {
     if (!open && selectedIid !== null) setSelectedIid(null);
-  }, [open, selectedIid]);
+    if (!open && inspectIid !== null) setInspectIid(null);
+  }, [open, selectedIid, inspectIid]);
 
   const handleSkip = useCallback(() => {
     setSelectedIid(null);
@@ -93,115 +97,143 @@ export const BlockerPrompt = memo(function BlockerPrompt() {
           aria-modal="true"
           aria-labelledby="blocker-prompt-heading"
           data-pending-kind="block_window"
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center
-                     gap-3 px-4 py-6 overflow-y-auto
-                     bg-paper-cream/95 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex flex-col items-center
+                     bg-paper-cream/95 backdrop-blur-sm overflow-hidden"
           initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={reduced ? undefined : { opacity: 0 }}
           transition={{ duration: reduced ? 0.01 : 0.18 }}
         >
-          <h2
-            id="blocker-prompt-heading"
-            className="font-display text-[1.5rem] leading-tight text-ink-black"
-          >
-            Block Step
-          </h2>
+          {/* F-8C — fixed header. Never scrolls. */}
+          <div className="flex-none flex flex-col items-center gap-1.5 px-4 pt-4 pb-2">
+            <h2
+              id="blocker-prompt-heading"
+              className="font-display text-[1.4rem] leading-tight text-ink-black"
+            >
+              Block Step
+            </h2>
 
-          <div className="flex items-center gap-3" aria-label="Attack summary">
-            {attackerCard && (
-              <div className="flex flex-col items-center gap-1">
-                <div style={{ width: CARD_DIMS.hand.w, height: CARD_DIMS.hand.h }} className="relative">
-                  <CardArt inst={attackerInst} card={attackerCard} size="hand" />
+            {/* F-8D — same duel language as the combat beats (see
+                CounterPrompt): attacker LEFT +5°, defender RIGHT −5°. */}
+            <div className="flex items-center gap-3" aria-label="Attack summary" data-duel-header>
+              {attackerCard && (
+                <div className="flex flex-col items-center gap-0.5">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`View ${attackerCard.name} enlarged`}
+                    data-duel-header-card={pending?.attackerInstanceId}
+                    onClick={() => setInspectIid(pending?.attackerInstanceId ?? null)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setInspectIid(pending?.attackerInstanceId ?? null);
+                      }
+                    }}
+                    style={{ width: CARD_DIMS.hand.w, height: CARD_DIMS.hand.h, transform: 'rotate(5deg)' }}
+                    className="relative cursor-pointer rounded-[3px] focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
+                  >
+                    <CardArt inst={attackerInst} card={attackerCard} size="hand" />
+                  </div>
+                  <span className="text-[0.5625rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">
+                    Attacker
+                  </span>
                 </div>
-                <span className="text-[0.6875rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">
-                  Attacker
-                </span>
-              </div>
-            )}
-            <span className="font-display text-[1.5rem] leading-none text-sun-brass" aria-hidden="true">→</span>
-            {targetCard && (
-              <div className="flex flex-col items-center gap-1">
-                <div style={{ width: CARD_DIMS.hand.w, height: CARD_DIMS.hand.h }} className="relative">
-                  <CardArt inst={targetInst} card={targetCard} size="hand" />
+              )}
+              <span className="font-display text-[1.5rem] leading-none text-sun-brass" aria-hidden="true">⚔</span>
+              {targetCard && (
+                <div className="flex flex-col items-center gap-0.5">
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`View ${targetCard.name} enlarged`}
+                    data-duel-header-card={pending?.targetInstanceId}
+                    onClick={() => setInspectIid(pending?.targetInstanceId ?? null)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setInspectIid(pending?.targetInstanceId ?? null);
+                      }
+                    }}
+                    style={{ width: CARD_DIMS.hand.w, height: CARD_DIMS.hand.h, transform: 'rotate(-5deg)' }}
+                    className="relative cursor-pointer rounded-[3px] focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
+                  >
+                    <CardArt inst={targetInst} card={targetCard} size="hand" />
+                  </div>
+                  <span className="text-[0.5625rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">
+                    Defender
+                  </span>
                 </div>
-                <span className="text-[0.6875rem] font-body font-extrabold uppercase tracking-wider text-ink-iron">
-                  Target
-                </span>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
+          {/* F-8C — internal-scroll PROMPT-size tile list. Fixed tile size;
+              selection highlights via ring, never resizes. */}
           {blockerOptions.length > 0 && (
-            <>
-              <p className="text-[0.75rem] font-body font-extrabold uppercase tracking-wider text-ink-iron mt-2">
-                Tap a blocker to read · tap again to confirm
+            <div className="flex-1 min-h-0 w-full overflow-y-auto px-4 py-1">
+              <p className="text-[0.6875rem] text-center font-body font-extrabold uppercase tracking-wider text-ink-iron mb-2">
+                Tap a blocker to select · View to read
               </p>
-              <div className="flex flex-wrap items-end justify-center gap-3 max-w-full" aria-label="Available blockers">
+              <div className="flex flex-wrap items-start justify-center gap-3 max-w-[460px] mx-auto" aria-label="Available blockers">
                 {blockerOptions.map((a) => {
                   const inst = instances[a.blockerInstanceId];
                   const card = inst ? library[inst.cardId] : undefined;
                   if (!inst || !card) return null;
                   const isSelected = selectedIid === a.blockerInstanceId;
                   const dimmed = selectedIid !== null && !isSelected;
-                  // F-7y — owner direction matches CounterPrompt: keep
-                  // selected scale modest so it doesn't overlap grid/CTA.
-                  const baseScale = 0.55;
-                  const selScale = 0.62;
-                  const scale = isSelected ? selScale : baseScale;
                   return (
-                    <motion.div
-                      key={a.blockerInstanceId}
-                      animate={{ y: isSelected ? -8 : 0, opacity: dimmed ? 0.3 : 1 }}
-                      transition={{ type: 'spring', stiffness: 800, damping: 32 }}
-                      className="flex flex-col items-center gap-1"
-                    >
-                      <motion.div
+                    <div key={a.blockerInstanceId} className="flex flex-col items-center gap-1">
+                      <div
+                        role="button"
+                        tabIndex={0}
                         data-blocker-instance-id={a.blockerInstanceId}
                         data-selected={isSelected || undefined}
-                        animate={{ width: CARD_DIMS.modal.w * scale, height: CARD_DIMS.modal.h * scale }}
-                        transition={{ type: 'spring', stiffness: 800, damping: 32 }}
-                        className="relative"
-                        style={{ filter: isSelected ? 'drop-shadow(0 6px 14px rgba(168,38,31,0.35))' : undefined }}
+                        aria-pressed={isSelected}
+                        aria-label={`${isSelected ? 'Confirm' : 'Select'} blocker ${card.name}`}
+                        onClick={() => handleTileTap(a)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleTileTap(a);
+                          }
+                        }}
+                        className={[
+                          'relative cursor-pointer rounded-[4px] transition-opacity',
+                          'focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none',
+                          dimmed ? 'opacity-40' : 'opacity-100',
+                          isSelected ? 'ring-4 ring-seal-red shadow-[0_0_12px_rgba(168,38,31,0.45)]' : '',
+                        ].join(' ')}
                       >
-                        <div
-                          style={{
-                            position: 'absolute',
-                            inset: 0,
-                            transformOrigin: 'top left',
-                            transform: `scale(${scale})`,
-                            width: CARD_DIMS.modal.w,
-                            height: CARD_DIMS.modal.h,
-                          }}
-                        >
-                          <CardArt
-                            inst={inst}
-                            card={card}
-                            size="modal"
-                            onTap={() => handleTileTap(a)}
-                            highlighted={isSelected}
-                          />
-                        </div>
-                      </motion.div>
+                        <CardArt inst={inst} card={card} size="prompt" highlighted={isSelected} />
+                      </div>
                       <span
                         className={[
-                          'text-[0.6875rem] font-body font-extrabold uppercase tracking-wider tabular',
+                          'max-w-[110px] truncate text-[0.625rem] font-body font-extrabold uppercase tracking-wider tabular',
                           isSelected ? 'text-seal-red' : 'text-ink-iron',
                         ].join(' ')}
                       >
                         {card.name}
                       </span>
-                    </motion.div>
+                      <button
+                        type="button"
+                        onClick={() => setInspectIid(a.blockerInstanceId)}
+                        aria-label={`View ${card.name} enlarged`}
+                        data-blocker-view={a.blockerInstanceId}
+                        className="rounded px-1.5 py-0.5 text-[0.625rem] font-bold uppercase tracking-wide
+                                   bg-ink-black/10 text-ink-iron hover:bg-ink-black/20"
+                      >
+                        View
+                      </button>
+                    </div>
                   );
                 })}
               </div>
-            </>
+            </div>
           )}
 
-          {/* Bottom CTA: confirm (if a tile is selected) OR skip. Both
-              choices stay reachable so the owner can skip without
-              deselecting. */}
-          <div className="flex flex-col items-center gap-2 mt-3">
+          {/* F-8C — fixed footer: confirm (if selected) + skip always visible. */}
+          <div className="flex-none flex flex-col items-center gap-2 px-4 pb-4 pt-2">
             {selectedIid !== null && (
               <button
                 type="button"
@@ -232,6 +264,15 @@ export const BlockerPrompt = memo(function BlockerPrompt() {
               Skip Blocker
             </button>
           </div>
+
+          {/* Standard read view (size C — same as CardDetailModal) */}
+          {inspectIid !== null && (
+            <CardInspectOverlay
+              inst={instances[inspectIid]}
+              card={instances[inspectIid] ? library[instances[inspectIid]!.cardId] : undefined}
+              onClose={() => setInspectIid(null)}
+            />
+          )}
         </motion.div>
       )}
     </AnimatePresence>

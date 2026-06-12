@@ -42,6 +42,7 @@ export const CardDetailModal = memo(function CardDetailModal() {
   const viewAs = useGameStore((s) => s.viewAs);
   const legalActions = useGameStore((s) => s.legalActions);
   const result = useGameStore((s) => s.state.result);
+  const history = useGameStore((s) => s.state.history);
   const dispatch = useGameStore((s) => s.dispatch);
   const players = useGameStore((s) => s.state.players);
   const selectedAttackerId = useGameStore((s) => s.selectedAttackerId);
@@ -404,7 +405,7 @@ export const CardDetailModal = memo(function CardDetailModal() {
             className="relative flex w-full max-w-[386px] flex-col items-center"
             style={{
               maxHeight:
-                'calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 48px)',
+                'calc(100% - 48px)' /* F-8D: % of the fixed board canvas */,
               // Owner direction 2026-05-29: transparent — let the card itself
               // self-frame. No panel chrome, no border, no shadow, no padding.
               // NOTE: no stopPropagation here — clicks on empty panel area
@@ -421,6 +422,7 @@ export const CardDetailModal = memo(function CardDetailModal() {
             <div
               className="flex justify-center"
               onClick={(e) => e.stopPropagation()}
+              data-testid="detail-card-art"
               style={{
                 transform: 'scale(1.5)',
                 transformOrigin: 'center top',
@@ -435,6 +437,63 @@ export const CardDetailModal = memo(function CardDetailModal() {
             <h2 id="card-detail-name" className="sr-only">
               {card.name} ({card.kind})
             </h2>
+
+            {/* F-8D — power-modifier breakdown. Generic: sums the same
+                buckets effectivePower uses and attributes sources from
+                POWER_MODIFIED history events targeting this instance.
+                Hidden when there are no live modifiers. */}
+            {(() => {
+              const liveInst = inspectedCardId !== null ? instances[inspectedCardId] : undefined;
+              if (!liveInst) return null;
+              const mods =
+                (liveInst.powerModifierThisBattle ?? 0) +
+                (liveInst.powerModifierOneShot ?? 0) +
+                (liveInst.powerModifierContinuous ?? 0);
+              if (mods === 0) return null;
+              const base = typeof (card as { power?: number | null }).power === 'number'
+                ? ((card as { power: number }).power)
+                : 0;
+              // Attribute sources: most recent POWER_MODIFIED events for this
+              // instance whose amounts still sum toward the live total.
+              const sources: Array<{ name: string; amount: number; duration: string }> = [];
+              let remaining = mods;
+              for (let i = history.length - 1; i >= 0 && remaining !== 0; i -= 1) {
+                const ev = history[i] as { type?: string; targetInstanceId?: string; sourceInstanceId?: string; amount?: number; duration?: string };
+                if (ev.type !== 'POWER_MODIFIED' || ev.targetInstanceId !== inspectedCardId) continue;
+                if (typeof ev.amount !== 'number' || ev.amount === 0) continue;
+                const srcInst = typeof ev.sourceInstanceId === 'string' ? instances[ev.sourceInstanceId] : undefined;
+                const srcCard = srcInst ? library[srcInst.cardId] : undefined;
+                sources.unshift({
+                  name: srcCard?.name ?? 'Effect',
+                  amount: ev.amount,
+                  duration: ev.duration ?? 'this_turn',
+                });
+                remaining -= ev.amount;
+              }
+              return (
+                <div
+                  data-testid="detail-power-breakdown"
+                  className="mx-auto mb-2 max-w-[320px] rounded-lg bg-ink-black/10 px-3 py-2 text-center"
+                >
+                  <span className="font-display text-[0.9375rem] leading-tight text-ink-black tabular">
+                    {base} {mods > 0 ? '+' : ''}{mods} = {base + mods}
+                  </span>
+                  {sources.length > 0 && (
+                    <div className="mt-0.5 flex flex-col items-center">
+                      {sources.map((src, idx) => (
+                        <span
+                          key={`${src.name}-${idx}`}
+                          className="text-[0.6875rem] font-body text-ink-iron tabular"
+                        >
+                          {src.amount > 0 ? '+' : ''}{src.amount} from {src.name}
+                          {src.duration === 'this_battle' ? ' (this battle)' : ' (this turn)'}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* Action row floats below the scaled card. */}
             <div className="flex items-center justify-center gap-2">

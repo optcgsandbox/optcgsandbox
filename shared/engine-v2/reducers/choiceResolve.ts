@@ -28,11 +28,16 @@ import { PhaseScheduler } from '../phases/PhaseScheduler.js';
 import type {
   ActionResolveChooseOne,
   ActionResolveDiscard,
+  ActionResolveEffectOffer,
   ActionResolvePeek,
+  ActionResolveSearcherPeek,
   ActionResolveTargetPick,
   ActionResolveTrigger,
 } from '../protocol/actions.js';
+import { writeBinding } from '../effects/clauseScratch.js';
+import { finishSearcherPeek } from '../registry/handlers/actions3.js';
 import { actionHandlers, targetResolvers } from '../registry/types.js';
+import { makeOptKey, markOptUsed } from '../state/derived/opt.js';
 import type { EffectClauseV2 } from '../spec/types.js';
 import { OTHER_PLAYER, type GameState, type InstanceId, type PlayerId } from '../state/types.js';
 import { continueLeaderDamage } from './attackFlow.js';
@@ -67,6 +72,46 @@ function resolveTriggerReducer(
     activated: action.activate,
   });
 
+  // F-8B — the trigger's effect itself may suspend into a clause-induced
+  // choice window (e.g. a [Trigger] that activates a Main searcher_peek for
+  // a human seat). Do NOT clobber that pending with the completion block
+  // below — rewrite its resumePhase to the trigger's own resume target so
+  // the choice resolver lands the game in the right phase, then yield.
+  // Limitation (documented): if remainingLifeFlips > 0 AND the trigger
+  // effect suspended, the owed Double-Attack flips take precedence and the
+  // suspension is dropped (pre-F-8B behavior); no current card combines
+  // a multi-flip attack with a suspending trigger in one window.
+  if (
+    next.pending !== null &&
+    next.pending.kind === 'searcher_peek' &&
+    (pt.remainingLifeFlips ?? 0) === 0
+  ) {
+    next.pending = {
+      kind: 'searcher_peek',
+      pendingSearcherPeek: {
+        ...next.pending.pendingSearcherPeek,
+        resumePhase: pt.resumePhase,
+      },
+    };
+    return next;
+  }
+  // F-8D — same handoff for trigger effects that suspended into the
+  // generic target picker.
+  if (
+    next.pending !== null &&
+    next.pending.kind === 'attack_target_pick' &&
+    (pt.remainingLifeFlips ?? 0) === 0
+  ) {
+    next.pending = {
+      kind: 'attack_target_pick',
+      pendingTargetPick: {
+        ...next.pending.pendingTargetPick,
+        resumePhase: pt.resumePhase,
+      },
+    };
+    return next;
+  }
+
   // F8A-F3 [Double Attack] (CR §10-1-2): if this trigger window interrupted
   // a multi-flip damage procedure, continue the remaining flips. Remaining
   // flips are always non-banish — banished damage never opens a trigger
@@ -98,6 +143,110 @@ function resolveTriggerReducer(
     next.phase = pt.resumePhase;
   }
   next.pending = null;
+  return next;
+}
+
+// ─── RESOLVE_EFFECT_OFFER (F-8D addendum)
+function resolveEffectOfferReducer(
+  state: GameState,
+  action: ActionResolveEffectOffer,
+  player: PlayerId,
+): GameState {
+  if (state.pending === null || state.pending.kind !== 'effect_offer') return state;
+  const po = state.pending.pendingEffectOffer;
+  if (po.controller !== player) return state;
+
+  let next: GameState = state;
+  next.pending = null;
+  next.phase = po.resumePhase;
+
+  if (action.accept !== true) {
+    // Declined — NOTHING was paid. Record + run the card's remaining
+    // same-trigger clauses (the offer break would otherwise drop them).
+    (next.history as Array<unknown>).push({
+      type: 'EFFECT_DECLINED',
+      sourceInstanceId: po.sourceInstanceId,
+      controller: po.controller,
+      trigger: po.trigger,
+      clauseIndex: po.clauseIndex,
+    });
+    return EffectDispatcher.dispatch(
+      next,
+      { sourceInstanceId: po.sourceInstanceId, controller: po.controller },
+      po.trigger,
+      po.clauseIndex + 1,
+    );
+  }
+
+  // Accepted — re-enter the clause pipeline AT this clause with the offer
+  // marked answered: target resolution → cost payment → action → tail.
+  // Any further suspension (target picker / searcher) captures the correct
+  // resumePhase because we restored it above.
+  next = EffectDispatcher.dispatch(
+    next,
+    { sourceInstanceId: po.sourceInstanceId, controller: po.controller },
+    po.trigger,
+    po.clauseIndex,
+    { offerAcceptedIndex: po.clauseIndex },
+  );
+  return next;
+}
+
+// ─── RESOLVE_SEARCHER_PEEK (F-8B)
+function resolveSearcherPeekReducer(
+  state: GameState,
+  action: ActionResolveSearcherPeek,
+  player: PlayerId,
+): GameState {
+  if (state.pending === null || state.pending.kind !== 'searcher_peek') return state;
+  const sp = state.pending.pendingSearcherPeek;
+  if (sp.controller !== player) return state;
+
+  // Validation — reject (state unchanged) on any malformed resolution:
+  const lookedAt = new Set(sp.lookedAtInstanceIds);
+  const valid = new Set(sp.validPickInstanceIds);
+  const picked = action.pickedInstanceIds;
+  if (picked.length > sp.pickLimit) return state;
+  if (picked.length === 0 && !sp.mayChooseNone) return state;
+  if (new Set(picked).size !== picked.length) return state; // duplicates
+  for (const id of picked) {
+    if (!lookedAt.has(id)) return state; // outside the looked-at set
+    if (!valid.has(id)) return state; // fails the printed filter
+  }
+
+  // Leftover order: explicit order must be an exact permutation of
+  // lookedAt − picked; otherwise default to original looked-at order.
+  const pickedSet = new Set(picked);
+  const defaultLeftover = sp.lookedAtInstanceIds.filter((id) => !pickedSet.has(id));
+  let leftover: ReadonlyArray<InstanceId> = defaultLeftover;
+  if (action.bottomOrderInstanceIds !== undefined) {
+    const order = action.bottomOrderInstanceIds;
+    const orderSet = new Set(order);
+    const isPermutation =
+      order.length === defaultLeftover.length &&
+      orderSet.size === order.length &&
+      defaultLeftover.every((id) => orderSet.has(id));
+    if (!isPermutation) return state;
+    leftover = order;
+  }
+
+  const next = finishSearcherPeek(state, sp.controller, sp.sourceInstanceId, {
+    peekedIds: sp.lookedAtInstanceIds,
+    pickedIds: picked,
+    leftoverIds: leftover,
+    playInsteadOfHand: sp.playInsteadOfHand,
+    rested: sp.rested,
+    placement: sp.placement,
+  });
+  // finishSearcherPeek may have dispatched on_play for played characters; a
+  // nested suspend there would have replaced pending — only clear if the
+  // searcher pending is still ours.
+  if (next.pending !== null && next.pending.kind === 'searcher_peek') {
+    next.pending = null;
+    next.phase = sp.resumePhase;
+  } else if (next.pending === null) {
+    next.phase = sp.resumePhase;
+  }
   return next;
 }
 
@@ -317,19 +466,136 @@ function resolveTargetPickReducer(
   if (state.pending === null || state.pending.kind !== 'attack_target_pick') return state;
   const pt = state.pending.pendingTargetPick;
   if (pt.controller !== player) return state;
-  if (!pt.candidateIds.includes(action.pickedId)) return state;
 
-  // TODO: per-action continuation context not yet persisted; the picked
-  // target gets handed back to the calling action handler via a deferred
-  // queue (Phase 3 work). For now, just restore phase + clear pending.
-  state.phase = pt.resumePhase;
-  state.pending = null;
-  (state.history as Array<unknown>).push({
+  // Normalise picks: pickedIds wins; pickedId null = choose none.
+  const picked: ReadonlyArray<InstanceId> =
+    action.pickedIds !== undefined
+      ? action.pickedIds
+      : action.pickedId === null
+        ? []
+        : [action.pickedId];
+
+  // Validation — reject (state unchanged) on malformed resolutions.
+  const limit = pt.pickLimit ?? 1;
+  if (picked.length > limit) return state;
+  if (picked.length === 0 && pt.mayChooseNone !== true) return state;
+  // Exact-count picks ("place 1 card") reject partials too — the player
+  // must select exactly pickLimit cards; there is no skip at this stage
+  // (declining happened at the effect_offer, if the clause was optional).
+  if (pt.exactCount === true && picked.length !== limit) return state;
+  if (new Set(picked).size !== picked.length) return state;
+  for (const id of picked) {
+    if (!pt.candidateIds.includes(id)) return state;
+  }
+
+  // F-8D — COST-PAYMENT pick: the suspension happened BEFORE the clause's
+  // cost was paid (dispatcher step 3.5). Re-enter the dispatcher AT this
+  // clause with the picks recorded under the cost key; the pay loop then
+  // consumes them via ctx.chosenCostIds (handlers fall back to V0 head-pick
+  // only when no picks are present, i.e. AI / sim / server).
+  if (pt.costPick !== undefined && pt.trigger !== undefined && pt.clauseIndex !== undefined) {
+    const next: GameState = state;
+    next.pending = null;
+    next.phase = pt.resumePhase;
+    (next.history as Array<unknown>).push({
+      type: 'COST_PICKED',
+      sourceInstanceId: pt.sourceInstanceId,
+      controller: pt.controller,
+      costKey: pt.costPick.costKey,
+      pickedIds: picked,
+      trigger: pt.trigger,
+      clauseIndex: pt.clauseIndex,
+    });
+    return EffectDispatcher.dispatch(
+      next,
+      { sourceInstanceId: pt.sourceInstanceId, controller: pt.controller },
+      pt.trigger,
+      pt.clauseIndex,
+      {
+        offerAcceptedIndex: pt.costPick.offerAccepted ? pt.clauseIndex : undefined,
+        chosenCostIds: { ...pt.costPick.chosen, [pt.costPick.costKey]: picked },
+      },
+    );
+  }
+
+  // F-8D continuation (plan-gap A7 closed): run the suspended clause's
+  // action on the picked targets. Cost was paid BEFORE suspension
+  // (dispatcher step 3/4) — zero picks still consume the effect (and its
+  // OPT) per CR pay-then-resolve.
+  let next: GameState = state;
+  if (pt.clause !== undefined) {
+    const ctx = {
+      sourceInstanceId: pt.sourceInstanceId,
+      controller: pt.controller,
+      scratch: pt.scratch,
+    };
+    if (picked.length > 0) {
+      const tBind = (pt.clause.target as { bind?: unknown } | undefined)?.bind;
+      if (typeof tBind === 'string' && tBind !== '' && pt.scratch !== undefined && picked[0] !== undefined) {
+        writeBinding(next, pt.scratch, tBind, picked[0]);
+      }
+      const handler = actionHandlers.get(pt.clause.action.kind);
+      next = handler(next, ctx, pt.clause.action, picked);
+      (next.history as Array<unknown>).push({
+        type: 'CLAUSE_FIRED',
+        sourceInstanceId: pt.sourceInstanceId,
+        controller: pt.controller,
+        trigger: pt.trigger,
+        clauseIndex: pt.clauseIndex,
+        actionKind: pt.clause.action.kind,
+      });
+    }
+    if (pt.clause.opt === true) {
+      const inst = next.instances[pt.sourceInstanceId];
+      const optKey = pt.optKey ??
+        (pt.trigger !== undefined && pt.clauseIndex !== undefined
+          ? makeOptKey('opt', pt.trigger, pt.clauseIndex)
+          : undefined);
+      if (inst !== undefined && optKey !== undefined) {
+        markOptUsed(inst, optKey);
+      }
+    }
+  }
+
+  (next.history as Array<unknown>).push({
     type: 'TARGET_PICKED',
     sourceInstanceId: pt.sourceInstanceId,
-    pickedId: action.pickedId,
+    controller: pt.controller,
+    pickedId: picked[0],
+    pickedIds: picked,
+    choseNone: picked.length === 0,
+    actionKind: pt.clause?.action.kind,
   });
-  return state;
+
+  // Restore phase + clear OUR pending FIRST (so any tail suspension below
+  // captures the correct resumePhase) — unless the action itself suspended
+  // into a different window, which then owns the phase.
+  if (next.pending !== null && next.pending.kind === 'attack_target_pick') {
+    next.pending = null;
+    next.phase = pt.resumePhase;
+  } else if (next.pending === null) {
+    next.phase = pt.resumePhase;
+  }
+
+  // F-8D — clause-tail resumption: run the card's REMAINING same-trigger
+  // clauses (the dispatcher break at suspension would otherwise silently
+  // drop them — 115 corpus cards put more clauses after a choice-target
+  // clause). The tail may itself suspend into another picker/searcher;
+  // that new pending stands on its own.
+  if (
+    pt.clause !== undefined &&
+    pt.trigger !== undefined &&
+    pt.clauseIndex !== undefined &&
+    next.pending === null
+  ) {
+    next = EffectDispatcher.dispatch(
+      next,
+      { sourceInstanceId: pt.sourceInstanceId, controller: pt.controller },
+      pt.trigger,
+      pt.clauseIndex + 1,
+    );
+  }
+  return next;
 }
 
 export function registerChoiceResolveReducers(): void {
@@ -338,4 +604,6 @@ export function registerChoiceResolveReducers(): void {
   registerActionReducer('RESOLVE_DISCARD', resolveDiscardReducer);
   registerActionReducer('RESOLVE_CHOOSE_ONE', resolveChooseOneReducer);
   registerActionReducer('RESOLVE_TARGET_PICK', resolveTargetPickReducer);
+  registerActionReducer('RESOLVE_SEARCHER_PEEK', resolveSearcherPeekReducer);
+  registerActionReducer('RESOLVE_EFFECT_OFFER', resolveEffectOfferReducer);
 }

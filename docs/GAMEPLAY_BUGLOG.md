@@ -921,3 +921,70 @@ LOCAL searcher visibility shipped. Owner manual retest of Bonney is the next gat
 - V1 suite quarantined, not deleted: `npm run test:v1-legacy` (`vitest.v1legacy.config.ts`) runs `shared/engine/**` on demand — 13 known reds documented in the config header as the Phase 4 port-to-V2 queue. The default gate covers the LIVE engine only.
 - `shared/engine-v2/__tests__/cards/EB01-019.test.ts` updated to the post-F8A-F4 modeling: one searcher_peek clause; +4000 asserted behaviorally (counter window → `pendingAttack.counterBoost === 4000`, exactly once).
 - Gate: `npm test` → **1115 passed / 0 failed** (was 18 failed + 92 file failures). `npm run build` remains red on 2 PRE-EXISTING committed errors in `src/dev/DevGameSandbox.tsx` (since commit `b592799`) — outside F8A scope, needs its own approval.
+
+---
+
+## BUG-030 — F-8B: generic Searcher/Peek/Top-Deck choice UI (human searcher_peek no longer auto-resolves)
+
+**Surfaced:** owner manual repro with EB02-008 The Peak — clicked PLAY MAIN, card auto-added to hand; player never saw the 4 cards, never chose, never ordered the bottom.
+**Fixed:** 2026-06-11 (owner-approved F-8B). Effect-family generic — zero card-specific production logic.
+
+- Engine: `searcher_peek` (actions3.ts) now suspends into a new `pending searcher_peek` + `searcher_peek_choice` phase for controllers in `state.humanControllers` (NEW opt-in GameState field, set only by the local store — simulation/tests/server keep deterministic V0). Handler refactored into `searcherPeekCandidateMatches` + exported `finishSearcherPeek` shared by both paths. Ambient-pending guard: suspension allowed when pending is null or the trigger window; counter-window searchers (e.g. EB01-019) still auto-resolve to protect pendingAttack (v1 limitation).
+- New action `RESOLVE_SEARCHER_PEEK` (choiceResolve.ts): validates picked ⊆ lookedAt ∩ valid, ≤ pickLimit, no dupes, bottom order is an exact permutation; routes via finishSearcherPeek; restores resumePhase. `resolveTriggerReducer` no longer clobbers a trigger-spawned searcher pending (rewrites its resumePhase and yields).
+- UI: `SearcherPeekPrompt.tsx` (z-[70]) — looked-at tiles, valid selectable / invalid dimmed+"No match", per-tile enlarge view (z-[80]), Choose None, Confirm, placement note ("rest to BOTTOM in the order shown" — v1 default order, reorder UI deferred). PresentationQueue yields to the window; store routes the action to the pending controller and the AI loop yields + resumes after resolution.
+- Compile-required touches outside the F-8B allowed list (exhaustiveness switches only): `clauseScratch.ts` (scratch attach case), `phases/transitions.ts` (phase map entry), `src/online/labelAction.ts` (action labels).
+- Tests: e2e/local-ai/effect-card-proof.spec.ts — 26/26: The Peak match (player picks the SECOND valid card — impossible pre-fix), no-match (all tiles visible-disabled, choose-none bottoms 4 in shown order), trigger path (synthetic [Trigger] searcher → prompt → resumes to main), AI path (no humanControllers → no prompt, deterministic pick), Bonney prompt tests updated from the old auto-resolve assertions.
+- Data follow-up (Track 2, NOT changed here): EB02-008's corpus entry is missing its printed "[Trigger] Activate this card's Main effect." clause — the trigger-path test uses an injected def until the data pass adds it.
+
+---
+
+## BUG-031 — F-8C: unified card sizing + combat/prompt layout fix
+
+**Surfaced:** owner manual video review 2026-06-11. **Fixed:** same day (owner-approved F-8C). Presentation layer only.
+
+- **Unified size standard** (`src/components/cardSizing.ts` + `CardArt.tsx`): BOARD (existing zone smalls) · PROMPT (new `prompt` 110×154 — fixed tiles, all selection lists, selection = ring, never resize) · INSPECT (`modal` × 1.5 = 330×462 — `CardDetailModal` AND the new shared `CardInspectOverlay` used by every View button). Presentation reveals = INSPECT, responsive-clamped (`inspectScaleFor`).
+- **Counter/Blocker prompts** rebuilt: fixed overlay (header / internal-scroll tile list / fixed footer — page NEVER scrolls; root `overflow-hidden`), prompt-size tiles with name + counter value + VIEW (inspect overlay) + tap-to-select on the tile wrapper; Skip/Use CTAs always in viewport. Old layout used modal-size tiles ×0.55/0.62 scale-on-select inside `overflow-y-auto` → page scrolled, buttons drifted off-screen.
+- **Combat beat** (`PresentationQueue.tsx`): attacker LEFT / target RIGHT, per-card scale clamped to viewport width (`min(0.82, (vw−96)/440)`) → no overlap/overflow; played-card reveal upgraded from modal×1 (220px) to the INSPECT presentation (330px).
+- **COST AREA wordmark**: the opp-half counter-rotation CSS (`index.css` `.is-opp-content-flip .playmat-zone__label` → `display:inline-block`) destroyed the label's flex centering. Centering moved to a plain container; the label class now sits on the inner span only — both halves centered + readable.
+- **Tests:** `e2e/local-ai/f8c-ui-layout.spec.ts` (5 scenarios incl. no-page-scroll with 8 counters / 6 blockers, inspect-size equality via `[data-flip-back]` measurement, combat no-overlap, reveal=330, cost-label centering ±3px). 5 stale F-7n/F-7y prompt-interaction tests updated to click the tile wrapper (the inner CardArt button is non-interactive now). Full local-ai battery 44/44.
+
+## TICKET — AI never uses Blockers or Counters (strategy backlog, NOT a UI bug)
+
+**Exact answer (F-8C investigation):** when the human attacks, the local store FORCE-SKIPS every AI reactive window — `src/store/game.ts:578-582`: `reactiveIsAi` → the while-loop never breaks for options and always dispatches SKIP_BLOCKER/SKIP_COUNTER. The AI classes are never consulted for reactive windows (Easy/Medium/Hard only score their own-turn actions; HardAi even hard-codes SKIP at `HardAi.ts:62/66/187`). The UI is fine; nothing is hidden. Fix requires an AI reactive policy (when to block, which counter to spend) + store wiring — non-trivial, deferred per owner instruction.
+
+---
+
+## BUG-032 — F-8D: generic target picker + clause-tail resumption + AI reactive + combat rebuild + modifier visibility
+
+**Fixed:** 2026-06-11 (owner-approved F-8D). Metadata-driven throughout — zero card-specific production logic.
+
+- **Generic target picker:** EffectDispatcher step 4.5 suspends choice-kind targeted clauses (`opp_character`, `your_character`, `any_character`, `*_leader_or_character`, `opp_don_or_character` — covers reduce/give power, removal_ko, bounce, rest/unrest, give_don and every "up to X" board pick) into `attack_target_pick` for `humanControllers` seats, carrying the full clause continuation (cost pre-paid per CR; plan-gap A7 closed). `RESOLVE_TARGET_PICK` validates picks (⊆ candidates, ≤ pickLimit, dupes, choose-none) then runs the action, marks OPT (via `optKey`), and **resumes the clause TAIL** (new dispatcher `startIndex` — without it, 115 corpus cards would silently lose later same-trigger clauses). AI/sim/server keep V0 auto-resolve (flag absent). UI: `TargetPickerPrompt.tsx` (F-8C standard: prompt tiles, View→inspect, Choose None, no-scroll).
+- **AI reactive play:** `src/store/aiReactive.ts` replaces the dispatch-tail force-skip (game.ts) — deterministic generic policy: block with best surviving blocker (or chump at ≤2 life on leader hits); counter minimal-spend to survive leader hits at ≤3 life or small deficits. DELIBERATELY BASIC v1 (no difficulty tiers yet) — strategy backlog stays open.
+- **Combat presentation rebuild:** head-to-head duel grid (attacker LEFT tilted +5°, defender RIGHT tilted −5°, tops facing), clamped container (≤480px), per-card scale fits any viewport, base→DON→modifiers→final math line under each card, power plates, no overlap/overflow/scroll (asserted at 1280×720 AND 390×844).
+- **Modifier visibility:** badge already aggregates (CardArt powerModNet); added CardDetailModal breakdown panel (`base +mods = total` + per-source lines from POWER_MODIFIED history) and the combat math line. Engine stacking PROVEN generically (`power-stacking-f8d.test.ts`: +1000+1000=+2000, buff+debuff, DON gating both turns, end-of-turn expiry, combat uses stacked power).
+- Tests: `target-picker-f8d.test.ts` (8 engine), `power-stacking-f8d.test.ts` (6), `f8d-target-picker.spec.ts` (9 e2e incl. OP01-006 Otama proof, AI block/counter proofs, phone+desktop no-scroll/no-overlap with screenshots under test-results/f8d-evidence/). 3 stale auto-target e2e tests updated to drive the picker. Full local-ai battery 53/53; `npm test` 1129/0; build green.
+- Deferred (documented): searcher clause-tail resumption (17 cards — needs HandlerCtx clause-index plumbing); counter-window targeted clauses keep V0 auto (pendingAttack protection, same as F-8B); AI difficulty tiers; mandatory-vs-optional effect semantics (F-8D addendum item 1, next).
+
+---
+
+## BUG-033 — F-8D addendum: optional-cost offer, opponent hand fan, header compression, duel shell fix
+
+**Fixed:** 2026-06-11 (owner-approved incl. the optional-cost reorder). Metadata-driven; zero card-specific logic.
+
+- **Optional vs mandatory:** new `effect_offer` pending + `RESOLVE_EFFECT_OFFER`. OPTIONAL-COSTED clauses ("You may pay <cost>:") on human seats now ASK → PAY → RESOLVE (was pay-then-resolve); Skip pays NOTHING (`EFFECT_DECLINED`) and the card's tail clauses still run. `activate_main` exempt (activation was the choice). Unpayable costs skip silently (unchanged outcome). Mandatory pickers honor a `target.mandatory` metadata flag (no choose-none, empty picks rejected); corpus currently has zero such flags — exact-count prints are a Track-2 data-pass item, documented. AI/sim/server keep V0 auto-pay (proven).
+- **Opponent hand fan:** `OppHandFan.tsx` — face-down backs + exact count chip pinned under the header; CardArt rendered with NO inst/card props so no identity can reach the DOM (leak-asserted in e2e). Tracks every hidden-zone movement by construction (pure state-derived).
+- **Header compression:** compact single-row header (logo mini + T/phase/active-player) + hamburger sheet holding difficulty/reset/theme; End Turn + all gameplay controls stay on the board. Height ≤40px asserted (was a two-row ~52px toolbar).
+- **Duel shell fix (root cause of the lingering overlap):** the beat's `fixed` overlay is contained by the transformed 430px app shell, so sizing from `window.innerWidth` overflowed/overlapped inside it. Duel + reveal sizing now derives from `min(vw, 430)` and the clamp accounts for the ±5° tilt's rotated footprint. Screenshot-verified clean (plates + base→DON→mods=final lines + result).
+- Tests: `effect-offer-f8d.test.ts` (7 engine), `f8d-addendum.spec.ts` (4 e2e incl. leak check + header + duel), combat tests re-verified at 1280×720 + 390×844 + the 430 shell. Full battery 57/57; `npm test` 1136/0; build green; hardcode grep clean.
+
+---
+
+## BUG-034 — F-8D: fixed-board uniform scaling + player-choice COST payments + printed prompt text + inspect-everywhere
+
+**Fixed:** 2026-06-12 (owner-approved batch). Metadata-driven; zero card-specific production logic.
+
+- **Fixed-board architecture (proof):** the playmat is a FIXED 430×900 design canvas (`BOARD_DIMS`, cardSizing.ts) scaled as ONE unit (`transform: scale`, letterboxed) — no responsive reflow. `f8d-fixed-board.spec.ts` asserts at 1920×1080 / 1366×768 / 768×1024 / 390×844 / 844×390: aspect ratio fixed, design-space zone rects identical within ±2px, no page scroll, header never collides. Composite side-by-side proof: `test-results/f8d-evidence/board-side-by-side.png`.
+- **Player-choice COST payments (the Gordon bug):** costs that pay with player-selected cards no longer auto-pick from the hand/field head on human seats. New `costChoice.ts` registry derives candidates+count from the cost shape for 9 keys (`discardHand`, `discardHandFilter`, `bottomOfDeckFromHand`, `trashFromHand`, `revealHand`, `restOwnCharFilter`, `returnOwnCharFilter`, `bottomOfDeckOwnChar` — plus source-fixed keys correctly classified as no-choice). Dispatcher step 3.5 suspends into `attack_target_pick` with a `costPick` payload BEFORE paying anything (ask → pick payment → pay → resolve); `RESOLVE_TARGET_PICK` re-enters the clause with `chosenCostIds`; handlers pay with EXACTLY the chosen cards (`ctx.chosenCostIds`), falling back to the V0 head-pick when absent — AI / sim / server byte-identical. Exact counts enforced engine-side (`exactCount`: empty/partial/foreign picks rejected) and UI-side (Confirm gated, no Choose None). Multi-choice costs chain sequential pickers with earlier picks excluded. No-choice situations (candidates == count) auto-pay.
+- **Printed effect text:** prompts render the card's PRINTED `effectText` (segment for the firing trigger via `printedSegmentFor` — rules-vocabulary marker mapping, no card logic) as primary copy in EffectOfferPrompt / TargetPickerPrompt / SearcherPeekPrompt. Engine `describeCost` map completed for every registered cost key + camelCase humanizer default — internal keys (e.g. `bottomOfDeckFromHand`) can never leak again.
+- **Inspect-everywhere:** EffectOfferPrompt card (tap + View), TriggerPrompt life card, DiscardChoice / PeekChoice tiles (View), Mulligan hand (tap), Blocker/Counter duel-header minis (tap) — all open the SAME `CardInspectOverlay`. Documented intentional exception: transient presentation beats (PresentationQueue / LifeReveal / EventCard overlays) keep tap-to-fast-forward; they yield to every choice window within 120ms.
+- Tests: `cost-pick-f8d.test.ts` (9 engine: suspend-before-pay, reject empty/over/foreign, Gordon-shaped bottom-deck proof, AI head-pick invariance, no-choice auto-pay, activate_main field cost, sequential multi-key, filter candidates, cost→target chaining), `f8d-cost-picker.spec.ts` (3 e2e: REAL OP01-011 Gordon full flow with 5 screenshots, Skip-pays-nothing, mulligan inspect). `npm test` 1145/0; build green; full battery green; hardcode grep clean.

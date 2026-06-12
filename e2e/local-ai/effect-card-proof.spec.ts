@@ -281,6 +281,21 @@ async function seedOppChar(page: Page, cost = 2, power = 2000): Promise<string> 
   }, { c: cost, p: power });
 }
 
+
+/** F-8D — resolve an open generic target picker by confirming the first
+ *  candidate (or a specific iid). Human seats now choose targets instead of
+ *  the old V0 auto-pick. */
+async function resolveTargetPicker(page: Page, iid?: string): Promise<void> {
+  const prompt = page.locator('[data-pending-kind="attack_target_pick"]');
+  await expect(prompt).toBeVisible({ timeout: 5_000 });
+  const tile = iid !== undefined
+    ? page.locator(`[data-target-card="${iid}"]`)
+    : page.locator('[data-target-card]').first();
+  await tile.click();
+  await page.locator('[data-target-confirm]').click();
+  await expect(prompt).toBeHidden({ timeout: 5_000 });
+}
+
 async function dispatch(page: Page, action: object): Promise<void> {
   await page.evaluate((a) => {
     const w = window as unknown as { __store?: { getState: () => { dispatch: (a: unknown) => void } } };
@@ -404,6 +419,9 @@ test.describe('F-7t — deterministic effect card proof', () => {
 
     const before = await readZones(page);
     await dispatch(page, { type: 'PLAY_CARD', instanceId: iid, replaceTargetId: null });
+    // F-8D — the removal_bounce clause opens the generic target picker for
+    // the human seat; pick the only candidate.
+    await resolveTargetPicker(page, oppCharIid);
     const after = await readZones(page);
 
     // EB02-024 has THREE on_play clauses:
@@ -464,9 +482,11 @@ test.describe('F-7t — deterministic effect card proof', () => {
     expect(enumerated, 'ACTIVATE_MAIN enumerated for Hyogoro').toBe(true);
 
     await dispatch(page, { type: 'ACTIVATE_MAIN', instanceId: hyogoroIid });
+    // F-8D — targeted buff opens the generic picker; confirm the first
+    // candidate (the leader).
+    await resolveTargetPicker(page);
 
-    // After ACTIVATE_MAIN with target=your_leader_or_character — V0 auto-
-    // resolves first eligible target. Engine's powerBuff handler applies
+    // After resolution the powerBuff handler applies the amount. Engine's powerBuff handler applies
     // amount via duration. Card text: +2000 this turn.
     // Verify SOMETHING on A side received a +2000 buff via the new
     // POWER_MODIFIED history event (added in F-7s).
@@ -710,14 +730,10 @@ test.describe('F-7t — deterministic effect card proof', () => {
     expect(beatVisible).toBeLessThanOrEqual(1);
   });
 
-  // F-7w required — EB04-002 Jewelry Bonney corpus support.
-  // Key finding (read shared/engine-v2/registry/handlers/actions3.ts:searcherPeek):
-  // searcher_peek in V0 is DETERMINISTIC — no PendingPeek is created.
-  // The engine auto-picks the first matching candidate and routes
-  // leftovers per `leftoverPlacement` (default bottom). Bonney IS
-  // supported; the UI gap is that the chosen card is invisible to the
-  // player (no peek prompt surfaces because there's nothing to choose).
-  test('CARD 13 — EB04-002 Jewelry Bonney: On Play fires CLAUSE_FIRED + searcher_peek auto-resolves (V0 deterministic, no pending)', async ({ page }) => {
+  // F-8B — EB04-002 Jewelry Bonney: searcher_peek for a HUMAN seat now
+  // suspends into the generic SearcherPeekPrompt instead of the invisible
+  // V0 auto-pick (the broken UX the owner repro'd with The Peak).
+  test('CARD 13 — EB04-002 Jewelry Bonney: On Play opens the generic searcher prompt for the human (no auto-pick)', async ({ page }) => {
     test.setTimeout(TWO_MIN);
     await bootstrap(page);
     await injectCorpusCards(page, ['EB04-002']);
@@ -725,35 +741,33 @@ test.describe('F-7t — deterministic effect card proof', () => {
     const iid = await seedCardInHand(page, 'EB04-002');
     await topUpDon(page, 1); // cost 1
 
-    const handBefore = await page.evaluate(() => {
-      const w = window as unknown as { __store?: { getState: () => { state: { players: { A: { hand: string[] } } } } } };
-      return w.__store!.getState().state.players.A.hand.length;
-    });
-
     await dispatch(page, { type: 'PLAY_CARD', instanceId: iid, replaceTargetId: null });
 
     const after = await page.evaluate(() => {
       const w = window as unknown as {
-        __store?: { getState: () => { state: { pending: { kind: string } | null; players: { A: { hand: string[]; field: Array<{ instanceId: string }> } }; history: Array<{ type: string; trigger?: string }> } } };
+        __store?: { getState: () => { state: { pending: { kind: string } | null; players: { A: { field: Array<{ instanceId: string }> } }; history: Array<{ type: string; trigger?: string }> } } };
       };
       const s = w.__store!.getState().state;
       return {
         pendingKind: s.pending?.kind ?? null,
         clauseFiredOnPlay: s.history.filter((e) => e.type === 'CLAUSE_FIRED' && e.trigger === 'on_play').length,
-        handLen: s.players.A.hand.length,
         fieldIids: s.players.A.field.map((f) => f.instanceId),
       };
     });
-    // Engine fires the clause.
     expect(after.clauseFiredOnPlay, 'CLAUSE_FIRED trigger=on_play emitted for Bonney').toBeGreaterThan(0);
-    // V0 searcher_peek is deterministic — no pending.
-    expect(after.pendingKind, 'NO pending (V0 auto-resolves searcher_peek)').toBeNull();
-    // Bonney is on A.field.
+    expect(after.pendingKind, 'searcher_peek pending opened for human seat').toBe('searcher_peek');
     expect(after.fieldIids, 'Bonney on A.field').toContain(iid);
-    // Hand-delta: -1 (Bonney played) + 0..1 (searcher pick depending on whether deck top has a matching trait).
-    // We don't seed a specific deck so accept either delta — but the
-    // ON-PLAY beat MUST fire regardless.
-    expect(after.handLen).toBeGreaterThanOrEqual(handBefore - 1);
+
+    // The generic prompt is visible and resolvable (choose-none path).
+    const prompt = page.locator('[data-pending-kind="searcher_peek"]');
+    await expect(prompt).toBeVisible();
+    await page.locator('[data-searcher-confirm]').click();
+    await expect(prompt).toBeHidden();
+    const pendingAfter = await page.evaluate(() => {
+      const w = window as unknown as { __store?: { getState: () => { state: { pending: { kind: string } | null } } } };
+      return w.__store!.getState().state.pending?.kind ?? null;
+    });
+    expect(pendingAfter, 'pending cleared after confirm').toBeNull();
   });
 
   // F-7w required — On Play EFFECT_ACTIVATED beat shows human-readable summary.
@@ -941,6 +955,15 @@ test.describe('F-7t — deterministic effect card proof', () => {
 
     await dispatch(page, { type: 'PLAY_CARD', instanceId: bonneyIid, replaceTargetId: null });
 
+    // F-8B — the human seat gets the generic prompt; pick Brook explicitly.
+    const prompt = page.locator('[data-pending-kind="searcher_peek"]');
+    await expect(prompt).toBeVisible();
+    const brookTile = page.locator(`[data-searcher-card="${brookIid}"]`);
+    await expect(brookTile).toHaveAttribute('data-searcher-valid', 'true');
+    await brookTile.click();
+    await page.locator('[data-searcher-confirm]').click();
+    await expect(prompt).toBeHidden();
+
     const result = await page.evaluate(() => {
       const w = window as unknown as {
         __store?: { getState: () => { state: { history: Array<Record<string, unknown>>; players: { A: { hand: string[] } } } } };
@@ -992,6 +1015,15 @@ test.describe('F-7t — deterministic effect card proof', () => {
 
     await dispatch(page, { type: 'PLAY_CARD', instanceId: bonneyIid, replaceTargetId: null });
 
+    // F-8B — prompt opens even when nothing matches: the player still SEES
+    // the four looked-at cards, with every tile disabled + explained.
+    const prompt = page.locator('[data-pending-kind="searcher_peek"]');
+    await expect(prompt).toBeVisible();
+    await expect(page.locator('[data-searcher-valid="true"]')).toHaveCount(0);
+    await expect(page.locator('[data-searcher-valid="false"]')).toHaveCount(4);
+    await page.locator('[data-searcher-choose-none]').click();
+    await expect(prompt).toBeHidden();
+
     const result = await page.evaluate(() => {
       const w = window as unknown as {
         __store?: { getState: () => { state: { history: Array<Record<string, unknown>> } } };
@@ -1018,6 +1050,14 @@ test.describe('F-7t — deterministic effect card proof', () => {
     const brookIid = await seedInstance(page, 'EB01-046');
     await stackDeckTop(page, [brookIid]);
     await dispatch(page, { type: 'PLAY_CARD', instanceId: bonneyIid, replaceTargetId: null });
+
+    // F-8B — the human seat now picks via the prompt; choose Brook so the
+    // post-resolution beat has a picked card to reveal.
+    const prompt = page.locator('[data-pending-kind="searcher_peek"]');
+    await expect(prompt).toBeVisible();
+    await page.locator(`[data-searcher-card="${brookIid}"]`).click();
+    await page.locator('[data-searcher-confirm]').click();
+    await expect(prompt).toBeHidden();
 
     // The beat's primary card visual must be the picked card.
     // beatFor.SEARCHER_PICKED case sets primaryInstanceId = pickedInstanceId
@@ -1124,7 +1164,7 @@ test.describe('F-7t — deterministic effect card proof', () => {
     const beforeBox = await tile.boundingBox();
     expect(beforeBox).not.toBeNull();
     // First tap selects; tile should enlarge but stay within reasonable bound.
-    await tile.locator('button').first().click({ force: true });
+    await tile.click(); // F-8C: tile wrapper is the click target
     await page.waitForTimeout(400);
     const afterBox = await tile.boundingBox();
     expect(afterBox).not.toBeNull();
@@ -1143,6 +1183,8 @@ test.describe('F-7t — deterministic effect card proof', () => {
 
     const hyogoroIid = await seedCardOnField(page, 'OP01-020', false);
     await dispatch(page, { type: 'ACTIVATE_MAIN', instanceId: hyogoroIid });
+    // F-8D — resolve the target picker first (human seats choose targets).
+    await resolveTargetPicker(page);
 
     // EFFECT_ACTIVATED beat fires immediately. Even if drained by other
     // beats, the SUB-text should have contained the result line. Check
@@ -1184,5 +1226,217 @@ test.describe('F-7t — deterministic effect card proof', () => {
     expect(compiled.present, 'EB01-026 in cardLibrary').toBe(true);
     expect(compiled.trigger, 'clause[0] trigger is when_attacking').toBe('when_attacking');
     expect(compiled.actionKind, 'clause[0] action is removal_bounce').toBe('removal_bounce');
+  });
+
+  // ─── F-8B — generic Searcher/Peek/Top-Deck choice UI ─────────────────
+  // Owner repro card: EB02-008 The Peak ([Main] look 4, reveal up to 1
+  // cost-4+, add to hand, rest to bottom). The tests are family-generic:
+  // synthetic cost-5 / cost-2 test cards prove filter validity handling
+  // without depending on specific corpus prints.
+
+  const TEST_C5 = (id: string): Record<string, unknown> => ({
+    id, name: `Test Cost5 ${id}`, kind: 'character', colors: ['red'], cost: 5,
+    power: 6000, counterValue: 1000, traits: [], keywords: [], effectTags: [],
+  });
+  const TEST_C2 = (id: string): Record<string, unknown> => ({
+    id, name: `Test Cost2 ${id}`, kind: 'character', colors: ['red'], cost: 2,
+    power: 3000, counterValue: 1000, traits: [], keywords: [], effectTags: [],
+  });
+
+  test('CARD 19 — F-8B EB02-008 The Peak (match): prompt shows 4, both cost-4+ valid, player picks the SECOND one, rest bottomed in shown order', async ({ page }) => {
+    test.setTimeout(TWO_MIN);
+    await bootstrap(page);
+    await injectCorpusCards(page, ['EB02-008']);
+
+    const peakIid = await seedCardInHand(page, 'EB02-008');
+    await topUpDon(page, 2); // cost 2
+
+    const c5a = await seedInstance(page, 'TEST_C5_A', TEST_C5('TEST_C5_A'));
+    const low1 = await seedInstance(page, 'TEST_C2_A', TEST_C2('TEST_C2_A'));
+    const c5b = await seedInstance(page, 'TEST_C5_B', TEST_C5('TEST_C5_B'));
+    const low2 = await seedInstance(page, 'TEST_C2_B', TEST_C2('TEST_C2_B'));
+    await stackDeckTop(page, [c5a, low1, c5b, low2]);
+
+    await dispatch(page, { type: 'PLAY_CARD', instanceId: peakIid, replaceTargetId: null });
+
+    const prompt = page.locator('[data-pending-kind="searcher_peek"]');
+    await expect(prompt, 'searcher prompt opens — no auto-pick').toBeVisible();
+    // Both cost-5 cards selectable; both cost-2 cards disabled.
+    await expect(page.locator(`[data-searcher-card="${c5a}"]`)).toHaveAttribute('data-searcher-valid', 'true');
+    await expect(page.locator(`[data-searcher-card="${c5b}"]`)).toHaveAttribute('data-searcher-valid', 'true');
+    await expect(page.locator(`[data-searcher-card="${low1}"]`)).toHaveAttribute('data-searcher-valid', 'false');
+    await expect(page.locator(`[data-searcher-card="${low2}"]`)).toHaveAttribute('data-searcher-valid', 'false');
+
+    // Pick the SECOND valid card — proves the player choice is real (the
+    // old auto-resolve always took the FIRST match, c5a).
+    await page.locator(`[data-searcher-card="${c5b}"]`).click();
+    await expect(page.locator(`[data-searcher-card="${c5b}"]`)).toHaveAttribute('data-searcher-selected', 'true');
+    await page.locator('[data-searcher-confirm]').click();
+    await expect(prompt).toBeHidden();
+
+    const after = await page.evaluate(() => {
+      const w = window as unknown as {
+        __store?: { getState: () => { state: { pending: unknown; players: { A: { hand: string[]; deck: string[] } }; history: Array<Record<string, unknown>> } } };
+      };
+      const s = w.__store!.getState().state;
+      return {
+        pending: s.pending,
+        hand: s.players.A.hand,
+        deckTail: s.players.A.deck.slice(-3),
+        picked: s.history.filter((e) => e.type === 'SEARCHER_PICKED'),
+      };
+    });
+    expect(after.pending, 'pending cleared').toBeNull();
+    expect(after.hand, 'chosen cost-5 card added to hand').toContain(c5b);
+    expect(after.hand, 'auto-pick candidate NOT taken').not.toContain(c5a);
+    // Leftovers bottomed in shown order: c5a, low1, low2.
+    expect(after.deckTail, 'leftovers at deck bottom in shown order').toEqual([c5a, low1, low2]);
+    const evt = after.picked[0]!;
+    expect(evt.matched, 'SEARCHER_PICKED matched=true').toBe(true);
+    expect(evt.pickedInstanceId, 'picked the player-chosen card').toBe(c5b);
+  });
+
+  test('CARD 20 — F-8B EB02-008 The Peak (no match): prompt still shows all 4, none selectable, choose-none bottoms everything', async ({ page }) => {
+    test.setTimeout(TWO_MIN);
+    await bootstrap(page);
+    await injectCorpusCards(page, ['EB02-008']);
+
+    const peakIid = await seedCardInHand(page, 'EB02-008');
+    await topUpDon(page, 2);
+
+    const lows: string[] = [];
+    for (let i = 0; i < 4; i += 1) {
+      lows.push(await seedInstance(page, `TEST_C2_N${i}`, TEST_C2(`TEST_C2_N${i}`)));
+    }
+    await stackDeckTop(page, lows);
+
+    await dispatch(page, { type: 'PLAY_CARD', instanceId: peakIid, replaceTargetId: null });
+
+    const prompt = page.locator('[data-pending-kind="searcher_peek"]');
+    await expect(prompt, 'prompt opens even with zero matches — player SEES the cards').toBeVisible();
+    await expect(page.locator('[data-searcher-valid="true"]')).toHaveCount(0);
+    await expect(page.locator('[data-searcher-valid="false"]')).toHaveCount(4);
+    // Confirm with empty selection (mayChooseNone) — same as Choose None.
+    await page.locator('[data-searcher-choose-none]').click();
+    await expect(prompt).toBeHidden();
+
+    const after = await page.evaluate(() => {
+      const w = window as unknown as {
+        __store?: { getState: () => { state: { players: { A: { hand: string[]; deck: string[] } }; history: Array<Record<string, unknown>> } } };
+      };
+      const s = w.__store!.getState().state;
+      return {
+        deckTail: s.players.A.deck.slice(-4),
+        picked: s.history.filter((e) => e.type === 'SEARCHER_PICKED'),
+        handHasLow: s.players.A.hand.some((h) => h.startsWith('inj_TEST_C2_N')),
+      };
+    });
+    expect(after.deckTail, 'all 4 bottomed in shown order').toEqual(lows);
+    expect(after.handHasLow, 'nothing entered hand').toBe(false);
+    const evt = after.picked[0]!;
+    expect(evt.matched, 'no-match feedback emitted (SEARCHER_PICKED matched=false)').toBe(false);
+    expect(evt.bottomedCount, '4 bottomed').toBe(4);
+  });
+
+  test('CARD 21 — F-8B trigger path: a [Trigger] searcher_peek opens the prompt and resumes to main after resolution', async ({ page }) => {
+    test.setTimeout(TWO_MIN);
+    await bootstrap(page);
+
+    // Synthetic life card whose [Trigger] is The-Peak-shaped (look 4,
+    // up to 1 cost-4+, bottom the rest) — generic family proof. NOTE:
+    // EB02-008's corpus entry is currently missing its printed [Trigger]
+    // clause (logged as a Track-2 data follow-up in the F-8B report), so
+    // the trigger PATH is proven with an injected def.
+    const trigDef: Record<string, unknown> = {
+      id: 'TEST_TRIG_SEARCH', name: 'Test Trigger Searcher', kind: 'event',
+      colors: ['red'], cost: 2, power: null, counterValue: null, traits: [],
+      keywords: [], effectTags: ['searcher'],
+      effectSpecV2: {
+        schemaVersion: 2,
+        clauses: [{
+          trigger: 'trigger',
+          action: { kind: 'searcher_peek', lookCount: 4, addCount: 1, filter: { costMin: 4 }, leftoverPlacement: 'bottom' },
+          verified: 'human-reviewed',
+        }],
+        continuous: [], replacements: [],
+      },
+    };
+    const trigIid = await seedInstance(page, 'TEST_TRIG_SEARCH', trigDef);
+    const c5 = await seedInstance(page, 'TEST_C5_T', TEST_C5('TEST_C5_T'));
+    await stackDeckTop(page, [c5]);
+
+    // Manufacture the trigger window exactly as flipTopLifeToHand creates it.
+    await page.evaluate((iid) => {
+      const w = window as unknown as {
+        __store?: {
+          getState: () => { state: Record<string, unknown> };
+          setState: (p: { state: Record<string, unknown> }) => void;
+        };
+      };
+      const s = w.__store!.getState().state;
+      s.pending = {
+        kind: 'trigger',
+        pendingTrigger: { lifeCardInstanceId: iid, controller: 'A', resumePhase: 'main' },
+      };
+      s.phase = 'trigger_window';
+      w.__store!.setState({ state: { ...s } });
+    }, trigIid);
+
+    await dispatch(page, { type: 'RESOLVE_TRIGGER', activate: true, targetInstanceId: null });
+
+    // The trigger's searcher suspends into the SAME generic prompt.
+    const prompt = page.locator('[data-pending-kind="searcher_peek"]');
+    await expect(prompt, 'trigger-fired searcher opens the prompt').toBeVisible();
+    await page.locator(`[data-searcher-card="${c5}"]`).click();
+    await page.locator('[data-searcher-confirm]').click();
+    await expect(prompt).toBeHidden();
+
+    const after = await page.evaluate(() => {
+      const w = window as unknown as {
+        __store?: { getState: () => { state: { phase: string; pending: unknown; players: { A: { hand: string[] } } } } };
+      };
+      const s = w.__store!.getState().state;
+      return { phase: s.phase, pending: s.pending, hand: s.players.A.hand };
+    });
+    expect(after.pending, 'pending cleared').toBeNull();
+    expect(after.phase, "resumes to the trigger's resume phase (main)").toBe('main');
+    expect(after.hand, 'picked card in hand').toContain(c5);
+  });
+
+  test('CARD 22 — F-8B AI path: without humanControllers the engine still auto-resolves deterministically (no prompt)', async ({ page }) => {
+    test.setTimeout(TWO_MIN);
+    await bootstrap(page);
+    await injectCorpusCards(page, ['EB04-002']);
+
+    const bonneyIid = await seedCardInHand(page, 'EB04-002');
+    await topUpDon(page, 1);
+    // Simulate a non-human seat: clear the opt-in flag the local store sets.
+    await page.evaluate(() => {
+      const w = window as unknown as {
+        __store?: {
+          getState: () => { state: Record<string, unknown> };
+          setState: (p: { state: Record<string, unknown> }) => void;
+        };
+      };
+      const s = w.__store!.getState().state;
+      s.humanControllers = [];
+      w.__store!.setState({ state: { ...s } });
+    });
+
+    await dispatch(page, { type: 'PLAY_CARD', instanceId: bonneyIid, replaceTargetId: null });
+
+    const after = await page.evaluate(() => {
+      const w = window as unknown as {
+        __store?: { getState: () => { state: { pending: unknown; history: Array<Record<string, unknown>> } } };
+      };
+      const s = w.__store!.getState().state;
+      return {
+        pending: s.pending,
+        picked: s.history.filter((e) => e.type === 'SEARCHER_PICKED').length,
+      };
+    });
+    expect(after.pending, 'NO pending — deterministic auto-resolve preserved').toBeNull();
+    expect(after.picked, 'SEARCHER_PICKED still emitted by the auto path').toBeGreaterThanOrEqual(1);
+    await expect(page.locator('[data-pending-kind="searcher_peek"]')).toBeHidden();
   });
 });

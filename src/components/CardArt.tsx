@@ -23,16 +23,28 @@ import type { CardInstance } from '@shared/engine-v2/state/types';
 import { effectivePowerForDisplay } from '@shared/engine-v2/state/derived/power';
 import { useGameStore } from '../store/game';
 
-export type CardArtSize = 'hand' | 'field' | 'leader' | 'modal' | 'mini' | 'lifeStack';
+export type CardArtSize = 'hand' | 'field' | 'leader' | 'modal' | 'prompt' | 'mini' | 'lifeStack';
 
 export const CARD_DIMS: Record<CardArtSize, { w: number; h: number }> = {
   hand: { w: 64, h: 88 },
   field: { w: 52, h: 72 },
   leader: { w: 52, h: 72 },
   modal: { w: 220, h: 308 },
+  prompt: { w: 110, h: 154 },
   mini: { w: 28, h: 40 },
   lifeStack: { w: 24, h: 34 },
 };
+
+// ── F-8C unified card-size standard (owner rule: exactly 3 sizes) ──────
+//   A. BOARD   — hand/field/leader/mini/lifeStack (zone-specific smalls)
+//   B. PROMPT  — `prompt` 110×154, FIXED, every selection list
+//                (searcher / blocker / counter tiles). Never resized on
+//                selection — highlight via ring, not scale.
+//   C. INSPECT — `modal` 220×308 rendered at INSPECT_SCALE (1.5×) →
+//                330×462 effective. CardDetailModal AND every "View"/
+//                read affordance use this exact presentation.
+//   "Presentation" (played-card reveal) = INSPECT, responsive-clamped.
+//   Scale constants + helper live in ./cardSizing.ts (react-refresh rule).
 
 /** Per-size typography + chip dimensions used by the placeholder frame. */
 interface FrameMetrics {
@@ -96,6 +108,19 @@ function metricsFor(size: CardArtSize): FrameMetrics {
         microtype: { font: 10, inset: 8 },
         bodyRadius: 8,
         bodyStroke: 1,
+      };
+    case 'prompt':
+      // F-8C — fixed selection-tile size (½ modal). Metrics = modal × 0.5.
+      return {
+        costChip: { size: 18, inset: 5, font: 11, radius: 2 },
+        powerStamp: { w: 28, h: 16, inset: 5, font: 11 },
+        crest: 66,
+        nameStrip: { h: 14, font: 9, pad: 4 },
+        kindStrip: { h: 11, font: 6, pad: 4 },
+        counterChip: { w: 22, h: 14, inset: 3, font: 7 },
+        microtype: { font: 5, inset: 4 },
+        bodyRadius: 4,
+        bodyStroke: 0.75,
       };
     case 'mini':
       return {

@@ -63,9 +63,14 @@ const trashFromHand: CostHandler = {
     const n = num(cost, 'trashFromHand');
     const pl = state.players[ctx.controller];
     if (pl.hand.length < n) return null;
-    for (let i = 0; i < n; i++) {
-      const id = pl.hand.shift();
-      if (id === undefined) return null;
+    // F-8D — pay with the human player's picked cards when present
+    // (ctx.chosenCostIds, cost-picker resume path); V0 head-pick otherwise.
+    const chosen = ctx.chosenCostIds?.['trashFromHand'];
+    const ids = chosen !== undefined && chosen.length === n ? chosen : pl.hand.slice(0, n);
+    for (const id of ids) {
+      const idx = pl.hand.indexOf(id);
+      if (idx === -1) return null;
+      pl.hand.splice(idx, 1);
       pl.trash.push(id);
       state.cardsTrashedThisResolution += 1;
     }
