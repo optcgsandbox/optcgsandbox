@@ -123,6 +123,20 @@ body {
   min-height: 100dvh;
 }
 
+/* Portrait-only policy (owner 2026-06-12): NO landscape support, ever.
+   Rotated PHONE browsers (landscape + short) get a rotate prompt instead
+   of a broken board. Desktop/laptop windows are tall enough to never
+   match; installed apps are portrait-locked via the manifest
+   (vite.config.ts `orientation: 'portrait'`). */
+.rotate-gate {
+  display: none;
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .rotate-gate {
+    display: flex;
+  }
+}
+
 /* Tabular numbers everywhere life/DON/power render — keeps digits column-aligned. */
 .font-display {
   font-family: var(--font-display);

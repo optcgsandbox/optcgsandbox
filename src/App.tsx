@@ -204,6 +204,22 @@ function GameApp() {
           </>
         )}
       </div>
+
+      {/* Portrait-only policy — rotated phone browsers see this instead of
+          a broken board (CSS-gated; never matches desktop or portrait). */}
+      <div
+        className="rotate-gate fixed inset-0 z-[100] flex-col items-center justify-center
+                   gap-3 bg-paper-cream px-6 text-center"
+        role="status"
+        data-testid="rotate-gate"
+      >
+        <span className="font-display text-[1.4rem] text-ink-black">
+          Please rotate your device
+        </span>
+        <span className="max-w-[300px] text-[0.8125rem] font-body text-ink-iron">
+          OPTCGSandbox is a portrait game — turn your phone upright to play.
+        </span>
+      </div>
     </div>
   );
 }

@@ -988,3 +988,16 @@ LOCAL searcher visibility shipped. Owner manual retest of Bonney is the next gat
 - **Printed effect text:** prompts render the card's PRINTED `effectText` (segment for the firing trigger via `printedSegmentFor` — rules-vocabulary marker mapping, no card logic) as primary copy in EffectOfferPrompt / TargetPickerPrompt / SearcherPeekPrompt. Engine `describeCost` map completed for every registered cost key + camelCase humanizer default — internal keys (e.g. `bottomOfDeckFromHand`) can never leak again.
 - **Inspect-everywhere:** EffectOfferPrompt card (tap + View), TriggerPrompt life card, DiscardChoice / PeekChoice tiles (View), Mulligan hand (tap), Blocker/Counter duel-header minis (tap) — all open the SAME `CardInspectOverlay`. Documented intentional exception: transient presentation beats (PresentationQueue / LifeReveal / EventCard overlays) keep tap-to-fast-forward; they yield to every choice window within 120ms.
 - Tests: `cost-pick-f8d.test.ts` (9 engine: suspend-before-pay, reject empty/over/foreign, Gordon-shaped bottom-deck proof, AI head-pick invariance, no-choice auto-pay, activate_main field cost, sequential multi-key, filter candidates, cost→target chaining), `f8d-cost-picker.spec.ts` (3 e2e: REAL OP01-011 Gordon full flow with 5 screenshots, Skip-pays-nothing, mulligan inspect). `npm test` 1145/0; build green; full battery green; hardcode grep clean.
+
+---
+
+## POLICY — portrait-only (owner 2026-06-12)
+
+NO LANDSCAPE SUPPORT, EVER. Validation targets: desktop, laptop, tablet
+portrait, phone portrait, installed/PWA portrait. Installed apps are
+portrait-locked (`orientation: 'portrait'`, vite.config.ts). Rotated phone
+browsers get a CSS-gated "rotate your device" overlay (`.rotate-gate`,
+index.css + App.tsx) — no landscape scaling, no landscape acceptance
+criteria, never blocks READY_FOR_MANUAL_RETEST. The opp-hand lane
+auto-scale (HandFan.tsx useOppLaneScale) is PORTRAIT protection for short
+viewports (e.g. iPhone SE), not landscape support.
