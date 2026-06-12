@@ -51,6 +51,9 @@ function pickLeader(color: DeckColor): LeaderCard {
  *  when we want a known-clean leader for the demo (e.g., one whose effect
  *  doesn't add DON / draw / search at game start or via triggers we haven't
  *  finished wiring). */
+// Retained for driver/color experiments — referenced so tsc keeps it.
+void pickLeader;
+
 function pickLeaderById(id: string): LeaderCard {
   const match = ALL_CARDS.find((c) => c.id === id && c.kind === 'leader');
   if (!match) throw new Error(`Leader ${id} not in corpus`);
@@ -94,6 +97,39 @@ function buildDeck(color: DeckColor): Card[] {
   return [...preferred, ...rest].slice(0, 50);
 }
 
+/** Player A's custom decklist (owner-provided 2026-06-12). 50 cards led by
+ *  OP15-002. Used when no PLAY_DRIVER_LEADER_ID is set — i.e., the normal
+ *  human play session. Driver-injected tests still go through buildDeck()
+ *  so coverage automation is unaffected. */
+const PLAYER_A_DECK: ReadonlyArray<readonly [string, number]> = [
+  ['OP15-014', 3],
+  ['OP09-118', 1],
+  ['OP15-040', 4],
+  ['OP15-052', 4],
+  ['OP15-053', 4],
+  ['OP10-045', 4],
+  ['OP15-046', 4],
+  ['OP05-019', 2],
+  ['OP15-021', 3],
+  ['OP15-020', 4],
+  ['OP10-059', 3],
+  ['OP15-055', 2],
+  ['OP15-054', 4],
+  ['OP10-060', 4],
+  ['OP15-056', 2],
+  ['OP15-057', 2],
+];
+
+function buildDeckFromList(list: ReadonlyArray<readonly [string, number]>): Card[] {
+  const out: Card[] = [];
+  for (const [id, count] of list) {
+    const card = ALL_CARDS.find((c) => c.id === id);
+    if (!card) throw new Error(`Card ${id} not in corpus`);
+    for (let i = 0; i < count; i += 1) out.push(card);
+  }
+  return out;
+}
+
 /** D24 (CR §5-2-1-4) + D10 (CR §5-2-1-6): `setupGame` leaves the engine in
  *  the dice-roll window with life cards undealt. The store stops here so the
  *  UI can prompt the active player. Once both players resolve dice-roll,
@@ -124,17 +160,21 @@ function bootGame(seed: number): GameState {
   } catch {
     // Fall back to production behavior on any read failure.
   }
-  const leaderA: LeaderCard = driverLeader ?? pickLeader('red');
+  const leaderA: LeaderCard = driverLeader ?? pickLeaderById('OP15-002');
   // For the deck-color filter, use the leader's FIRST color. For multi-color
   // leaders, buildDeck currently takes a single color so we pick the primary;
   // the resulting deck still satisfies the OPTCG color-share rule because
   // any card matching the primary color is legal under the leader's identity.
   const colorA = (leaderA.colors[0] as DeckColor) ?? 'red';
+  // Driver-injected sessions stay on auto-buildDeck so coverage automation is
+  // unaffected. The normal human session uses the owner's curated 50-card
+  // list (PLAYER_A_DECK).
+  const cardsA = driverLeader ? buildDeck(colorA) : buildDeckFromList(PLAYER_A_DECK);
 
   let s = initialState({
     seed,
     decks: {
-      A: { leader: leaderA, cards: buildDeck(colorA) },
+      A: { leader: leaderA, cards: cardsA },
       // 2026-06-01: switch opp from OP01-060 Doflamingo to OP09-042 Buggy.
       // Doflamingo's auto-extracted effectTags include 'searcher'+'ramp',
       // which previously ghost-fired at game start. Even though the V1
@@ -322,6 +362,10 @@ interface GameStore {
   inspectedCardId: string | null;
   /** UI-D3: When true, the CardDetailModal is open for `inspectedCardId`. */
   cardDetailOpen: boolean;
+  /** Carousel context (owner 2026-06-12): ordered instance ids of the GROUP
+   *  the inspected card was opened from (hand / trash / ...). Null for
+   *  single-card contexts (board characters, leader, stage) — no arrows. */
+  inspectGroup: ReadonlyArray<string> | null;
   /** UI-D2 (design-reference §7): Instance ID of the friendly character/leader
    *  selected as the attacker. Tapping a legal opp target dispatches
    *  DECLARE_ATTACK; tapping the same attacker again or an empty playmat
@@ -338,6 +382,7 @@ interface GameStore {
   endTurnAndAdvance: () => Promise<void>;
   setInspectedCardId: (id: string | null) => void;
   setCardDetailOpen: (open: boolean) => void;
+  setInspectGroup: (ids: ReadonlyArray<string> | null) => void;
   setSelectedAttackerId: (id: string | null) => void;
   setViewingTrashOf: (id: PlayerId | null) => void;
 }
@@ -518,6 +563,7 @@ export const useGameStore = create<GameStore>((set, get) => {
     aiPaused: false,
     inspectedCardId: null,
     cardDetailOpen: false,
+    inspectGroup: null,
     selectedAttackerId: null,
     viewingTrashOf: null,
 
@@ -719,6 +765,7 @@ export const useGameStore = create<GameStore>((set, get) => {
           legalActions: getLegalActions(next, next.activePlayer),
           inspectedCardId: null,
           cardDetailOpen: false,
+          inspectGroup: null,
           selectedAttackerId: null,
         });
         void (async () => {
@@ -771,7 +818,7 @@ export const useGameStore = create<GameStore>((set, get) => {
         state: next,
         legalActions: getLegalActions(next, legalActionsFor),
         ...(phaseOrPlayerChanged
-          ? { inspectedCardId: null, cardDetailOpen: false, selectedAttackerId: null }
+          ? { inspectedCardId: null, cardDetailOpen: false, inspectGroup: null, selectedAttackerId: null }
           : {}),
       });
 
@@ -814,15 +861,21 @@ export const useGameStore = create<GameStore>((set, get) => {
     },
 
     setInspectedCardId(id) {
-      // Switching to a new card or clearing also closes any open detail modal.
+      // Switching to a new card or clearing also closes any open detail
+      // modal; clearing also drops any carousel group context.
       set({
         inspectedCardId: id,
         cardDetailOpen: id === null ? false : get().cardDetailOpen,
+        ...(id === null ? { inspectGroup: null } : {}),
       });
     },
 
     setCardDetailOpen(open) {
       set({ cardDetailOpen: open });
+    },
+
+    setInspectGroup(ids) {
+      set({ inspectGroup: ids });
     },
 
     setSelectedAttackerId(id) {
@@ -893,6 +946,7 @@ export const useGameStore = create<GameStore>((set, get) => {
         viewAs: AI_HUMAN,
         inspectedCardId: null,
         cardDetailOpen: false,
+        inspectGroup: null,
         selectedAttackerId: null,
       });
       await wait(TURN_HANDOFF_DELAY_MS);
@@ -913,6 +967,7 @@ export const useGameStore = create<GameStore>((set, get) => {
         aiThinking: false,
         inspectedCardId: null,
         cardDetailOpen: false,
+        inspectGroup: null,
         selectedAttackerId: null,
         viewingTrashOf: null,
       });
