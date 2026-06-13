@@ -21,7 +21,8 @@ import { LayoutGroup, motion, useReducedMotion } from 'framer-motion';
 import {
   DndContext,
   DragOverlay,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   pointerWithin,
   useSensor,
   useSensors,
@@ -229,9 +230,10 @@ const SortableHandCard = memo(function SortableHandCard({
         // Snap suspended during any drag (owner 2026-06-13) so it can't fight
         // the reorder; restores when the drag ends.
         scrollSnapAlign: dragging ? undefined : 'center',
-        // dnd-kit: claim touch drags for reorder (native scroll → arrows).
-        // The 8px activation distance keeps taps as clicks.
-        touchAction: 'none',
+        // pan-x (owner 2026-06-13): a quick touch swipe scrolls the strip;
+        // the TouchSensor's long-press (200ms) is what starts a reorder, so
+        // the two don't fight. Desktop is unaffected (mouse ignores this).
+        touchAction: 'pan-x',
         opacity: isDragging ? 0 : someoneElseInspected ? 0.55 : 1,
         filter: someoneElseInspected && !reduced ? 'saturate(0.7)' : undefined,
       }}
@@ -277,8 +279,13 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
   // dnd-kit drag-to-reorder (owner 2026-06-12). PointerSensor with an 8px
   // activation distance = the clean tap-vs-drag separation; a tap stays a
   // click, a drag never clicks. arrayMove on drop.
+  // Split sensors (owner 2026-06-13): DESKTOP = instant drag after 8px move;
+  // MOBILE = long-press (~200ms hold) to pick a card up, so a quick touch
+  // swipe scrolls the strip instead of reordering (cards are touch-action:
+  // pan-x below). Both keep tap-to-open (a tap never reaches activation).
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 8 } }),
   );
   const [activeId, setActiveId] = useState<string | null>(null);
   const onDragStart = useCallback((e: DragStartEvent) => {
