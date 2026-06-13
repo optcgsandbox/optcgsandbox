@@ -182,8 +182,8 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
   const phase = useGameStore((s) => s.state.phase);
   const reduced = useReducedMotion() ?? false;
 
-  const armedDonId = useDonArm((s) => s.armedDonId);
-  const armDon = useDonArm((s) => s.arm);
+  const armedDonIds = useDonArm((s) => s.armedDonIds);
+  const toggleDon = useDonArm((s) => s.toggle);
   const disarmDon = useDonArm((s) => s.disarm);
 
   // Only the active player during their main phase can attach.
@@ -196,18 +196,15 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
     // immediately disarm — racing with the owner's arm action and making the
     // DON appear to never arm. Found 2026-05-29 via Playwright (aria-pressed
     // stuck at "false" after click).
-    if (isYou && !interactive && armedDonId) disarmDon();
-  }, [isYou, interactive, armedDonId, disarmDon]);
+    if (isYou && !interactive && armedDonIds.length) disarmDon();
+  }, [isYou, interactive, armedDonIds, disarmDon]);
 
   const handleCoinTap = useCallback(
     (instanceId: string) => {
-      if (armedDonId === instanceId) {
-        disarmDon();
-      } else {
-        armDon(instanceId);
-      }
+      // Toggle this coin in/out of the armed set — multi-select.
+      toggleDon(instanceId);
     },
-    [armedDonId, armDon, disarmDon],
+    [toggleDon],
   );
 
   const totalDon = donCostArea.length + donRested.length;
@@ -294,7 +291,7 @@ export const CostAreaBand = memo(function CostAreaBand({ playerId, isYou }: Cost
                   rested={itemRested}
                   reduced={reduced}
                   interactive={itemRested ? false : interactive}
-                  armed={!itemRested && armedDonId === instanceId}
+                  armed={!itemRested && armedDonIds.includes(instanceId)}
                   isYou={isYou}
                   onTap={itemRested ? undefined : () => handleCoinTap(instanceId)}
                 />

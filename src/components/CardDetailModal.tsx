@@ -56,7 +56,7 @@ export const CardDetailModal = memo(function CardDetailModal() {
   const players = useGameStore((s) => s.state.players);
   const selectedAttackerId = useGameStore((s) => s.selectedAttackerId);
   const setSelectedAttackerId = useGameStore((s) => s.setSelectedAttackerId);
-  const armedDonId = useDonArm((s) => s.armedDonId);
+  const armedDonIds = useDonArm((s) => s.armedDonIds);
   const disarmDon = useDonArm((s) => s.disarm);
   const reduced = useReducedMotion() ?? false;
 
@@ -141,13 +141,20 @@ export const CardDetailModal = memo(function CardDetailModal() {
 
     if (onField) {
       const out: ActionButton[] = [];
-      // ATTACH DON — owner has armed a DON; this is a friendly attach target.
-      if (armedDonId && (isFriendlyLeader || isFriendlyCharOrStage)) {
+      // ATTACH DON — owner has armed one or more DON; this is a friendly
+      // attach target. The button fires ATTACH_DON once per armed coin
+      // (see onActionClick); the label reflects how many will attach.
+      if (armedDonIds.length && (isFriendlyLeader || isFriendlyCharOrStage)) {
         const attach = legalActions.find(
           (a) => a.type === 'ATTACH_DON' && a.targetInstanceId === inst.instanceId,
         );
         if (attach) {
-          out.push({ label: 'ATTACH DON', action: attach, variant: 'primary-teal' });
+          const n = armedDonIds.length;
+          out.push({
+            label: n > 1 ? `ATTACH ${n} DON` : 'ATTACH DON',
+            action: attach,
+            variant: 'primary-teal',
+          });
         }
       }
       // ATTACK THIS — owner has selected an attacker; this is a legal opp target.
@@ -163,7 +170,7 @@ export const CardDetailModal = memo(function CardDetailModal() {
         }
       }
       // SELECT AS ATTACKER — this friendly card can attack right now.
-      if (isYourTurn && (isFriendlyLeader || isFriendlyCharOrStage) && !armedDonId) {
+      if (isYourTurn && (isFriendlyLeader || isFriendlyCharOrStage) && !armedDonIds.length) {
         const canAttack = legalActions.some(
           (a) => a.type === 'DECLARE_ATTACK' && a.attackerInstanceId === inst.instanceId,
         );
@@ -177,7 +184,7 @@ export const CardDetailModal = memo(function CardDetailModal() {
       }
       // ACTIVATE — Phase C / D12 (CR §10-2-13). Friendly card with an
       // [Activate:Main] ability that isn't rested yet.
-      if (isYourTurn && (isFriendlyLeader || isFriendlyCharOrStage) && !armedDonId) {
+      if (isYourTurn && (isFriendlyLeader || isFriendlyCharOrStage) && !armedDonIds.length) {
         const activate = legalActions.find(
           (a) => a.type === 'ACTIVATE_MAIN' && a.instanceId === inst.instanceId,
         );
@@ -331,7 +338,7 @@ export const CardDetailModal = memo(function CardDetailModal() {
     phase,
     legalActions,
     players,
-    armedDonId,
+    armedDonIds,
     selectedAttackerId,
   ]);
 
@@ -394,15 +401,26 @@ export const CardDetailModal = memo(function CardDetailModal() {
         close();
         return;
       }
-      // ATTACH_DON path clears the armed-DON state immediately.
-      if (action.type === 'ATTACH_DON') disarmDon();
+      // ATTACH_DON path — fire once per armed coin. The engine's ATTACH_DON
+      // pops the FIRST DON from the cost area onto the target, and dispatch()
+      // applies synchronously off fresh state, so N dispatches attach N DON.
+      // The armed set only ever contains active (attachable) DON, so N is
+      // always ≤ available DON. Clear the armed state first.
+      if (action.type === 'ATTACH_DON') {
+        const n = Math.max(1, armedDonIds.length);
+        disarmDon();
+        for (let i = 0; i < n; i++) dispatch(action);
+        setCardDetailOpen(false);
+        setInspectedCardId(null);
+        return;
+      }
       // DECLARE_ATTACK path clears selectedAttacker.
       if (action.type === 'DECLARE_ATTACK') setSelectedAttackerId(null);
       dispatch(action);
       setCardDetailOpen(false);
       setInspectedCardId(null);
     },
-    [dispatch, close, setCardDetailOpen, setInspectedCardId, inst, setSelectedAttackerId, disarmDon],
+    [dispatch, close, setCardDetailOpen, setInspectedCardId, inst, setSelectedAttackerId, disarmDon, armedDonIds],
   );
 
   // Backdrop click closes. The inner card panel has stopPropagation so

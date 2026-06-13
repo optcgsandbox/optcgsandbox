@@ -126,7 +126,7 @@ function FieldCharacter({
   onTap?: () => void;
 }) {
   const selectedAttackerId = useGameStore((s) => s.selectedAttackerId);
-  const armedDonId = useDonArm((s) => s.armedDonId);
+  const armedDonIds = useDonArm((s) => s.armedDonIds);
   const legalAttackTargets = useLegalAttackTargets();
   const donAttachCandidates = useDonAttachCandidates();
 
@@ -134,7 +134,7 @@ function FieldCharacter({
   const isPendingTarget =
     !isFriendly && !!selectedAttackerId && legalAttackTargets.has(inst.instanceId);
   const isDonDropTarget =
-    isFriendly && !!armedDonId && donAttachCandidates.has(inst.instanceId);
+    isFriendly && armedDonIds.length > 0 && donAttachCandidates.has(inst.instanceId);
 
   return (
     <CardArt
@@ -232,7 +232,7 @@ function LeaderRow({
 }) {
   const tapRouter = useFieldTapRouter();
   const selectedAttackerId = useGameStore((s) => s.selectedAttackerId);
-  const armedDonId = useDonArm((s) => s.armedDonId);
+  const armedDonIds = useDonArm((s) => s.armedDonIds);
   const legalAttackTargets = useLegalAttackTargets();
   const donAttachCandidates = useDonAttachCandidates();
 
@@ -241,7 +241,7 @@ function LeaderRow({
   const isPendingTarget =
     !isYou && !!selectedAttackerId && legalAttackTargets.has(leaderId);
   const isDonDropTarget =
-    isYou && !!armedDonId && donAttachCandidates.has(leaderId);
+    isYou && armedDonIds.length > 0 && donAttachCandidates.has(leaderId);
 
   return (
     <div
@@ -438,7 +438,7 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
   const setSelectedAttackerId = useGameStore((s) => s.setSelectedAttackerId);
   const selectedAttackerId = useGameStore((s) => s.selectedAttackerId);
   const disarmDon = useDonArm((s) => s.disarm);
-  const armedDonId = useDonArm((s) => s.armedDonId);
+  const armedDonIds = useDonArm((s) => s.armedDonIds);
   const opponentSeat: PlayerId = seat === 'A' ? 'B' : 'A';
 
   const you = state.players[seat];
@@ -450,13 +450,13 @@ export const PlayfieldStage = memo(function PlayfieldStage() {
   const onPlaymatTap = useCallback(() => {
     if (inspectedCardId) setInspectedCardId(null);
     if (selectedAttackerId) setSelectedAttackerId(null);
-    if (armedDonId) disarmDon();
+    if (armedDonIds.length) disarmDon();
   }, [
     inspectedCardId,
     setInspectedCardId,
     selectedAttackerId,
     setSelectedAttackerId,
-    armedDonId,
+    armedDonIds,
     disarmDon,
   ]);
 
