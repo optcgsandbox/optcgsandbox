@@ -227,6 +227,10 @@ interface CardArtProps {
   pendingTarget?: boolean;
   /** When true, pulse a brass-canary ring (DON-armed drop zone). */
   donDropTarget?: boolean;
+  /** Disable framer shared-layout (`layoutId`) + hover/tap transforms. Set for
+   *  hand cards inside dnd-kit: framer's layout projection fights dnd-kit's
+   *  reorder transform every frame → violent spazz (owner 2026-06-13). */
+  disableLayout?: boolean;
 }
 
 function describeForA11y(
@@ -678,6 +682,7 @@ export const CardArt = memo(function CardArt({
   selectedAttacker,
   pendingTarget,
   donDropTarget,
+  disableLayout = false,
 }: CardArtProps) {
   const dims = CARD_DIMS[size];
   const reduced = useReducedMotion() ?? false;
@@ -777,7 +782,7 @@ export const CardArt = memo(function CardArt({
     <div data-flip-back style={{ display: 'block', width: dims.w, height: dims.h }}>
     <motion.button
       type="button"
-      layoutId={inst?.instanceId}
+      layoutId={disableLayout ? undefined : inst?.instanceId}
       onClick={(e) => {
         // Stop bubble to PlayfieldStage root onPlaymatTap (clears armedDonId /
         // selectedAttackerId / inspectedCardId) — that handler is intended for
@@ -814,8 +819,8 @@ export const CardArt = memo(function CardArt({
        // 2026-05-30: refresh phase was perceived as slow). Settles in ~500ms
        // vs ~1100ms with the previous cardTravel preset (stiffness 260).
       transition={{ type: 'spring', stiffness: 380, damping: 28 }}
-      whileHover={interactive && !reduced ? { y: -2, transition: { duration: 0.15 } } : undefined}
-      whileTap={interactive && !reduced ? { scale: 0.97 } : undefined}
+      whileHover={interactive && !reduced && !disableLayout ? { y: -2, transition: { duration: 0.15 } } : undefined}
+      whileTap={interactive && !reduced && !disableLayout ? { scale: 0.97 } : undefined}
       animate={{
         ...attackerHover,
         // Animated rest/un-rest rotation. Framer composes this with whileHover
@@ -869,6 +874,7 @@ export const CardArt = memo(function CardArt({
         <img
           src={derivedImageUrl}
           alt=""
+          draggable={false}
           className="absolute inset-0 w-full h-full object-contain"
           style={{ filter: cardDropShadow }}
           // Sync decode for the sizes a player ENLARGES to read — modal /

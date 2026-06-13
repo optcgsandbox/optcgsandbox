@@ -453,6 +453,10 @@ interface GameStore {
   setInspectedCardId: (id: string | null) => void;
   setCardDetailOpen: (open: boolean) => void;
   setInspectGroup: (ids: ReadonlyArray<string> | null) => void;
+  /** Open the detail modal for a card in ONE atomic write (group + inspected
+   *  + open) so no intermediate `cardDetailOpen:false` can be observed
+   *  (owner 2026-06-12: hand drag-reorder). */
+  openCardDetail: (instanceId: string, group: ReadonlyArray<string>) => void;
   setSelectedAttackerId: (id: string | null) => void;
   setViewingTrashOf: (id: PlayerId | null) => void;
 }
@@ -985,6 +989,10 @@ export const useGameStore = create<GameStore>((set, get) => {
 
     setCardDetailOpen(open) {
       set({ cardDetailOpen: open });
+    },
+
+    openCardDetail(instanceId, group) {
+      set({ inspectGroup: group, inspectedCardId: instanceId, cardDetailOpen: true });
     },
 
     setInspectGroup(ids) {

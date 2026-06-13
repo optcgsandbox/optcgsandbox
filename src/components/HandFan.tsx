@@ -16,7 +16,25 @@
 // PLAY_CARD is dispatched ONLY from CardDetailModal's primary action.
 
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { LayoutGroup, motion, useReducedMotion } from 'framer-motion';
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  pointerWithin,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragStartEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  arrayMove,
+  horizontalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { useGameStore } from '../store/game';
 import { springs } from '../lib/animationTokens';
 import { CardArt, CARD_DIMS } from './CardArt';
@@ -24,7 +42,8 @@ import {
   OPP_RAIL_H_PX,
 } from './cardSizing';
 import { NavyCardBack } from './zones/NavyCardBack';
-import type { PlayerId } from '@shared/engine-v2/state/types';
+import type { Card } from '@shared/engine-v2/cards/Card';
+import type { CardInstance, PlayerId } from '@shared/engine-v2/state/types';
 
 /** Opp rail cards: small fixed backs (~60% of the old hand size). */
 const OPP_SCALE = 0.6;
@@ -39,6 +58,15 @@ const OPP_W = Math.round(CARD_DIMS.hand.w * OPP_SCALE); // 38
 const OPP_H = Math.round(CARD_DIMS.hand.h * OPP_SCALE); // 53
 const CARD_ASPECT = CARD_DIMS.hand.w / CARD_DIMS.hand.h;
 
+/** Inline @dnd-kit/modifiers `restrictToHorizontalAxis` (avoids the extra
+ *  dependency) — the hand is a single horizontal row, so the dragged card
+ *  must never move vertically (owner 2026-06-13). */
+const restrictToHorizontalAxis = ({
+  transform,
+}: {
+  transform: { x: number; y: number; scaleX: number; scaleY: number };
+}) => ({ ...transform, y: 0 });
+
 interface HandFanProps {
   /** Which seat's hand to render. Defaults to viewAs. */
   playerId?: PlayerId;
@@ -46,21 +74,6 @@ interface HandFanProps {
   interactive?: boolean;
   /** Opponent mode: small face-down rail, zero identity in the DOM. */
   hidden?: boolean;
-}
-
-/** COMPACT detection (owner 2026-06-12): narrow screens — phone browsers
- *  AND installed apps — get the PWA treatment (5-back cap + "+N" pill, no
- *  count badge, label-aligned rail). Matches the index.css 520px query. */
-function useIsCompact(): boolean {
-  const [compact, setCompact] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia('(max-width: 520px)');
-    const update = (): void => setCompact(mq.matches);
-    update();
-    mq.addEventListener('change', update);
-    return () => mq.removeEventListener('change', update);
-  }, []);
-  return compact;
 }
 
 /** PLAYER card height = the strip container's REAL rendered height minus
@@ -111,38 +124,187 @@ function usePlayerCardH(ref: React.RefObject<HTMLDivElement | null>, active: boo
   return h;
 }
 
+/** Session-local hand order (owner 2026-06-12: drag-to-reorder). The engine
+ *  hand array stays the source of truth (draw order); this is a PURELY VISUAL
+ *  overlay. Reconciles every time the store hand changes: keeps the player's
+ *  manual order for cards still in hand, appends freshly-drawn cards at the
+ *  end (in store order), and drops cards that left the hand (played/discarded).
+ *  No engine/rules effect. */
+function useHandOrder(handIds: ReadonlyArray<string>): [string[], (next: string[]) => void] {
+  const [order, setOrder] = useState<string[]>(() => [...handIds]);
+  // Reconcile DURING RENDER (the React-blessed "adjust state while rendering"
+  // pattern) — not in an effect, which triggers cascading-render setState.
+  // Keyed on the store hand so this only runs when the hand actually changes.
+  const key = handIds.join(',');
+  const [prevKey, setPrevKey] = useState(key);
+  if (key !== prevKey) {
+    setPrevKey(key);
+    const handSet = new Set(handIds);
+    const prevSet = new Set(order);
+    const kept = order.filter((id) => handSet.has(id)); // manual order, minus removed
+    const added = handIds.filter((id) => !prevSet.has(id)); // new draws appended
+    const reconciled = [...kept, ...added];
+    setOrder(reconciled);
+    return [reconciled, setOrder]; // return the fresh order this render — no stale frame
+  }
+  return [order, setOrder];
+}
+
+/** The visual card body (scaled CardArt). Shared by the sortable item and the
+ *  DragOverlay so the lifted card looks identical to its slot. */
+function HandCardBody({
+  inst,
+  card,
+  cardW,
+  onTap,
+}: {
+  inst: CardInstance;
+  card: Card | undefined;
+  cardW: number;
+  onTap?: () => void;
+}) {
+  return (
+    <div
+      style={{
+        transform: `scale(${cardW / CARD_DIMS.hand.w})`,
+        transformOrigin: 'top left',
+        width: CARD_DIMS.hand.w,
+        height: CARD_DIMS.hand.h,
+      }}
+    >
+      {/* disableLayout: hand cards must NOT use framer's shared-layout
+          (layoutId) — it fights dnd-kit's reorder transform → spazz
+          (owner 2026-06-13). */}
+      <CardArt inst={inst} card={card} size="hand" onTap={onTap} disableLayout />
+    </div>
+  );
+}
+
+interface SortableHandCardProps {
+  id: string;
+  inst: CardInstance;
+  card: Card | undefined;
+  cardW: number;
+  cardH: number;
+  someoneElseInspected: boolean;
+  reduced: boolean;
+  interactive: boolean;
+  /** True while ANY card in the hand is being dragged — suspends this card's
+   *  scroll-snap so it can't fight the reorder (owner 2026-06-13). */
+  dragging: boolean;
+  onOpen: (id: string) => void;
+}
+
+/** One sortable hand card (owner 2026-06-12, dnd-kit). The drag only ARMS
+ *  after the pointer moves 8px (DndContext sensor) — so a tap (<8px) stays a
+ *  plain click → CardArt's button opens the detail; a drag never fires a
+ *  click, so the modal can't open mid/after drag. While this card is the one
+ *  being dragged it's hidden (opacity 0); the DragOverlay shows the moving
+ *  copy that follows the pointer (smooth, scroll-safe). */
+const SortableHandCard = memo(function SortableHandCard({
+  id,
+  inst,
+  card,
+  cardW,
+  cardH,
+  someoneElseInspected,
+  reduced,
+  interactive,
+  dragging,
+  onOpen,
+}: SortableHandCardProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id });
+  return (
+    <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      className="relative flex-none cursor-grab select-none active:cursor-grabbing"
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        width: cardW,
+        height: cardH,
+        // Snap suspended during any drag (owner 2026-06-13) so it can't fight
+        // the reorder; restores when the drag ends.
+        scrollSnapAlign: dragging ? undefined : 'center',
+        // dnd-kit: claim touch drags for reorder (native scroll → arrows).
+        // The 8px activation distance keeps taps as clicks.
+        touchAction: 'none',
+        opacity: isDragging ? 0 : someoneElseInspected ? 0.55 : 1,
+        filter: someoneElseInspected && !reduced ? 'saturate(0.7)' : undefined,
+      }}
+    >
+      <HandCardBody
+        inst={inst}
+        card={card}
+        cardW={cardW}
+        onTap={interactive ? () => onOpen(id) : undefined}
+      />
+    </div>
+  );
+});
+
 export const HandFan = memo(function HandFan({ playerId, interactive = true, hidden = false }: HandFanProps) {
   const seat = useGameStore((s) => playerId ?? s.viewAs);
   const handIds = useGameStore((s) => s.state.players[seat].hand);
   const instances = useGameStore((s) => s.state.instances);
   const library = useGameStore((s) => s.state.cardLibrary);
   const inspectedCardId = useGameStore((s) => s.inspectedCardId);
-  const setInspectedCardId = useGameStore((s) => s.setInspectedCardId);
-  const setCardDetailOpen = useGameStore((s) => s.setCardDetailOpen);
-  const setInspectGroup = useGameStore((s) => s.setInspectGroup);
+  const openCardDetail = useGameStore((s) => s.openCardDetail);
   const reduced = useReducedMotion() ?? false;
   const spring = springs(reduced);
+
+  // Drag-to-reorder (owner 2026-06-12) — YOUR hand only. Visual order overlay
+  // on top of the engine hand; see useHandOrder. The carousel group + render
+  // use this order so the detail browse order matches what's on screen.
+  const [orderedIds, setOrderedIds] = useHandOrder(handIds);
 
   const onTap = useCallback(
     (instanceId: string) => {
       if (!interactive || hidden) return;
-      // Single tap opens the detail modal (owner 2026-05-29); the whole
-      // hand is the carousel browse group (owner 2026-06-12).
-      setInspectGroup(handIds);
-      setInspectedCardId(instanceId);
-      setCardDetailOpen(true);
+      // Single tap opens the detail modal (owner 2026-05-29) in ONE atomic
+      // store write so the playmat-clear click (PlayfieldStage onPlaymatTap →
+      // setInspectedCardId(null) → cardDetailOpen:false) can't race it shut.
+      // dnd-kit's 8px activation guarantees a drag never produces this click,
+      // so the modal can't open mid-drag. Group = visual order.
+      openCardDetail(instanceId, orderedIds);
     },
-    [interactive, hidden, setCardDetailOpen, setInspectedCardId, setInspectGroup, handIds],
+    [interactive, hidden, openCardDetail, orderedIds],
+  );
+
+  // dnd-kit drag-to-reorder (owner 2026-06-12). PointerSensor with an 8px
+  // activation distance = the clean tap-vs-drag separation; a tap stays a
+  // click, a drag never clicks. arrayMove on drop.
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+  );
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const onDragStart = useCallback((e: DragStartEvent) => {
+    setActiveId(String(e.active.id));
+  }, []);
+  const onDragEnd = useCallback(
+    (e: DragEndEvent) => {
+      setActiveId(null);
+      const { active, over } = e;
+      if (!over || active.id === over.id) return;
+      const from = orderedIds.indexOf(String(active.id));
+      const to = orderedIds.indexOf(String(over.id));
+      if (from === -1 || to === -1) return;
+      setOrderedIds(arrayMove(orderedIds, from, to));
+    },
+    [orderedIds, setOrderedIds],
   );
 
   const n = handIds.length;
   // Opp rail: fixed small backs — its slot under the header is reserved by
   // the frame constants, so mat overlap is impossible by construction.
-  // COMPACT (narrow screens, browser or PWA): cap at 5 visible backs +
-  // a "+N" pill. Wide windows show every back. Player strip: lane-fill
-  // sizing measured from the container's real box.
-  const compact = useIsCompact();
-  const visibleIds = hidden && compact ? handIds.slice(0, 5) : handIds;
+  // Unified across browser / PWA / desktop (owner 2026-06-12): cap opp
+  // hand at 5 visible backs + a "+N" pill — the pill is the sole count
+  // signal. Player strip: lane-fill sizing measured from the container's
+  // real box.
+  const visibleIds = hidden ? handIds.slice(0, 5) : handIds;
   const overflow = n - visibleIds.length;
   const stripRef = useRef<HTMLDivElement | null>(null);
   const playerH = usePlayerCardH(stripRef, !hidden);
@@ -231,97 +393,118 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
       <div
         ref={hidden ? undefined : scrollerRef}
         className="pointer-events-auto flex max-w-full items-center overflow-x-auto overflow-y-hidden"
-        style={{ scrollSnapType: 'x proximity', scrollbarWidth: 'none' }}
+        // Scroll-snap is SUSPENDED during a drag (owner 2026-06-13): snap was
+        // fighting the reorder → jitter. It restores on drop. (layoutScroll
+        // removed — no framer layout in the hand anymore.)
+        style={{ scrollSnapType: activeId ? 'none' : 'x proximity', scrollbarWidth: 'none' }}
         data-hand-strip-scroller
       >
-        <LayoutGroup>
-          <div className="mx-auto flex items-center" style={{ gap: GAP_PX, padding: '0 8px' }}>
-            {visibleIds.map((instanceId) => {
-              const inst = instances[instanceId];
-              if (!inst) return null;
-              const card = library[inst.cardId];
-              const isInspected = inspectedCardId === instanceId;
-              const someoneElseInspected = inspectedCardId !== null && !isInspected;
-
-              if (hidden) {
-                return (
-                  <motion.div
-                    key={instanceId}
-                    initial={{ opacity: 0, y: -24, scale: 0.8 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -24, transition: { duration: 0.2 } }}
-                    transition={spring.handFan}
-                    className="flex-none"
-                    style={{ width: cardW, height: cardH, scrollSnapAlign: 'center' }}
-                  >
-                    {/* Navy deck back, NO inst/card props → zero identity
-                        (ids / names / aria) reaches the DOM. Upright — the
-                        ONE PIECE logo reads right-side up (owner 2026-06-12). */}
-                    <div className="relative h-full w-full">
-                      <NavyCardBack radius={3} />
-                    </div>
-                  </motion.div>
-                );
-              }
-
-              return (
+        {hidden ? (
+          // OPPONENT rail — fixed navy backs (+ "+N" pill on compact). No
+          // reordering: identity-free, not interactive.
+          <LayoutGroup>
+            <div className="mx-auto flex items-center" style={{ gap: GAP_PX, padding: '0 8px' }}>
+              {visibleIds.map((instanceId) => (
                 <motion.div
                   key={instanceId}
-                  layout
-                  // Draw animation: card arrives from the deck's direction
-                  // (upper-right) — same feel as the fan era, strip-tuned.
-                  initial={{ opacity: 0, x: 120, y: -260, scale: 0.7 }}
-                  animate={{
-                    opacity: someoneElseInspected ? 0.55 : 1,
-                    x: 0,
-                    y: isInspected ? -10 : 0,
-                    scale: 1,
-                  }}
-                  exit={{ opacity: 0, y: 60, transition: { duration: 0.2 } }}
+                  initial={{ opacity: 0, y: -24, scale: 0.8 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -24, transition: { duration: 0.2 } }}
                   transition={spring.handFan}
                   className="flex-none"
-                  style={{
-                    width: cardW,
-                    height: cardH,
-                    scrollSnapAlign: 'center',
-                    filter: someoneElseInspected && !reduced ? 'saturate(0.7)' : undefined,
-                  }}
+                  style={{ width: cardW, height: cardH, scrollSnapAlign: 'center' }}
                 >
-                  {/* CardArt renders at the F-8C 'hand' standard; the strip
-                      scales the footprint uniformly (PLAYER_SCALE × lane). */}
-                  <div
-                    style={{
-                      transform: `scale(${cardW / CARD_DIMS.hand.w})`,
-                      transformOrigin: 'top left',
-                      width: CARD_DIMS.hand.w,
-                      height: CARD_DIMS.hand.h,
-                    }}
-                  >
-                    <CardArt
-                      inst={inst}
-                      card={card}
-                      size="hand"
-                      onTap={interactive ? () => onTap(instanceId) : undefined}
-                    />
+                  {/* Navy deck back, NO inst/card props → zero identity
+                      (ids / names / aria) reaches the DOM. Upright — the
+                      ONE PIECE logo reads right-side up (owner 2026-06-12). */}
+                  <div className="relative h-full w-full">
+                    <NavyCardBack radius={3} />
                   </div>
                 </motion.div>
-              );
-            })}
-
-            {/* PWA overflow pill: backs beyond the 5-cap collapse into
-                "+N" (owner 2026-06-12). Browsers never cap → never shows. */}
-            {hidden && overflow > 0 && (
-              <span
-                data-opp-overflow-pill
-                className="flex-none self-center rounded-full bg-ink-black/75 px-2 py-1
-                           font-display text-[0.6875rem] leading-none text-paper-cream tabular"
-                aria-hidden="true"
-              >
-                +{overflow}
-              </span>
+              ))}
+              {overflow > 0 && (
+                <span
+                  data-opp-overflow-pill
+                  className="flex-none self-center rounded-full bg-ink-black/75 px-2 py-1
+                             font-display text-[0.6875rem] leading-none text-paper-cream tabular"
+                  aria-hidden="true"
+                >
+                  +{overflow}
+                </span>
+              )}
+            </div>
+          </LayoutGroup>
+        ) : (
+          // YOUR hand — drag-to-reorder via dnd-kit (owner 2026-06-12). The
+          // dragged card lifts into a DragOverlay (follows the pointer,
+          // doesn't fight the scroll → no glitch); the 8px activation distance
+          // separates tap (click → open) from drag (reorder, never clicks).
+          <DndContext
+            sensors={sensors}
+            // pointerWithin: resolve the drop target by the POINTER position,
+            // not a computed dragged-rect — closestCenter mis-measured on the
+            // overflowing/scaled strip and sent every card to the end (owner
+            // 2026-06-13).
+            collisionDetection={pointerWithin}
+            // Auto-scroll the strip when a card is dragged to its left/right
+            // edge (owner 2026-06-13). Horizontal-only (y:0). Safe now that
+            // CSS scroll-snap is SUSPENDED during a drag (the snap↔autoscroll
+            // fight was the earlier violent loop).
+            autoScroll={{ threshold: { x: 0.2, y: 0 } }}
+            modifiers={[restrictToHorizontalAxis]}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            onDragCancel={() => setActiveId(null)}
+          >
+            <SortableContext items={orderedIds} strategy={horizontalListSortingStrategy}>
+              <div className="mx-auto flex items-center" style={{ gap: GAP_PX, padding: '0 8px' }}>
+                {orderedIds.map((instanceId) => {
+                  const inst = instances[instanceId];
+                  if (!inst) return null;
+                  const card = library[inst.cardId];
+                  const someoneElseInspected =
+                    inspectedCardId !== null && inspectedCardId !== instanceId;
+                  return (
+                    <SortableHandCard
+                      key={instanceId}
+                      id={instanceId}
+                      inst={inst}
+                      card={card}
+                      cardW={cardW}
+                      cardH={cardH}
+                      someoneElseInspected={someoneElseInspected}
+                      reduced={reduced}
+                      interactive={interactive}
+                      dragging={activeId !== null}
+                      onOpen={onTap}
+                    />
+                  );
+                })}
+              </div>
+            </SortableContext>
+            {/* The lifted card — follows the pointer. PORTALED to <body> so
+                it escapes the board's perspective container + the strip's
+                overflow:hidden, which were clipping it out of view during the
+                drag (owner 2026-06-13: "card disappears during drag"). */}
+            {createPortal(
+              <DragOverlay>
+                {activeId && instances[activeId] ? (
+                  <div
+                    className="relative"
+                    style={{ width: cardW, height: cardH, cursor: 'grabbing' }}
+                  >
+                    <HandCardBody
+                      inst={instances[activeId]}
+                      card={library[instances[activeId].cardId]}
+                      cardW={cardW}
+                    />
+                  </div>
+                ) : null}
+              </DragOverlay>,
+              document.body,
             )}
-          </div>
-        </LayoutGroup>
+          </DndContext>
+        )}
       </div>
 
       {/* Hand-strip overflow arrows (owner 2026-06-12): page the strip
@@ -356,22 +539,6 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
         </button>
       )}
 
-      {/* Opp hand COUNT badge — WIDE windows only. On narrow screens
-          (browser or PWA) the "+N" overflow pill is the count signal AND
-          the badge sat behind the hamburger (owner 2026-06-12). */}
-      {hidden && n > 0 && !compact && (
-        <span
-          data-opp-hand-badge
-          className="pointer-events-none absolute rounded-full bg-ink-black/75 px-1.5 py-0.5
-                     font-display text-[0.625rem] leading-none text-paper-cream tabular"
-          // Lower corner of the rail: the rail now rides the header line on
-          // desktop too, so the old top corner sat behind the hamburger.
-          style={{ right: 10, bottom: 2 }}
-          aria-hidden="true"
-        >
-          {n}
-        </span>
-      )}
     </div>
   );
 });

@@ -117,12 +117,34 @@ html, body {
   overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  /* No long-press callout menu, no text selection/copy, no highlight ANYWHERE
+     in the app (owner 2026-06-12). It's a game UI, not a document — long-press
+     "copy / look up / share" and drag-to-highlight have no place. Inputs
+     re-enable selection below so typing/selecting still works. */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
   font-family: var(--font-body);
   color: var(--color-text-1);
 }
 
 body {
   background: var(--backdrop-gradient);
+}
+
+/* Re-enable selection only where the user must type/select (owner 2026-06-12). */
+input,
+textarea,
+[contenteditable='true'] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Cards/images never start a native drag — it would preempt the hand
+   drag-to-reorder and pop a ghost image on long-press (owner 2026-06-12). */
+img {
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 #root {
