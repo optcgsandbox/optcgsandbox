@@ -639,19 +639,29 @@ function PowerModBadge({ amount }: { amount: number }) {
   );
 }
 
-/** Attached DON badge top-right (brass "+N" chip). */
+/** Attached DON badge top-right. Owner 2026-06-12: render as a DON COIN
+ *  count ("N⊙"), NOT "+N" — the signed "+N" read like a tiny power buff and
+ *  collided with the ±#### effect-power badges. The ⊙ is the same DON/cost
+ *  glyph used app-wide, so this clearly says "N DON attached" (resource),
+ *  distinct from the additive/subtractive effect badges. */
 function DonBadge({ count }: { count: number }) {
   return (
     <motion.div
+      data-testid="don-badge"
+      data-don-count={count}
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
       transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-      className="absolute -top-1 -right-1 bg-brass-canary text-ink-black
-                 text-[0.6rem] font-body font-bold rounded-full
-                 w-4 h-4 flex items-center justify-center tabular z-10"
-      aria-hidden="true"
+      className="absolute -top-1 -right-1 text-sun-brass
+                 text-[0.5625rem] font-display font-bold rounded-full
+                 min-w-4 h-4 px-0.5 flex items-center justify-center tabular z-10
+                 ring-1 ring-sun-brass/60"
+      // DON card-back compass teal, sampled from public/backs/don.png
+      // (owner 2026-06-12). The theme's hull-teal (#0F4549) was too dark.
+      style={{ backgroundColor: '#208078' }}
+      aria-label={`${count} DON attached`}
     >
-      +{count}
+      {count}⊙
     </motion.div>
   );
 }
@@ -713,7 +723,15 @@ export const CardArt = memo(function CardArt({
     const m1 = freshInst.powerModifierThisBattle ?? 0;
     const m2 = freshInst.powerModifierOneShot ?? 0;
     const m3 = freshInst.powerModifierContinuous ?? 0;
-    return m1 + m2 + m3;
+    // DON adds +1000 each (your turn only — power.ts:43-50). Owner
+    // 2026-06-12: show the DON boost on the card like effect boosts, ADDITIVE
+    // — 1 DON = +1000, 1 DON + a 2000 effect = +3000. The DON coin badge
+    // (count) stays; this delta badge shows the power it grants.
+    const donBoost =
+      liveState.activePlayer === freshInst.controller
+        ? (freshInst.attachedDon.length + freshInst.attachedDonRested.length) * 1000
+        : 0;
+    return m1 + m2 + m3 + donBoost;
   }, [inst, liveState]);
   const showPowerMod = (size === 'field' || size === 'leader') && powerModNet !== 0;
 

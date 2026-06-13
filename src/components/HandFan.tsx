@@ -74,7 +74,8 @@ function usePlayerCardH(ref: React.RefObject<HTMLDivElement | null>, active: boo
     if (!active) return undefined;
     const el = ref.current;
     if (!el) return undefined;
-    const update = (): void => {
+    let raf = 0;
+    const measure = (): void => {
       // Inside the emergency shrink-fit shell (windows <710px tall) rects
       // come back pre-scaled; divide by the scale so sizing stays in
       // design px. s=1 everywhere else — identical numbers.
@@ -83,10 +84,29 @@ function usePlayerCardH(ref: React.RefObject<HTMLDivElement | null>, active: boo
       const lane = el.getBoundingClientRect().height / s - 2 * MARGIN_PX;
       setH(Math.max(CARD_DIMS.hand.h, Math.round(lane)));
     };
+    // Re-measure on the NEXT frame too — a resize/orientation change (e.g.
+    // resizing during mulligan) leaves the dvh-driven strip lane settling a
+    // frame later; a single synchronous read captured the stale (too-tall)
+    // height and the dealt cards overflowed the strip + got clipped by
+    // overflow-y-hidden (owner 2026-06-12: "where the fuck are my cards").
+    const update = (): void => {
+      measure();
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(measure);
+    };
     update();
     const ro = new ResizeObserver(update);
     ro.observe(el);
-    return () => ro.disconnect();
+    // ResizeObserver alone proved unreliable across dvh recalcs — back it
+    // with an explicit window-resize listener so the lane always re-measures.
+    window.addEventListener('resize', update);
+    window.addEventListener('orientationchange', update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', update);
+      window.removeEventListener('orientationchange', update);
+      cancelAnimationFrame(raf);
+    };
   }, [ref, active]);
   return h;
 }

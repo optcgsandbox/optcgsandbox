@@ -534,10 +534,25 @@ export const CardDetailModal = memo(function CardDetailModal() {
                 (liveInst.powerModifierThisBattle ?? 0) +
                 (liveInst.powerModifierOneShot ?? 0) +
                 (liveInst.powerModifierContinuous ?? 0);
-              if (mods === 0) return null;
-              const base = typeof (card as { power?: number | null }).power === 'number'
-                ? ((card as { power: number }).power)
-                : 0;
+              // DON adds +1000 each, but ONLY while the controller is the
+              // active player (power.ts:43-50). Surface it so the breakdown
+              // reconciles to the power stamp (owner 2026-06-12).
+              const donCount =
+                activePlayer === liveInst.controller
+                  ? liveInst.attachedDon.length + liveInst.attachedDonRested.length
+                  : 0;
+              const donBoost = donCount * 1000;
+              if (mods === 0 && donBoost === 0) return null;
+              // Override-aware base — matches effectivePower exactly so
+              // base + DON + effects === the card's power stamp.
+              const printedPower =
+                typeof (card as { power?: number | null }).power === 'number'
+                  ? (card as { power: number }).power
+                  : 0;
+              const base =
+                liveInst.basePowerOverrideOneShot ??
+                liveInst.basePowerOverrideContinuous ??
+                printedPower;
               // Attribute sources: most recent POWER_MODIFIED events for this
               // instance whose amounts still sum toward the live total.
               const sources: Array<{ name: string; amount: number; duration: string }> = [];
@@ -560,15 +575,29 @@ export const CardDetailModal = memo(function CardDetailModal() {
                   data-testid="detail-power-breakdown"
                   className="mx-auto mt-2 max-w-[320px] rounded-lg bg-ink-black/10 px-3 py-2 text-center"
                 >
-                  <span className="font-display text-[0.9375rem] leading-tight text-ink-black tabular">
-                    {base} {mods > 0 ? '+' : ''}{mods} = {base + mods}
+                  <span className="font-display text-[1.0625rem] leading-tight text-ink-black tabular">
+                    {(() => {
+                      const delta = donBoost + mods;
+                      return `${base} ${delta > 0 ? '+' : ''}${delta} = ${base + delta}`;
+                    })()}
                   </span>
-                  {sources.length > 0 && (
-                    <div className="mt-0.5 flex flex-col items-center">
+                  {(donBoost !== 0 || sources.length > 0) && (
+                    <div className="mt-1 flex flex-col items-center gap-0.5">
+                      {/* DON contribution — +1000 per attached DON (owner
+                          2026-06-12). Listed alongside the effect ±. Darker +
+                          larger than before for legibility (owner feedback). */}
+                      {donBoost !== 0 && (
+                        <span
+                          data-testid="detail-don-line"
+                          className="text-[0.8125rem] font-body font-semibold text-ink-black/85 tabular"
+                        >
+                          +{donBoost} from {donCount} DON
+                        </span>
+                      )}
                       {sources.map((src, idx) => (
                         <span
                           key={`${src.name}-${idx}`}
-                          className="text-[0.6875rem] font-body text-ink-iron tabular"
+                          className="text-[0.8125rem] font-body font-semibold text-ink-black/85 tabular"
                         >
                           {src.amount > 0 ? '+' : ''}{src.amount} from {src.name}
                           {src.duration === 'this_battle' ? ' (this battle)' : ' (this turn)'}

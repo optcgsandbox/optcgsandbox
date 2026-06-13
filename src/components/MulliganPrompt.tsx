@@ -106,11 +106,37 @@ export const MulliganPrompt = memo(function MulliganPrompt() {
     dispatch({ type: 'KEEP_HAND' });
   }, [dispatch]);
 
-  // Overlay-fit (owner 2026-06-12): all 5 cards must stay visible at once
-  // (the mulligan decision needs the whole hand) — on narrow phones the
-  // row scales down instead of clipping. No paging here by design.
+  // Overlay-fit (owner 2026-06-12): all 5 cards stay visible at once (the
+  // mulligan decision needs the whole hand) in a 3+2 grid, fit-scaled to
+  // fill the screen. No paging, no vertical scroll.
   const rootRef = useRef<HTMLDivElement | null>(null);
   const rootBox = useOverlayBox(rootRef);
+
+  const renderMulliganCard = (id: string) => {
+    const inst = instances[id];
+    if (!inst) return null;
+    const card = library[inst.cardId];
+    if (!card) return null;
+    return (
+      <div
+        key={id}
+        role="button"
+        tabIndex={0}
+        aria-label={`View ${card.name} enlarged`}
+        data-mulligan-card={id}
+        onClick={() => setInspectId(id)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setInspectId(id);
+          }
+        }}
+        className="cursor-pointer rounded-[6px] focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
+      >
+        <CardArt inst={inst} card={card} size="modal" />
+      </div>
+    );
+  };
 
   return (
     <AnimatePresence>
@@ -150,46 +176,34 @@ export const MulliganPrompt = memo(function MulliganPrompt() {
             Return all 5 to deck, shuffle, and redraw? You can only do this once.
           </motion.p>
 
-          {/* Hand row — owner sees their opening 5 face-up. */}
+          {/* Hand grid — owner sees their opening 5 face-up, BIG (owner
+              2026-06-12): 3 on top, 2 centered below, at modal-size cards
+              fit-scaled to fill the screen between the text and the buttons.
+              FitScale shrinks on short windows so it never vertical-scrolls. */}
           <motion.div
             initial={reduced ? false : { y: 8, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ ...spring.cardTravel, delay: reduced ? 0 : 0.05 }}
-            className="mb-4"
+            className="mb-4 flex w-full items-center justify-center"
             aria-label="Your opening hand"
           >
             <FitScale
-              maxW={rootBox.w > 0 ? rootBox.w - 32 : 9999}
-              maxH={rootBox.h > 0 ? rootBox.h : 9999}
+              maxW={rootBox.w > 0 ? rootBox.w - 24 : 9999}
+              // Reserve room for the heading + body + buttons (≈210px) so the
+              // grid never grows under the action row.
+              maxH={rootBox.h > 0 ? rootBox.h - 210 : 9999}
               contentWidth="max-content"
             >
-            <div className="flex items-center justify-center gap-2">
-            {handIds.map((id) => {
-              const inst = instances[id];
-              if (!inst) return null;
-              const card = library[inst.cardId];
-              if (!card) return null;
-              return (
-                <div
-                  key={id}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`View ${card.name} enlarged`}
-                  data-mulligan-card={id}
-                  onClick={() => setInspectId(id)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      setInspectId(id);
-                    }
-                  }}
-                  className="cursor-pointer rounded-[3px] focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
-                >
-                  <CardArt inst={inst} card={card} size="hand" />
+              <div className="flex flex-col items-center gap-3">
+                <div className="flex items-center justify-center gap-3">
+                  {handIds.slice(0, 3).map(renderMulliganCard)}
                 </div>
-              );
-            })}
-            </div>
+                {handIds.length > 3 && (
+                  <div className="flex items-center justify-center gap-3">
+                    {handIds.slice(3).map(renderMulliganCard)}
+                  </div>
+                )}
+              </div>
             </FitScale>
           </motion.div>
 
