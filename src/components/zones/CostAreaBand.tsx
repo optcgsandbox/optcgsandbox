@@ -28,7 +28,7 @@ interface CostAreaBandProps {
 // 60px-tall COST band so the cards read clearly.
 const DON_CARD_W = 38;
 const DON_CARD_H = 52;
-const DON_STRIDE = 12; // tight overlap, life-card style
+const DON_STRIDE = 16; // overlap with a tad more gap so each coin is easier to tap
 const REST_GAP = 16;   // gap between active group and rested group
 
 function DonCardArt({ active }: { active: boolean }) {
