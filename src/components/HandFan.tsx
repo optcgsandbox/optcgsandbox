@@ -127,6 +127,40 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
   const stripRef = useRef<HTMLDivElement | null>(null);
   const playerH = usePlayerCardH(stripRef, !hidden);
   const cardH = hidden ? OPP_H : playerH;
+
+  // Hand-strip overflow arrows (owner 2026-06-12): when the strip scrolls,
+  // ‹ › overlays page card-by-card; each arrow shows only while more
+  // cards exist in that direction (mirrors the inspect-carousel arrows).
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const [canScroll, setCanScroll] = useState({ left: false, right: false });
+  useEffect(() => {
+    if (hidden) return undefined;
+    const el = scrollerRef.current;
+    if (!el) return undefined;
+    const update = (): void => {
+      const left = el.scrollLeft > 2;
+      const right = el.scrollLeft + el.clientWidth < el.scrollWidth - 2;
+      // Only re-render when an arrow actually flips — a per-frame setState
+      // here re-rendered the strip DURING native scrolling and made the
+      // framer layout animations fight it (cards jumped mid-scroll).
+      setCanScroll((prev) => (prev.left === left && prev.right === right ? prev : { left, right }));
+    };
+    update();
+    el.addEventListener('scroll', update, { passive: true });
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener('scroll', update);
+      ro.disconnect();
+    };
+  }, [hidden, n]);
+  const pageBy = useCallback(
+    (dir: 1 | -1) => {
+      const step = Math.round(playerH * CARD_ASPECT) + GAP_PX;
+      scrollerRef.current?.scrollBy({ left: dir * step, behavior: 'smooth' });
+    },
+    [playerH],
+  );
   const cardW = hidden ? OPP_W : Math.round(playerH * CARD_ASPECT);
 
   return (
@@ -175,6 +209,7 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
           internal snap-scroll when wider than the shell — the PAGE never
           scrolls. No wrapping, no second row. */}
       <div
+        ref={hidden ? undefined : scrollerRef}
         className="pointer-events-auto flex max-w-full items-center overflow-x-auto overflow-y-hidden"
         style={{ scrollSnapType: 'x proximity', scrollbarWidth: 'none' }}
         data-hand-strip-scroller
@@ -267,6 +302,38 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
           </div>
         </LayoutGroup>
       </div>
+
+      {/* Hand-strip overflow arrows (owner 2026-06-12): page the strip
+          card-by-card; each side renders only while more cards exist in
+          that direction. Same visual language as the inspect carousel. */}
+      {!hidden && canScroll.left && (
+        <button
+          type="button"
+          aria-label="Scroll hand left"
+          data-hand-strip-prev
+          onClick={() => pageBy(-1)}
+          className="pointer-events-auto absolute left-1 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2
+                     items-center justify-center rounded-full bg-ink-black/70 text-[1.1rem]
+                     leading-none text-paper-cream
+                     focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
+        >
+          ‹
+        </button>
+      )}
+      {!hidden && canScroll.right && (
+        <button
+          type="button"
+          aria-label="Scroll hand right"
+          data-hand-strip-next
+          onClick={() => pageBy(1)}
+          className="pointer-events-auto absolute right-1 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2
+                     items-center justify-center rounded-full bg-ink-black/70 text-[1.1rem]
+                     leading-none text-paper-cream
+                     focus-visible:ring-2 focus-visible:ring-sun-brass focus-visible:outline-none"
+        >
+          ›
+        </button>
+      )}
 
       {/* Opp hand COUNT badge — WIDE windows only. On narrow screens
           (browser or PWA) the "+N" overflow pill is the count signal AND
