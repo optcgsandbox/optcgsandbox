@@ -136,6 +136,18 @@ body {
 :root {
   --frame-rail-top: 38px;
   --frame-mat-top: 99px;
+  /* Zone rows (UX-architect verdict 2026-06-12): fluid dvh on tall
+     viewports — identical to the long-standing behavior — but clamped to
+     the rows' CARD-CONTENT minimums so zone boxes can never compress
+     below the cards inside them (the phone-browser overflow bug).
+     Minimums measured from code: 72px slot + 8 pad + 10 label = 90;
+     leader 72 + 4 = 76; cost/don band = 60. Clamps engage only below
+     ~750px-tall viewports — desktops and phone PWAs are untouched. */
+  --mat-row-char: max(12dvh, 90px);
+  --mat-row-leader: max(11dvh, 76px);
+  --mat-row-far: max(8dvh, 60px);
+  --mat-half-h: calc(var(--mat-row-char) + var(--mat-row-leader) + var(--mat-row-far) + 2 * var(--playmat-band-gap, 6px));
+  --mat-block-h: calc(2 * var(--mat-half-h) + 6px);
 }
 @media (max-width: 520px) {
   :root {

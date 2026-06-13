@@ -21,8 +21,6 @@ import { useGameStore } from '../store/game';
 import { springs } from '../lib/animationTokens';
 import { CardArt, CARD_DIMS } from './CardArt';
 import {
-  MAT_BLOCK_DVH,
-  MAT_BLOCK_EXTRA_PX,
   OPP_RAIL_H_PX,
 } from './cardSizing';
 import { NavyCardBack } from './zones/NavyCardBack';
@@ -36,9 +34,6 @@ const GAP_PX = 6;
  *  the card bottoms to the screen bottom. The player cards auto-size to
  *  fill everything between (bigger screens → bigger cards). */
 const MARGIN_PX = 12;
-/** The mats' lowest zone edges reach 24–29px past the block boundary
- *  (measured at 768/844/932/1080 heights) — 30 covers the envelope. */
-const ZONE_EDGE_PX = 30;
 
 const OPP_W = Math.round(CARD_DIMS.hand.w * OPP_SCALE); // 38
 const OPP_H = Math.round(CARD_DIMS.hand.h * OPP_SCALE); // 53
@@ -80,7 +75,12 @@ function usePlayerCardH(ref: React.RefObject<HTMLDivElement | null>, active: boo
     const el = ref.current;
     if (!el) return undefined;
     const update = (): void => {
-      const lane = el.getBoundingClientRect().height - 2 * MARGIN_PX;
+      // Inside the emergency shrink-fit shell (windows <710px tall) rects
+      // come back pre-scaled; divide by the scale so sizing stays in
+      // design px. s=1 everywhere else — identical numbers.
+      const shell = el.closest('[data-shrink-scale]');
+      const s = Number(shell?.getAttribute('data-shrink-scale') ?? '1') || 1;
+      const lane = el.getBoundingClientRect().height / s - 2 * MARGIN_PX;
       setH(Math.max(CARD_DIMS.hand.h, Math.round(lane)));
     };
     update();
@@ -155,10 +155,14 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
             }
           : {
               // The strip container owns the ENTIRE lane from the mat
-              // block's lowest zone line to the home-bar inset — cards
-              // center inside with MARGIN_PX above and below, so clipping
-              // is impossible. Top mirrors the mat's frame variable.
-              top: `calc(var(--frame-mat-top) + ${MAT_BLOCK_EXTRA_PX + ZONE_EDGE_PX}px + ${MAT_BLOCK_DVH}dvh)`,
+              // block's bottom to the home-bar inset — cards center inside
+              // with MARGIN_PX above and below, so clipping is impossible.
+              // Anchored to the SAME --mat-block-h the rows derive from
+              // (UX-architect 2026-06-12) so the strip can never drift
+              // from the mat when the row clamps engage. Algebraically
+              // identical to the previous formula when no clamp engages:
+              // frame + (62dvh + 24px gaps + 6px contact) + 6px.
+              top: 'calc(var(--frame-mat-top) + var(--mat-block-h) + 6px)',
               bottom: 'env(safe-area-inset-bottom, 0px)',
             }
       }

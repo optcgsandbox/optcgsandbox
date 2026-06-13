@@ -316,11 +316,12 @@ function FarRow({ playerId, isYou }: { playerId: PlayerId; isYou: boolean }) {
   );
 }
 
-// Each player's half consumes 31dvh: 12dvh CHAR + 11dvh LEADER + 8dvh FAR.
-// Defined here so LeftBay below can share the same grid template.
-// (ORIGINAL geometry restored per owner 2026-06-12 — the fixed-canvas px
-// experiment made the board read narrower/slimmer than the deployed build.)
-const HALF_TEMPLATE_ROWS = '12dvh 11dvh 8dvh';
+// Each player's half: CHAR + LEADER + FAR rows. Values are the index.css
+// vars — fluid dvh (12/11/8, the long-standing behavior) clamped to the
+// rows' card-content minimums (90/76/60px) so zone boxes can never
+// compress below the cards inside them (UX-architect verdict 2026-06-12;
+// clamps engage only below ~750px-tall viewports).
+const HALF_TEMPLATE_ROWS = 'var(--mat-row-char) var(--mat-row-leader) var(--mat-row-far)';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // LIFE column + DON DECK bay — left edge of each half.

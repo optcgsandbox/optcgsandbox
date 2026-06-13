@@ -3,7 +3,7 @@
 // daylight backdrop bleeding to the screen edges. Header carries the mode
 // switcher + reset + theme toggle. PlayfieldStage owns all gameplay surface.
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useGameStore } from './store/game';
 import { useTheme } from './hooks/useTheme';
 import { PlayfieldStage } from './components/PlayfieldStage';
@@ -27,6 +27,38 @@ const MODE_LABEL: Record<GameMode, string> = {
 
 const MODES: GameMode[] = ['vs-easy', 'vs-medium', 'vs-hard'];
 
+// EMERGENCY SHRINK-FIT (UX-architect completion, owner 2026-06-12): the
+// floored board (clamped mat rows + minimum hand) needs ≈710px of height.
+// Windows SHORTER than that — where the layout previously clipped — shrink
+// the whole shell uniformly so it always fits. At ≥710px (every normal
+// desktop/laptop window and the e2e battery) scale is EXACTLY 1: nothing
+// changes. Phones (≤520px wide) never shrink — their layout is untouched.
+const FIT_H = 710;
+
+/** min(1, viewportH / FIT_H) on wide screens; always 1 on phones. */
+function useShrinkFit(): number {
+  const [scale, setScale] = useState(1);
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 521px)');
+    const update = (): void => {
+      if (!mq.matches) {
+        setScale(1);
+        return;
+      }
+      const s = Math.min(1, window.innerHeight / FIT_H);
+      setScale(Number.isFinite(s) && s > 0 ? s : 1);
+    };
+    update();
+    window.addEventListener('resize', update);
+    mq.addEventListener('change', update);
+    return () => {
+      window.removeEventListener('resize', update);
+      mq.removeEventListener('change', update);
+    };
+  }, []);
+  return scale;
+}
+
 // Phase-reactive End-Turn affordance moved to src/components/EndTurnButton.tsx
 // 2026-05-29 (rendered inline in LeaderRow on YOUR side).
 
@@ -46,6 +78,7 @@ function GameApp() {
   const aiThinking = useGameStore((s) => s.aiThinking);
   const { theme, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
+  const shrink = useShrinkFit();
 
   // End-Turn affordance moved into src/components/EndTurnButton.tsx
   // (rendered inline in LeaderRow on YOUR side).
@@ -83,9 +116,24 @@ function GameApp() {
           iOS status clock + the gesture bars on both platforms — the safe-
           area strips are play surface, not reserved padding. Android hides
           the status bar outright via manifest display:fullscreen. */}
+      <div style={shrink < 1 ? { width: 430 * shrink, height: FIT_H * shrink } : { display: 'contents' }}>
       <div
-        className="relative h-full w-full max-w-[430px] bg-paper-cream
-                   shadow-[var(--shadow-frame)] ring-1 ring-marine-fog/30"
+        data-shrink-scale={shrink < 1 ? shrink.toFixed(4) : undefined}
+        className={
+          shrink < 1
+            ? 'relative bg-paper-cream shadow-[var(--shadow-frame)] ring-1 ring-marine-fog/30'
+            : 'relative h-full w-full max-w-[430px] bg-paper-cream shadow-[var(--shadow-frame)] ring-1 ring-marine-fog/30'
+        }
+        style={
+          shrink < 1
+            ? {
+                width: 430,
+                height: FIT_H,
+                transform: `scale(${shrink})`,
+                transformOrigin: 'top left',
+              }
+            : undefined
+        }
       >
         {/* F-8D addendum — compact header (logo mini + turn/phase + active
             player) with secondary controls (difficulty / reset / theme)
@@ -207,6 +255,7 @@ function GameApp() {
                 src/components/EndTurnButton.tsx. */}
           </>
         )}
+      </div>
       </div>
 
       {/* Portrait-only policy — rotated phone browsers see this instead of
