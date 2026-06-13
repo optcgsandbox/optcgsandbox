@@ -18,6 +18,8 @@ import type { Action } from '@shared/engine-v2/protocol/actions';
 import type { Card, LeaderCard } from '@shared/engine-v2/cards/Card';
 import type { GameState, PlayerId } from '@shared/engine-v2/state/types';
 import cardsDataRaw from '@shared/data/cards.json';
+import { prefetchCardImages } from '../lib/prefetchCardImages';
+import { usePresentationBusy } from './presentationBusy';
 
 // One-time engine boot.
 let _engineBooted = false;
@@ -171,17 +173,18 @@ function bootGame(seed: number): GameState {
   // list (PLAYER_A_DECK).
   const cardsA = driverLeader ? buildDeck(colorA) : buildDeckFromList(PLAYER_A_DECK);
 
+  // 2026-06-01: switch opp from OP01-060 Doflamingo to OP09-042 Buggy.
+  // Doflamingo's auto-extracted effectTags include 'searcher'+'ramp',
+  // which previously ghost-fired at game start. Even though the V1
+  // fallback for at_start_of_game is now empty, picking a leader with
+  // no draw/ramp/searcher tags (cost_reduction only) gives a cleaner
+  // baseline for the demo while the rest of the engine is shored up.
+  const leaderB: LeaderCard = pickLeaderById('OP09-042');
   let s = initialState({
     seed,
     decks: {
       A: { leader: leaderA, cards: cardsA },
-      // 2026-06-01: switch opp from OP01-060 Doflamingo to OP09-042 Buggy.
-      // Doflamingo's auto-extracted effectTags include 'searcher'+'ramp',
-      // which previously ghost-fired at game start. Even though the V1
-      // fallback for at_start_of_game is now empty, picking a leader with
-      // no draw/ramp/searcher tags (cost_reduction only) gives a cleaner
-      // baseline for the demo while the rest of the engine is shored up.
-      B: { leader: pickLeaderById('OP09-042'), cards: buildDeck('blue') },
+      B: { leader: leaderB, cards: buildDeck('blue') },
     },
   });
   s = setupGame(s);
@@ -189,6 +192,18 @@ function bootGame(seed: number): GameState {
   // (searcher_peek family) open a choice window instead of auto-resolving.
   // Opt-in field: simulation / engine tests / server never set it.
   s.humanControllers = [AI_HUMAN];
+  // Image warm (owner 2026-06-12): background-prefetch the human's OWN deck
+  // so any card is cached before they tap to enlarge it. Opening hand first,
+  // then the rest of the deck + both leaders (both leaders are public). We
+  // deliberately do NOT warm the opponent's deck — in online play it's hidden
+  // and unknown; here we mirror that boundary so behavior is identical. Cards
+  // the opponent reveals are warmed reactively by useWarmVisibleCards. No-op
+  // off-browser (vitest) — the util guards on window/Image.
+  const openingHandIds = s.players[AI_HUMAN].hand
+    .map((iid) => s.instances[iid]?.cardId)
+    .filter((id): id is string => typeof id === 'string');
+  const ownDeckIds = cardsA.map((c) => c.id);
+  prefetchCardImages([...ownDeckIds, leaderA.id, leaderB.id], openingHandIds);
   // Phase is now 'dice_roll'. Do NOT run refresh/draw/don yet.
   return s;
 }
@@ -217,9 +232,35 @@ const POST_ACTION_PAUSE_MS = 150;
 // "think" delay (AI_ACTION_DELAY_MS) + 0.8s hold (OPP_VISIBLE_HOLD_MS):
 // decisions are precomputed inside the beat, so nothing stretches it.
 const AI_MOVE_BEAT_MS = PILL_BEAT_MS + BETWEEN_PHASE_DELAY_MS + POST_ACTION_PAUSE_MS;
+// Turn-start banner hold (owner 2026-06-12): how long "Your Turn / Opponent's
+// Turn" shows before the refresh pills. Slightly longer than the beat's own
+// DUR (850ms in PresentationQueue) so the banner fully lands first.
+const TURN_BANNER_HOLD_MS = 950;
+// Animation-aware AI pacing (owner 2026-06-12): the AI waits for the current
+// move's cinematic to finish before the next move/end-turn — but never
+// shorter than the 1.3s rhythm (floor) and never longer than this ceiling
+// (so a stalled beat can never hang the turn).
+const AI_MOVE_CEILING_MS = 5000;
 
 function wait(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+/** Wait the rhythm floor, then keep waiting while a cinematic beat is still
+ *  playing/queued (PresentationQueue publishes this via usePresentationBusy),
+ *  up to AI_MOVE_CEILING_MS. So a quick move keeps the snappy 1.3s cadence
+ *  while a long beat-chain (play → on-play → combat result) gets its full
+ *  time before the AI's next move fires. In non-browser contexts (vitest)
+ *  the queue never mounts → busy stays false → this is just `wait(floorMs)`. */
+async function waitForAnimations(floorMs: number): Promise<void> {
+  await wait(floorMs);
+  const start = Date.now();
+  while (
+    usePresentationBusy.getState().busy &&
+    Date.now() - start < AI_MOVE_CEILING_MS
+  ) {
+    await wait(80);
+  }
 }
 
 /** Run the active player's refresh → draw → don pipeline with visible pacing.
@@ -254,11 +295,40 @@ function hasRefreshWork(state: GameState): boolean {
   return false;
 }
 
+/** Flash "Your Turn / Opponent's Turn" for the INCOMING player BEFORE the
+ *  board flips to their refresh (owner 2026-06-12: the announcement must
+ *  come first, then the phase change). Appends a synthetic TURN_STARTED to
+ *  the CURRENT (pre-flip) state so PresentationQueue plays the banner while
+ *  the outgoing board is still on screen, then holds for it. The event is
+ *  appended to live history, so the subsequent enterEnd/flip — computed from
+ *  get().state — carries it forward (monotonic; never duplicated). */
+async function announceIncomingTurn(
+  get: () => GameStore,
+  set: (partial: Partial<GameStore>) => void,
+  nextActivePlayer: PlayerId,
+  nextTurn: number,
+): Promise<void> {
+  const cur = get().state;
+  const withBanner = [
+    ...cur.history,
+    { type: 'TURN_STARTED', turn: nextTurn, activePlayer: nextActivePlayer },
+  ];
+  set({ state: { ...cur, history: withBanner } });
+  await wait(TURN_BANNER_HOLD_MS);
+}
+
 async function runPhasePipelineWithDelays(
   get: () => GameStore,
   set: (partial: Partial<GameStore>) => void,
 ): Promise<void> {
   if (get().state.phase !== 'refresh') return;
+
+  // NOTE (owner 2026-06-12): the "Your Turn / Opponent's Turn" banner is NO
+  // LONGER emitted here. It must show BEFORE the board flips to the incoming
+  // player's refresh, so it's now fired by announceIncomingTurn() at the
+  // turn-transition points (end-turn / AI end-turn / first turn) — i.e.
+  // while the OUTGOING board is still on screen — and this pipeline just
+  // runs the refresh→draw→don pills.
 
   // Sequential pacing (owner direction 2026-05-30): pill flashes for
   // PILL_BEAT_MS BEFORE the phase's action runs. After the action commits, we
@@ -312,21 +382,12 @@ async function runPhasePipelineWithDelays(
   }
 
   // === MAIN ===
-  // F-7p — emit TURN_STARTED here so the GameFeed reads "Turn N — Your
-  // turn / Opponent's turn." The store runs the refresh→draw→don→main
-  // pipeline without calling PhaseScheduler.enterMain (the engine's
-  // enterMain just refolds continuous; the store has its own pacing),
-  // so the event has to be pushed here at the boundary.
+  // TURN_STARTED now fires at the TOP of this pipeline (before refresh) so
+  // the "Your Turn / Opponent's Turn" banner announces the turn up front
+  // (owner 2026-06-12). It is no longer re-emitted here — the GameFeed
+  // still reads that earlier event.
   const mainBaseState = get().state;
-  const mainHistory = [
-    ...mainBaseState.history,
-    {
-      type: 'TURN_STARTED',
-      turn: mainBaseState.turn,
-      activePlayer: mainBaseState.activePlayer,
-    },
-  ];
-  const mainState: GameState = { ...mainBaseState, phase: 'main', history: mainHistory };
+  const mainState: GameState = { ...mainBaseState, phase: 'main' };
   set({ state: mainState, legalActions: getLegalActions(mainState, mainState.activePlayer) });
 }
 
@@ -340,6 +401,11 @@ async function runFirstTurnPhases(
   set: (partial: Partial<GameStore>) => void,
 ): Promise<void> {
   if (get().state.phase !== 'refresh') return;
+  // Game's first turn: announce the first player before their refresh runs
+  // (owner 2026-06-12). No prior board to flip from, but the banner still
+  // leads the turn for consistency with every later turn.
+  const cur = get().state;
+  await announceIncomingTurn(get, set, cur.activePlayer, cur.turn);
   await runPhasePipelineWithDelays(get, set);
 }
 
@@ -423,15 +489,25 @@ async function runAiTurn(
   // Lead-in beat (probe 2026-06-12: the first move landed in the SAME tick
   // as TURN_STARTED — "instant"). One beat separates main-start from move 1,
   // and the same lead-in paces re-entries after human reactive windows.
-  await wait(AI_MOVE_BEAT_MS);
+  // Animation-aware (owner 2026-06-12): also waits out any beat still
+  // playing (e.g. the turn banner) before move 1.
+  await waitForAnimations(AI_MOVE_BEAT_MS);
   while (safety++ < 200) {
     const s = get().state;
     if (s.result || s.activePlayer !== AI_OPPONENT) break;
     // (Every loop path reassigns preDecided before this read.)
     const action = preDecided ?? await ai.chooseAction(s, AI_OPPONENT, 100);
     preDecided = null;
-    const historyBefore = s.history.length;
-    let { state: next } = applyAction(s, AI_OPPONENT, action);
+    // Announce the HUMAN's incoming turn BEFORE END_TURN flips the board
+    // (owner 2026-06-12) — banner over the AI's board, then the flip.
+    if (action.type === 'END_TURN') {
+      await announceIncomingTurn(get, set, AI_HUMAN, get().state.turn + 1);
+    }
+    // Re-read after the possible announce so the banner event is carried
+    // into applyAction's input (monotonic history).
+    const applyBase = get().state;
+    const historyBefore = applyBase.history.length;
+    let { state: next } = applyAction(applyBase, AI_OPPONENT, action);
     // F-7n Phase A — narrowed force-skip of block/counter for the human
     // defender during AI attacks. ONLY auto-skip when the human has no
     // meaningful response (only SKIP_* / CONCEDE available). Otherwise
@@ -528,13 +604,14 @@ async function runAiTurn(
       continue;
     }
     noopStreak = 0;
-    // UNIFORM TURN BEAT (owner 2026-06-12): every VISIBLE step of the
-    // opponent's turn — refresh, draw, DON, each move, end — lands on the
-    // SAME rhythm as the phase pipeline (PILL_BEAT + BETWEEN_PHASE +
-    // POST_ACTION ≈ 1.3s). The NEXT decision is precomputed inside the
-    // beat, so no think-time ever stretches it; END_TURN commits on the
-    // very next beat after the last visible move.
-    await wait(AI_MOVE_BEAT_MS);
+    // ANIMATION-AWARE TURN BEAT (owner 2026-06-12): every VISIBLE step of
+    // the opponent's turn keeps the ~1.3s rhythm as a FLOOR, but now also
+    // waits for the move's cinematic (card reveal → on-play effect → combat
+    // result) to FINISH before the next move/end-turn fires — so nothing
+    // overlaps and the AI never advances under its own animation. Ceiling-
+    // capped so a stalled beat can't hang the turn. The NEXT decision is
+    // precomputed after, so think-time never stretches the beat.
+    await waitForAnimations(AI_MOVE_BEAT_MS);
     {
       const cur = get().state;
       if (cur.result || cur.activePlayer !== AI_OPPONENT) break;
@@ -923,9 +1000,18 @@ export const useGameStore = create<GameStore>((set, get) => {
     },
 
     async endTurnAndAdvance() {
+      // Announce the OPPONENT's incoming turn FIRST — banner over the
+      // player's current board — THEN flip to opp refresh (owner 2026-06-12:
+      // "show the Opp Turn thing first, then change to opp refresh").
+      {
+        const cur = get().state;
+        const next: PlayerId = cur.activePlayer === 'A' ? 'B' : 'A';
+        await announceIncomingTurn(get, set, next, cur.turn + 1);
+      }
       // End the active player's turn — engine flips activePlayer + sets
       // phase='refresh' for the new active player. Commit that state THEN
-      // pace through R/D/D so each step is visible.
+      // pace through R/D/D so each step is visible. enterEnd runs on the
+      // banner-included state (above), keeping history monotonic.
       let ended = PhaseScheduler.enterEnd(get().state);
       // Force-resolve any pending arising from enterEnd. Without this the
       // hand-size-limit case (CR §6-5-7: hand > 10 at end-of-turn produces

@@ -20,6 +20,7 @@
 import { memo, useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
+import { usePresentationBusy } from '../store/presentationBusy';
 import { CardArt, CARD_DIMS } from '../components/CardArt';
 import { inspectScaleFor } from '../components/cardSizing';
 import { useOverlayBox } from '../hooks/useOverlayBox';
@@ -29,6 +30,7 @@ import { beatFor, actorLabel, cardNameFor, attributeCombatSource, scanCombatChai
 // READ, not glimpsed. 1.5-2.0s for card reveals, 1.2-1.5s for attack,
 // 1.8-2.2s for effects/bounce, 1.5-2.0s for KO/life reveal).
 const DUR: Record<Beat['kind'], number> = {
+  TURN_BANNER: 850,
   CARD_PLAYED: 1700,
   ATTACK_DECLARED: 1300,
   BLOCKED: 1300,
@@ -153,6 +155,13 @@ export const PresentationQueue = memo(function PresentationQueue() {
       setFastFwd(false);
     }
   }, [active, queue.length, fastFwd]);
+
+  // Publish "is a beat playing/queued" so the AI turn loop (outside React)
+  // can wait for animations to finish before its next move (owner
+  // 2026-06-12). Busy = a beat is active OR more are queued.
+  useEffect(() => {
+    usePresentationBusy.getState().setBusy(active !== null || queue.length > 0);
+  }, [active, queue.length]);
 
   // Double-tap anywhere → fast-forward remaining cinematic beats.
   const handleTap = useCallback(() => {
@@ -409,6 +418,7 @@ export default PresentationQueue;
 
 function severityForKind(kind: Beat['kind']): 'minor' | 'major' {
   switch (kind) {
+    case 'TURN_BANNER':
     case 'KOD':
     case 'LIFE_LOST':
     case 'TRIGGER_ACTIVATED':
@@ -431,6 +441,8 @@ function renderText(
   const primary = cardNameFor(beat, ctx, 'primary') ?? 'A card';
   const secondary = cardNameFor(beat, ctx, 'secondary');
   switch (beat.kind) {
+    case 'TURN_BANNER':
+      return { title: beat.actor === ctx.viewer ? 'Your Turn' : "Opponent's Turn" };
     case 'CARD_PLAYED':
       return { title: `${who} Played`, sub: primary };
     case 'ATTACK_DECLARED':

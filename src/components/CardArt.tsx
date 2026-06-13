@@ -22,6 +22,7 @@ import type { Card, CardColor, LeaderCard } from '@shared/engine-v2/cards/Card';
 import type { CardInstance } from '@shared/engine-v2/state/types';
 import { effectivePowerForDisplay } from '@shared/engine-v2/state/derived/power';
 import { useGameStore } from '../store/game';
+import { cardIdToR2Url } from '../lib/cardImageUrl';
 
 export type CardArtSize = 'hand' | 'field' | 'leader' | 'modal' | 'prompt' | 'mini' | 'lifeStack';
 
@@ -655,30 +656,6 @@ function DonBadge({ count }: { count: number }) {
   );
 }
 
-/**
- * Public R2 base for the Crew Builder card-image bucket. Mirrors
- * `scripts/card-sync/index.mjs:77 IMAGE_BASE_URL` on the Crew Builder
- * side — every primary print is uploaded as `{cardId}.png` (e.g.
- * `OP09-042.png`). Same bucket also serves `lib/features/collection/
- * presentation/collection_screen.dart:537` (set thumbs).
- */
-const R2_IMAGE_BASE = 'https://pub-bed2e18730014af1aeb9e1e85e692e3c.r2.dev';
-
-/**
- * Map a card id → its public R2 URL. Returns null for non-OPTCG ids
- * (e.g. internal `DON` and unit-test ids like `red-5-2` per the
- * `cardNumber` derivation at line 329 of this file) so we don't 404.
- *
- * Pattern: uppercase set prefix + dash + digits, e.g. `OP09-042`,
- * `EB01-001`, `ST01-001`, `P-001`, `PRB01-001`. Matches every set in
- * the corpus (TRACK_STATE.md "Cards.json structure" enumerates them).
- */
-function cardIdToR2Url(cardId: string | undefined): string | null {
-  if (!cardId) return null;
-  if (!/^[A-Z][A-Z0-9]*-\d+$/.test(cardId)) return null;
-  return `${R2_IMAGE_BASE}/${cardId}.png`;
-}
-
 export const CardArt = memo(function CardArt({
   inst,
   card,
@@ -876,7 +853,14 @@ export const CardArt = memo(function CardArt({
           alt=""
           className="absolute inset-0 w-full h-full object-contain"
           style={{ filter: cardDropShadow }}
-          decoding={size === 'hand' || size === 'leader' ? 'sync' : 'async'}
+          // Sync decode for the sizes a player ENLARGES to read — modal /
+          // prompt / inspect (and the small board sizes already on sync).
+          // A freshly-mounted <img> with decoding="async" shows a blank
+          // frame while it decodes off-thread, EVEN when the bytes are
+          // already cached — that was the "click → nothing → loads" flash
+          // (owner 2026-06-12). Sync paints from cache in the same frame.
+          // 'mini'/'lifeStack' stay async (tiny, never enlarged).
+          decoding={size === 'mini' || size === 'lifeStack' ? 'async' : 'sync'}
           loading={size === 'mini' ? 'lazy' : 'eager'}
           onError={() => setImgError(true)}
         />

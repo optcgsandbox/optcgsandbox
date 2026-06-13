@@ -21,6 +21,7 @@ import {
 } from './api';
 import { openOnlineSocket, type OnlineSocket } from './wsClient';
 import { buildOnlineDeck, type DeckColor } from './buildDeck';
+import { prefetchCardImages } from '../lib/prefetchCardImages';
 import type {
   ClientMessage,
   ServerMessage,
@@ -140,6 +141,11 @@ export const useOnlineMatch = create<OnlineState>((set, get) => ({
         mainDeckIds: built.mainDeckIds.slice(),
         name: `Dev ${color} (${built.leaderName})`,
       };
+      // Image warm (owner 2026-06-12): background-prefetch YOUR OWN deck so
+      // cards are cached before you tap to enlarge. Online-safe: this is the
+      // deck you just submitted — never the (hidden) opponent's. Opponent
+      // reveals are warmed reactively by useWarmVisibleCards.
+      prefetchCardImages([built.leaderId, ...built.mainDeckIds]);
     } catch (err) {
       set({
         phase: 'error',

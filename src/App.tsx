@@ -11,6 +11,7 @@ import DevGameSandbox from './dev/DevGameSandbox';
 import OnlineLobby from './online/OnlineLobby';
 import type { GameMode } from './store/game';
 import type { Phase } from '@shared/engine-v2/state/types';
+import { useWarmVisibleCards } from './hooks/useWarmVisibleCards';
 
 const isDevSandbox =
   typeof window !== 'undefined' &&
@@ -115,6 +116,9 @@ function GameApp() {
   const { theme, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const shrink = useShrinkFit();
+  // Warm the image cache for every card the player can currently see, so
+  // tapping any of them to enlarge is instant (owner 2026-06-12).
+  useWarmVisibleCards();
 
   // End-Turn affordance moved into src/components/EndTurnButton.tsx
   // (rendered inline in LeaderRow on YOUR side).

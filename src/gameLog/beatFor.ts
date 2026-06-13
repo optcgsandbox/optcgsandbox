@@ -11,6 +11,7 @@ import type { GameEvent, InstanceId, PlayerId, GameState } from '@shared/engine-
 import type { Card } from '@shared/engine-v2/cards/Card';
 
 export type BeatKind =
+  | 'TURN_BANNER'           // "Your Turn" / "Opponent's Turn" before refresh
   | 'CARD_PLAYED'           // character / event / stage played
   | 'ATTACK_DECLARED'
   | 'BLOCKED'
@@ -81,6 +82,18 @@ function isOwnEvent(eventController: unknown, viewer: PlayerId): boolean {
  * state.history so de-duplication works across renders).
  */
 export function beatFor(event: GameEvent, historyIndex: number, ctx: BeatCtx): Beat | null {
+  // TURN_STARTED is a SYNTHETIC event the store splices in at the turn
+  // boundary (game.ts) — it isn't part of the engine's GameEvent union, so
+  // it's matched here by string before the typed switch. Owner 2026-06-12:
+  // flash "Your Turn / Opponent's Turn" before the refresh phase.
+  const synthetic = event as { type?: string; activePlayer?: unknown };
+  if (synthetic.type === 'TURN_STARTED') {
+    const actor =
+      synthetic.activePlayer === 'A' || synthetic.activePlayer === 'B'
+        ? synthetic.activePlayer
+        : undefined;
+    return { kind: 'TURN_BANNER', historyIndex, actor };
+  }
   switch (event.type) {
     case 'CHARACTER_PLAYED':
     case 'EVENT_ACTIVATED':
