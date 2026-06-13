@@ -22,6 +22,8 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt } from './CardArt';
 import { CardInspectOverlay } from './CardInspectOverlay';
+import { FitScale } from './FitScale';
+import { useOverlayBox } from '../hooks/useOverlayBox';
 import { springs } from '../lib/animationTokens';
 import type { PlayerId } from '@shared/engine-v2/state/types';
 
@@ -104,10 +106,17 @@ export const MulliganPrompt = memo(function MulliganPrompt() {
     dispatch({ type: 'KEEP_HAND' });
   }, [dispatch]);
 
+  // Overlay-fit (owner 2026-06-12): all 5 cards must stay visible at once
+  // (the mulligan decision needs the whole hand) — on narrow phones the
+  // row scales down instead of clipping. No paging here by design.
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const rootBox = useOverlayBox(rootRef);
+
   return (
     <AnimatePresence>
       {open && (
         <motion.div
+          ref={rootRef}
           role="dialog"
           aria-modal="true"
           aria-labelledby="mulligan-prompt-heading"
@@ -146,9 +155,15 @@ export const MulliganPrompt = memo(function MulliganPrompt() {
             initial={reduced ? false : { y: 8, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ ...spring.cardTravel, delay: reduced ? 0 : 0.05 }}
-            className="flex items-center justify-center gap-2 mb-4"
+            className="mb-4"
             aria-label="Your opening hand"
           >
+            <FitScale
+              maxW={rootBox.w > 0 ? rootBox.w - 32 : 9999}
+              maxH={rootBox.h > 0 ? rootBox.h : 9999}
+              contentWidth="max-content"
+            >
+            <div className="flex items-center justify-center gap-2">
             {handIds.map((id) => {
               const inst = instances[id];
               if (!inst) return null;
@@ -174,6 +189,8 @@ export const MulliganPrompt = memo(function MulliganPrompt() {
                 </div>
               );
             })}
+            </div>
+            </FitScale>
           </motion.div>
 
           <div className="flex items-center gap-3">

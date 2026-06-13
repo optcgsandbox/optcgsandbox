@@ -11,11 +11,14 @@
 //
 // No timer. Owner reads cards at their own pace per F-7q rule D.
 
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt, CARD_DIMS } from './CardArt';
 import { CardInspectOverlay } from './CardInspectOverlay';
+import { ArrowPagedRow } from './ArrowPagedRow';
+import { FitScale } from './FitScale';
+import { useOverlayBox } from '../hooks/useOverlayBox';
 import type { Action } from '@shared/engine-v2/protocol/actions';
 
 export const BlockerPrompt = memo(function BlockerPrompt() {
@@ -46,6 +49,10 @@ export const BlockerPrompt = memo(function BlockerPrompt() {
   const [selectedIid, setSelectedIid] = useState<string | null>(null);
   // F-8C — standard read view (size C) opened from a tile's VIEW button.
   const [inspectIid, setInspectIid] = useState<string | null>(null);
+  // Overlay-fit (owner 2026-06-12): the tile lane never vertical-scrolls —
+  // tiles shrink to the lane's real height; width overflow pages with ‹ ›.
+  const laneRef = useRef<HTMLDivElement | null>(null);
+  const laneBox = useOverlayBox(laneRef);
 
   // Reset selection when the prompt closes. (useEffect — never set state
   // during render.)
@@ -168,14 +175,21 @@ export const BlockerPrompt = memo(function BlockerPrompt() {
             </div>
           </div>
 
-          {/* F-8C — internal-scroll PROMPT-size tile list. Fixed tile size;
-              selection highlights via ring, never resizes. */}
+          {/* Overlay-fit (owner 2026-06-12): NO vertical scroll — one
+              ArrowPagedRow of fixed PROMPT tiles (side-scroll with ‹ ›,
+              the app's sanctioned pattern); FitScale shrinks the block
+              only when the lane is shorter than one tile row. Identical
+              to the old layout for ≤3 blockers on tall screens. */}
           {blockerOptions.length > 0 && (
-            <div className="flex flex-col flex-1 min-h-0 w-full overflow-y-auto px-4 py-1">
+            <div
+              ref={laneRef}
+              className="flex flex-col flex-1 min-h-0 w-full items-center justify-center overflow-hidden px-4 py-1"
+            >
+              <FitScale maxW={laneBox.w} maxH={laneBox.h} contentWidth={laneBox.w || undefined}>
               <p className="text-[0.6875rem] text-center font-body font-extrabold uppercase tracking-wider text-ink-iron mb-2">
                 Tap a blocker to select · View to read
               </p>
-              <div className="my-auto w-full flex flex-wrap items-start justify-center gap-3 max-w-[460px] mx-auto" aria-label="Available blockers">
+              <ArrowPagedRow step={122} gap={12} idPrefix="blocker-row" ariaLabel="Available blockers">
                 {blockerOptions.map((a) => {
                   const inst = instances[a.blockerInstanceId];
                   const card = inst ? library[inst.cardId] : undefined;
@@ -228,7 +242,8 @@ export const BlockerPrompt = memo(function BlockerPrompt() {
                     </div>
                   );
                 })}
-              </div>
+              </ArrowPagedRow>
+              </FitScale>
             </div>
           )}
 

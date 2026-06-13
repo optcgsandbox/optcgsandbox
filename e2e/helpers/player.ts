@@ -28,11 +28,13 @@ export class PlayerDriver {
   // ─── Phase detection ──────────────────────────────────────────────────
 
   async currentPhase(): Promise<string> {
-    // The header status line in App.tsx renders "T{turn} · {phase}" but the
-    // text is CSS-uppercased. Read raw and lowercase for engine-equivalent.
-    const text = await this.page.locator('[role="status"]').first().innerText();
-    const m = text.match(/T\d+\s*[·•]\s*(\S+)/i);
-    return (m?.[1] ?? text).toLowerCase();
+    // Read the exact engine enum from __store (?test=1). The header now
+    // shows friendly labels ("Setup · Dice roll"), not the enum — text
+    // scraping broke when that landed (owner 2026-06-12).
+    return this.page.evaluate(() => {
+      const w = window as unknown as { __store?: { getState: () => { state: { phase: string } } } };
+      return w.__store?.getState().state.phase ?? '';
+    });
   }
 
   async waitForPhase(name: string, timeoutMs: number = TIMEOUTS.long): Promise<void> {
@@ -142,9 +144,12 @@ export class PlayerDriver {
   }
 
   async currentTurnNumber(): Promise<number> {
-    const text = await this.page.locator('[role="status"]').first().innerText();
-    const m = text.match(/T(\d+)/);
-    return m ? parseInt(m[1]!, 10) : -1;
+    // From __store, same reason as currentPhase: setup phases no longer
+    // print a "T{n}" in the header.
+    return this.page.evaluate(() => {
+      const w = window as unknown as { __store?: { getState: () => { state: { turn: number } } } };
+      return w.__store?.getState().state.turn ?? -1;
+    });
   }
 
   // ─── Debug snapshot ──────────────────────────────────────────────────

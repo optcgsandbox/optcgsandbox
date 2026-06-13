@@ -292,7 +292,10 @@ test.describe('F-8D addendum — header compression', () => {
     const header = page.locator('[data-testid="app-header"]');
     await expect(header).toBeVisible();
     const box = await header.boundingBox();
-    expect(box!.height, 'header is compact (was ~52px two-row toolbar)').toBeLessThanOrEqual(40);
+    // Owner 2026-06-12: header is a 3-line stack (OPTCGS / T·phase /
+    // whose-turn) — ≤52px. It overlays the board (absolute), so its height
+    // never pushes zones.
+    expect(box!.height, 'header is a compact 3-line stack').toBeLessThanOrEqual(52);
 
     const menuBtn = page.locator('[data-testid="header-menu-button"]');
     await menuBtn.click();

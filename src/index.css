@@ -134,8 +134,12 @@ body {
    mat tucks under it; wide (desktop) windows keep the accepted offsets.
    env() adds the notch inset on installed apps, 0 in browsers. */
 :root {
-  --frame-rail-top: 38px;
-  --frame-mat-top: 99px;
+  /* UNIVERSAL top frame (owner 2026-06-12): the rail rides the OPTCGS
+     label line and the mat tucks under it on EVERY screen — desktop now
+     matches mobile/PWA (env() is 0 in browsers, the notch inset on
+     installed apps). Frees ~32px on desktop for the hand. */
+  --frame-rail-top: calc(env(safe-area-inset-top, 0px) + 6px);
+  --frame-mat-top: calc(env(safe-area-inset-top, 0px) + 67px);
   /* Zone rows (UX-architect verdict 2026-06-12): fluid dvh on tall
      viewports — identical to the long-standing behavior — but clamped to
      the rows' CARD-CONTENT minimums so zone boxes can never compress
@@ -149,13 +153,6 @@ body {
   --mat-half-h: calc(var(--mat-row-char) + var(--mat-row-leader) + var(--mat-row-far) + 2 * var(--playmat-band-gap, 6px));
   --mat-block-h: calc(2 * var(--mat-half-h) + 6px);
 }
-@media (max-width: 520px) {
-  :root {
-    --frame-rail-top: calc(env(safe-area-inset-top, 0px) + 6px);
-    --frame-mat-top: calc(env(safe-area-inset-top, 0px) + 67px);
-  }
-}
-
 /* Prompt safe-area framing (owner 2026-06-12): full-screen prompt overlays
    keep their content clear of the iOS status clock (top) and the home
    indicator (bottom) on installed apps. Browsers report 0 insets → only

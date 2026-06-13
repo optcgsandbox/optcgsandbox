@@ -22,6 +22,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt, CARD_DIMS } from '../components/CardArt';
 import { inspectScaleFor } from '../components/cardSizing';
+import { useOverlayBox } from '../hooks/useOverlayBox';
 import { beatFor, actorLabel, cardNameFor, attributeCombatSource, scanCombatChain, scanEffectResults, type Beat } from './beatFor';
 
 // Per-beat durations (F-7q Readability — owner direction: cards must be
@@ -79,6 +80,11 @@ export const PresentationQueue = memo(function PresentationQueue() {
   // don't replay setup events; from there forward, every NEW event is
   // candidate for a beat.
   const processedRef = useRef<number>(-1);
+  // Overlay-fit (owner 2026-06-12): measure the beat overlay's REAL logical
+  // box (shell-aware, resize-reactive) instead of reading the window —
+  // inside the shrink-fit shell the window overstates available space.
+  const beatRef = useRef<HTMLDivElement | null>(null);
+  const beatBox = useOverlayBox(beatRef);
   const [queue, setQueue] = useState<Beat[]>([]);
   const [active, setActive] = useState<Beat | null>(null);
   const [fastFwd, setFastFwd] = useState<boolean>(false);
@@ -193,6 +199,7 @@ export const PresentationQueue = memo(function PresentationQueue() {
   return (
     <AnimatePresence>
       <motion.div
+        ref={beatRef}
         key={`beat-${active.historyIndex}-${active.kind}`}
         role="status"
         aria-live="polite"
@@ -229,9 +236,11 @@ export const PresentationQueue = memo(function PresentationQueue() {
           // shell (ancestor transform), so sizing derives from the SHELL
           // width — min(window, 430) — not the raw window. (Original
           // geometry restored per owner 2026-06-12.)
-          const vh = window.innerHeight;
+          // Logical box from useOverlayBox (first frame falls back to the
+          // window before the ref mounts — same conservative numbers).
+          const vh = beatBox.h > 0 ? beatBox.h : window.innerHeight;
           const GLYPH_LANE = 52; // center ⚔ column + gaps
-          const shellW = Math.min(window.innerWidth, 430);
+          const shellW = beatBox.w > 0 ? beatBox.w : Math.min(window.innerWidth, 430);
           const containerW = shellW - 16;
           // The ±5° head-to-head tilt grows each card's axis-aligned
           // footprint: effective W = w·cos5° + h·sin5°, effective

@@ -10,6 +10,7 @@ import { PlayfieldStage } from './components/PlayfieldStage';
 import DevGameSandbox from './dev/DevGameSandbox';
 import OnlineLobby from './online/OnlineLobby';
 import type { GameMode } from './store/game';
+import type { Phase } from '@shared/engine-v2/state/types';
 
 const isDevSandbox =
   typeof window !== 'undefined' &&
@@ -27,13 +28,48 @@ const MODE_LABEL: Record<GameMode, string> = {
 
 const MODES: GameMode[] = ['vs-easy', 'vs-medium', 'vs-hard'];
 
+// Header phase labels (owner 2026-06-12): friendly words, never the raw
+// engine enum ("FIRST_PLAYER_CHOICE"). Setup phases show "Setup · X" with
+// no turn counter and no Your/Opp turn line — turns haven't started yet.
+const SETUP_PHASES: ReadonlySet<Phase> = new Set<Phase>([
+  'dice_roll',
+  'first_player_choice',
+  'mulligan_first',
+  'mulligan_second',
+  'deal_life',
+]);
+
+const PHASE_LABELS: Partial<Record<Phase, string>> = {
+  dice_roll: 'Dice roll',
+  first_player_choice: 'Choose first',
+  mulligan_first: 'Mulligan',
+  mulligan_second: 'Mulligan',
+  deal_life: 'Deal life',
+  refresh: 'Refresh',
+  draw: 'Draw',
+  don: 'Don',
+  main: 'Main',
+  block_window: 'Block',
+  counter_window: 'Counter',
+  damage_resolution: 'Damage',
+  trigger_window: 'Trigger',
+  peek_choice: 'Choice',
+  discard_choice: 'Choice',
+  choose_one: 'Choice',
+  attack_target_pick: 'Choice',
+  searcher_peek_choice: 'Choice',
+  effect_offer: 'Choice',
+  end: 'End',
+};
+
 // EMERGENCY SHRINK-FIT (UX-architect completion, owner 2026-06-12): the
-// floored board (clamped mat rows + minimum hand) needs ≈710px of height.
+// floored board (clamped mat rows + minimum hand) needs ≈680px of height
+// since the universal top frame freed 32px (rail on the label line).
 // Windows SHORTER than that — where the layout previously clipped — shrink
 // the whole shell uniformly so it always fits. At ≥710px (every normal
 // desktop/laptop window and the e2e battery) scale is EXACTLY 1: nothing
 // changes. Phones (≤520px wide) never shrink — their layout is untouched.
-const FIT_H = 710;
+const FIT_H = 680;
 
 /** min(1, viewportH / FIT_H) on wide screens; always 1 on phones. */
 function useShrinkFit(): number {
@@ -75,7 +111,7 @@ function GameApp() {
   const mode = useGameStore((s) => s.mode);
   const setMode = useGameStore((s) => s.setMode);
   const reset = useGameStore((s) => s.reset);
-  const aiThinking = useGameStore((s) => s.aiThinking);
+  const viewAs = useGameStore((s) => s.viewAs);
   const { theme, toggleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const shrink = useShrinkFit();
@@ -163,13 +199,31 @@ function GameApp() {
               role="status"
               aria-live="polite"
             >
-              T{state.turn} · {state.phase}
-              <span className="hidden sm:inline">
-                {' · '}
-                {state.activePlayer === 'A' ? 'Your turn' : 'Opponent'}
-                {aiThinking ? ' · AI…' : ''}
-              </span>
+              {/* SHORT line on every screen (owner 2026-06-12): the opp
+                  rail now rides the label line on desktop too, so the long
+                  player/AI suffix no longer fits beside it. */}
+              {SETUP_PHASES.has(state.phase)
+                ? `Setup · ${PHASE_LABELS[state.phase] ?? state.phase}`
+                : `T${state.turn} · ${PHASE_LABELS[state.phase] ?? state.phase}`}
             </p>
+            {/* Whose turn — its own line underneath (owner 2026-06-12),
+                seal-red when it's yours so it pops. Hidden during setup —
+                there is no turn yet. */}
+            {!SETUP_PHASES.has(state.phase) && (
+              <p
+                data-testid="turn-line"
+                className="whitespace-nowrap text-[0.6rem] font-body font-extrabold uppercase tracking-wider"
+                style={{
+                  color:
+                    state.activePlayer === viewAs
+                      ? 'var(--color-seal-red)'
+                      : 'var(--color-text-2)',
+                }}
+                aria-live="polite"
+              >
+                {state.activePlayer === viewAs ? 'Your turn' : 'Opp turn'}
+              </p>
+            )}
           </div>
 
           <button

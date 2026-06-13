@@ -235,8 +235,9 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
                     style={{ width: cardW, height: cardH, scrollSnapAlign: 'center' }}
                   >
                     {/* Navy deck back, NO inst/card props → zero identity
-                        (ids / names / aria) reaches the DOM. */}
-                    <div className="relative h-full w-full rotate-180">
+                        (ids / names / aria) reaches the DOM. Upright — the
+                        ONE PIECE logo reads right-side up (owner 2026-06-12). */}
+                    <div className="relative h-full w-full">
                       <NavyCardBack radius={3} />
                     </div>
                   </motion.div>
@@ -343,7 +344,9 @@ export const HandFan = memo(function HandFan({ playerId, interactive = true, hid
           data-opp-hand-badge
           className="pointer-events-none absolute rounded-full bg-ink-black/75 px-1.5 py-0.5
                      font-display text-[0.625rem] leading-none text-paper-cream tabular"
-          style={{ right: 10, top: 2 }}
+          // Lower corner of the rail: the rail now rides the header line on
+          // desktop too, so the old top corner sat behind the hamburger.
+          style={{ right: 10, bottom: 2 }}
           aria-hidden="true"
         >
           {n}

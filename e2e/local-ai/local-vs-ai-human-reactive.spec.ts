@@ -50,9 +50,12 @@ async function waitForStoreHook(page: Page, timeoutMs = 15_000): Promise<void> {
 }
 
 async function currentPhase(page: Page): Promise<string> {
-  const text = await page.locator('[role="status"]').first().innerText();
-  const m = text.match(/T\d+\s*[·•]\s*(\S+)/i);
-  return (m?.[1] ?? text).toLowerCase();
+  // Exact engine enum from __store — the header shows friendly labels
+  // ("Setup · Dice roll"), not the enum (owner 2026-06-12).
+  return page.evaluate(() => {
+    const store = (window as unknown as { __store?: { getState: () => { state: { phase: string } } } }).__store;
+    return store ? store.getState().state.phase : '';
+  });
 }
 
 async function waitForPhaseLoose(page: Page, name: string, timeoutMs: number): Promise<void> {

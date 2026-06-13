@@ -20,7 +20,10 @@ import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { useDonArm } from '../store/donArm';
-import { CardArt } from './CardArt';
+import { CardArt, CARD_DIMS } from './CardArt';
+import { INSPECT_SCALE } from './cardSizing';
+import { useOverlayBox } from '../hooks/useOverlayBox';
+import { FitScale } from './FitScale';
 import { CarouselNav } from './InspectCarousel';
 import {
   type InspectGroup,
@@ -60,6 +63,22 @@ export const CardDetailModal = memo(function CardDetailModal() {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const primaryButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+
+  // Overlay-fit (owner 2026-06-12: everything that opens must fit, no
+  // vertical scroll EVER — shrink instead). Measure the available column
+  // on a PLAIN div (the panel animates scale on entry, which would skew
+  // rects). The art + breakdown render at full INSPECT size and are
+  // wrapped in <FitScale>, which measures their natural size and scales
+  // the whole group down to fit the space ABOVE the action buttons. The
+  // buttons stay full-size (44px touch targets) below. scale === 1 on any
+  // screen tall enough → pixel-identical to the old full-size modal.
+  const fitRef = useRef<HTMLDivElement>(null);
+  const box = useOverlayBox(fitRef);
+  const ART_TOP = 48; // breathing room above the card
+  const ART_GAP = 14; // gap between the scaled card group and the buttons
+  const BUTTONS_H = 44;
+  const artMaxH = box.h > 0 ? box.h - ART_TOP - ART_GAP - BUTTONS_H : 9999;
+  const artMaxW = box.w > 0 ? box.w : 9999;
 
   const inst = inspectedCardId ? instances[inspectedCardId] : undefined;
   const card = inst ? library[inst.cardId] : undefined;
@@ -420,6 +439,13 @@ export const CardDetailModal = memo(function CardDetailModal() {
           }}
           aria-hidden={!open}
         >
+          {/* Plain measurer column (no transform animation — rects stay
+              honest). Fills the padded backdrop; clicks on empty area
+              bubble to the backdrop handler and close. */}
+          <div
+            ref={fitRef}
+            className="flex h-full w-full max-w-[386px] flex-col"
+          >
           <motion.div
             ref={panelRef}
             role="dialog"
@@ -429,10 +455,8 @@ export const CardDetailModal = memo(function CardDetailModal() {
             animate={reduced ? { opacity: 1 } : { opacity: 1, scale: 1 }}
             exit={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
             transition={{ duration: 0.22, ease: [0.2, 0.9, 0.3, 1] }}
-            className="relative flex w-full max-w-[386px] flex-col items-center"
+            className="relative flex h-full w-full flex-col items-center"
             style={{
-              maxHeight:
-                'calc(100% - 48px)' /* F-8D: % of the fixed board canvas */,
               // Owner direction 2026-05-29: transparent — let the card itself
               // self-frame. No panel chrome, no border, no shadow, no padding.
               // NOTE: no stopPropagation here — clicks on empty panel area
@@ -442,24 +466,33 @@ export const CardDetailModal = memo(function CardDetailModal() {
               padding: 0,
             }}
           >
-            {/* Card art — scaled up so printed text is readable.
-                CardArt at 'modal' size is 220×308; scale 1.5x → ~330×462.
-                stopPropagation here so taps on the card itself don't close
-                the modal (owner can read it). */}
+            {/* Art + breakdown render at full INSPECT size and are scaled as
+                a group by <FitScale> to fit the space above the buttons
+                (overlay-fit, owner 2026-06-12). scale === 1 on any screen
+                tall enough → pixel-identical to the old 330×462 modal; on
+                short/narrow boxes the group shrinks uniformly so the card,
+                its power math, AND the buttons are ALWAYS fully visible. No
+                vertical scroll, ever. The ART_TOP margin is OUTSIDE FitScale
+                so it never scales. */}
+            <FitScale
+              maxW={artMaxW}
+              maxH={artMaxH}
+              contentWidth="max-content"
+              className="flex flex-col items-center"
+              style={{ marginTop: ART_TOP }}
+            >
             <div
-              className="flex justify-center"
+              className="relative flex-none"
               onClick={(e) => e.stopPropagation()}
               data-testid="detail-card-art"
               style={{
-                transform: 'scale(1.5)',
-                transformOrigin: 'center top',
-                marginTop: 48,
-                marginBottom: 240, // reserve scaled footprint (308*1.5/2 ≈ 230) + gap
+                width: CARD_DIMS.modal.w * INSPECT_SCALE,
+                height: CARD_DIMS.modal.h * INSPECT_SCALE,
               }}
               {...swipe}
             >
-              {/* Carousel slide — keyed on the inspected card; the frame
-                  (scale/margins above) never resizes during navigation. */}
+              {/* Carousel slide — keyed on the inspected card; the fit-box
+                  frame never resizes during navigation. */}
               <AnimatePresence mode="popLayout" initial={false}>
                 <motion.div
                   key={inspectedCardId ?? 'card'}
@@ -467,8 +500,18 @@ export const CardDetailModal = memo(function CardDetailModal() {
                   animate={{ x: 0, opacity: 1 }}
                   exit={reduced || !group ? undefined : { x: -40 * slideDir, opacity: 0 }}
                   transition={{ duration: reduced ? 0.01 : 0.14 }}
+                  style={{ position: 'absolute', inset: 0 }}
                 >
-                  <CardArt card={card} size="modal" />
+                  <div
+                    style={{
+                      transform: `scale(${INSPECT_SCALE})`,
+                      transformOrigin: 'top left',
+                      width: CARD_DIMS.modal.w,
+                      height: CARD_DIMS.modal.h,
+                    }}
+                  >
+                    <CardArt card={card} size="modal" />
+                  </div>
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -515,7 +558,7 @@ export const CardDetailModal = memo(function CardDetailModal() {
               return (
                 <div
                   data-testid="detail-power-breakdown"
-                  className="mx-auto mb-2 max-w-[320px] rounded-lg bg-ink-black/10 px-3 py-2 text-center"
+                  className="mx-auto mt-2 max-w-[320px] rounded-lg bg-ink-black/10 px-3 py-2 text-center"
                 >
                   <span className="font-display text-[0.9375rem] leading-tight text-ink-black tabular">
                     {base} {mods > 0 ? '+' : ''}{mods} = {base + mods}
@@ -536,9 +579,15 @@ export const CardDetailModal = memo(function CardDetailModal() {
                 </div>
               );
             })()}
+            </FitScale>
 
-            {/* Action row floats below the scaled card. */}
-            <div className="flex items-center justify-center gap-2">
+            {/* Action row — OUTSIDE FitScale so buttons keep their full
+                44px touch-target size on every screen; sits just below the
+                scaled card group. */}
+            <div
+              className="flex items-center justify-center gap-2"
+              style={{ marginTop: ART_GAP }}
+            >
               {buttons.map((btn, idx) => {
                 const isPrimary = btn.variant !== 'secondary';
                 // Skip disabled primaries when binding the ref — focusing a
@@ -579,6 +628,7 @@ export const CardDetailModal = memo(function CardDetailModal() {
               })}
             </div>
           </motion.div>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

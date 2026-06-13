@@ -21,6 +21,7 @@ import { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt } from './CardArt';
+import { ArrowPagedRow } from './ArrowPagedRow';
 
 export const TrashViewer = memo(function TrashViewer() {
   const viewingTrashOf = useGameStore((s) => s.viewingTrashOf);
@@ -159,10 +160,12 @@ export const TrashViewer = memo(function TrashViewer() {
               </button>
             </div>
 
-            {/* Body — scrollable grid of full card faces. */}
+            {/* Body — overlay-fit (owner 2026-06-12): NO vertical scroll.
+                One arrow-paged row of card faces (newest first, TOP badge
+                on the top-of-stack card) — side-scroll with ‹ ›, the app's
+                sanctioned pattern. */}
             <div
-              className="overflow-y-auto px-4 py-3"
-              style={{ scrollbarWidth: 'none' }}
+              className="px-4 py-3"
               role="list"
               aria-label={`${titleLabel} contents, ${trash.length} cards`}
             >
@@ -174,10 +177,7 @@ export const TrashViewer = memo(function TrashViewer() {
                   Trash is empty.
                 </p>
               ) : (
-                <div
-                  className="grid grid-cols-4 gap-2"
-                  style={{ paddingBottom: 8 }}
-                >
+                <ArrowPagedRow step={72} gap={8} idPrefix="trash-row">
                   {ordered.map((instanceId, idx) => {
                     const inst = instances[instanceId];
                     const card = inst ? library[inst.cardId] : undefined;
@@ -223,7 +223,7 @@ export const TrashViewer = memo(function TrashViewer() {
                       </div>
                     );
                   })}
-                </div>
+                </ArrowPagedRow>
               )}
             </div>
           </motion.div>

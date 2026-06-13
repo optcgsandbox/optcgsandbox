@@ -10,6 +10,7 @@
 
 import { memo, useEffect, useRef } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useOverlayBox } from '../hooks/useOverlayBox';
 import type { Card } from '@shared/engine-v2/cards/Card';
 import type { CardInstance } from '@shared/engine-v2/state/types';
 import { CardArt, CARD_DIMS } from './CardArt';
@@ -37,9 +38,16 @@ export const CardInspectOverlay = memo(function CardInspectOverlay({
   group,
 }: CardInspectOverlayProps) {
   const reduced = useReducedMotion() ?? false;
-  // Responsive-clamped to the live viewport (original geometry restored
-  // per owner 2026-06-12 — no fixed design canvas).
-  const scale = inspectScaleFor(window.innerWidth, window.innerHeight);
+  // Overlay-fit (owner 2026-06-12): clamp to the overlay's REAL logical
+  // box (shell-aware, resize-reactive) instead of the window — inside the
+  // shrink-fit shell the window overstates the available space. Window
+  // values remain the first-frame fallback before the ref mounts.
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const box = useOverlayBox(rootRef);
+  const scale =
+    box.w > 0 && box.h > 0
+      ? inspectScaleFor(box.w, box.h)
+      : inspectScaleFor(window.innerWidth, window.innerHeight);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
@@ -67,6 +75,7 @@ export const CardInspectOverlay = memo(function CardInspectOverlay({
     <AnimatePresence>
       {open && (
         <motion.div
+          ref={rootRef}
           role="button"
           tabIndex={0}
           aria-label={`Close ${card?.name ?? 'card'} view`}

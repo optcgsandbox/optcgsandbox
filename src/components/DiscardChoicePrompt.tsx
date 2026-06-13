@@ -9,6 +9,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt } from './CardArt';
 import { CardInspectOverlay } from './CardInspectOverlay';
+import { ArrowPagedRow } from './ArrowPagedRow';
 
 export const DiscardChoicePrompt = memo(function DiscardChoicePrompt() {
   const phase = useGameStore((s) => s.state.phase);
@@ -70,7 +71,10 @@ export const DiscardChoicePrompt = memo(function DiscardChoicePrompt() {
           Their hand is revealed. Pick one card to send to their trash.
         </p>
 
-        <div className="flex flex-wrap gap-3 justify-center mb-6 max-w-[400px]">
+        {/* Overlay-fit (owner 2026-06-12): NO vertical scroll — big hands
+            side-scroll with ‹ › instead of wrapping off-screen. */}
+        <div className="mb-6 w-full max-w-[400px]">
+        <ArrowPagedRow step={76} gap={12} idPrefix="discard-row" ariaLabel="Revealed hand">
           {oppHand.map((id) => {
             const inst = instances[id];
             if (!inst) return null;
@@ -107,6 +111,7 @@ export const DiscardChoicePrompt = memo(function DiscardChoicePrompt() {
               </div>
             );
           })}
+        </ArrowPagedRow>
         </div>
 
         {/* Standard read view (size C) — same shared inspect as every surface */}

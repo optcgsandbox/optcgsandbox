@@ -14,6 +14,9 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt, CARD_DIMS } from './CardArt';
 import { CardInspectOverlay } from './CardInspectOverlay';
+import { ArrowPagedRow } from './ArrowPagedRow';
+import { FitScale } from './FitScale';
+import { useOverlayBox } from '../hooks/useOverlayBox';
 import { effectivePowerForDisplay } from '@shared/engine-v2/state/derived/power';
 import type { Action } from '@shared/engine-v2/protocol/actions';
 
@@ -79,6 +82,10 @@ export const CounterPrompt = memo(function CounterPrompt() {
   const [selectedIid, setSelectedIid] = useState<string | null>(null);
   // F-8C — standard read view (size C) opened from a tile's VIEW button.
   const [inspectIid, setInspectIid] = useState<string | null>(null);
+  // Overlay-fit (owner 2026-06-12): the tile lane never vertical-scrolls —
+  // tiles shrink to the lane's real height; width overflow pages with ‹ ›.
+  const laneRef = useRef<HTMLDivElement | null>(null);
+  const laneBox = useOverlayBox(laneRef);
 
   useEffect(() => {
     if (!open && selectedIid !== null) setSelectedIid(null);
@@ -259,14 +266,20 @@ export const CounterPrompt = memo(function CounterPrompt() {
               )}
           </div>
 
-          {/* F-8C — internal-scroll tile list (PROMPT size, fixed — selection
-              never resizes the tile, so layout never shifts). */}
+          {/* Overlay-fit (owner 2026-06-12): NO vertical scroll — one
+              ArrowPagedRow of fixed PROMPT tiles (side-scroll with ‹ ›);
+              FitScale shrinks the block only when the lane is shorter
+              than one tile row. */}
           {counterOptions.length > 0 && (
-            <div className="flex flex-col flex-1 min-h-0 w-full overflow-y-auto px-4 py-1">
+            <div
+              ref={laneRef}
+              className="flex flex-col flex-1 min-h-0 w-full items-center justify-center overflow-hidden px-4 py-1"
+            >
+              <FitScale maxW={laneBox.w} maxH={laneBox.h} contentWidth={laneBox.w || undefined}>
               <p className="text-[0.6875rem] text-center font-body font-extrabold uppercase tracking-wider text-ink-iron mb-2">
                 Tap a counter to select · View to read
               </p>
-              <div className="my-auto w-full flex flex-wrap items-start justify-center gap-3 max-w-[460px] mx-auto" aria-label="Available counters">
+              <ArrowPagedRow step={122} gap={12} idPrefix="counter-row" ariaLabel="Available counters">
                 {counterOptions.map((a) => {
                   const inst = instances[a.instanceId];
                   const card = inst ? library[inst.cardId] : undefined;
@@ -320,7 +333,8 @@ export const CounterPrompt = memo(function CounterPrompt() {
                     </div>
                   );
                 })}
-              </div>
+              </ArrowPagedRow>
+              </FitScale>
             </div>
           )}
 

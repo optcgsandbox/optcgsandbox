@@ -9,11 +9,14 @@
 // overlay (header / internal-scroll grid / fixed footer), PROMPT-size
 // tiles, View → shared CardInspectOverlay (size C).
 
-import { memo, useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useGameStore } from '../store/game';
 import { CardArt } from './CardArt';
 import { CardInspectOverlay } from './CardInspectOverlay';
+import { ArrowPagedRow } from './ArrowPagedRow';
+import { FitScale } from './FitScale';
+import { useOverlayBox } from '../hooks/useOverlayBox';
 import { printedSegmentFor } from './printedEffect';
 
 export const TargetPickerPrompt = memo(function TargetPickerPrompt() {
@@ -29,6 +32,10 @@ export const TargetPickerPrompt = memo(function TargetPickerPrompt() {
 
   const [selected, setSelected] = useState<ReadonlyArray<string>>([]);
   const [inspectId, setInspectId] = useState<string | null>(null);
+  // Overlay-fit (owner 2026-06-12): the tile lane never vertical-scrolls —
+  // tiles shrink to the lane's real height; width overflow pages with ‹ ›.
+  const laneRef = useRef<HTMLDivElement | null>(null);
+  const laneBox = useOverlayBox(laneRef);
 
   const open =
     phase === 'attack_target_pick' && pending !== null && pending.controller === viewAs;
@@ -125,11 +132,16 @@ export const TargetPickerPrompt = memo(function TargetPickerPrompt() {
             </p>
           </div>
 
-          {/* Internal-scroll tile grid — the PAGE never scrolls. flex-col +
-              my-auto centers the grid vertically when it fits (owner
-              2026-06-12: no dead middle on phones) and scrolls when tall. */}
-          <div className="flex flex-col flex-1 min-h-0 w-full overflow-y-auto px-4 py-2">
-            <div className="my-auto w-full flex flex-wrap gap-3 justify-center max-w-[460px] mx-auto">
+          {/* Overlay-fit (owner 2026-06-12): NO vertical scroll — one
+              ArrowPagedRow of fixed PROMPT tiles (side-scroll with ‹ ›);
+              FitScale shrinks the block only when the lane is shorter
+              than one tile row. */}
+          <div
+            ref={laneRef}
+            className="flex flex-col flex-1 min-h-0 w-full items-center justify-center overflow-hidden px-4 py-2"
+          >
+            <FitScale maxW={laneBox.w} maxH={laneBox.h} contentWidth={laneBox.w || undefined}>
+            <ArrowPagedRow step={122} gap={12} idPrefix="target-row" ariaLabel="Targets">
               {pending.candidateIds.map((id) => {
                 const inst = instances[id];
                 if (!inst) return null;
@@ -171,7 +183,8 @@ export const TargetPickerPrompt = memo(function TargetPickerPrompt() {
                   </div>
                 );
               })}
-            </div>
+            </ArrowPagedRow>
+            </FitScale>
           </div>
 
           {/* Fixed footer */}
