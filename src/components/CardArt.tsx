@@ -652,13 +652,13 @@ function DonBadge({ count }: { count: number }) {
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
       transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-      className="absolute -top-1 -right-1 text-sun-brass
+      className="absolute -top-1 -right-1 bg-paper-cream
                  text-[0.5625rem] font-display font-bold rounded-full
                  min-w-4 h-4 px-0.5 flex items-center justify-center tabular z-10
-                 ring-1 ring-sun-brass/60"
-      // DON card-back compass teal, sampled from public/backs/don.png
-      // (owner 2026-06-12). The theme's hull-teal (#0F4549) was too dark.
-      style={{ backgroundColor: '#208078' }}
+                 ring-1 ring-[#208078]"
+      // DON coin = the card back literally (owner 2026-06-12): cream ground
+      // + teal compass mark (#208078, sampled from public/backs/don.png).
+      style={{ color: '#208078' }}
       aria-label={`${count} DON attached`}
     >
       {count}⊙
