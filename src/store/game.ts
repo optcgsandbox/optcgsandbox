@@ -180,11 +180,14 @@ function bootGame(seed: number): GameState {
   // no draw/ramp/searcher tags (cost_reduction only) gives a cleaner
   // baseline for the demo while the rest of the engine is shored up.
   const leaderB: LeaderCard = pickLeaderById('OP09-042');
+  // Hoisted so the same deck is reused for both the engine init AND the
+  // image-warm below (otherwise we'd build the deck twice).
+  const cardsB = buildDeck('blue');
   let s = initialState({
     seed,
     decks: {
       A: { leader: leaderA, cards: cardsA },
-      B: { leader: leaderB, cards: buildDeck('blue') },
+      B: { leader: leaderB, cards: cardsB },
     },
   });
   s = setupGame(s);
@@ -203,7 +206,15 @@ function bootGame(seed: number): GameState {
     .map((iid) => s.instances[iid]?.cardId)
     .filter((id): id is string => typeof id === 'string');
   const ownDeckIds = cardsA.map((c) => c.id);
-  prefetchCardImages([...ownDeckIds, leaderA.id, leaderB.id], openingHandIds);
+  // Local vs-AI: warm the AI's deck too. The AI's identity is fully on the
+  // client (engine built it), so this leaks nothing. Eliminates the "click
+  // to view AI's played card → blank flash → loads" surface for any card
+  // from the AI's field, trash, life reveals, or top-deck reveals.
+  const oppDeckIds = cardsB.map((c) => c.id);
+  prefetchCardImages(
+    [...ownDeckIds, ...oppDeckIds, leaderA.id, leaderB.id],
+    openingHandIds,
+  );
   // Phase is now 'dice_roll'. Do NOT run refresh/draw/don yet.
   return s;
 }
