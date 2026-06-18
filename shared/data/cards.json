@@ -3517,7 +3517,7 @@
           "trigger": "activate_main",
           "opt": true,
           "cost": {
-            "donCost": 2
+            "donCostReturnToDeck": 2
           },
           "condition": {
             "type": "if_only_chars_with_trait",
@@ -7949,7 +7949,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "condition": {
             "type": "if_leader_is",
@@ -8124,7 +8124,7 @@
         {
           "trigger": "on_ko",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "add_to_own_life_top",
@@ -9351,6 +9351,17 @@
             "kind": "add_to_own_life_top",
             "faceUp": false,
             "from": "top_of_deck"
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_ko",
+          "condition": {
+            "type": "is_opp_turn"
+          },
+          "action": {
+            "kind": "deal_damage_opp",
+            "magnitude": 1
           },
           "verified": "human-reviewed"
         }
@@ -11660,7 +11671,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "condition": {
             "type": "and",
@@ -11840,7 +11851,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 1,
+            "donCostReturnToDeck": 1,
             "discardHand": 1
           },
           "condition": {
@@ -12128,7 +12139,7 @@
           },
           "verified": "human-reviewed",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           }
         }
       ],
@@ -24183,7 +24194,7 @@
               {
                 "kind": "power_buff",
                 "magnitude": 1000,
-                "duration": "this_turn",
+                "duration": "opp_next_turn",
                 "target": {
                   "kind": "your_leader"
                 }
@@ -24191,7 +24202,7 @@
               {
                 "kind": "power_buff",
                 "magnitude": 1000,
-                "duration": "this_turn",
+                "duration": "opp_next_turn",
                 "target": {
                   "kind": "all_your_characters"
                 }
@@ -30314,7 +30325,7 @@
           "action": {
             "kind": "power_buff",
             "magnitude": 2000,
-            "duration": "this_turn"
+            "duration": "opp_next_turn"
           },
           "target": {
             "kind": "self"
@@ -41272,7 +41283,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 10
+            "donCostReturnToDeck": 10
           },
           "action": {
             "kind": "removal_bounce"
@@ -41538,7 +41549,7 @@
           "action": {
             "kind": "power_buff",
             "magnitude": 1000,
-            "duration": "this_turn"
+            "duration": "opp_next_turn"
           },
           "target": {
             "kind": "self"
@@ -60334,7 +60345,7 @@
         {
           "trigger": "on_ko",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "play_for_free",
@@ -62591,7 +62602,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "condition": {
             "type": "if_leader_has_trait",
@@ -69901,7 +69912,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "add_to_own_life_top",
@@ -73698,7 +73709,7 @@
         {
           "trigger": "when_attacking",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "sequence",
@@ -73723,7 +73734,7 @@
         {
           "trigger": "on_opp_attack",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "sequence",
@@ -74051,7 +74062,7 @@
             "typeString": "Big Mom Pirates"
           },
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "ramp",
@@ -74279,7 +74290,7 @@
         {
           "trigger": "on_opp_attack",
           "cost": {
-            "donCost": 5
+            "donCostReturnToDeck": 5
           },
           "action": {
             "kind": "choose_cost_reveal_opp_match",
@@ -75861,7 +75872,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "removal_ko"
@@ -76086,7 +76097,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "removal_ko"
@@ -78588,7 +78599,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "activate_event_from_hand",
@@ -79579,7 +79590,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "cost_reduction",
@@ -79967,7 +79978,7 @@
             "typeString": "Baroque Works"
           },
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "power_buff",
@@ -81468,7 +81479,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "draw",
@@ -85417,7 +85428,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 3
+            "donCostReturnToDeck": 3
           },
           "action": {
             "kind": "sequence",
@@ -85712,7 +85723,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "recursion",
@@ -91320,7 +91331,7 @@
               {
                 "kind": "removal_bounce",
                 "target": {
-                  "kind": "opp_character",
+                  "kind": "any_character",
                   "filter": {
                     "powerMax": 6000
                   }
@@ -91328,7 +91339,8 @@
               }
             ]
           },
-          "verified": "human-reviewed"
+          "verified": "human-reviewed",
+          "mode": "main"
         },
         {
           "trigger": "on_play",
@@ -91336,7 +91348,8 @@
             "kind": "draw",
             "magnitude": 1
           },
-          "verified": "human-reviewed"
+          "verified": "human-reviewed",
+          "mode": "counter"
         },
         {
           "trigger": "on_play",
@@ -91348,7 +91361,8 @@
           "target": {
             "kind": "your_leader"
           },
-          "verified": "human-reviewed"
+          "verified": "human-reviewed",
+          "mode": "counter"
         }
       ],
       "continuous": [],
@@ -91443,7 +91457,7 @@
         {
           "trigger": "on_opp_attack",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "attack_redirect_to_target"
@@ -91501,7 +91515,7 @@
           },
           "verified": "human-reviewed",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "condition": {
             "type": "always"
@@ -91904,7 +91918,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 3
+            "donCostReturnToDeck": 3
           },
           "action": {
             "kind": "choose_one",
@@ -92391,7 +92405,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "sequence",
@@ -98041,7 +98055,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "give_keyword",
@@ -98056,7 +98070,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 1,
+            "donCostReturnToDeck": 1,
             "discardHand": 1
           },
           "action": {
@@ -98133,7 +98147,7 @@
           },
           "verified": "human-reviewed",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           }
         },
         {
@@ -98222,7 +98236,7 @@
           },
           "verified": "human-reviewed",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           }
         },
         {
@@ -98277,7 +98291,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 2,
+            "donCostReturnToDeck": 2,
             "restSelf": true
           },
           "condition": {
@@ -98392,7 +98406,7 @@
           },
           "verified": "human-reviewed",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           }
         },
         {
@@ -98450,7 +98464,7 @@
           },
           "verified": "human-reviewed",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           }
         }
       ],
@@ -98728,7 +98742,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 2,
+            "donCostReturnToDeck": 2,
             "restSelf": true
           },
           "condition": {
@@ -98850,7 +98864,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "sequence",
@@ -98934,7 +98948,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "sequence",
@@ -99025,7 +99039,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "sequence",
@@ -99107,7 +99121,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "sequence",
@@ -99171,7 +99185,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 2
+            "donCostReturnToDeck": 2
           },
           "action": {
             "kind": "chained_actions",
@@ -100796,7 +100810,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "sequence",
@@ -101324,7 +101338,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "searcher_peek",
@@ -101337,7 +101351,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 1,
+            "donCostReturnToDeck": 1,
             "discardHand": 1
           },
           "action": {
@@ -102904,35 +102918,28 @@
         {
           "trigger": "when_attacking",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
-            "kind": "life_to_hand",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "when_attacking",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "self"
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "when_attacking",
-          "action": {
-            "kind": "power_buff",
-            "magnitude": 1000,
-            "duration": "this_turn"
-          },
-          "target": {
-            "kind": "your_leader"
+            "kind": "sequence",
+            "actions": [
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "self"
+                }
+              },
+              {
+                "kind": "power_buff",
+                "magnitude": 1000,
+                "duration": "this_turn",
+                "target": {
+                  "kind": "your_leader"
+                }
+              }
+            ]
           },
           "verified": "human-reviewed"
         }
@@ -104325,16 +104332,8 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
-          "action": {
-            "kind": "life_to_hand",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
           "action": {
             "kind": "power_buff",
             "magnitude": 1000,
@@ -105152,7 +105151,7 @@
       "continuous": [
         {
           "condition": {
-            "type": "always"
+            "type": "is_opp_turn"
           },
           "action": {
             "kind": "self_power_buff",
@@ -105643,23 +105642,15 @@
         {
           "trigger": "on_play",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
-          "action": {
-            "kind": "life_to_hand",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "on_play",
           "action": {
             "kind": "give_don_to_target",
             "magnitude": 1,
             "rested": true
           },
           "target": {
-            "kind": "your_leader"
+            "kind": "your_leader_or_character"
           },
           "verified": "human-reviewed"
         }
@@ -105674,10 +105665,19 @@
             "kind": "grant_keyword_to_self",
             "keyword": "blocker"
           }
+        },
+        {
+          "condition": {
+            "type": "if_leader_has_type",
+            "typeString": "Revolutionary Army"
+          },
+          "action": {
+            "kind": "self_cost_buff",
+            "magnitude": 4
+          }
         }
       ],
-      "replacements": [],
-      "auditNote": "continuous only grants Blocker; text \"this Character gains [Blocker] AND +4 cost\" — +4 cost continuous missing; also give_don_to_target target your_leader missing \"or 1 of your Characters\""
+      "replacements": []
     }
   },
   {
@@ -106733,19 +106733,7 @@
           "trigger": "activate_main",
           "cost": {
             "restSelf": true,
-            "flipLife": 1
-          },
-          "action": {
-            "kind": "life_to_hand",
-            "magnitude": 1
-          },
-          "verified": "human-reviewed"
-        },
-        {
-          "trigger": "activate_main",
-          "cost": {
-            "restSelf": true,
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "power_buff",
@@ -106753,14 +106741,13 @@
             "duration": "this_turn"
           },
           "target": {
-            "kind": "your_character"
+            "kind": "your_leader_or_character"
           },
           "verified": "human-reviewed"
         }
       ],
       "continuous": [],
-      "replacements": [],
-      "auditNote": "cost restSelf:true + flipLife:1; text \"rest this Character AND add 1 card from the top or bottom of your Life cards TO YOUR HAND\" — needs lifeToHand:1 in cost (not flipLife); also second clause target your_character — text \"Leader or Character cards\" needs your_leader_or_character"
+      "replacements": []
     }
   },
   {
@@ -108252,7 +108239,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 4
+            "donCostReturnToDeck": 4
           },
           "action": {
             "kind": "removal_bounce"
@@ -108949,7 +108936,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 7
+            "donCostReturnToDeck": 7
           },
           "action": {
             "kind": "mill_opp",
@@ -108993,7 +108980,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "play_for_free",
@@ -109041,7 +109028,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 5
+            "donCostReturnToDeck": 5
           },
           "action": {
             "kind": "sequence",
@@ -109107,7 +109094,7 @@
           },
           "verified": "human-reviewed",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           }
         }
       ],
@@ -109149,7 +109136,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "chained_actions",
@@ -109215,7 +109202,7 @@
           },
           "verified": "human-reviewed",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           }
         }
       ],
@@ -109355,7 +109342,7 @@
           },
           "verified": "human-reviewed",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           }
         }
       ],
@@ -109686,7 +109673,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 3
+            "donCostReturnToDeck": 3
           },
           "action": {
             "kind": "power_buff",
@@ -109808,7 +109795,7 @@
         {
           "trigger": "on_block",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "rest_target"
@@ -109918,7 +109905,7 @@
           },
           "verified": "human-reviewed",
           "cost": {
-            "donCost": 2
+            "donCostReturnToDeck": 2
           }
         }
       ],
@@ -110053,7 +110040,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "power_buff",
@@ -110103,7 +110090,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 4
+            "donCostReturnToDeck": 4
           },
           "action": {
             "kind": "sequence",
@@ -110299,7 +110286,7 @@
           },
           "verified": "human-reviewed",
           "cost": {
-            "donCost": 2
+            "donCostReturnToDeck": 2
           }
         }
       ],
@@ -111108,7 +111095,7 @@
             ]
           },
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "add_to_own_life_top",
@@ -111230,7 +111217,7 @@
         {
           "trigger": "when_attacking",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "sequence",
@@ -111300,7 +111287,7 @@
             "n": 1
           },
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "add_to_own_life_top",
@@ -111442,7 +111429,7 @@
           "trigger": "activate_main",
           "cost": {
             "restSelf": true,
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "removal_ko"
@@ -111804,7 +111791,7 @@
           "trigger": "activate_main",
           "cost": {
             "restSelf": true,
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "add_to_own_life_top",
@@ -112383,7 +112370,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "removal_cost_reduce",
@@ -112710,7 +112697,7 @@
         {
           "trigger": "on_block",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "power_buff",
@@ -112769,7 +112756,7 @@
             "n": 1
           },
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "play_for_free",
@@ -112918,7 +112905,7 @@
         {
           "trigger": "when_attacking",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "power_buff",
@@ -113092,7 +113079,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 3
+            "donCostReturnToDeck": 3
           },
           "action": {
             "kind": "sequence",
@@ -113212,7 +113199,7 @@
         {
           "trigger": "when_attacking",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "power_buff",
@@ -113696,7 +113683,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "power_buff",
@@ -113711,7 +113698,7 @@
         {
           "trigger": "when_attacking",
           "cost": {
-            "donCost": 1
+            "donCostReturnToDeck": 1
           },
           "action": {
             "kind": "power_buff",
@@ -115663,16 +115650,8 @@
         {
           "trigger": "on_play",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
-          "action": {
-            "kind": "life_to_hand",
-            "magnitude": 1
-          },
-          "verified": "flagged"
-        },
-        {
-          "trigger": "on_play",
           "action": {
             "kind": "peek_and_reorder_own_life",
             "count": 99
@@ -118425,7 +118404,7 @@
         {
           "trigger": "on_play",
           "cost": {
-            "flipLife": 1
+            "lifeToHand": 1
           },
           "action": {
             "kind": "set_active"
@@ -119300,6 +119279,7 @@
         {
           "trigger": "activate_main",
           "cost": {
+            "bind": "revealed",
             "revealHand": {
               "count": 1,
               "filter": {
@@ -119315,8 +119295,12 @@
                 "magnitude": 1
               },
               {
-                "kind": "bottom_of_deck_from_hand",
-                "magnitude": 1
+                "kind": "top_of_deck_from_hand",
+                "target": {
+                  "kind": "binding",
+                  "name": "revealed",
+                  "field": "instanceId"
+                }
               }
             ]
           },
@@ -121273,7 +121257,7 @@
             ]
           },
           "cost": {
-            "donCost": 2
+            "donCostReturnToDeck": 2
           },
           "action": {
             "kind": "set_base_power",
@@ -121300,7 +121284,7 @@
             ]
           },
           "cost": {
-            "donCost": 2
+            "donCostReturnToDeck": 2
           },
           "action": {
             "kind": "set_base_power",
@@ -121576,9 +121560,22 @@
             "kind": "removal_ko"
           },
           "target": {
-            "kind": "opp_character",
+            "kind": "any_character",
             "filter": {
               "costMax": 3
+            }
+          },
+          "verified": "human-reviewed"
+        },
+        {
+          "trigger": "on_ko",
+          "action": {
+            "kind": "recursion",
+            "magnitude": 1,
+            "filter": {
+              "colors": [
+                "black"
+              ]
             }
           },
           "verified": "human-reviewed"
@@ -121768,7 +121765,7 @@
         {
           "trigger": "activate_main",
           "cost": {
-            "donCost": 2
+            "returnAttachedDon": 2
           },
           "action": {
             "kind": "sequence",
@@ -121809,10 +121806,7 @@
             ]
           },
           "action": {
-            "kind": "aura_power_buff",
-            "filter": {
-              "kind": "character"
-            },
+            "kind": "leader_power_buff",
             "magnitude": 1000
           }
         }

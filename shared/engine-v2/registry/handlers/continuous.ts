@@ -154,6 +154,23 @@ const selfPowerBuff: ContinuousHandler = {
   },
 };
 
+// leader_power_buff: continuous power buff to the SOURCE controller's LEADER
+// (e.g. "[Your Turn] if ≤2 Life, your Leader gains +1000"). Generic + card-
+// agnostic: magnitude + condition come from the effect metadata, the target
+// is always the source's own Leader. The leader instance is in state.instances
+// and reset each refold tick (ContinuousManager.ts:58), so the buff is
+// idempotent and expires automatically when the condition is false or the
+// source leaves play.
+const leaderPowerBuff: ContinuousHandler = {
+  resets: ['powerModifierContinuous'],
+  fold(state, source, eff) {
+    const n = readMagnitude(eff.action, state, source);
+    const leader = state.players[source.controller].leader;
+    leader.powerModifierContinuous = (leader.powerModifierContinuous ?? 0) + n;
+    return state;
+  },
+};
+
 // ────────────────────────────────────────────────────────────────────
 // give_continuous_cost_modifier / aura_cost_modifier / cost_modifier_in_hand
 // / opp_aura_cost_modifier / self_cost_buff — use `delta`
@@ -397,6 +414,7 @@ export function registerContinuousHandlers(): void {
   continuousHandlers.register('aura_power_buff', auraPowerBuff);
   continuousHandlers.register('opp_aura_power_buff', oppAuraPowerBuff);
   continuousHandlers.register('self_power_buff', selfPowerBuff);
+  continuousHandlers.register('leader_power_buff', leaderPowerBuff);
 
   // Cost
   continuousHandlers.register('give_continuous_cost_modifier', auraCostModifier);

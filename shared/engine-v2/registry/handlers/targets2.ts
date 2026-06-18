@@ -47,6 +47,20 @@ const oppDonOrCharacter: TargetResolver = (state: GameState, ctx: HandlerCtx, t:
   return hits;
 };
 
+// ─── binding: resolve a card bound earlier in the SAME clause (via a
+//     cost.bind / target.bind write to ClauseScratch) to its live instance.
+//     Generic — any action can target a prior binding (e.g. "place THE
+//     REVEALED card on top of deck"). Returns [] if the binding is absent
+//     or its instance is gone. Card-agnostic.
+const bindingTarget: TargetResolver = (state: GameState, ctx: HandlerCtx, t: EffectTargetV2): InstanceId[] => {
+  const name = typeof t['name'] === 'string' ? (t['name'] as string) : '';
+  if (name === '' || ctx.scratch === undefined) return [];
+  const snap = ctx.scratch[name];
+  const id = snap?.instanceId ?? null;
+  return id !== null && state.instances[id] !== undefined ? [id] : [];
+};
+
 export function registerTargetResolvers2(): void {
   targetResolvers.register('opp_don_or_character', oppDonOrCharacter);
+  targetResolvers.register('binding', bindingTarget);
 }

@@ -51,10 +51,11 @@ describe('EB02-010 — Monkey.D.Luffy (leader)', () => {
   const luffy = c as LeaderCard;
   const clause = luffy.effectSpecV2!.clauses![0]!;
 
-  it('shape: activate_main opt / donCost:2 / if_only_chars_with_trait SH / sequence [set_active_don 2, power_buff +1000 opp_next_turn] / your_leader', () => {
+  it('shape: activate_main opt / donCostReturnToDeck:2 / if_only_chars_with_trait SH / sequence [set_active_don 2, power_buff +1000 opp_next_turn] / your_leader', () => {
     expect(clause.trigger).toBe('activate_main');
     expect(clause.opt).toBe(true);
-    expect(clause.cost!['donCost']).toBe(2);
+    // F-11A: printed "DON!! −2" is a RETURN-to-deck cost, not a rest (was donCost).
+    expect(clause.cost!['donCostReturnToDeck']).toBe(2);
     expect((clause.condition as { trait: string }).trait).toBe('Straw Hat Crew');
     expect(clause.action.kind).toBe('sequence');
     const seq = clause.action as { actions: ReadonlyArray<{ kind: string; magnitude?: number; duration?: string }> };

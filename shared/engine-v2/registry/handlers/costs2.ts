@@ -235,19 +235,42 @@ const discardHandFilter: CostHandler = {
 //     exposure in history so the log/presentation can surface it. The V0
 //     no-pick path stays a pure no-op (AI / sim / server unchanged).
 const revealHand: CostHandler = {
-  canPay(state, ctx) {
-    return state.players[ctx.controller].hand.length > 0;
+  canPay(state, ctx, cost) {
+    const filter = filterCostFilter(cost['revealHand']);
+    const pl = state.players[ctx.controller];
+    if (filter === undefined) return pl.hand.length > 0;
+    return pl.hand.some((id) => {
+      const inst = state.instances[id];
+      return inst !== undefined && matchesCardFilter(state, inst, filter);
+    });
   },
-  pay(state, ctx) {
+  pay(state, ctx, cost) {
+    const filter = filterCostFilter(cost['revealHand']);
+    const pl = state.players[ctx.controller];
     const picked = chosenFor(ctx, 'revealHand', 1);
+    let revealed: string | undefined;
     if (picked !== null) {
-      if (!state.players[ctx.controller].hand.includes(picked[0]!)) return null;
-      (state.history as Array<unknown>).push({
-        type: 'HAND_CARD_REVEALED',
-        controller: ctx.controller,
-        instanceId: picked[0],
-      });
+      // Player-picked: must be in hand and (if filtered) match the printed filter.
+      const id = picked[0]!;
+      const inst = state.instances[id];
+      if (!pl.hand.includes(id) || (filter !== undefined && (inst === undefined || !matchesCardFilter(state, inst, filter)))) return null;
+      revealed = id;
+    } else {
+      // AI / sim deterministic: first matching hand card.
+      revealed = filter === undefined
+        ? pl.hand[0]
+        : pl.hand.find((id) => { const inst = state.instances[id]; return inst !== undefined && matchesCardFilter(state, inst, filter); });
     }
+    if (revealed === undefined) return null;
+    (state.history as Array<unknown>).push({
+      type: 'HAND_CARD_REVEALED',
+      controller: ctx.controller,
+      instanceId: revealed,
+    });
+    // ClauseScratch binding (same protocol as discardHandFilter): write the
+    // revealed card under '_costPicked'; the dispatcher renames it to cost.bind.
+    const bind = cost['bind'];
+    if (typeof bind === 'string' && bind !== '') writeBinding(state, ctx.scratch, '_costPicked', revealed);
     return state;
   },
 };

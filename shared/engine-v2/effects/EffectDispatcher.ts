@@ -195,6 +195,10 @@ export const EffectDispatcher = {
     opts?: {
       offerAcceptedIndex?: number;
       chosenCostIds?: Readonly<Record<string, ReadonlyArray<InstanceId>>>;
+      // Play mode for [Main]/[Counter] clause gating. Default 'main' (so
+      // normal plays + every mode-less clause fire); pass 'counter' from the
+      // counter-window dispatch. See EffectClauseV2.mode.
+      mode?: 'main' | 'counter';
     },
   ): GameState {
     const inst = state.instances[ctx.sourceInstanceId];
@@ -204,10 +208,15 @@ export const EffectDispatcher = {
     const { clauses } = getSpecForInstance(state, inst);
     if (clauses.length === 0) return state;
 
+    const playMode: 'main' | 'counter' = opts?.mode ?? 'main';
     let working = state;
     for (let i = startIndex; i < clauses.length; i++) {
       const clause = clauses[i]!;
       if (clause.trigger !== trigger) continue;
+      // Play-mode gate: a clause tagged with a mode fires only in that mode;
+      // mode-less clauses (the default) fire in any mode. Generic, data-driven.
+      const clauseMode = (clause as { mode?: 'main' | 'counter' }).mode;
+      if (clauseMode !== undefined && clauseMode !== playMode) continue;
 
       // Reset per-clause-resolution counters before each clause fires.
       working.cardsTrashedThisResolution = 0;

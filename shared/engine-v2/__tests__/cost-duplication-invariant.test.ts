@@ -27,7 +27,9 @@ const __dirname = resolve(__filename, '..');
 const EXCEPTIONS: ReadonlyArray<string> = [
   // Cost is ALSO encoded as the first action (merge would double-dip; needs
   // the cost-as-action duplicate removed under per-card review):
-  'OP03-102', 'OP03-110', 'OP06-106', 'OP15-100', 'PRB02-016', 'ST13-001',
+  // (PRB02-016 pruned 2026-06-17 — remodeled in F-11C to one clause
+  //  cost {restSelf, lifeToHand} + power_buff; no longer a dup-cost group.)
+  'OP03-102', 'OP03-110', 'OP06-106', 'OP15-100', 'ST13-001',
   // Printed text has NO cost — the modeled cost itself is wrong:
   'OP08-014', 'OP13-042',
   // "K.O. OR rest" / opponent-chooses branch — sequence would run BOTH arms:

@@ -1282,12 +1282,44 @@ const chooseOne: ActionHandler = (state, ctx, action) => {
 
 const chooseCostRevealOppMatch: ActionHandler = noop;
 
+// top_of_deck_from_hand: move card(s) from hand to the TOP of the controller's
+// deck. Generic + card-agnostic. The card to move comes from (in priority):
+//   1. a clause/sub-action target (e.g. a `binding` target = a revealed card),
+//   2. pre-bound targets,
+//   3. AI/sim deterministic fallback: the first `magnitude` hand cards.
+// There is no free human hand-picker (no such UI); cards that need a human
+// choice supply it upstream as the card-selecting COST (e.g. revealHand) and
+// pass the chosen card here via a binding — so a human never gets a silent
+// auto-pick. Hidden info: only the moving card's own controller learns it
+// (no opponent-visible history of the card identity beyond what was revealed).
+const topOfDeckFromHand: ActionHandler = (state, ctx, action, targets) => {
+  const pl = state.players[ctx.controller];
+  let ids: ReadonlyArray<InstanceId> = readPreBoundTargets(action, targets);
+  if (ids.length === 0) {
+    const cap = num(action, 'magnitude', resolveCount(state, ctx, action, 1));
+    ids = pl.hand.slice(0, Math.min(cap, pl.hand.length));
+  }
+  for (const id of ids) {
+    const idx = pl.hand.indexOf(id);
+    if (idx === -1) continue;
+    pl.hand.splice(idx, 1);
+    pl.deck.unshift(id); // TOP of deck
+    (state.history as Array<unknown>).push({
+      type: 'CARD_HAND_TO_DECK_TOP',
+      instanceId: id,
+      controller: ctx.controller,
+    });
+  }
+  return state;
+};
+
 // ────────────────────────────────────────────────────────────────────
 // Registration
 // ────────────────────────────────────────────────────────────────────
 
 export function registerActionHandlers3(): void {
   // Aliases
+  actionHandlers.register('top_of_deck_from_hand', topOfDeckFromHand);
   actionHandlers.register('power_buff', powerBuff);
   actionHandlers.register('mill_self', millSelf);
   actionHandlers.register('mill_opp', millOpp);

@@ -409,11 +409,13 @@ function playCounterReducer(
       pl.armedReplacementsThisTurn = turnList;
     }
 
-    // Fire on_play, then broadcast event-activation (mirrors mainPhase event path).
+    // Fire on_play in COUNTER mode, then broadcast event-activation (mirrors
+    // mainPhase event path). A counter-window play resolves only mode-less and
+    // [Counter]-tagged clauses (F-12 blocker 2).
     let next = EffectDispatcher.dispatch(state, {
       sourceInstanceId: action.instanceId,
       controller: player,
-    }, 'on_play');
+    }, 'on_play', 0, { mode: 'counter' });
     next = safeProcessSimEvent(next, { sourceInstanceId: action.instanceId, controller: player }, 'on_play');
     if (triggerEmitters.has('on_self_activate_event')) {
       const emitter = triggerEmitters.get('on_self_activate_event');

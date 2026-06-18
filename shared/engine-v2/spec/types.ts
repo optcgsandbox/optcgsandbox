@@ -95,6 +95,12 @@ export interface EffectClauseV2 {
   readonly action: EffectActionV2;
   readonly target?: EffectTargetV2;
   readonly opt?: boolean;
+  // Play-mode gate for cards whose printed text has separate [Main] and
+  // [Counter] sections (both otherwise fire on the `on_play` trigger).
+  // `undefined` = fires in any mode (the default for ~all cards). 'main' =
+  // only when played as a normal/main event; 'counter' = only when played
+  // during the counter window. Generic; set per-clause in card data.
+  readonly mode?: 'main' | 'counter';
   readonly verified: 'auto' | 'human-reviewed' | 'ground-truth' | 'flagged';
 }
 

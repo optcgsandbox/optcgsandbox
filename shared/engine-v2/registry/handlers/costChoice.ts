@@ -100,9 +100,16 @@ export function costChoiceFor(
       };
     }
     case 'revealHand': {
+      const filter = filterCostFilter(cost[key]);
+      const candidates = pl.hand.filter((id) => {
+        if (!notExcluded(id)) return false;
+        if (filter === undefined) return true;
+        const inst = state.instances[id];
+        return inst !== undefined && matchesCardFilter(state, inst, filter);
+      });
       return {
         count: 1,
-        candidateIds: pl.hand.filter(notExcluded),
+        candidateIds: candidates,
         summary: 'Choose 1 card from your hand to reveal.',
       };
     }
