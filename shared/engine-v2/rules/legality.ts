@@ -23,6 +23,10 @@ import {
   OTHER_PLAYER,
   type PlayerId,
 } from '../state/types.js';
+import { evaluateCondition } from '../effects/EffectDispatcher.js';
+import { costHandlers } from '../registry/types.js';
+import { isOptUsed, makeOptKey } from '../state/derived/opt.js';
+import type { EffectClauseV2 } from '../spec/types.js';
 
 const RUSH_KEYWORDS = ['rush', 'rush_character'] as const;
 
@@ -313,23 +317,62 @@ function counterActions(state: GameState, player: PlayerId): Action[] {
   return out;
 }
 
+// F-14a — an ACTIVATE_MAIN action is only offered when at least one of the
+// card's [Activate: Main] clauses is actually VIABLE in the current state, so
+// the legality layer (not just the UI) stops offering dead activations.
+// A clause is viable iff: trigger is activate_main, mode is main (not a
+// [Counter]-only clause), it is not an already-used once-per-turn (opt) clause,
+// its condition is true, AND every cost key it carries is payable now.
+// Target presence is intentionally NOT required — a cost-payable clause with no
+// legal target still activates and resolves to no-valid-target (CR-compliant),
+// so we must not hide it (F-14a requirement 6). Fully generic: no card IDs.
+function hasViableActivateMainClause(state: GameState, controller: PlayerId, inst: CardInstance, card: Card): boolean {
+  const clauses = (card.effectSpecV2?.clauses ?? []) as ReadonlyArray<EffectClauseV2>;
+  const amClauses = clauses
+    .map((c, i) => ({ c, i }))
+    .filter(({ c }) => c.trigger === 'activate_main');
+  // No modeled [Activate: Main] clause (keyword-only / non-clause effect) →
+  // preserve legacy behavior and keep offering it.
+  if (amClauses.length === 0) return true;
+  const ctx = { sourceInstanceId: inst.instanceId, controller };
+  for (const { c, i } of amClauses) {
+    const mode = (c as { mode?: 'main' | 'counter' }).mode;
+    if (mode !== undefined && mode !== 'main') continue;
+    if (c.opt === true && isOptUsed(inst, makeOptKey('opt', 'activate_main', i))) continue;
+    if (!evaluateCondition(state, ctx, c.condition)) continue;
+    let payable = true;
+    const cost = c.cost as Record<string, unknown> | undefined;
+    if (cost) {
+      for (const k of Object.keys(cost)) {
+        if (k === 'bind') continue;
+        if (!costHandlers.has(k) || !costHandlers.get(k).canPay(state, ctx, c.cost as never)) { payable = false; break; }
+      }
+    }
+    if (payable) return true; // at least one clause can actually be activated
+  }
+  return false;
+}
+
 function activateMainActions(state: GameState, player: PlayerId): Action[] {
   const p = state.players[player];
   const out: Action[] = [];
 
   const leaderCard = state.cardLibrary[p.leader.cardId] as Card | undefined;
-  if (leaderCard?.keywords.includes('activate_main') === true && !p.leader.rested) {
+  if (leaderCard?.keywords.includes('activate_main') === true && !p.leader.rested
+      && hasViableActivateMainClause(state, player, p.leader, leaderCard)) {
     out.push({ type: 'ACTIVATE_MAIN', instanceId: p.leader.instanceId });
   }
   for (const inst of p.field) {
     const card = state.cardLibrary[inst.cardId] as Card | undefined;
-    if (card?.keywords.includes('activate_main') === true && !inst.rested) {
+    if (card?.keywords.includes('activate_main') === true && !inst.rested
+        && hasViableActivateMainClause(state, player, inst, card)) {
       out.push({ type: 'ACTIVATE_MAIN', instanceId: inst.instanceId });
     }
   }
   if (p.stage !== null) {
     const stageCard = state.cardLibrary[p.stage.cardId] as Card | undefined;
-    if (stageCard?.keywords.includes('activate_main') === true && !p.stage.rested) {
+    if (stageCard?.keywords.includes('activate_main') === true && !p.stage.rested
+        && hasViableActivateMainClause(state, player, p.stage, stageCard)) {
       out.push({ type: 'ACTIVATE_MAIN', instanceId: p.stage.instanceId });
     }
   }
