@@ -36,3 +36,9 @@ e2e/golden/
 *.tmp
 *.sqlite
 evidence-handstrip/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
